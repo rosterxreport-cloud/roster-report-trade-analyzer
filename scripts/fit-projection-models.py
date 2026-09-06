@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Fit auditable next-season Roster Report projection models.
 
-Each position is challenged against a simple persistence baseline: last season's
-PPR points per game. Candidate ridge models may use the full feature set or a
-smaller opportunity/role feature set, and may be conservatively blended with the
-baseline. A challenger is promoted only when its holdout RMSE beats persistence.
+Each position is challenged against a persistence baseline: last season PPR/game.
+Games played is intentionally NOT a predictive talent feature. Missed games should
+influence sample confidence/availability downstream, not mechanically depress a
+healthy player's next-season per-game projection.
 """
 
 from __future__ import annotations
@@ -20,26 +20,26 @@ BLEND_WEIGHTS = [0.25, 0.50, 0.75, 1.00]
 
 FEATURES = {
     "QB": [
-        "games", "attempts", "completion_rate", "pass_yards_per_attempt",
+        "attempts", "completion_rate", "pass_yards_per_attempt",
         "pass_yac_share", "pass_td_rate", "interception_rate",
         "sacks_per_attempt", "passing_epa_per_attempt", "carries_per_game",
         "yards_per_carry", "rush_td_per_attempt", "rushing_epa_per_attempt",
         "ppr_per_game",
     ],
     "RB": [
-        "games", "carries_per_game", "yards_per_carry", "rush_td_per_attempt",
+        "carries_per_game", "yards_per_carry", "rush_td_per_attempt",
         "rushing_first_down_rate", "rushing_epa_per_attempt", "targets_per_game",
         "target_share", "catch_rate", "yards_per_target", "rec_td_per_target",
         "receiving_first_down_rate", "receiving_epa_per_target", "ppr_per_game",
     ],
     "WR": [
-        "games", "targets_per_game", "target_share", "air_yards_share", "wopr",
+        "targets_per_game", "target_share", "air_yards_share", "wopr",
         "catch_rate", "yards_per_target", "air_yards_per_target",
         "yac_per_reception", "rec_td_per_target", "receiving_first_down_rate",
         "receiving_epa_per_target", "ppr_per_game",
     ],
     "TE": [
-        "games", "targets_per_game", "target_share", "air_yards_share", "wopr",
+        "targets_per_game", "target_share", "air_yards_share", "wopr",
         "catch_rate", "yards_per_target", "air_yards_per_target",
         "yac_per_reception", "rec_td_per_target", "receiving_first_down_rate",
         "receiving_epa_per_target", "ppr_per_game",
@@ -47,14 +47,14 @@ FEATURES = {
 }
 
 OPPORTUNITY_FEATURES = {
-    "QB": ["games", "attempts", "passing_epa_per_attempt", "carries_per_game",
+    "QB": ["attempts", "passing_epa_per_attempt", "carries_per_game",
            "rush_td_per_attempt", "ppr_per_game"],
-    "RB": ["games", "carries_per_game", "targets_per_game", "target_share",
+    "RB": ["carries_per_game", "targets_per_game", "target_share",
            "rush_td_per_attempt", "ppr_per_game"],
-    "WR": ["games", "targets_per_game", "target_share", "air_yards_share",
-           "wopr", "ppr_per_game"],
-    "TE": ["games", "targets_per_game", "target_share", "air_yards_share",
-           "wopr", "ppr_per_game"],
+    "WR": ["targets_per_game", "target_share", "air_yards_share", "wopr",
+           "ppr_per_game"],
+    "TE": ["targets_per_game", "target_share", "air_yards_share", "wopr",
+           "ppr_per_game"],
 }
 
 
@@ -125,13 +125,12 @@ def fit_position(path: Path, pos: str):
             ridge = candidate_prediction(train, valid, features, alpha)
             for blend_weight in BLEND_WEIGHTS:
                 pred = (1 - blend_weight) * baseline_pred + blend_weight * ridge
-                m = metrics(yva, pred)
                 trials.append({
                     "feature_set": feature_set_name,
                     "features": features,
                     "alpha": alpha,
                     "blend_weight": blend_weight,
-                    "metrics": m,
+                    "metrics": metrics(yva, pred),
                 })
 
     best = min(trials, key=lambda x: (x["metrics"]["rmse"], x["metrics"]["mae"]))
@@ -143,6 +142,7 @@ def fit_position(path: Path, pos: str):
             "target": "next_ppr_per_game",
             "selected_model": "persistence_baseline",
             "training_seasons": [2023, 2024],
+            "games_role": "confidence_only",
             "baseline_metrics": baseline_metrics,
             "holdout_metrics": baseline_metrics,
             "challenger_metrics": best["metrics"],
@@ -166,6 +166,7 @@ def fit_position(path: Path, pos: str):
         "selected_model": "baseline_blended_ridge",
         "feature_set": best["feature_set"],
         "training_seasons": [2023, 2024],
+        "games_role": "confidence_only",
         "best_alpha": best["alpha"],
         "blend_weight": best["blend_weight"],
         "features": selected_features,
@@ -184,7 +185,7 @@ def fit_position(path: Path, pos: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=Path("data/projections"))
-    parser.add_argument("--out", type=Path, default=Path("data/projections/model_coefficients_v0_2.json"))
+    parser.add_argument("--out", type=Path, default=Path("data/projections/model_coefficients_v0_3.json"))
     args = parser.parse_args()
 
     models = {}
@@ -198,7 +199,7 @@ def main():
             print(pos, "top features", m["importance_order"][:6])
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps({"version": "0.2", "models": models}, indent=2))
+    args.out.write_text(json.dumps({"version": "0.3", "models": models}, indent=2))
     print(f"Wrote {args.out}")
 
 
