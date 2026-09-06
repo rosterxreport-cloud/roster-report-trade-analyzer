@@ -2,230 +2,121 @@
 
 ## Status
 
-Phase 1 foundation is implemented in `projection-engine.js`.
+Phase 1 projection mechanics and the Phase 2 historical/backtest pipeline are implemented. The projection system remains separate from the live v10 trade-analyzer values until the projection models are validated and 2026 role/team assumptions are populated.
 
-The projection system is deliberately separate from the live v10 trade-analyzer calculations until it has been populated with real inputs and backtested. Nothing in the existing rankings, RB premiums, Superflex logic, package discounts, or Tier 0 asset treatment is changed by this phase.
+Nothing here changes the production RB premium, Superflex scarcity, package discounts, Tier 0 acquisition premium, or existing trade verdicts.
 
-## Core model
+## Core chain
 
-The projection chain is:
+`Team environment -> player opportunity -> player efficiency -> raw stats -> fantasy points -> uncertainty -> projection signal`
 
-`Team environment -> Player opportunity -> Player efficiency -> Raw stats -> Fantasy points -> Uncertainty -> Trade-value signal`
+The model projects football statistics first. Full PPR, Half PPR, and Standard points are scoring layers over the same stat projection.
 
-This is intentionally different from projecting fantasy points directly. Each player's projected stats must reconcile with a plausible team environment.
+## v10 trade-analyzer prior
 
-## Existing trade-analyzer analytics
+The current v10 player-quality prior is:
 
-The v10 audit workbook is the source of truth for the veteran player-quality prior:
+- **45% AW rankings**
+- **35% Roster Report 2023-2025 analytics**
+- **10% positional scarcity**
+- **10% market/trade value**
 
-- 45% Roster Report 2023-2025 analytics
-- 35% AW rankings
-- 10% positional scarcity
-- 10% market/trade value
+The projection system may use that prior as one input, but does not overwrite the production v10 value.
 
-Rookies keep a dedicated pathway rather than being treated as veterans with missing NFL history.
+Rookies retain their dedicated v10 pathway rather than being treated as veterans with missing NFL history.
 
-The projection engine exposes `tradeAnalyzerPrior` when those component ratings are available, but does not overwrite the existing v10 `value` field.
+## Historical Roster Report weighting
 
-## Historical weighting
+Current-player analytical history uses:
 
-Default recency weights inside the projection engine:
-
-- 2023: 20%
-- 2024: 30%
 - 2025: 50%
+- 2024: 30%
+- 2023: 20%
 
-Partial seasons follow the v10 audit rule: each season weight is multiplied by `min(games / 12, 1.0)`, then the observed season weights are renormalized.
+Partial seasons use `season weight × min(games / 12, 1.0)`, after which available season weights are renormalized.
 
-These are intended for predictive player inputs, not for replacing the established 45/35/10/10 trade-value formula.
+These recency rules describe the current-player analytical prior. The projection backtest may use additional historical seasons later to learn which football metrics are predictive without changing the 2023-2025 player-input window.
 
-## Team inputs
+## Data pipeline
 
-Every team projection should eventually include:
+`scripts/build-projection-history.py` converts the v10 analytics audit workbook into projection-history records.
 
-- games
-- plays per game
-- pass rate
-- sack rate per dropback
-- passing yards per attempt
-- passing TD rate
-- interception rate
-- rushing yards per carry
-- rushing TD rate
+`scripts/build-nflverse-features.py` pulls nflverse regular-season player summary files and creates:
 
-Later versions should add explicit coaching/scheme priors, offensive-line quality, pace, neutral-script pass rate, expected game environment, and QB-change effects.
+- player-season feature tables
+- team-season environment tables
+- QB/RB/WR/TE next-season training tables
 
-## QB inputs
+The verified nflverse inputs are `stats_player_reg_2023.csv`, `stats_player_reg_2024.csv`, and `stats_player_reg_2025.csv` from the `stats_player` release.
 
-Current engine inputs:
+## Model fitting
 
-- projected games
-- QB attempt share
-- passing yards per attempt
-- passing TD rate
-- interception rate
-- rushing attempts per game
-- rushing yards per attempt
-- rushing TD per attempt
-- role multiplier
+`scripts/fit-projection-models.py` predicts **next-season PPR points per game**. It deliberately does not fit same-season fantasy points.
 
-Planned analytical features include EPA/dropback, CPOE, adjusted completion rate, pressure-to-sack rate, scramble rate, designed-rush rate, deep-ball efficiency, red-zone usage, and offensive-line/context adjustments.
+The first validation design is:
 
-## RB inputs
+- train on 2023 inputs -> 2024 outcomes
+- validate on 2024 inputs -> 2025 outcomes
 
-Current engine inputs:
+Every position is compared with a persistence baseline (`last season PPR/game = next season PPR/game`). Candidate ridge models can use a full feature set or a smaller opportunity/role feature set and can be conservatively blended with persistence. A challenger is promoted only if its holdout RMSE beats the baseline.
 
-- projected games
-- carry share
-- yards per carry
-- route participation
-- targets per route
-- catch rate
-- yards per target
-- rushing TD share
-- receiving TD rate
-- role multiplier
+This prevents added complexity from being accepted merely because it looks sophisticated.
 
-Planned analytical features include yards after contact per attempt, missed tackles forced, explosive-run rate, success rate, yards before contact, targets per route, receiving efficiency, goal-line carry share, expected fantasy points, and offensive-line/context adjustments.
-
-## WR / TE inputs
-
-Current engine inputs:
-
-- projected games
-- route participation
-- targets per route
-- catch rate
-- yards per target
-- receiving TD per target
-- optional rushing usage
-- role multiplier
-
-Planned analytical features include first-read target share, target share, air-yard share, yards per route run, separation/coverage performance where available, YAC, catch rate over expectation, deep targets, red-zone targets, end-zone targets, and QB/context adjustments.
-
-## Regression
-
-Noisy efficiency rates regress toward league averages. Current default regression strengths are configurable and include:
-
-- catch rate: 30%
-- yards per target: 35%
-- receiving TD rate: 55%
-- yards per carry: 35%
-- passing TD rate: 45%
-- interception rate: 40%
-
-TD rates are intentionally regressed more aggressively than stable volume metrics.
-
-## Rookies
-
-The engine accepts rookie flags and expands their uncertainty bands. The full rookie feature pipeline still needs to be populated from the dedicated v10 rookie methodology.
-
-Target rookie inputs:
-
-### WR / TE
-- draft capital
-- college target share / dominator
-- yards per route run
-- breakout age
-- receiving yards per team pass attempt
-- early-declare status
-- athletic profile
-- competition adjustment
-- historical NFL comps
-
-### RB
-- draft capital
-- college workload
-- receiving involvement
-- yards after contact
-- missed tackles forced
-- explosive-run rate
-- athletic testing
-- projected depth-chart role
+## Current feature families
 
 ### QB
-- draft capital
-- age / experience
-- passing efficiency
-- pressure performance
-- rushing production
-- designed-rush profile
-- expected starting probability
-- historical NFL comps
 
-## Uncertainty
+Games, attempts, completion rate, yards/attempt, pass TD rate, interception rate when available, sacks, passing EPA/attempt, rushing volume, rushing efficiency, rushing TD rate, and prior PPR/game.
 
-The engine outputs floor, median, and ceiling fantasy points for every scoring format.
+### RB
 
-Base uncertainty is position specific and expands for:
+Games, carries/game, yards/carry, rushing TD rate, rushing first-down rate, rushing EPA, targets/game, target share, catch rate, yards/target, receiving TD rate, receiving first-down rate, receiving EPA, and prior PPR/game.
 
-- rookies
-- major role changes
-- meaningful injury concerns
+### WR / TE
 
-The current bands are heuristic and must be calibrated during backtesting. A later simulation layer should replace simple bands with empirical outcome distributions and probabilities such as Top-5, Top-12, Top-24, and Top-36 finishes.
+Games, targets/game, target share, air-yard share, WOPR, catch rate, yards/target, air yards/target, YAC/reception, TD/target, receiving first-down rate, receiving EPA/target, and prior PPR/game.
 
-## Fantasy scoring
+## First successful historical build
 
-The engine currently supports:
+The 2023-2025 source pipeline produced:
 
-- Full PPR
-- Half PPR
-- Standard
+- 1,776 player-season rows
+- 96 team-season rows
+- 577 player rows in 2023
+- 589 in 2024
+- 610 in 2025
 
-Because the model projects actual football statistics first, scoring formats are calculated from the same underlying player projection rather than using three independent models.
+The original full ridge v0.1 holdout results were:
 
-## Trade analyzer integration
+| Position | N | MAE PPR/G | RMSE PPR/G | Correlation |
+|---|---:|---:|---:|---:|
+| QB | 63 | 4.39 | 5.32 | 0.655 |
+| RB | 106 | 2.92 | 3.76 | 0.781 |
+| WR | 178 | 2.57 | 3.48 | 0.742 |
+| TE | 106 | 1.86 | 2.38 | 0.804 |
 
-`projectionTradeValueHook()` creates a normalized projection signal using projected points plus floor/ceiling information.
+The persistence comparison showed that QB and TE improved on persistence, while the first RB and WR full-feature ridge versions did not consistently beat it. v0.2 therefore adds baseline-gated model selection and opportunity-focused challengers instead of automatically promoting every fitted model.
 
-Important: the hook does **not** currently change trade values. It is designed so we can backtest the projection signal before deciding how much weight it deserves in the production trade analyzer.
+## Projection engine
 
-A likely future trade-value structure is:
+`projection-engine.js` currently provides:
 
-`existing v10 value + rest-of-season projection signal + role trend + schedule + availability`
+- team-volume projection
+- QB projection functions
+- RB projection functions
+- WR/TE projection functions
+- PPR / Half PPR / Standard scoring
+- floor / median / ceiling heuristics
+- overall and position ranks
+- partial-season historical weighting
+- a non-production trade-value projection hook
 
-The exact weights should be learned from historical tests rather than chosen arbitrarily.
+## Next milestones
 
-## Phase roadmap
-
-### Phase 1 — foundation
-- [x] Team-volume projection
-- [x] QB projection functions
-- [x] RB projection functions
-- [x] WR/TE projection functions
-- [x] PPR / Half PPR / Standard scoring
-- [x] Floor / median / ceiling framework
-- [x] Projection rankings
-- [x] Trade-analyzer projection hook
-- [x] v10 recency and partial-season weighting
-
-### Phase 2 — real data pipeline
-- [ ] Build 2023-2025 historical feature table
-- [ ] Import current 2026 rosters/depth charts
-- [ ] Import team environment assumptions
-- [ ] Map v10 analytics fields into projection inputs
-- [ ] Import dedicated rookie features
-- [ ] Resolve missing-season veterans with prior/role fallback
-
-### Phase 3 — backtest
-- [ ] Train/test using historical seasons without look-ahead leakage
-- [ ] Measure MAE/RMSE by raw stat and fantasy points
-- [ ] Test positional rank accuracy
-- [ ] Calibrate regression rates
-- [ ] Calibrate uncertainty bands
-- [ ] Compare against simple baseline projections
-
-### Phase 4 — 2026 season projections
-- [ ] Generate every QB/RB/WR/TE projection
-- [ ] Produce Top 200 / Top 250 in all scoring formats
-- [ ] Publish player projection cards
-- [ ] Add projection explanations to the site
-
-### Phase 5 — in-season model
-- [ ] Weekly role updates
-- [ ] Opponent matchup adjustments
-- [ ] Injuries and depth-chart movement
-- [ ] Rest-of-season projections
-- [ ] Weekly start/sit rankings
-- [ ] Feed validated ROS signal into the trade analyzer
+1. Validate baseline-gated v0.2 by position.
+2. Expand historical calibration if needed while preserving the 2023-2025 current-player prior.
+3. Add 2026 rosters, depth-chart roles, coaching/team environment and availability assumptions.
+4. Generate first 2026 QB/RB/WR/TE raw-stat projections.
+5. Backtest and calibrate raw-stat errors, fantasy points and finish probabilities.
+6. Add weekly/ROS matchup and role updates.
+7. Only after validation, test a projection signal inside the production trade analyzer.
