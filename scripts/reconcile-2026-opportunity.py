@@ -61,6 +61,7 @@ def main():
     m=stats.merge(r,on=["name","position"],how="left",suffixes=("","_role"))
 
     modeled=m["projection_status"].eq("modeled_veteran")
+    eligible=m["projection_status"].isin(["modeled_veteran","returning_fallback","rookie_model"])
 
     # 1) Starting QB volume: use team share and demonstrated attempts/game together.
     for idx,row in m[modeled & m["position"].eq("QB")].iterrows():
@@ -72,11 +73,9 @@ def main():
         starter=bool(row.get("depth_starter",False))
         if starter:
             new_att=blend(hist_full,share_based,.62)
-            # Healthy confirmed starters should not collapse far below their own demonstrated pace.
-            if np.isfinite(hist_full): new_att=max(new_att,.82*hist_full)
-            if np.isfinite(team_pass): new_att=min(new_att,.99*team_pass)
-        else:
-            new_att=share_based
+            if np.isfinite(hist_full):new_att=max(new_att,.82*hist_full)
+            if np.isfinite(team_pass):new_att=min(new_att,.99*team_pass)
+        else:new_att=share_based
         old=num(row.get("projected_pass_attempts"),np.nan)
         if np.isfinite(new_att) and np.isfinite(old) and old>0:
             ratio=new_att/old
@@ -92,19 +91,13 @@ def main():
         hist_pg=num(row.get("targets_per_game"),np.nan)
         hist_targets=hist_pg*GAMES if np.isfinite(hist_pg) else np.nan
         changed=bool(row.get("changed_team",False))
-        w=.58 if changed else .68
-        new_targets=blend(hist_targets,share_targets,w)
+        new_targets=blend(hist_targets,share_targets,.58 if changed else .68)
         old=num(row.get("projected_targets"),np.nan)
-        if not np.isfinite(new_targets) or not np.isfinite(old) or old<=0: continue
-
-        # Limit one-year opportunity expansion unless the player changed teams.
+        if not np.isfinite(new_targets) or not np.isfinite(old) or old<=0:continue
         if np.isfinite(hist_targets):
-            expansion=1.22 if changed else 1.15
-            new_targets=min(new_targets,hist_targets*expansion)
-            # Preserve strong proven earners from excessive regression.
+            new_targets=min(new_targets,hist_targets*(1.22 if changed else 1.15))
             if hist_pg>=7.0:new_targets=max(new_targets,hist_targets*.92)
             elif hist_pg>=5.5:new_targets=max(new_targets,hist_targets*.88)
-
         ratio=new_targets/old
         m.at[idx,"projected_targets"]=new_targets
         for c in ["projected_receptions","projected_receiving_yards","projected_receiving_tds"]:
@@ -128,12 +121,11 @@ def main():
         for c in ["projected_rushing_yards","projected_rushing_tds"]:
             m.at[idx,c]=num(row.get(c),0)*ratio
 
-    # 4) Team reconciliation: never let tracked fantasy players exceed realistic team budgets.
-    for team,g in m[modeled].groupby("team"):
-        team_roles=roles[roles.get("team_2026",pd.Series(index=roles.index,dtype=object)).eq(team)] if "team_2026" in roles.columns else pd.DataFrame()
-        team_pass=num(team_roles["projected_pass_attempts"].dropna().iloc[0],np.nan) if len(team_roles) and "projected_pass_attempts" in team_roles else np.nan
-        team_rush=num(team_roles["projected_rush_attempts"].dropna().iloc[0],np.nan) if len(team_roles) and "projected_rush_attempts" in team_roles else np.nan
-
+    # 4) Team reconciliation: count every projected fantasy player, including rookies.
+    for team,g in m[eligible].groupby("team"):
+        team_roles=roles[roles["team_2026"].eq(team)] if "team_2026" in roles.columns else pd.DataFrame()
+        team_pass=num(team_roles["projected_pass_attempts"].dropna().iloc[0],np.nan) if len(team_roles) and "projected_pass_attempts" in team_roles and team_roles["projected_pass_attempts"].notna().any() else np.nan
+        team_rush=num(team_roles["projected_rush_attempts"].dropna().iloc[0],np.nan) if len(team_roles) and "projected_rush_attempts" in team_roles and team_roles["projected_rush_attempts"].notna().any() else np.nan
         skill_idx=g[g["position"].isin(["RB","WR","TE"])].index
         total_targets=pd.to_numeric(m.loc[skill_idx,"projected_targets"],errors="coerce").sum()
         target_budget=team_pass*.96 if np.isfinite(team_pass) else np.nan
@@ -142,7 +134,6 @@ def main():
             for idx in skill_idx:
                 for c in ["projected_targets","projected_receptions","projected_receiving_yards","projected_receiving_tds"]:
                     if np.isfinite(num(m.at[idx,c],np.nan)):m.at[idx,c]=num(m.at[idx,c],0)*scale
-
         rb_idx=g[g["position"].eq("RB")].index
         total_rb_carries=pd.to_numeric(m.loc[rb_idx,"projected_rush_attempts"],errors="coerce").sum()
         rb_budget=team_rush*.86 if np.isfinite(team_rush) else np.nan
@@ -153,7 +144,6 @@ def main():
                     if np.isfinite(num(m.at[idx,c],np.nan)):m.at[idx,c]=num(m.at[idx,c],0)*scale
 
     # Recalculate scoring and ranks.
-    eligible=m["projection_status"].isin(["modeled_veteran","returning_fallback","rookie_model"])
     for idx,row in m[eligible].iterrows():
         d=row.to_dict()
         m.at[idx,"ppr_points"]=scoring(d,1.0)
@@ -162,21 +152,16 @@ def main():
         m.at[idx,"ppr_per_game"]=m.at[idx,"ppr_points"]/GAMES
         m.at[idx,"half_ppr_per_game"]=m.at[idx,"half_ppr_points"]/GAMES
         m.at[idx,"standard_per_game"]=m.at[idx,"standard_points"]/GAMES
-
     for fmt in ["ppr_points","half_ppr_points","standard_points"]:
         m[fmt.replace("_points","_overall_rank")]=m[fmt].rank(method="min",ascending=False)
-        poscol=fmt.replace("_points","_pos_rank")
-        m[poscol]=np.nan
+        poscol=fmt.replace("_points","_pos_rank");m[poscol]=np.nan
         for pos in ["QB","RB","WR","TE"]:
-            mask=m["position"].eq(pos)&m[fmt].notna()
-            m.loc[mask,poscol]=m.loc[mask,fmt].rank(method="min",ascending=False)
+            mask=m["position"].eq(pos)&m[fmt].notna();m.loc[mask,poscol]=m.loc[mask,fmt].rank(method="min",ascending=False)
 
     drop=[c for c in m.columns if c.endswith("_role") or c in {"role_team","targets_per_game","carries_per_game","attempts_per_game","role_target_share_2026","role_carry_share_2026","role_qb_attempt_share_2026","depth_starter","depth_rank","role_confidence","changed_team","projected_pass_attempts_role","projected_rush_attempts_role"}]
     m=m.drop(columns=drop,errors="ignore")
-    nums=m.select_dtypes(include=[np.number]).columns
-    m[nums]=m[nums].round(2)
+    nums=m.select_dtypes(include=[np.number]).columns;m[nums]=m[nums].round(2)
     m.to_csv(a.out,index=False)
-
     watch=["Lamar Jackson","Breece Hall","Drake London","Brock Bowers","Juwan Johnson"]
     cols=[c for c in ["name","position","ppr_points","ppr_pos_rank","projected_pass_attempts","projected_targets","projected_rush_attempts"] if c in m.columns]
     print(m[m["name"].isin(watch)][cols].sort_values("position").to_dict("records"))
