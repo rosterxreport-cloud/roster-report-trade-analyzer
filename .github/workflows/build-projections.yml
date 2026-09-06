@@ -18,6 +18,7 @@ on:
       - 'scripts/reconcile-2026-opportunity.py'
       - 'scripts/reconcile-qb-passing.py'
       - 'scripts/reconcile-qb-rushing.py'
+      - 'scripts/apply-qb-receiving-environment.py'
       - 'projection-model-v0.4.mjs'
       - 'projection-model-runtime.mjs'
       - 'players.json'
@@ -35,52 +36,38 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-
       - name: Install dependencies
         run: pip install pandas numpy
-
       - name: Build 2023-2025 feature tables
         run: python scripts/build-nflverse-features.py
-
       - name: Fit next-season models
         run: python scripts/fit-projection-models.py
-
       - name: Build 2026 history-only baseline
         run: python scripts/apply-projection-models.py
-
       - name: Build 2026 team and player context
         run: python scripts/build-2026-context.py
-
       - name: Apply latest 2026 depth chart
         run: python scripts/apply-2026-depth-charts.py
-
       - name: Build returning-player fallbacks
         run: python scripts/build-returning-player-fallbacks.py
-
       - name: Apply returning-player fallbacks
         run: python scripts/apply-returning-player-fallbacks.py
-
       - name: Build 2026 veteran stat projections
         run: python scripts/build-2026-stat-projections.py
-
       - name: Normalize draft-pick data
         run: python scripts/normalize-draft-picks.py
-
       - name: Apply 2026 rookie/no-history model
         run: python scripts/apply-2026-rookie-model.py --draft-source data/projections/draft_picks_normalized.csv
-
       - name: Apply two-way offensive participation adjustment
         run: python scripts/apply-two-way-role-adjustment.py
-
       - name: Reconcile 2026 opportunity
         run: python scripts/reconcile-2026-opportunity.py
-
       - name: Reconcile starter QB passing
         run: python scripts/reconcile-qb-passing.py
-
       - name: Reconcile mobile QB rushing
         run: python scripts/reconcile-qb-rushing.py
-
+      - name: Apply QB receiving environment
+        run: python scripts/apply-qb-receiving-environment.py
       - name: Smoke test promoted runtime
         run: |
           node --input-type=module <<'JS'
@@ -93,7 +80,6 @@ jobs:
           for (const pos of ['QB','RB','WR','TE']) if (!summary[pos]?.promoted) throw new Error(`${pos} model not promoted`);
           console.log('runtime prediction', prediction.toFixed(3));
           JS
-
       - name: Validate v0.4 and 2026 outputs
         run: |
           python - <<'PY'
@@ -109,6 +95,7 @@ jobs:
           if len(eligible)<200: raise SystemExit(f'Unexpected projected set: {len(eligible)}')
           if eligible['half_ppr_points'].isna().any(): raise SystemExit('Projected players contain missing points')
           if 'depth_matched' not in players.columns: raise SystemExit('Depth-chart context missing')
+          if 'qb_environment_delta' not in stats.columns: raise SystemExit('QB receiving environment missing')
           for team,g in eligible[eligible['position'].isin(['RB','WR','TE'])].groupby('team'):
               role=players[players['team_2026'].eq(team)]
               if len(role) and role['projected_pass_attempts'].notna().any():
@@ -119,13 +106,13 @@ jobs:
           print('depth matched',int(players['depth_matched'].sum()))
           print('depth starters',int(players['depth_starter'].sum()))
           print('two-way players',int(players['two_way_player'].fillna(False).sum()) if 'two_way_player' in players else 0)
+          print('QB environment adjusted',int(stats['qb_environment_delta'].notna().sum()))
           print('QB backups gated',int(players['qb_depth_backup_flag'].sum()))
           print('returning fallbacks',int(stats['projection_status'].eq('returning_fallback').sum()))
           print('rookie/no-history modeled',int(stats['projection_status'].eq('rookie_model').sum()))
           print('still manual',int(stats['projection_status'].eq('manual_role_required').sum()))
           print('projected stat lines',len(eligible))
           PY
-
       - name: Upload projection build
         uses: actions/upload-artifact@v4
         with:
