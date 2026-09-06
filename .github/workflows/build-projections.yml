@@ -35,11 +35,12 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          p='data/projections/model_coefficients_v0_2.json'
+          p='data/projections/model_coefficients_v0_3.json'
           d=json.load(open(p))
           for pos,m in d['models'].items():
               print(pos, 'baseline:', m['baseline_metrics'])
               print(pos, 'selected:', m['selected_model'], m['holdout_metrics'])
+              print(pos, 'games role:', m.get('games_role'))
               if m.get('importance_order'):
                   print('Top features:', ', '.join(m['importance_order'][:8]))
           PY
