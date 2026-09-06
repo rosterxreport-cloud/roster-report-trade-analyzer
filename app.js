@@ -7,7 +7,8 @@ const $ = (id) => document.getElementById(id);
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
 async function init(){
-  DB = await fetch("players.json").then(r=>r.json());
+  const source = await fetch("players.json").then(r=>r.json());
+  DB = Object.fromEntries(Object.entries(source).map(([scoring, list])=>[scoring, applyRbPremium(list)]));
   bind();
   render();
 }
@@ -158,6 +159,23 @@ function render(){
   renderSide("get",get);
   renderResult();
   renderRankings();
+}
+
+function applyRbPremium(list){
+  // Use the unadjusted model order, not the source AW positional rank.
+  // Retain base values so reapplying this transformation never compounds it.
+  const baseValue=p=>p.baseValue ?? p.value;
+  const baseRank=p=>p.baseRank ?? p.rank;
+  const backs=[...list].filter(p=>p.pos==="RB")
+    .sort((a,b)=>baseValue(b)-baseValue(a) || baseRank(a)-baseRank(b));
+  const rbRanks=new Map(backs.map((p,i)=>[p.name,i+1]));
+  return list.map(p=>{
+    const rbRank=rbRanks.get(p.name);
+    const rbPremium=p.pos==="RB" ? (rbRank<=12 ? .03 : rbRank<=24 ? .015 : 0) : 0;
+    return {...p, baseValue:baseValue(p), baseRank:baseRank(p), rbPremium,
+      value:Math.round(baseValue(p)*(1+rbPremium)*100)/100};
+  }).sort((a,b)=>b.value-a.value || a.baseRank-b.baseRank)
+    .map((p,i)=>({...p,rank:i+1}));
 }
 
 function renderRankings(){
