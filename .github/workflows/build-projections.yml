@@ -35,11 +35,13 @@ jobs:
         run: |
           python - <<'PY'
           import json
-          p='data/projections/model_coefficients_v0_1.json'
+          p='data/projections/model_coefficients_v0_2.json'
           d=json.load(open(p))
           for pos,m in d['models'].items():
-              print(pos, m['holdout_metrics'])
-              print('Top features:', ', '.join(m['importance_order'][:8]))
+              print(pos, 'baseline:', m['baseline_metrics'])
+              print(pos, 'selected:', m['selected_model'], m['holdout_metrics'])
+              if m.get('importance_order'):
+                  print('Top features:', ', '.join(m['importance_order'][:8]))
           PY
 
       - name: Upload projection build
@@ -49,4 +51,4 @@ jobs:
           path: data/projections/
           retention-days: 30
 
-# This workflow is intentionally self-contained so projection builds are reproducible.
+# Self-contained and reproducible; generated data does not alter live trade values.
