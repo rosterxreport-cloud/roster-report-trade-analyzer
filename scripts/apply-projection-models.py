@@ -42,8 +42,6 @@ def model_predict(row: pd.Series, model: dict) -> float:
 
 
 def confidence_from_games(games) -> float:
-    # Mirrors the Roster Report partial-season philosophy without turning games
-    # played into a talent coefficient. Twelve games reaches full history trust.
     games = pd.to_numeric(games, errors="coerce")
     if pd.isna(games):
         return 0.0
@@ -55,7 +53,7 @@ def main():
     parser.add_argument("--features", type=Path,
                         default=Path("data/projections/player_features_2023_2025.csv"))
     parser.add_argument("--models", type=Path,
-                        default=Path("data/projections/model_coefficients_v0_3.json"))
+                        default=Path("data/projections/model_coefficients_v0_4.json"))
     parser.add_argument("--out", type=Path,
                         default=Path("data/projections/history_baseline_2026.csv"))
     args = parser.parse_args()
@@ -76,7 +74,7 @@ def main():
         "recent_team", "games", "ppr_per_game", "history_baseline_ppr_per_game",
         "history_confidence", "projection_stage", "projection_season",
         "targets_per_game", "target_share", "air_yards_share", "wopr",
-        "carries_per_game", "attempts", "passing_epa_per_attempt",
+        "carries_per_game", "attempts_per_game", "passing_epa_per_attempt",
     ] if c in latest.columns]
     output = latest[keep].sort_values(
         ["position", "history_baseline_ppr_per_game"], ascending=[True, False]
