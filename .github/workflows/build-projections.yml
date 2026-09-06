@@ -1,0 +1,50 @@
+name: Build Projection Models
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build-nflverse-features.py'
+      - 'scripts/fit-projection-models.py'
+      - '.github/workflows/build-projections.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pandas numpy
+
+      - name: Build 2023-2025 feature tables
+        run: python scripts/build-nflverse-features.py
+
+      - name: Fit next-season models
+        run: python scripts/fit-projection-models.py
+
+      - name: Show model summary
+        run: |
+          python - <<'PY'
+          import json
+          p='data/projections/model_coefficients_v0_1.json'
+          d=json.load(open(p))
+          for pos,m in d['models'].items():
+              print(pos, m['holdout_metrics'])
+              print('Top features:', ', '.join(m['importance_order'][:8]))
+          PY
+
+      - name: Upload projection build
+        uses: actions/upload-artifact@v4
+        with:
+          name: roster-report-projection-build
+          path: data/projections/
+          retention-days: 30
