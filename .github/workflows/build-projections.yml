@@ -9,6 +9,8 @@ on:
       - 'scripts/apply-projection-models.py'
       - 'scripts/build-2026-context.py'
       - 'scripts/apply-2026-depth-charts.py'
+      - 'scripts/build-returning-player-fallbacks.py'
+      - 'scripts/apply-returning-player-fallbacks.py'
       - 'scripts/build-2026-stat-projections.py'
       - 'projection-model-v0.4.mjs'
       - 'projection-model-runtime.mjs'
@@ -46,7 +48,13 @@ jobs:
       - name: Apply latest 2026 depth chart
         run: python scripts/apply-2026-depth-charts.py
 
-      - name: Build 2026 veteran stat projections
+      - name: Build returning-player fallbacks
+        run: python scripts/build-returning-player-fallbacks.py
+
+      - name: Apply returning-player fallbacks
+        run: python scripts/apply-returning-player-fallbacks.py
+
+      - name: Build 2026 stat projections
         run: python scripts/build-2026-stat-projections.py
 
       - name: Smoke test promoted runtime
@@ -67,24 +75,24 @@ jobs:
           python - <<'PY'
           import json, pandas as pd
           d=json.load(open('data/projections/model_coefficients_v0_4.json'))
-          for pos,m in d['models'].items():
-              print(pos, m['holdout_metrics'])
+          for pos,m in d['models'].items(): print(pos,m['holdout_metrics'])
           teams=pd.read_csv('data/projections/team_context_2026.csv')
           players=pd.read_csv('data/projections/player_role_context_2026.csv')
           stats=pd.read_csv('data/projections/stat_projections_2026.csv')
           if len(teams)!=32: raise SystemExit(f'Expected 32 teams, got {len(teams)}')
           if len(players)<150: raise SystemExit(f'Unexpected player context: {len(players)}')
-          modeled=stats[stats['projection_status'].eq('modeled_veteran')]
-          if len(modeled)<150: raise SystemExit(f'Unexpected modeled set: {len(modeled)}')
-          if modeled['half_ppr_points'].isna().any(): raise SystemExit('Modeled veterans contain missing projections')
+          eligible=stats[stats['projection_status'].isin(['modeled_veteran','returning_fallback'])]
+          if len(eligible)<150: raise SystemExit(f'Unexpected modeled set: {len(eligible)}')
+          if eligible['half_ppr_points'].isna().any(): raise SystemExit('Eligible projections contain missing points')
           if 'depth_matched' not in players.columns: raise SystemExit('Depth-chart context missing')
           print('team contexts',len(teams))
           print('player contexts',len(players))
           print('depth matched',int(players['depth_matched'].sum()))
           print('depth starters',int(players['depth_starter'].sum()))
           print('QB backups gated',int(players['qb_depth_backup_flag'].sum()))
-          print('manual/rookie pathway',int(players['needs_rookie_or_manual_role'].sum()))
-          print('modeled veteran stat lines',len(modeled))
+          print('returning fallbacks',int(stats['projection_status'].eq('returning_fallback').sum()))
+          print('manual/rookie pathway',int(stats['projection_status'].eq('manual_role_required').sum()))
+          print('eligible stat lines',len(eligible))
           PY
 
       - name: Upload projection build
