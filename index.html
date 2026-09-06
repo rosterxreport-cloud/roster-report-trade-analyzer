@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Roster Report Fantasy Football Trade Analyzer">
+  <title>The Roster Report Trade Analyzer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="pixel-noise"></div>
+  <header class="site-header">
+    <div class="brand-mark">RR</div>
+    <div>
+      <div class="eyebrow">THE ROSTER REPORT</div>
+      <h1>Fantasy Football Trade Analyzer</h1>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <p class="kicker">2026 REDRAFT • MODEL v7</p>
+        <h2>Make the trade before the trade makes you.</h2>
+        <p class="lede">Built from AW rankings, three-year Roster Report analytics, positional scarcity and current trade-market value.</p>
+      </div>
+      <div class="format-switch" role="group" aria-label="Scoring format">
+        <button class="format-btn active" data-format="half">Half PPR</button>
+        <button class="format-btn" data-format="ppr">Full PPR</button>
+        <button class="format-btn" data-format="standard">Standard</button>
+      </div>
+    </section>
+
+    <section class="trade-grid">
+      <article class="trade-card give-card">
+        <div class="card-title-row">
+          <div>
+            <span class="side-label">I GIVE</span>
+            <h3>Your outgoing players</h3>
+          </div>
+          <div class="count-badge" id="giveCount">0</div>
+        </div>
+        <div class="search-wrap">
+          <input id="giveSearch" autocomplete="off" placeholder="Search a player…" aria-label="Search player to give">
+          <div class="suggestions" id="giveSuggestions"></div>
+        </div>
+        <div class="player-stack" id="givePlayers">
+          <div class="empty-state">Add one or more players</div>
+        </div>
+      </article>
+
+      <div class="versus">VS</div>
+
+      <article class="trade-card get-card">
+        <div class="card-title-row">
+          <div>
+            <span class="side-label">I GET</span>
+            <h3>Your incoming players</h3>
+          </div>
+          <div class="count-badge" id="getCount">0</div>
+        </div>
+        <div class="search-wrap">
+          <input id="getSearch" autocomplete="off" placeholder="Search a player…" aria-label="Search player to receive">
+          <div class="suggestions" id="getSuggestions"></div>
+        </div>
+        <div class="player-stack" id="getPlayers">
+          <div class="empty-state">Add one or more players</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="result-panel" id="resultPanel">
+      <div class="result-placeholder">
+        <span class="pixel-ball">◆</span>
+        Add players to both sides to analyze the trade.
+      </div>
+    </section>
+
+    <section class="methodology">
+      <div class="method-head">
+        <span class="kicker">HOW THE MODEL WORKS</span>
+        <h3>Transparent inputs. Roster-aware trade value.</h3>
+      </div>
+      <div class="method-grid">
+        <div class="method-item"><b>45%</b><span>AW rankings</span></div>
+        <div class="method-item"><b>35%</b><span>Roster Report analytics</span></div>
+        <div class="method-item"><b>10%</b><span>Positional scarcity</span></div>
+        <div class="method-item"><b>10%</b><span>Market / trade value</span></div>
+      </div>
+      <p class="fine-print">Veteran analytics use 2023–2025 data with 20% / 30% / 50% recency weighting and sample-size adjustments. Rookies use the dedicated v7 rookie pathway. Multi-player trades apply a replacement-level and consolidation adjustment so five bench assets do not automatically outweigh one elite starter.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span>THE ROSTER REPORT</span>
+    <span>•</span>
+    <span>@ROSTERXREPORT</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
