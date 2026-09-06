@@ -99,6 +99,7 @@ function renderSide(side,list){
   </div>`).join("");
 }
 
+const TIER_ZERO_ASSETS=new Set(['Jahmyr Gibbs','Bijan Robinson']);
 function sideValue(list){
   if(!list.length) return {adjusted:0,raw:0,top:null};
   const sorted=[...list].sort((a,b)=>b.value-a.value);
@@ -106,13 +107,15 @@ function sideValue(list){
   const top=sorted[0];
   let eliteMult = top.value>=95 ? 1.05 : top.value>=90 ? 1.03 : top.value>=85 ? 1.015 : 1;
   let adjusted=top.value*eliteMult;
+  let acquisitionPremium=TIER_ZERO_ASSETS.has(top.name)?adjusted*.10:0;
   const multipliers=[0,.70,.45,.30,.20,.15,.12,.10];
   for(let i=1;i<sorted.length;i++){
     const marginal=Math.max(0,sorted[i].value-50);
     const m=multipliers[Math.min(i,multipliers.length-1)];
     adjusted += marginal*m;
+    if(TIER_ZERO_ASSETS.has(sorted[i].name))acquisitionPremium+=marginal*m*.10;
   }
-  return {adjusted,raw,top,eliteMult};
+  return {adjusted:adjusted+acquisitionPremium,raw,top,eliteMult,acquisitionPremium};
 }
 
 function result(){
@@ -129,6 +132,7 @@ function result(){
   if((give.length>1 || get.length>1)){
     explanation += " Package players are discounted against replacement level, while elite one-player assets receive a modest consolidation premium.";
   }
+  if(a.acquisitionPremium>0 || b.acquisitionPremium>0)explanation+=' Elite Asset Premium applied.';
   return {a,b,edge,verdict,cls,explanation};
 }
 
@@ -178,6 +182,7 @@ function render(){
   renderResult();
   renderRankings();
   renderTeam();
+  renderTeamNeeds();
 }
 
 function applyRbPremium(list){
@@ -318,4 +323,5 @@ init().catch(err=>{
   console.error(err);
   document.body.insertAdjacentHTML("beforeend","<p style='padding:20px;color:#ff7171'>Unable to load player data.</p>");
 });
+
 

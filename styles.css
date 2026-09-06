@@ -1,3 +1,10 @@
+.needs-table-wrap{overflow-x:auto}
+.needs-targets{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px;margin-top:16px}
+.needs-target{padding:16px;background:#0b2743;border:1px solid var(--line);min-width:0;overflow-wrap:anywhere}
+.needs-target h4{margin:0 0 10px;color:var(--yellow);font-size:18px}
+.needs-target p{line-height:1.55;font-size:14px}
+.needs-target button{width:100%;white-space:normal}
+#teamNeeds h3{margin-top:20px}
 :root{
   --navy:#071629;
   --blue:#0c2f59;
@@ -101,3 +108,4 @@ footer{border-top:1px solid #193a56;padding:25px;text-align:center;color:#68849d
  .result-top{align-items:start;flex-direction:column}.edge-box{text-align:left}
  .method-grid{grid-template-columns:1fr 1fr}
 }
+

@@ -1,5 +1,17 @@
 # The Roster Report Trade Analyzer
 
+## Tier 0 acquisition premium
+
+Trade evaluation adds 10% to Jahmyr Gibbs's and Bijan Robinson's adjusted contribution, after the existing consolidation multiplier or replacement-level/package discount. It applies symmetrically on either trade side and only to those players' contributions, not their teammates. A single-player offer therefore costs 110% of its previous adjusted trade value. Both can receive the premium in a package. Results display “Elite Asset Premium applied.” when a positive premium is included. Source scores, displayed rankings, raw sums, and lineup-fit values are unchanged; evaluations never mutate player records.
+
+## Team Needs & Trade Targets
+
+The panel below My Team updates from the saved roster, scoring, league size, and lineup slots, including Superflex. It compares average starter values per slot group against a benchmark built by allocating the available Top 250 across league-wide starting slots (restricted positions first, then FLEX, then SF). Empty slots take priority, followed by the largest positive average shortfall. Unsupported benchmark groups are marked unavailable instead of assigned an invented baseline. Bench backup concerns are reported separately.
+
+Targets are lower-, middle-, and upper-value options among eligible players outside the entered roster who improve its optimal starting lineup. Add-only gains assume no outgoing players. For each target, one- and two-player offers are checked against the complete resulting lineup and the existing trade engine, including Tier 0 acquisition premiums. Only offers strictly inside the 4% fair-trade band, with a positive lineup gain and no additional empty slots, are suggested. Among these, the greatest lineup gain wins, with trade-value closeness breaking ties. This is a limited search, not a guarantee of the best possible trade.
+
+Packages are withheld for incomplete starting lineups, over-capacity rosters, or unknown saved players. Opponent rosters and availability are unknown; suggestions do not imply the other manager will accept. Evaluate Trade loads a proposal into the analyzer without modifying the saved roster or sending an offer. Recommendations use model values, not projected fantasy points. Results are cached until saved team settings, roster, or scoring changes.
+
 A deployable static website powered by the Roster Report Trade Analyzer v10 rankings.
 
 Includes Top 250 Redraft Rankings with the subtitle “The Roster Report v10 Model • Full PPR, Half PPR & Standard.” Both scoring controls update the rankings and analyzer together using the existing player data. The main tool remains Fantasy Football Trade Analyzer.
@@ -68,3 +80,4 @@ My Team supports Superflex (SF), eligible for QB, RB, WR, or TE. SF is a roster 
 Saving one or more SF slots enables a model-based QB scarcity premium across search, rankings, trades, and lineup comparisons in all three scoring formats. Starting QB demand is `min(32, leagueSize * (QB slots + SF slots))`. The starter premium is `min(0.40, 0.20 * leagueSize * SF slots / 12)`. Each QB receives this premium multiplied by `min(1, demand / QB model rank)`, using the current scoring format's QB value order. Thus a 12-team, 1-QB, 1-SF league gives QB1–24 a 20% premium, tapering beyond QB24. This is a configurable scarcity assumption, not an externally sourced Superflex market ranking.
 
 Values are rounded to two decimals and overall ranks are recalculated. The adjustment always starts from the unchanged database after the existing RB premium; it never compounds across saves, reloads, or scoring changes. Saving zero SF slots restores the standard values exactly. Selected trade players refresh when settings change. Workbook data, player positions, scoring formats, RB premiums, package discounts, elite thresholds, and verdict boundaries are unchanged.
+
