@@ -1,5 +1,5 @@
 /*
- * The Roster Report Fantasy Football Projection Engine — v0.1
+ * The Roster Report Fantasy Football Projection Engine — v0.2
  *
  * Philosophy:
  *   team environment -> player opportunity -> player efficiency -> raw stats
@@ -33,8 +33,8 @@ export const DEFAULT_SCORING = {
 export const DEFAULT_MODEL = {
   seasons: { 2023: 0.20, 2024: 0.30, 2025: 0.50 },
   tradeAnalyzerPrior: {
-    aw: 0.45,
-    analytics: 0.35,
+    analytics: 0.45,
+    aw: 0.35,
     scarcity: 0.10,
     market: 0.10
   },
@@ -59,7 +59,6 @@ export const DEFAULT_MODEL = {
 
 const clamp = (x, lo, hi) => Math.max(lo, Math.min(hi, Number.isFinite(x) ? x : lo));
 const safe = (x, fallback = 0) => Number.isFinite(Number(x)) ? Number(x) : fallback;
-const div = (a, b, fallback = 0) => safe(b) !== 0 ? safe(a) / safe(b) : fallback;
 const weightedMean = pairs => {
   let num = 0, den = 0;
   for (const [value, weight] of pairs) {
@@ -84,7 +83,18 @@ export function buildTradeAnalyzerPrior(player, weights = DEFAULT_MODEL.tradeAna
 }
 
 export function weightedHistory(seasons, field, seasonWeights = DEFAULT_MODEL.seasons) {
-  return weightedMean(Object.entries(seasonWeights).map(([season, weight]) => [seasons?.[season]?.[field], weight]));
+  // Matches the v10 audit workbook: base season weight is multiplied by
+  // min(games / 12, 1), then only observed seasons are renormalized.
+  const pairs = [];
+  for (const [season, baseWeight] of Object.entries(seasonWeights)) {
+    const row = seasons?.[season];
+    const value = row?.[field];
+    if (!Number.isFinite(Number(value))) continue;
+    const games = safe(row?.games ?? row?.G, 12);
+    const availabilityWeight = Math.min(Math.max(games, 0) / 12, 1);
+    pairs.push([value, baseWeight * availabilityWeight]);
+  }
+  return weightedMean(pairs);
 }
 
 export function regressRate(playerRate, leagueRate, regressionWeight) {
@@ -233,7 +243,7 @@ export function projectPlayer(player, teamProjection, league = {}) {
   else if (player.pos === 'WR' || player.pos === 'TE') stats = projectReceiver(player, teamProjection, league);
   else throw new Error(`Unsupported projection position: ${player.pos}`);
 
-  const rounded = Object.fromEntries(Object.entries(stats).map(([k, v]) => [k, round(v, k === 'games' ? 1 : 1)]));
+  const rounded = Object.fromEntries(Object.entries(stats).map(([k, v]) => [k, round(v, 1)]));
   return {
     name: player.name,
     team: player.team,
