@@ -16,10 +16,10 @@ This is intentionally different from projecting fantasy points directly. Each pl
 
 ## Existing trade-analyzer analytics
 
-The current v10 veteran framework remains the player-quality prior:
+The v10 audit workbook is the source of truth for the veteran player-quality prior:
 
-- 45% AW rankings
-- 35% Roster Report 2023-2025 analytics
+- 45% Roster Report 2023-2025 analytics
+- 35% AW rankings
 - 10% positional scarcity
 - 10% market/trade value
 
@@ -35,7 +35,9 @@ Default recency weights inside the projection engine:
 - 2024: 30%
 - 2025: 50%
 
-These are configurable and are intended for predictive player inputs, not for replacing the established 45/35/10/10 trade-value formula.
+Partial seasons follow the v10 audit rule: each season weight is multiplied by `min(games / 12, 1.0)`, then the observed season weights are renormalized.
+
+These are intended for predictive player inputs, not for replacing the established 45/35/10/10 trade-value formula.
 
 ## Team inputs
 
@@ -196,6 +198,7 @@ The exact weights should be learned from historical tests rather than chosen arb
 - [x] Floor / median / ceiling framework
 - [x] Projection rankings
 - [x] Trade-analyzer projection hook
+- [x] v10 recency and partial-season weighting
 
 ### Phase 2 — real data pipeline
 - [ ] Build 2023-2025 historical feature table
