@@ -2,6 +2,10 @@
 
 A deployable static website powered by the Roster Report Trade Analyzer v7 rankings.
 
+Includes Top 200 Redraft Rankings with the subtitle “The Roster Report v7 Model • Full PPR, Half PPR & Standard.” Both scoring controls update the rankings and analyzer together using the existing player data. The main tool remains Fantasy Football Trade Analyzer.
+
+The repository currently contains no official Roster Report logo asset; the existing RR brand mark is retained until the actual logo is supplied.
+
 ## Run locally
 
 Because the app loads `players.json`, run it from a local web server rather than opening `index.html` directly.

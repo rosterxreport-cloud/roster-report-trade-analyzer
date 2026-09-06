@@ -19,7 +19,6 @@ function bind(){
   document.querySelectorAll(".format-btn").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       format=btn.dataset.format;
-      document.querySelectorAll(".format-btn").forEach(b=>b.classList.toggle("active",b===btn));
       // Rehydrate selected player records using the chosen scoring format.
       give=give.map(p=>findPlayer(p.name)).filter(Boolean);
       get=get.map(p=>findPlayer(p.name)).filter(Boolean);
@@ -150,9 +149,23 @@ function renderResult(){
 }
 
 function render(){
+  document.querySelectorAll(".format-btn").forEach(btn=>{
+    const active=btn.dataset.format===format;
+    btn.classList.toggle("active",active);
+    btn.setAttribute("aria-pressed",String(active));
+  });
   renderSide("give",give);
   renderSide("get",get);
   renderResult();
+  renderRankings();
+}
+
+function renderRankings(){
+  const label=format==="half"?"Half PPR":format==="ppr"?"Full PPR":"Standard";
+  $("rankingsCaption").textContent=`${label} • Top 200 Redraft Rankings`;
+  $("rankingsRows").innerHTML=[...players()].sort((a,b)=>a.rank-b.rank).slice(0,200).map(p=>`<tr>
+    <td>${p.rank}</td><th scope="row">${escapeHtml(p.name)}</th><td>${escapeHtml(p.pos)}</td><td>${escapeHtml(p.team)}</td><td>${p.value.toFixed(1)}</td>
+  </tr>`).join("");
 }
 
 init().catch(err=>{

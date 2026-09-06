@@ -18,7 +18,11 @@
   </header>
 
   <main class="shell">
-    <section class="hero">
+    <nav class="section-nav" aria-label="Page sections">
+      <a href="#analyzer">Trade Analyzer</a>
+      <a href="#rankings">Top 200 Redraft Rankings</a>
+    </nav>
+    <section class="hero" id="analyzer">
       <div>
         <p class="kicker">2026 REDRAFT • MODEL v7</p>
         <h2>Make the trade before the trade makes you.</h2>
@@ -73,6 +77,23 @@
       <div class="result-placeholder">
         <span class="pixel-ball">◆</span>
         Add players to both sides to analyze the trade.
+      </div>
+    </section>
+
+    <section class="rankings" id="rankings" aria-labelledby="rankingsTitle">
+      <h2 id="rankingsTitle">Top 200 Redraft Rankings</h2>
+      <p class="lede">The Roster Report v7 Model • Full PPR, Half PPR &amp; Standard</p>
+      <div class="format-switch" role="group" aria-label="Rankings scoring format">
+        <button class="format-btn active" data-format="half">Half PPR</button>
+        <button class="format-btn" data-format="ppr">Full PPR</button>
+        <button class="format-btn" data-format="standard">Standard</button>
+      </div>
+      <div class="rankings-table-wrap" tabindex="0" role="region" aria-label="Top 200 player rankings">
+        <table class="rankings-table">
+          <caption id="rankingsCaption">Loading rankings…</caption>
+          <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Position</th><th scope="col">Team</th><th scope="col">Value</th></tr></thead>
+          <tbody id="rankingsRows"></tbody>
+        </table>
       </div>
     </section>
 
