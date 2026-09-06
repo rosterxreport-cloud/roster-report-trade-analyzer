@@ -14,6 +14,7 @@ on:
       - 'scripts/build-2026-stat-projections.py'
       - 'scripts/normalize-draft-picks.py'
       - 'scripts/apply-2026-rookie-model.py'
+      - 'scripts/apply-two-way-role-adjustment.py'
       - 'scripts/reconcile-2026-opportunity.py'
       - 'scripts/reconcile-qb-passing.py'
       - 'scripts/reconcile-qb-rushing.py'
@@ -68,6 +69,9 @@ jobs:
       - name: Apply 2026 rookie/no-history model
         run: python scripts/apply-2026-rookie-model.py --draft-source data/projections/draft_picks_normalized.csv
 
+      - name: Apply two-way offensive participation adjustment
+        run: python scripts/apply-two-way-role-adjustment.py
+
       - name: Reconcile 2026 opportunity
         run: python scripts/reconcile-2026-opportunity.py
 
@@ -114,6 +118,7 @@ jobs:
           print('player contexts',len(players))
           print('depth matched',int(players['depth_matched'].sum()))
           print('depth starters',int(players['depth_starter'].sum()))
+          print('two-way players',int(players['two_way_player'].fillna(False).sum()) if 'two_way_player' in players else 0)
           print('QB backups gated',int(players['qb_depth_backup_flag'].sum()))
           print('returning fallbacks',int(stats['projection_status'].eq('returning_fallback').sum()))
           print('rookie/no-history modeled',int(stats['projection_status'].eq('rookie_model').sum()))
