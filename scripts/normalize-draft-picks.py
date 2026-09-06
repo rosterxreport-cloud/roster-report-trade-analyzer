@@ -14,7 +14,11 @@ def main():
     a=ap.parse_args()
     df=pd.read_csv(a.source,low_memory=False)
     rename={}
-    if "pfr_name" in df.columns and "full_name" not in df.columns: rename["pfr_name"]="full_name"
+    if "full_name" not in df.columns:
+        for source_name in ["pfr_player_name","pfr_name","player_name","name"]:
+            if source_name in df.columns:
+                rename[source_name]="full_name"
+                break
     if "year" in df.columns and "season" not in df.columns: rename["year"]="season"
     if "overall" in df.columns and "pick" not in df.columns: rename["overall"]="pick"
     df=df.rename(columns=rename)
