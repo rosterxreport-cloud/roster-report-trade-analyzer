@@ -1,4 +1,4 @@
-import { NEXT_SEASON_MODEL_V02 } from './projection-model-v0.2.mjs';
+import { NEXT_SEASON_MODEL_V03 } from './projection-model-v0.3.mjs';
 
 const finite = value => Number.isFinite(Number(value));
 
@@ -9,7 +9,7 @@ function standardizedValue(row, model, feature) {
   return (value - mean) / std;
 }
 
-export function predictNextPprPerGame(row, position, artifact = NEXT_SEASON_MODEL_V02) {
+export function predictNextPprPerGame(row, position, artifact = NEXT_SEASON_MODEL_V03) {
   const pos = String(position || row?.position || row?.pos || '').toUpperCase();
   const model = artifact?.models?.[pos];
   if (!model || !model.promoted) return null;
@@ -25,14 +25,20 @@ export function predictNextPprPerGame(row, position, artifact = NEXT_SEASON_MODE
   return Math.max(0, prediction);
 }
 
-export function scoreProjectionFeatureRows(rows, artifact = NEXT_SEASON_MODEL_V02) {
+export function historyConfidence(row) {
+  const games = finite(row?.games) ? Number(row.games) : 0;
+  return Math.max(0, Math.min(1, games / 12));
+}
+
+export function scoreProjectionFeatureRows(rows, artifact = NEXT_SEASON_MODEL_V03) {
   return (rows || []).map(row => ({
     ...row,
-    projected_next_ppr_per_game: predictNextPprPerGame(row, row?.position || row?.pos, artifact)
+    projected_next_ppr_per_game: predictNextPprPerGame(row, row?.position || row?.pos, artifact),
+    history_confidence: historyConfidence(row)
   }));
 }
 
-export function getProjectionModelSummary(artifact = NEXT_SEASON_MODEL_V02) {
+export function getProjectionModelSummary(artifact = NEXT_SEASON_MODEL_V03) {
   return Object.fromEntries(Object.entries(artifact.models || {}).map(([pos, model]) => [pos, {
     promoted: Boolean(model.promoted),
     selectedModel: model.selectedModel,
