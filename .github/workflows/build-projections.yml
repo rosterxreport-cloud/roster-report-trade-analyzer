@@ -48,3 +48,5 @@ jobs:
           name: roster-report-projection-build
           path: data/projections/
           retention-days: 30
+
+# This workflow is intentionally self-contained so projection builds are reproducible.
