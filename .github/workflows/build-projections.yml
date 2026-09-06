@@ -6,6 +6,7 @@ on:
     paths:
       - 'scripts/build-nflverse-features.py'
       - 'scripts/fit-projection-models.py'
+      - 'scripts/apply-projection-models.py'
       - '.github/workflows/build-projections.yml'
 
 permissions:
@@ -30,6 +31,9 @@ jobs:
 
       - name: Fit next-season models
         run: python scripts/fit-projection-models.py
+
+      - name: Build 2026 history-only baseline
+        run: python scripts/apply-projection-models.py
 
       - name: Show model summary
         run: |
