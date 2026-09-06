@@ -14,8 +14,24 @@ async function init(){
   render();
 }
 
-function players(){ return DB[format]; }
+function players(){ return applyLeagueScarcity(DB[format],team); }
 function findPlayer(name){ return players().find(p=>p.name===name); }
+
+function applyLeagueScarcity(list,profile){
+  const sf=profile?.slots?.SF||0;
+  if(!sf)return list;
+  // A configurable model premium, not an external Superflex market ranking.
+  // Always derive from DB's pre-Superflex values so saves and scoring changes
+  // cannot compound the adjustment or mutate the workbook player records.
+  const demand=Math.min(32,profile.leagueSize*((profile.slots.QB||0)+sf));
+  const starterPremium=Math.min(.40,.20*profile.leagueSize*sf/12);
+  const qbs=[...list].filter(p=>p.pos==='QB').sort((a,b)=>b.value-a.value||a.rank-b.rank);
+  const ranks=new Map(qbs.map((p,i)=>[p.name,i+1]));
+  return list.map(p=>{
+    const sfPremium=p.pos==='QB'?starterPremium*Math.min(1,demand/ranks.get(p.name)):0;
+    return {...p,sfPremium,value:p.pos==='QB'?Math.round(p.value*(1+sfPremium)*100)/100:p.value};
+  }).sort((a,b)=>b.value-a.value||a.rank-b.rank).map((p,i)=>({...p,rank:i+1}));
+}
 
 function bind(){
   document.querySelectorAll(".format-btn").forEach(btn=>{
@@ -190,7 +206,8 @@ function renderRankings(){
 }
 
 const TEAM_KEY="roster-report-team-v1";
-const SLOT_DEFAULTS={QB:1,RB:2,WR:2,TE:1,FLEX:1,K:0,DST:0};
+const SLOT_DEFAULTS={QB:1,RB:2,WR:2,TE:1,FLEX:1,SF:0,K:0,DST:0};
+const FLEX_ELIGIBILITY={FLEX:['RB','WR','TE'],SF:['QB','RB','WR','TE']};
 let team=null,teamNotice="";
 function normalizeTeam(value){
   if(!value || value.version!==1 || !Array.isArray(value.roster))return null;
@@ -205,9 +222,10 @@ function saveTeam(){
 }
 function optimalLineup(roster,slots){
   const pool=[...roster].sort((a,b)=>b.value-a.value||a.rank-b.rank),used=new Set(),lineup=[];
-  for(const pos of [...Object.keys(SLOT_DEFAULTS).filter(p=>p!=='FLEX'),'FLEX']){
+  // Fill restricted positions, then FLEX, then the broader Superflex slot.
+  for(const pos of [...Object.keys(SLOT_DEFAULTS).filter(p=>!FLEX_ELIGIBILITY[p]),'FLEX','SF']){
     for(let i=0;i<(slots[pos]||0);i++){
-      const p=pool.find(p=>!used.has(p.name)&&(pos==='FLEX'?['RB','WR','TE'].includes(p.pos):p.pos===pos));
+      const p=pool.find(p=>!used.has(p.name)&&(FLEX_ELIGIBILITY[pos]?FLEX_ELIGIBILITY[pos].includes(p.pos):p.pos===pos));
       if(p)used.add(p.name);
       lineup.push({slot:pos,player:p||null});
     }
@@ -246,8 +264,9 @@ function initTeam(){
   const section=document.createElement('section');section.className='team-section';section.id='my-team';section.setAttribute('aria-labelledby','teamTitle');
   section.innerHTML=`<h2 id="teamTitle">My Team</h2><p class="team-note">Save your roster and league settings to see how trades affect your starting lineup and depth. Saved on this browser only; clearing browser data removes your team.</p>
     <form id="teamSettings"><div class="team-settings"><label>League size<input id="teamLeague" type="number" min="4" max="32" value="12" required></label><label>Scoring<select id="teamScoring"><option value="half">Half PPR</option><option value="ppr">Full PPR</option><option value="standard">Standard</option></select></label>
-    ${Object.entries(SLOT_DEFAULTS).map(([p,n])=>`<label>${p}<input id="slot${p}" type="number" min="0" max="6" value="${n}" required></label>`).join('')}<label>Bench<input id="teamBench" type="number" min="0" max="20" value="6" required></label></div>
-    <p class="team-note">FLEX accepts RB, WR or TE. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
+    ${Object.entries(SLOT_DEFAULTS).map(([p,n])=>`<label>${p==='SF'?'Superflex (SF)':p}<input id="slot${p}" type="number" min="0" max="6" value="${n}" required></label>`).join('')}<label>Bench<input id="teamBench" type="number" min="0" max="20" value="6" required></label></div>
+    <p class="team-note">FLEX accepts RB, WR or TE. Superflex (SF) accepts QB, RB, WR or TE. Save with SF above zero to apply increased QB scarcity values throughout the analyzer and rankings. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 0 SF, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
+    <p id="scarcityStatus" class="team-note" role="status"></p>
     <form class="team-add" id="teamAdd"><input id="rosterSearch" list="rosterOptions" autocomplete="off" placeholder="Search a roster player…" aria-label="Player to add to My Team" required><datalist id="rosterOptions"></datalist><button class="team-action" type="submit">Add player</button></form>
     <p class="team-note">Players are limited to the current Top 250 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;
   document.querySelector('.trade-grid').before(section);
@@ -276,6 +295,9 @@ function readTeamSettings(){
 function renderTeam(){
   if(!$('teamRoster'))return;
   $('teamScoring').value=format;
+  $('scarcityStatus').textContent=team?.slots.SF>0
+    ? `Superflex enabled: QB scarcity values include a model premium scaled by league size and SF slots (20% for starting-range QBs in a 12-team, 1-SF league, capped at 40%, with smaller premiums for deeper backups). Player positions and scoring rules are unchanged.`
+    : 'Superflex disabled: standard player values apply, including the existing RB premium.';
   const names=team?.roster||[];
   $('rosterOptions').innerHTML=players().filter(p=>!names.includes(p.name)).map(p=>`<option value="${escapeHtml(p.name)}">${escapeHtml(p.pos)} • ${escapeHtml(p.team)}</option>`).join('');
   $('teamRoster').innerHTML=names.length?names.map(n=>`<button type="button" class="team-chip" data-player="${escapeHtml(n)}" aria-label="Remove ${escapeHtml(n)} from My Team">${escapeHtml(n)} · ${escapeHtml(findPlayer(n)?.pos||'Unavailable')} ×</button>`).join(''):'<p class="team-note">No players saved yet.</p>';
@@ -287,12 +309,13 @@ function renderTeam(){
   if(r.error){target.innerHTML=`<h3>Fit for your team</h3><p class="team-note">${escapeHtml(r.error)}</p>`;return;}
   target.innerHTML=`<div class="kicker">FIT FOR YOUR TEAM • ${team.leagueSize}-TEAM LEAGUE</div><h3>${r.verdict}</h3><p>Starting lineup value: <b>${r.before.total.toFixed(1)} → ${r.after.total.toFixed(1)}</b> (${r.delta>=0?'+':''}${r.delta.toFixed(1)})</p>
     <p class="team-note">Uses the highest-value eligible lineup in your saved scoring format. These are v10 model values, not projected fantasy points. The trade-value verdict above remains separate. Trades do not change your saved roster.</p>
-    <table class="fit-table"><caption>Best starting lineup before and after</caption><thead><tr><th scope="col">Slot</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody>${r.before.lineup.map((x,i)=>`<tr><th scope="row">${x.slot}</th><td>${escapeHtml(x.player?.name||'Empty')}</td><td>${escapeHtml(r.after.lineup[i].player?.name||'Empty')}</td></tr>`).join('')}</tbody></table>
+    <table class="fit-table"><caption>Best starting lineup before and after</caption><thead><tr><th scope="col">Slot</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody>${r.before.lineup.map((x,i)=>`<tr><th scope="row">${x.slot==='SF'?'Superflex (SF)':x.slot}</th><td>${escapeHtml(x.player?.name||'Empty')}</td><td>${escapeHtml(r.after.lineup[i].player?.name||'Empty')}</td></tr>`).join('')}</tbody></table>
     <p class="team-note">Bench depth: ${r.before.bench.length} → ${r.after.bench.length} players. After trade: ${['QB','RB','WR','TE','K','DST'].map(pos=>`${pos} ${r.after.bench.filter(p=>p.pos===pos).length}`).join(' · ')}.</p>
-    ${r.warnings.length?`<ul>${r.warnings.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>`:''}<p class="team-note">League size provides depth-risk context; it does not change player values. Actual waiver availability, byes and injuries are not modeled.</p>`;
+    ${r.warnings.length?`<ul>${r.warnings.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>`:''}<p class="team-note">League size provides depth-risk context and scales QB scarcity when Superflex is enabled. Actual waiver availability, byes and injuries are not modeled.</p>`;
 }
 
 init().catch(err=>{
   console.error(err);
   document.body.insertAdjacentHTML("beforeend","<p style='padding:20px;color:#ff7171'>Unable to load player data.</p>");
 });
+

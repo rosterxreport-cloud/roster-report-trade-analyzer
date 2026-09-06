@@ -60,3 +60,11 @@ These thresholds live in `app.js` and can be tuned without changing the player-r
 ## Player data source
 
 `players.json` imports all 250 rows from each of the Half-PPR, Full-PPR, and Standard sheets in `Roster_Report_Trade_Analyzer_Top_250_v10_Analytics_Audit.xlsx`. Workbook Final Score maps to the base `value`; missing Analytics Rating remains null. Workbook ranks and supporting fields are preserved. The existing browser-side RB premium and trade-package adjustments are applied after loading these base values.
+
+## Superflex roster slot and QB scarcity
+
+My Team supports Superflex (SF), eligible for QB, RB, WR, or TE. SF is a roster slot, never a player position. It defaults to zero; older saved teams migrate with zero SF slots. Dedicated positions fill first, followed by FLEX and then SF, without using a player twice.
+
+Saving one or more SF slots enables a model-based QB scarcity premium across search, rankings, trades, and lineup comparisons in all three scoring formats. Starting QB demand is `min(32, leagueSize * (QB slots + SF slots))`. The starter premium is `min(0.40, 0.20 * leagueSize * SF slots / 12)`. Each QB receives this premium multiplied by `min(1, demand / QB model rank)`, using the current scoring format's QB value order. Thus a 12-team, 1-QB, 1-SF league gives QB1–24 a 20% premium, tapering beyond QB24. This is a configurable scarcity assumption, not an externally sourced Superflex market ranking.
+
+Values are rounded to two decimals and overall ranks are recalculated. The adjustment always starts from the unchanged database after the existing RB premium; it never compounds across saves, reloads, or scoring changes. Saving zero SF slots restores the standard values exactly. Selected trade players refresh when settings change. Workbook data, player positions, scoring formats, RB premiums, package discounts, elite thresholds, and verdict boundaries are unchanged.
