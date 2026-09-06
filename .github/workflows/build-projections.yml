@@ -14,6 +14,7 @@ on:
       - 'scripts/build-2026-stat-projections.py'
       - 'scripts/normalize-draft-picks.py'
       - 'scripts/apply-2026-rookie-model.py'
+      - 'scripts/reconcile-2026-opportunity.py'
       - 'projection-model-v0.4.mjs'
       - 'projection-model-runtime.mjs'
       - 'players.json'
@@ -65,6 +66,9 @@ jobs:
       - name: Apply 2026 rookie/no-history model
         run: python scripts/apply-2026-rookie-model.py --draft-source data/projections/draft_picks_normalized.csv
 
+      - name: Reconcile 2026 opportunity
+        run: python scripts/reconcile-2026-opportunity.py
+
       - name: Smoke test promoted runtime
         run: |
           node --input-type=module <<'JS'
@@ -93,6 +97,11 @@ jobs:
           if len(eligible)<200: raise SystemExit(f'Unexpected projected set: {len(eligible)}')
           if eligible['half_ppr_points'].isna().any(): raise SystemExit('Projected players contain missing points')
           if 'depth_matched' not in players.columns: raise SystemExit('Depth-chart context missing')
+          for team,g in eligible[eligible['position'].isin(['RB','WR','TE'])].groupby('team'):
+              role=players[players['team_2026'].eq(team)]
+              if len(role) and role['projected_pass_attempts'].notna().any():
+                  budget=float(role['projected_pass_attempts'].dropna().iloc[0])*.961
+                  if g['projected_targets'].sum()>budget: raise SystemExit(f'{team} target budget exceeded')
           print('team contexts',len(teams))
           print('player contexts',len(players))
           print('depth matched',int(players['depth_matched'].sum()))
