@@ -2,9 +2,9 @@
 """Fit auditable next-season Roster Report projection models.
 
 Each position is challenged against a persistence baseline: last season PPR/game.
-Games played is intentionally NOT a predictive talent feature. Missed games should
-influence sample confidence/availability downstream, not mechanically depress a
-healthy player's next-season per-game projection.
+Games played is intentionally NOT a predictive talent feature. QB passing volume
+uses attempts/game rather than total attempts so missed time affects confidence,
+not the player's per-game talent/role prior.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ BLEND_WEIGHTS = [0.25, 0.50, 0.75, 1.00]
 
 FEATURES = {
     "QB": [
-        "attempts", "completion_rate", "pass_yards_per_attempt",
+        "attempts_per_game", "completion_rate", "pass_yards_per_attempt",
         "pass_yac_share", "pass_td_rate", "interception_rate",
         "sacks_per_attempt", "passing_epa_per_attempt", "carries_per_game",
         "yards_per_carry", "rush_td_per_attempt", "rushing_epa_per_attempt",
@@ -47,7 +47,7 @@ FEATURES = {
 }
 
 OPPORTUNITY_FEATURES = {
-    "QB": ["attempts", "passing_epa_per_attempt", "carries_per_game",
+    "QB": ["attempts_per_game", "passing_epa_per_attempt", "carries_per_game",
            "rush_td_per_attempt", "ppr_per_game"],
     "RB": ["carries_per_game", "targets_per_game", "target_share",
            "rush_td_per_attempt", "ppr_per_game"],
@@ -143,6 +143,7 @@ def fit_position(path: Path, pos: str):
             "selected_model": "persistence_baseline",
             "training_seasons": [2023, 2024],
             "games_role": "confidence_only",
+            "qb_volume_basis": "per_game" if pos == "QB" else None,
             "baseline_metrics": baseline_metrics,
             "holdout_metrics": baseline_metrics,
             "challenger_metrics": best["metrics"],
@@ -167,6 +168,7 @@ def fit_position(path: Path, pos: str):
         "feature_set": best["feature_set"],
         "training_seasons": [2023, 2024],
         "games_role": "confidence_only",
+        "qb_volume_basis": "per_game" if pos == "QB" else None,
         "best_alpha": best["alpha"],
         "blend_weight": best["blend_weight"],
         "features": selected_features,
@@ -185,7 +187,7 @@ def fit_position(path: Path, pos: str):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--data-dir", type=Path, default=Path("data/projections"))
-    parser.add_argument("--out", type=Path, default=Path("data/projections/model_coefficients_v0_3.json"))
+    parser.add_argument("--out", type=Path, default=Path("data/projections/model_coefficients_v0_4.json"))
     args = parser.parse_args()
 
     models = {}
@@ -199,7 +201,7 @@ def main():
             print(pos, "top features", m["importance_order"][:6])
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps({"version": "0.3", "models": models}, indent=2))
+    args.out.write_text(json.dumps({"version": "0.4", "models": models}, indent=2))
     print(f"Wrote {args.out}")
 
 
