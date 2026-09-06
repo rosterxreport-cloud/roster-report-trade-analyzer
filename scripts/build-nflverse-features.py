@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Build raw 2023-2025 projection features from nflverse.
 
-Primary source:
-  https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats.csv.gz
+Primary source assets:
+  https://github.com/nflverse/nflverse-data/releases/download/stats_player/
+    stats_player_reg_2023.csv
+    stats_player_reg_2024.csv
+    stats_player_reg_2025.csv
 
-The script uses pandas only. This avoids requiring nflreadpy/polars and makes the
-projection data build portable across local machines, GitHub Actions, and hosted
-notebooks. Projection assumptions (2026 role, team context, regression, injuries)
-belong downstream in projection-engine.js.
+The script uses pandas only. Projection assumptions (2026 role, team context,
+regression, injuries) belong downstream in projection-engine.js.
 """
 
 from __future__ import annotations
@@ -18,9 +19,9 @@ import pandas as pd
 
 SEASONS = [2023, 2024, 2025]
 SKILL_POSITIONS = ["QB", "RB", "WR", "TE"]
-PLAYER_STATS_URL = (
+PLAYER_STATS_TEMPLATE = (
     "https://github.com/nflverse/nflverse-data/releases/download/"
-    "player_stats/player_stats.csv.gz"
+    "stats_player/stats_player_reg_{season}.csv"
 )
 
 PLAYER_FIELDS = [
@@ -72,23 +73,27 @@ def add_player_rates(df: pd.DataFrame) -> pd.DataFrame:
     ]
     for num, den, alias in pairs:
         safe_div(df, num, den, alias)
-    if "fantasy_points_ppr" in df.columns and "games" in df.columns:
-        safe_div(df, "fantasy_points_ppr", "games", "ppr_per_game")
-    if "passing_epa" in df.columns and "attempts" in df.columns:
-        safe_div(df, "passing_epa", "attempts", "passing_epa_per_attempt")
-    if "rushing_epa" in df.columns and "carries" in df.columns:
-        safe_div(df, "rushing_epa", "carries", "rushing_epa_per_attempt")
-    if "receiving_epa" in df.columns and "targets" in df.columns:
-        safe_div(df, "receiving_epa", "targets", "receiving_epa_per_target")
+    safe_div(df, "fantasy_points_ppr", "games", "ppr_per_game")
+    safe_div(df, "passing_epa", "attempts", "passing_epa_per_attempt")
+    safe_div(df, "rushing_epa", "carries", "rushing_epa_per_attempt")
+    safe_div(df, "receiving_epa", "targets", "receiving_epa_per_target")
     return df
 
 
-def load_player_stats(source: str) -> pd.DataFrame:
-    df = pd.read_csv(source, compression="infer", low_memory=False)
+def load_player_stats(source_template: str) -> pd.DataFrame:
+    frames = []
+    for season in SEASONS:
+        source = source_template.format(season=season)
+        season_df = pd.read_csv(source, low_memory=False)
+        if "season" not in season_df.columns:
+            season_df["season"] = season
+        frames.append(season_df)
+    df = pd.concat(frames, ignore_index=True, sort=False)
+
     if "season_type" in df.columns:
         df = df[df["season_type"].eq("REG")]
-    if "season" in df.columns:
-        df = df[df["season"].isin(SEASONS)]
+    df = df[df["season"].isin(SEASONS)]
+
     position_col = "position" if "position" in df.columns else "position_group"
     if position_col in df.columns:
         df = df[df[position_col].isin(SKILL_POSITIONS)]
@@ -98,21 +103,11 @@ def load_player_stats(source: str) -> pd.DataFrame:
         df["player_display_name"] = df["player_name"]
     if "team" not in df.columns and "recent_team" in df.columns:
         df["team"] = df["recent_team"]
-    return add_player_rates(select_existing(df, PLAYER_FIELDS + [
-        "completion_rate", "pass_yards_per_attempt", "pass_yac_share",
-        "pass_td_rate", "interception_rate", "sacks_per_attempt",
-        "carries_per_game", "yards_per_carry", "rush_td_per_attempt",
-        "rushing_first_down_rate", "targets_per_game", "catch_rate",
-        "yards_per_target", "rec_td_per_target", "air_yards_per_target",
-        "yac_per_reception", "receiving_first_down_rate", "ppr_per_game",
-        "passing_epa_per_attempt", "rushing_epa_per_attempt",
-        "receiving_epa_per_target",
-    ]))
+
+    return add_player_rates(select_existing(df, PLAYER_FIELDS))
 
 
 def build_team_features(players: pd.DataFrame) -> pd.DataFrame:
-    # Aggregate team environment directly from the same player-stat release so
-    # the player and team layers always reconcile to the same source snapshot.
     df = players.copy()
     numeric = [
         c for c in ["attempts", "passing_yards", "passing_tds", "interceptions",
@@ -133,31 +128,40 @@ def build_team_features(players: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_position_training_tables(players: pd.DataFrame, out_dir: Path) -> None:
-    # These tables deliberately preserve inputs and next-year outcomes side by
-    # side. The training target is next-season production, preventing us from
-    # merely fitting same-season fantasy points.
     key = "player_id"
+    required = {key, "season", "games", "fantasy_points_ppr"}
+    missing = sorted(required - set(players.columns))
+    if missing:
+        raise RuntimeError(f"Source is missing required training fields: {missing}")
+
     for pos in SKILL_POSITIONS:
         cur = players[players["position"].eq(pos)].copy()
-        nxt = cur[[c for c in [key, "season", "games", "fantasy_points_ppr"] if c in cur.columns]].copy()
+        nxt = cur[[key, "season", "games", "fantasy_points_ppr"]].copy()
         nxt["season"] = nxt["season"] - 1
-        rename = {"games": "next_games", "fantasy_points_ppr": "next_fantasy_points_ppr"}
-        nxt = nxt.rename(columns=rename)
+        nxt = nxt.rename(columns={
+            "games": "next_games",
+            "fantasy_points_ppr": "next_fantasy_points_ppr",
+        })
         train = cur.merge(nxt, on=[key, "season"], how="left")
-        if "next_fantasy_points_ppr" in train.columns:
-            train["next_ppr_per_game"] = train["next_fantasy_points_ppr"] / train["next_games"].where(train["next_games"] > 0)
+        train["next_ppr_per_game"] = (
+            train["next_fantasy_points_ppr"] /
+            train["next_games"].where(train["next_games"] > 0)
+        )
         train.to_csv(out_dir / f"training_{pos.lower()}_next_season.csv", index=False)
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--source", default=PLAYER_STATS_URL,
-                        help="nflverse player_stats csv.gz URL or local file")
+    parser.add_argument(
+        "--source-template",
+        default=PLAYER_STATS_TEMPLATE,
+        help="URL/local template containing {season} for nflverse regular-season player files",
+    )
     parser.add_argument("--out-dir", type=Path, default=Path("data/projections"))
     args = parser.parse_args()
     args.out_dir.mkdir(parents=True, exist_ok=True)
 
-    players = load_player_stats(args.source)
+    players = load_player_stats(args.source_template)
     teams = build_team_features(players)
 
     players = players.sort_values(["season", "position", "player_display_name"])
@@ -167,6 +171,7 @@ def main():
 
     print(f"Player-season rows: {len(players)}")
     print(f"Team-season rows: {len(teams)}")
+    print("Rows by season:", players.groupby("season").size().to_dict())
     print("Training tables: QB, RB, WR, TE")
     print(f"Wrote projection source data to {args.out_dir}")
 
