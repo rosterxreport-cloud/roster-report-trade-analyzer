@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 """Redistribute a conservative portion of vacated 2025 targets to the 2026 depth chart.
 
-This fixes a blind spot where returning players were anchored almost entirely to their
-prior target share even after a high-volume teammate left. Only current RB/WR/TE
-players with prior-team continuity participate; starters receive most of the vacated
-share. The layer changes role_target_share_2026 only, so normal team-budget
-reconciliation still controls final targets.
+Adds target-share saturation: players already commanding elite shares receive
+progressively less vacated opportunity. This prevents an established 30%+ target
+earner from absorbing departures at the same rate as an ascending 18-24% player.
 """
 from pathlib import Path
 import argparse, re, unicodedata
@@ -15,12 +13,21 @@ import pandas as pd
 TEAM_ALIAS={"JAX":"JAC","LA":"LAR"}
 REDISTRIBUTE=.72
 MAX_PLAYER_BONUS=.055
+SATURATION_START=.285
+SATURATION_HARD=.33
 
 
 def norm(v):
     t=unicodedata.normalize("NFKD",str(v or "")).encode("ascii","ignore").decode().lower()
     t=re.sub(r"\b(jr|sr|ii|iii|iv)\.?\b","",t)
     return re.sub(r"[^a-z0-9]","",t)
+
+
+def saturation(share):
+    """1 below 28.5%; smoothly falls to 0.18 by 33%+ rather than a hard cap."""
+    s=np.asarray(share,dtype=float)
+    frac=np.clip((s-SATURATION_START)/(SATURATION_HARD-SATURATION_START),0,1)
+    return 1.0-.82*frac
 
 
 def main():
@@ -37,6 +44,7 @@ def main():
     roles['name_key_vacated']=roles.name.map(norm)
     roles['vacated_target_share_2026']=0.0
     roles['vacated_target_share_team_2026']=0.0
+    roles['target_share_saturation_2026']=1.0
 
     for team,g in skill.groupby('team_norm'):
         total=g.targets.sum()
@@ -52,19 +60,20 @@ def main():
         base=pd.to_numeric(roles.loc[idx,'role_target_share_2026'],errors='coerce').fillna(0).clip(lower=.01)
         starter=roles.loc[idx,'depth_starter'].fillna(False).astype(bool) if 'depth_starter' in roles else pd.Series(False,index=idx)
         rank=pd.to_numeric(roles.loc[idx,'depth_rank'],errors='coerce').fillna(9) if 'depth_rank' in roles else pd.Series(9,index=idx)
-        # Existing involvement is the talent/role prior; confirmed starters get priority.
-        weight=base.pow(.75) * np.where(starter,1.45,np.where(rank.le(2),1.05,.55))
+        sat=pd.Series(saturation(base),index=idx)
+        roles.loc[idx,'target_share_saturation_2026']=sat
+        weight=base.pow(.75) * np.where(starter,1.45,np.where(rank.le(2),1.05,.55)) * sat
         weight=pd.Series(weight,index=idx)
         if weight.sum()<=0: continue
-        bonus=(pool*weight/weight.sum()).clip(upper=MAX_PLAYER_BONUS)
+        bonus=(pool*weight/weight.sum()).clip(upper=MAX_PLAYER_BONUS*sat)
         roles.loc[idx,'role_target_share_2026']=base+bonus
         roles.loc[idx,'vacated_target_share_2026']=bonus
         roles.loc[idx,'vacated_target_share_team_2026']=vacated
 
     roles=roles.drop(columns=['name_key_vacated'])
     roles.to_csv(a.out,index=False)
-    watch=roles[roles.name.isin(['Emeka Egbuka','Ladd McConkey','Justin Jefferson'])]
-    print(watch[['name','team_2026','role_target_share_2026','vacated_target_share_2026','vacated_target_share_team_2026']].to_dict('records'))
+    watch=roles[roles.name.isin(["Ja'Marr Chase",'Emeka Egbuka','Ladd McConkey','Justin Jefferson'])]
+    print(watch[['name','team_2026','role_target_share_2026','vacated_target_share_2026','target_share_saturation_2026']].to_dict('records'))
     print(f'Wrote vacated-opportunity roles to {a.out}')
 
 if __name__=='__main__': main()
