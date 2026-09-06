@@ -12,6 +12,7 @@ on:
       - 'scripts/build-returning-player-fallbacks.py'
       - 'scripts/apply-returning-player-fallbacks.py'
       - 'scripts/build-2026-stat-projections.py'
+      - 'scripts/apply-2026-rookie-model.py'
       - 'projection-model-v0.4.mjs'
       - 'projection-model-runtime.mjs'
       - 'players.json'
@@ -54,8 +55,11 @@ jobs:
       - name: Apply returning-player fallbacks
         run: python scripts/apply-returning-player-fallbacks.py
 
-      - name: Build 2026 stat projections
+      - name: Build 2026 veteran stat projections
         run: python scripts/build-2026-stat-projections.py
+
+      - name: Apply 2026 rookie/no-history model
+        run: python scripts/apply-2026-rookie-model.py
 
       - name: Smoke test promoted runtime
         run: |
@@ -81,9 +85,9 @@ jobs:
           stats=pd.read_csv('data/projections/stat_projections_2026.csv')
           if len(teams)!=32: raise SystemExit(f'Expected 32 teams, got {len(teams)}')
           if len(players)<150: raise SystemExit(f'Unexpected player context: {len(players)}')
-          eligible=stats[stats['projection_status'].isin(['modeled_veteran','returning_fallback'])]
-          if len(eligible)<150: raise SystemExit(f'Unexpected modeled set: {len(eligible)}')
-          if eligible['half_ppr_points'].isna().any(): raise SystemExit('Eligible projections contain missing points')
+          eligible=stats[stats['projection_status'].isin(['modeled_veteran','returning_fallback','rookie_model'])]
+          if len(eligible)<200: raise SystemExit(f'Unexpected projected set: {len(eligible)}')
+          if eligible['half_ppr_points'].isna().any(): raise SystemExit('Projected players contain missing points')
           if 'depth_matched' not in players.columns: raise SystemExit('Depth-chart context missing')
           print('team contexts',len(teams))
           print('player contexts',len(players))
@@ -91,8 +95,9 @@ jobs:
           print('depth starters',int(players['depth_starter'].sum()))
           print('QB backups gated',int(players['qb_depth_backup_flag'].sum()))
           print('returning fallbacks',int(stats['projection_status'].eq('returning_fallback').sum()))
-          print('manual/rookie pathway',int(stats['projection_status'].eq('manual_role_required').sum()))
-          print('eligible stat lines',len(eligible))
+          print('rookie/no-history modeled',int(stats['projection_status'].eq('rookie_model').sum()))
+          print('still manual',int(stats['projection_status'].eq('manual_role_required').sum()))
+          print('projected stat lines',len(eligible))
           PY
 
       - name: Upload projection build
