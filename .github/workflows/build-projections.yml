@@ -7,8 +7,10 @@ on:
       - 'scripts/build-nflverse-features.py'
       - 'scripts/fit-projection-models.py'
       - 'scripts/apply-projection-models.py'
+      - 'scripts/build-2026-context.py'
       - 'projection-model-v0.3.mjs'
       - 'projection-model-runtime.mjs'
+      - 'players.json'
       - '.github/workflows/build-projections.yml'
 
 permissions:
@@ -37,7 +39,10 @@ jobs:
       - name: Build 2026 history-only baseline
         run: python scripts/apply-projection-models.py
 
-      - name: Smoke test projection runtime
+      - name: Build 2026 team and player context
+        run: python scripts/build-2026-context.py
+
+      - name: Smoke test promoted production runtime
         run: |
           node --input-type=module <<'JS'
           import { predictNextPprPerGame, historyConfidence, getProjectionModelSummary } from './projection-model-runtime.mjs';
@@ -50,17 +55,17 @@ jobs:
           if (historyConfidence(sample) !== 1) throw new Error('History confidence smoke test failed');
           const summary = getProjectionModelSummary();
           for (const pos of ['QB','RB','WR','TE']) {
-            if (!summary[pos]?.promoted) throw new Error(`${pos} model is not promoted`);
+            if (!summary[pos]?.promoted) throw new Error(`${pos} production model is not promoted`);
           }
           console.log('runtime prediction', prediction.toFixed(3));
-          console.log('runtime smoke test passed');
+          console.log('production runtime smoke test passed');
           JS
 
-      - name: Show model summary
+      - name: Validate v0.4 challenger and context outputs
         run: |
           python - <<'PY'
-          import json
-          p='data/projections/model_coefficients_v0_3.json'
+          import json, pandas as pd
+          p='data/projections/model_coefficients_v0_4.json'
           d=json.load(open(p))
           for pos,m in d['models'].items():
               print(pos, 'baseline:', m['baseline_metrics'])
@@ -68,6 +73,17 @@ jobs:
               print(pos, 'games role:', m.get('games_role'))
               if m.get('importance_order'):
                   print('Top features:', ', '.join(m['importance_order'][:8]))
+          teams=pd.read_csv('data/projections/team_context_2026.csv')
+          players=pd.read_csv('data/projections/player_role_context_2026.csv')
+          if len(teams) != 32:
+              raise SystemExit(f'Expected 32 team contexts, got {len(teams)}')
+          if len(players) < 150:
+              raise SystemExit(f'Unexpectedly small player context: {len(players)}')
+          print('team contexts', len(teams))
+          print('player contexts', len(players))
+          print('matched 2025 history', int(players['has_2025_history'].sum()))
+          print('team changers', int(players['changed_team'].sum()))
+          print('manual/rookie pathway', int(players['needs_rookie_or_manual_role'].sum()))
           PY
 
       - name: Upload projection build
@@ -77,4 +93,4 @@ jobs:
           path: data/projections/
           retention-days: 30
 
-# Self-contained and reproducible; generated data does not alter live trade values.
+# Generated projection data does not alter live trade values until explicitly promoted.
