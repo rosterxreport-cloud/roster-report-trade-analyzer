@@ -12,6 +12,7 @@ on:
       - 'scripts/build-returning-player-fallbacks.py'
       - 'scripts/apply-returning-player-fallbacks.py'
       - 'scripts/build-2026-stat-projections.py'
+      - 'scripts/normalize-draft-picks.py'
       - 'scripts/apply-2026-rookie-model.py'
       - 'projection-model-v0.4.mjs'
       - 'projection-model-runtime.mjs'
@@ -58,8 +59,11 @@ jobs:
       - name: Build 2026 veteran stat projections
         run: python scripts/build-2026-stat-projections.py
 
+      - name: Normalize draft-pick data
+        run: python scripts/normalize-draft-picks.py
+
       - name: Apply 2026 rookie/no-history model
-        run: python scripts/apply-2026-rookie-model.py
+        run: python scripts/apply-2026-rookie-model.py --draft-source data/projections/draft_picks_normalized.csv
 
       - name: Smoke test promoted runtime
         run: |
