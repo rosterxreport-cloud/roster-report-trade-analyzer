@@ -15,6 +15,7 @@ on:
       - 'scripts/normalize-draft-picks.py'
       - 'scripts/apply-2026-rookie-model.py'
       - 'scripts/reconcile-2026-opportunity.py'
+      - 'scripts/reconcile-qb-passing.py'
       - 'scripts/reconcile-qb-rushing.py'
       - 'projection-model-v0.4.mjs'
       - 'projection-model-runtime.mjs'
@@ -69,6 +70,9 @@ jobs:
 
       - name: Reconcile 2026 opportunity
         run: python scripts/reconcile-2026-opportunity.py
+
+      - name: Reconcile starter QB passing
+        run: python scripts/reconcile-qb-passing.py
 
       - name: Reconcile mobile QB rushing
         run: python scripts/reconcile-qb-rushing.py
