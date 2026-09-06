@@ -7,6 +7,8 @@ on:
       - 'scripts/build-nflverse-features.py'
       - 'scripts/fit-projection-models.py'
       - 'scripts/apply-projection-models.py'
+      - 'projection-model-v0.3.mjs'
+      - 'projection-model-runtime.mjs'
       - '.github/workflows/build-projections.yml'
 
 permissions:
@@ -34,6 +36,25 @@ jobs:
 
       - name: Build 2026 history-only baseline
         run: python scripts/apply-projection-models.py
+
+      - name: Smoke test projection runtime
+        run: |
+          node --input-type=module <<'JS'
+          import { predictNextPprPerGame, historyConfidence, getProjectionModelSummary } from './projection-model-runtime.mjs';
+          const sample = {
+            position: 'WR', games: 17, targets_per_game: 8.0, target_share: 0.25,
+            air_yards_share: 0.30, wopr: 0.55, ppr_per_game: 17.0
+          };
+          const prediction = predictNextPprPerGame(sample, 'WR');
+          if (!Number.isFinite(prediction) || prediction < 0) throw new Error(`Invalid runtime prediction: ${prediction}`);
+          if (historyConfidence(sample) !== 1) throw new Error('History confidence smoke test failed');
+          const summary = getProjectionModelSummary();
+          for (const pos of ['QB','RB','WR','TE']) {
+            if (!summary[pos]?.promoted) throw new Error(`${pos} model is not promoted`);
+          }
+          console.log('runtime prediction', prediction.toFixed(3));
+          console.log('runtime smoke test passed');
+          JS
 
       - name: Show model summary
         run: |
