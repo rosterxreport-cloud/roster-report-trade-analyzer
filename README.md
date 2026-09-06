@@ -40,6 +40,12 @@ The site reads scoring-specific v7 final values for Half PPR, Full PPR, and Stan
 
 Rookies retain the dedicated v7 rookie pathway used in the source rankings.
 
+## Fantasy starting-RB premium
+
+After loading the source v7 values, the app applies a 3% premium to fantasy RB1–12 and 1.5% to RB13–24 in each scoring format. Eligibility follows unadjusted model value, with original overall rank breaking ties; the source `posRank` is not used. RB25 onward and other positions retain their values. Premium values are rounded to two decimals and overall rankings are recalculated. Values may exceed 100 to preserve the full premium and ordering among elite backs.
+
+The same adjusted records power search, Top 200 rankings, and trade calculations. Source analytics, weights, and `players.json` remain unchanged. The premium is applied once before the existing trade-package calculation (including its elite thresholds). Base values are retained to prevent compounding if the transformation is reapplied. Updating the source data automatically recalculates eligibility on the next page load.
+
 ## Trade package adjustment
 
 The website applies a transparent roster-aware calculation after player values are loaded:
