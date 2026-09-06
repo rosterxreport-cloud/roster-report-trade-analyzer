@@ -183,8 +183,8 @@ function applyRbPremium(list){
 
 function renderRankings(){
   const label=format==="half"?"Half PPR":format==="ppr"?"Full PPR":"Standard";
-  $("rankingsCaption").textContent=`${label} • Top 200 Redraft Rankings`;
-  $("rankingsRows").innerHTML=[...players()].sort((a,b)=>a.rank-b.rank).slice(0,200).map(p=>`<tr>
+  $("rankingsCaption").textContent=`${label} • Top 250 Redraft Rankings`;
+  $("rankingsRows").innerHTML=[...players()].sort((a,b)=>a.rank-b.rank).map(p=>`<tr>
     <td>${p.rank}</td><th scope="row">${escapeHtml(p.name)}</th><td>${escapeHtml(p.pos)}</td><td>${escapeHtml(p.team)}</td><td>${p.value.toFixed(1)}</td>
   </tr>`).join("");
 }
@@ -249,7 +249,7 @@ function initTeam(){
     ${Object.entries(SLOT_DEFAULTS).map(([p,n])=>`<label>${p}<input id="slot${p}" type="number" min="0" max="6" value="${n}" required></label>`).join('')}<label>Bench<input id="teamBench" type="number" min="0" max="20" value="6" required></label></div>
     <p class="team-note">FLEX accepts RB, WR or TE. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
     <form class="team-add" id="teamAdd"><input id="rosterSearch" list="rosterOptions" autocomplete="off" placeholder="Search a roster player…" aria-label="Player to add to My Team" required><datalist id="rosterOptions"></datalist><button class="team-action" type="submit">Add player</button></form>
-    <p class="team-note">Players are limited to the current Top 200 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;
+    <p class="team-note">Players are limited to the current Top 250 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;
   document.querySelector('.trade-grid').before(section);
   document.querySelector('.section-nav').insertAdjacentHTML('beforeend','<a href="#my-team">My Team</a>');
   const fit=document.createElement('section');fit.id='teamFit';fit.className='team-section team-fit';fit.setAttribute('aria-label','Roster fit analysis');$('resultPanel').after(fit);
@@ -286,7 +286,7 @@ function renderTeam(){
   const r=teamComparison(team,give,get,players());
   if(r.error){target.innerHTML=`<h3>Fit for your team</h3><p class="team-note">${escapeHtml(r.error)}</p>`;return;}
   target.innerHTML=`<div class="kicker">FIT FOR YOUR TEAM • ${team.leagueSize}-TEAM LEAGUE</div><h3>${r.verdict}</h3><p>Starting lineup value: <b>${r.before.total.toFixed(1)} → ${r.after.total.toFixed(1)}</b> (${r.delta>=0?'+':''}${r.delta.toFixed(1)})</p>
-    <p class="team-note">Uses the highest-value eligible lineup in your saved scoring format. These are v7 model values, not projected fantasy points. The trade-value verdict above remains separate. Trades do not change your saved roster.</p>
+    <p class="team-note">Uses the highest-value eligible lineup in your saved scoring format. These are v10 model values, not projected fantasy points. The trade-value verdict above remains separate. Trades do not change your saved roster.</p>
     <table class="fit-table"><caption>Best starting lineup before and after</caption><thead><tr><th scope="col">Slot</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody>${r.before.lineup.map((x,i)=>`<tr><th scope="row">${x.slot}</th><td>${escapeHtml(x.player?.name||'Empty')}</td><td>${escapeHtml(r.after.lineup[i].player?.name||'Empty')}</td></tr>`).join('')}</tbody></table>
     <p class="team-note">Bench depth: ${r.before.bench.length} → ${r.after.bench.length} players. After trade: ${['QB','RB','WR','TE','K','DST'].map(pos=>`${pos} ${r.after.bench.filter(p=>p.pos===pos).length}`).join(' · ')}.</p>
     ${r.warnings.length?`<ul>${r.warnings.map(w=>`<li>${escapeHtml(w)}</li>`).join('')}</ul>`:''}<p class="team-note">League size provides depth-risk context; it does not change player values. Actual waiver availability, byes and injuries are not modeled.</p>`;
