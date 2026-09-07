@@ -1,0 +1,33 @@
+team,play_caller,new_play_caller,confidence,history_specs,notes
+ARI,Mike LaFleur,1,0.35,LAR:2023:0.20;LAR:2024:0.30;LAR:2025:0.50,McVay-tree scheme exposure; limited recent direct play-calling sample
+ATL,Tommy Rees,1,0.35,CLE:2025:1.00,First-year ATL play-caller; recent Cleveland offensive exposure
+BAL,Declan Doyle,1,0.30,CHI:2025:1.00,First-time primary NFL play-caller; Ben Johnson system exposure
+BUF,Joe Brady,0,0.90,BUF:2023:0.20;BUF:2024:0.30;BUF:2025:0.50,Returning primary play-caller
+CAR,Brad Idzik,1,0.60,CAR:2024:0.40;CAR:2025:0.60,Continuity-based promotion within Carolina offensive structure
+CHI,Ben Johnson,0,0.90,CHI:2025:0.60;DET:2024:0.40,Returning CHI play-caller with prior Detroit sample
+CIN,Zac Taylor,0,0.90,CIN:2023:0.20;CIN:2024:0.30;CIN:2025:0.50,Returning primary play-caller
+CLE,Todd Monken,1,0.90,BAL:2023:0.20;BAL:2024:0.30;BAL:2025:0.50,Established recent play-calling history
+DAL,Brian Schottenheimer,0,0.80,DAL:2025:1.00,Returning primary play-caller
+DEN,Davis Webb,1,0.70,DEN:2023:0.20;DEN:2024:0.30;DEN:2025:0.50,First-time play-caller but strong Sean Payton system continuity
+DET,Drew Petzing,1,0.90,ARI:2023:0.20;ARI:2024:0.30;ARI:2025:0.50,Established recent Arizona play-calling history
+GB,Matt LaFleur,0,0.95,GB:2023:0.20;GB:2024:0.30;GB:2025:0.50,Returning primary play-caller
+HOU,Nick Caley,0,0.75,HOU:2025:1.00,Returning Houston play-caller
+IND,Shane Steichen,0,0.90,IND:2023:0.20;IND:2024:0.30;IND:2025:0.50,Returning primary play-caller
+JAC,Liam Coen,0,0.85,JAC:2025:0.60;TB:2024:0.40,Returning Jaguars play-caller with prior Tampa sample
+KC,Andy Reid,0,0.95,KC:2023:0.20;KC:2024:0.30;KC:2025:0.50,Returning primary play-caller
+LAC,Mike McDaniel,1,0.95,MIA:2023:0.20;MIA:2024:0.30;MIA:2025:0.50,Established recent Miami play-calling history
+LAR,Sean McVay,0,0.95,LAR:2023:0.20;LAR:2024:0.30;LAR:2025:0.50,Returning primary play-caller
+LV,Klint Kubiak,1,0.90,NO:2024:0.35;SEA:2025:0.65,Recent play-calling samples at New Orleans and Seattle
+MIA,Bobby Slowik,1,0.80,HOU:2023:0.35;HOU:2024:0.40;MIA:2025:0.25,Recent Houston play-calling plus Miami pass-game exposure
+MIN,Kevin O'Connell,0,0.95,MIN:2023:0.20;MIN:2024:0.30;MIN:2025:0.50,Returning primary play-caller
+NE,Josh McDaniels,0,0.80,NE:2025:1.00,Returning Patriots play-caller
+NO,Kellen Moore,0,0.80,NO:2025:0.60;PHI:2024:0.40,Returning Saints play-caller with prior Philadelphia sample
+NYG,Matt Nagy,1,0.45,KC:2023:0.20;KC:2024:0.30;KC:2025:0.50,Recent coordinator history under Andy Reid; direct play-calling evidence discounted
+NYJ,Frank Reich,1,0.45,CAR:2023:1.00,Recent direct play-calling sample limited to Carolina tenure
+PHI,Sean Mannion,1,0.30,LAR:2023:0.20;LAR:2024:0.30;LAR:2025:0.50,First-time play-caller; McVay-tree background used at low confidence
+PIT,Mike McCarthy,1,0.90,DAL:2023:0.45;DAL:2024:0.55,Established recent Dallas play-calling history
+SEA,Brian Fleury,1,0.35,SF:2023:0.20;SF:2024:0.30;SF:2025:0.50,First-time primary play-caller; Shanahan-system exposure
+SF,Kyle Shanahan,0,0.95,SF:2023:0.20;SF:2024:0.30;SF:2025:0.50,Returning primary play-caller
+TB,Zac Robinson,1,0.80,ATL:2024:0.40;ATL:2025:0.60,Established recent Atlanta play-calling history
+TEN,Brian Daboll,1,0.75,NYG:2023:0.20;NYG:2024:0.30;NYG:2025:0.50,Recent Giants offensive/play-calling history
+WAS,David Blough,1,0.55,WAS:2024:0.40;WAS:2025:0.60,Promotion with Washington system continuity
