@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Reallocate receiving opportunity using current-offense target evidence.
 
-Projection-only layer. For in-season acquisitions, full-season target history is
-explicitly discounted because some of it was earned in another offense. Players who
-spent the full prior season with the current team receive full continuity credit.
+Projection-only layer. In-season acquisitions receive a meaningful continuity
+discount because some of their prior-season target history came in another offense.
+Established offseason movers retain most of their demonstrated target-earning signal.
 Team target totals remain preserved and individual changes remain bounded.
 """
 from pathlib import Path
@@ -36,16 +36,19 @@ def main():
         pg=pd.to_numeric(m.loc[idx,'targets_per_game'],errors='coerce').fillna(0);share=pd.to_numeric(m.loc[idx,'target_share'],errors='coerce').fillna(0);games=pd.to_numeric(m.loc[idx,'games'],errors='coerce').fillna(0)
         starter=m.loc[idx,'depth_starter'].fillna(False).astype(bool);rank=pd.to_numeric(m.loc[idx,'depth_rank'],errors='coerce').fillna(9);changed=m.loc[idx,'changed_team'].fillna(False).astype(bool)
         recent_team=m.loc[idx,'recent_team'].fillna('') if 'recent_team' in m.columns else pd.Series('',index=idx)
-        # A changed-team player whose final team is the 2026 team may still have only a partial
-        # season of evidence in this offense. Approximate that uncertainty from games played:
-        # full-season returners = 1.0; in-season acquisitions = 0.58-0.78 depending sample.
         continuity=pd.Series(1.0,index=idx,dtype=float)
         for i in idx:
-            if changed.loc[i]:
-                if str(recent_team.loc[i])==str(team):
-                    continuity.loc[i]=float(np.clip(.48+.025*games.loc[i],.58,.78))
-                else:continuity.loc[i]=.48
-        # Discount full-season target rates for acquisitions before comparing hierarchy.
+            if not changed.loc[i]: continue
+            # If the 2025 recent team already equals the 2026 team, this was likely an
+            # in-season acquisition and the current-offense sample is partial.
+            if str(recent_team.loc[i])==str(team):
+                continuity.loc[i]=float(np.clip(.48+.025*games.loc[i],.58,.78))
+            else:
+                # Offseason movers should retain most of proven target-earning ability.
+                # Established volume earners are near the top of the 0.80-0.90 band.
+                volume=float(np.clip((pg.loc[i]-4.0)/4.0,0,1))
+                share_strength=float(np.clip((share.loc[i]-.14)/.14,0,1))
+                continuity.loc[i]=float(np.clip(.80+.06*volume+.04*share_strength,.80,.90))
         adj_pg=pg*continuity;adj_share=share*continuity
         recent=(adj_pg/adj_pg.max() if adj_pg.max()>0 else adj_pg)*.58+(adj_share/adj_share.max() if adj_share.max()>0 else adj_share)*.42
         role=np.where(starter,1.0,np.where(rank.le(2),.90,np.where(rank.le(3),.78,.62)))
@@ -66,5 +69,5 @@ def main():
         for pos in ['QB','RB','WR','TE']:
             mask=m.position.eq(pos)&m[fmt].notna();m.loc[mask,pc]=m.loc[mask,fmt].rank(method='min',ascending=False)
     drop=['role_team','recent_team','targets_per_game','target_share','games','depth_starter','depth_rank','changed_team'];m=m.drop(columns=[c for c in drop if c in m.columns],errors='ignore');nums=m.select_dtypes(include=[np.number]).columns;m[nums]=m[nums].round(3);m.to_csv(a.out,index=False)
-    watch=m[m.name.isin(['Parker Washington','Jakobi Meyers','Brian Thomas Jr.','Ladd McConkey',"Ja'Marr Chase",'Justin Jefferson'])];print(watch[['name','projected_targets','target_hierarchy_multiplier','current_offense_evidence_weight','projected_receiving_tds','ppr_points','ppr_pos_rank']].sort_values('ppr_pos_rank').to_dict('records'));print(f'Wrote current-offense hierarchy projections to {a.out}')
+    watch=m[m.name.isin(['A.J. Brown','Jaylen Waddle','DJ Moore','Jameson Williams','Christian Watson'])];print(watch[['name','projected_targets','target_hierarchy_multiplier','current_offense_evidence_weight','projected_receiving_tds','ppr_points','ppr_pos_rank']].sort_values('ppr_pos_rank').to_dict('records'));print(f'Wrote current-offense hierarchy projections to {a.out}')
 if __name__=='__main__':main()
