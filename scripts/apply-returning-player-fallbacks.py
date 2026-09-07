@@ -10,6 +10,8 @@ a backup QB. True rookies/no-NFL-history players remain manual.
 from __future__ import annotations
 
 import argparse
+import re
+import unicodedata
 from pathlib import Path
 import pandas as pd
 
@@ -23,6 +25,12 @@ EFF_FIELDS = [
 ]
 
 
+def norm_name(value):
+    text = unicodedata.normalize("NFKD", str(value or "")).encode("ascii", "ignore").decode()
+    text = re.sub(r"\b(jr|sr|ii|iii|iv)\.?\b", "", text.lower())
+    return re.sub(r"[^a-z0-9]", "", text)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--roles", type=Path, default=Path("data/projections/player_role_context_2026.csv"))
@@ -32,6 +40,12 @@ def main():
 
     roles = pd.read_csv(args.roles)
     fb = pd.read_csv(args.fallbacks)
+
+    if "name_key" not in roles.columns:
+        roles["name_key"] = roles["name"].map(norm_name)
+    if "name_key" not in fb.columns and "name" in fb.columns:
+        fb["name_key"] = fb["name"].map(norm_name)
+
     if fb.empty:
         roles["fallback_history_used"] = False
         roles.to_csv(args.out, index=False)
@@ -53,8 +67,6 @@ def main():
     merged.loc[eligible, "has_prior_nfl_history_fallback"] = True
     merged.loc[eligible, "history_source_season"] = merged.loc[eligible, "history_season"]
 
-    # Keep fallback data explicitly prefixed so normal 2025 feature columns are
-    # never shadowed. The stat builder coalesces these only for rescued players.
     args.out.parent.mkdir(parents=True, exist_ok=True)
     merged.to_csv(args.out, index=False)
 
