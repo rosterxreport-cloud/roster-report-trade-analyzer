@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """Final WR target-growth guardrail.
 
-Audits projected targets against the player's 2025 17-game target pace. Growth above
-20% must be supported by target-earning strength, sustainable breakout evidence and
-an uncrowded 2026 room. Poor prior-year efficiency and premium rookie competition
-reduce the allowable growth. Team WR target totals are preserved exactly.
+Audits projected targets against the player's 2025 17-game target pace. Growth must
+be supported by target-earning strength, sustainable breakout evidence and an
+uncrowded 2026 room. Poor prior-year efficiency and premium rookie competition
+reduce allowable growth. For already-elite target baselines, positive growth is
+progressively damped so percentage-based scheme/role boosts do not stack into
+implausible absolute workloads. Team WR target totals are preserved when possible.
 """
 from pathlib import Path
 import argparse, re, unicodedata
@@ -27,6 +29,20 @@ def num(v,d=np.nan):
     except:return d
 
 
+def elite_growth_damp(prev17):
+    """Shrink only positive incremental growth as the existing workload gets extreme.
+
+    Full evidence-based growth is available through 150 targets. From 150-180 the
+    incremental-growth allowance fades to 40%; from 180-195 it fades to 12%; at
+    195+ only 10% of the normal percentage-growth allowance remains. This is not a
+    hard target cap: an elite historical baseline can itself remain near/above 200.
+    """
+    if prev17 <= 150: return 1.0
+    if prev17 <= 180: return 1.0 - (prev17-150.0)*(0.60/30.0)
+    if prev17 <= 195: return 0.40 - (prev17-180.0)*(0.28/15.0)
+    return 0.10
+
+
 def scale_receiving(m,i,ratio):
     for c in ['projected_targets','projected_receptions','projected_receiving_yards','projected_receiving_tds']:
         if c in m.columns and np.isfinite(num(m.at[i,c])):
@@ -47,7 +63,6 @@ def main():
     a=ap.parse_args()
     s=pd.read_csv(a.stats); r=pd.read_csv(a.roles); f=pd.read_csv(a.features)
 
-    # 2025 veteran evidence, including efficiency that should affect whether volume expands.
     fw=f[(pd.to_numeric(f.season,errors='coerce').eq(2025)) & f.position.eq('WR')].copy()
     fw['name_key']=fw.player_display_name.fillna(fw.get('player_name','')).map(norm)
     fw['team_key']=fw.recent_team.fillna(fw.get('team')).replace(TEAM_ALIAS)
@@ -68,6 +83,7 @@ def main():
     m['target_growth_evidence']=np.nan
     m['prior_efficiency_score']=np.nan
     m['premium_rookie_competitors']=0
+    m['elite_target_growth_damp']=np.nan
     m['competition_adjusted_target_cap']=np.nan
 
     team_key='team' if 'team' in m.columns else 'team_2026'
@@ -106,14 +122,18 @@ def main():
             allowed-=min(.10,.05*rookie_comp)
             allowed-=.07*float(np.clip((.45-efficiency)/.45,0,1))
             allowed=float(np.clip(allowed,.10,.45))
-            cap=prev17*(1+allowed)
-            m.at[i,'target_growth_prev_17']=prev17; m.at[i,'target_growth_rate_2026']=growth; m.at[i,'target_growth_allowed_2026']=allowed
-            m.at[i,'target_growth_evidence']=earned; m.at[i,'prior_efficiency_score']=efficiency; m.at[i,'premium_rookie_competitors']=rookie_comp; m.at[i,'competition_adjusted_target_cap']=cap
-            if np.isfinite(growth) and growth>.20 and cur.loc[i]>cap:
+            damp=elite_growth_damp(prev17)
+            effective_allowed=allowed*damp
+            cap=prev17*(1+effective_allowed)
+            m.at[i,'target_growth_prev_17']=prev17; m.at[i,'target_growth_rate_2026']=growth; m.at[i,'target_growth_allowed_2026']=effective_allowed
+            m.at[i,'target_growth_evidence']=earned; m.at[i,'prior_efficiency_score']=efficiency; m.at[i,'premium_rookie_competitors']=rookie_comp
+            m.at[i,'elite_target_growth_damp']=damp; m.at[i,'competition_adjusted_target_cap']=cap
+            # Apply the cap whenever positive stacked growth exceeds the evidence-based
+            # absolute allowance. Below elite volume this behaves like the old guardrail;
+            # at extreme baselines it prevents several modest multipliers from stacking.
+            if np.isfinite(growth) and growth>0 and cur.loc[i]>cap:
                 caps[i]=cap
 
-        # Cap unsupported growth, then redistribute only to teammates without violating
-        # their own known veteran cap; rookies/no-history players may absorb based on role.
         excess=0.0
         for i,cap in caps.items():
             old=float(cur.loc[i]); new=float(cap)
@@ -143,8 +163,6 @@ def main():
                             scale_receiving(m,j,(old+add)/old); capacity[j]-=add; moved+=add
                     excess-=moved; capacity={j:v for j,v in capacity.items() if v>1e-6}
                     if moved<=1e-6: break
-        # If a tiny remainder cannot be reassigned within guardrails, leave it unallocated;
-        # the broader team target budget is a ceiling, not a requirement to force volume.
 
     for i in m[eligible].index:
         d=m.loc[i].to_dict();m.at[i,'ppr_points']=points(d,1);m.at[i,'half_ppr_points']=points(d,.5);m.at[i,'standard_points']=points(d,0);m.at[i,'ppr_per_game']=m.at[i,'ppr_points']/GAMES;m.at[i,'half_ppr_per_game']=m.at[i,'half_ppr_points']/GAMES;m.at[i,'standard_per_game']=m.at[i,'standard_points']/GAMES
@@ -156,8 +174,8 @@ def main():
     drop=['team_2026','depth_rank','depth_starter','changed_team','team_key','team_key_hist','games','targets_per_game','target_share','yards_per_target','catch_rate','receiving_epa_per_target']
     m=m.drop(columns=[c for c in drop if c in m.columns],errors='ignore')
     nums=m.select_dtypes(include=[np.number]).columns;m[nums]=m[nums].round(3);m.to_csv(a.out,index=False)
-    audit=m[eligible & (pd.to_numeric(m.target_growth_rate_2026,errors='coerce')>.20)][['name','team','projected_targets','target_growth_prev_17','target_growth_rate_2026','target_growth_allowed_2026','target_growth_evidence','prior_efficiency_score','premium_rookie_competitors','target_growth_guardrail_applied','ppr_points','ppr_pos_rank']].sort_values('target_growth_rate_2026',ascending=False)
-    print('WR target growth >20% audit:',audit.to_dict('records'))
+    audit=m[eligible & m.target_growth_guardrail_applied][['name','team','projected_targets','target_growth_prev_17','target_growth_rate_2026','target_growth_allowed_2026','elite_target_growth_damp','target_growth_evidence','prior_efficiency_score','premium_rookie_competitors','target_growth_guardrail_applied','ppr_points','ppr_pos_rank']].sort_values('target_growth_prev_17',ascending=False)
+    print('WR target growth guardrail audit:',audit.to_dict('records'))
     print('Guardrail adjustments:',int(m.target_growth_guardrail_applied.sum()))
     print(f'Wrote competition-adjusted projections to {a.out}')
 
