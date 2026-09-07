@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Merge latest nflverse 2026 depth charts into fantasy role context.
 
-Fantasy role must use the player's OFFENSIVE depth position. A two-way player
-such as Travis Hunter can be a starting corner without being a starting WR, so
-we preserve defensive evidence separately and never let it promote offensive
-opportunity.
+The latest depth-chart snapshot is also used as an identity/team integrity check. If a
+fantasy player has one unique current NFL depth-chart team and players.json carries a
+different team, the role context is corrected before any backfield grouping occurs.
+This prevents stale transactions from creating fake committees.
 """
 from __future__ import annotations
 import argparse,re,unicodedata
@@ -48,6 +48,24 @@ def main():
     if "team_key_2026" not in roles:roles["team_key_2026"]=roles["team_2026"].map(norm_team)
     if "name_key" not in roles:roles["name_key"]=roles["name"].map(norm_name)
 
+    # TEAM-INTEGRITY PASS: resolve a unique current team by normalized identity + offensive position.
+    # We deliberately require a unique team so common-name collisions cannot silently move players.
+    roles["team_2026_source"]=roles["team_2026"]
+    roles["team_assignment_corrected"]=False
+    roles["team_assignment_depth_team"]=np.nan
+    corrections=[]
+    for i,r in roles.iterrows():
+        g=raw[raw["name_key"].eq(r["name_key"])]
+        if len(g)==0: continue
+        off=g[g["pos_abb"].map(lambda x:offensive_match(r["position"],x))]
+        if len(off)==0: continue
+        teams=sorted(set(x for x in off["team_key_2026"].dropna().astype(str) if x))
+        if len(teams)!=1: continue
+        dt_team=teams[0]; roles.at[i,"team_assignment_depth_team"]=dt_team
+        if norm_team(r["team_2026"])!=dt_team:
+            old=r["team_2026"]; roles.at[i,"team_2026"]=dt_team; roles.at[i,"team_key_2026"]=dt_team
+            roles.at[i,"team_assignment_corrected"]=True; corrections.append((r["name"],old,dt_team))
+
     rows=[]
     for _,r in roles.iterrows():
         g=raw[(raw["name_key"].eq(r["name_key"]))&(raw["team_key_2026"].eq(r["team_key_2026"]))]
@@ -57,30 +75,26 @@ def main():
         chosen=off if len(off) else g
         all_pos="/".join(sorted(set(str(x) for x in g["pos_abb"].dropna())))
         off_pos="/".join(sorted(set(str(x) for x in off["pos_abb"].dropna()))) if len(off) else ""
-        has_def=g["pos_abb"].astype(str).str.upper().str.contains(DEF_RE,regex=True).any()
-        has_off=len(off)>0
-        rows.append({
-            "name_key":r["name_key"],"team_key_2026":r["team_key_2026"],"depth_snapshot":g["dt"].iloc[0],
+        has_def=g["pos_abb"].astype(str).str.upper().str.contains(DEF_RE,regex=True).any(); has_off=len(off)>0
+        rows.append({"name_key":r["name_key"],"team_key_2026":r["team_key_2026"],"depth_snapshot":g["dt"].iloc[0],
             "depth_player_name":g["player_name"].iloc[0],"depth_gsis_id":g["gsis_id"].iloc[0],
-            "depth_pos_group":chosen["pos_grp"].iloc[0] if "pos_grp" in chosen else None,
-            "depth_pos":all_pos,"offensive_depth_pos":off_pos,
-            "depth_rank":pd.to_numeric(chosen["pos_rank"],errors="coerce").min(),
-            "offensive_depth_rank":pd.to_numeric(off["pos_rank"],errors="coerce").min() if len(off) else np.nan,
-            "two_way_player":bool(has_off and has_def),
-        })
-    depth=pd.DataFrame(rows)
-    merged=roles.merge(depth,on=["name_key","team_key_2026"],how="left")
+            "depth_pos_group":chosen["pos_grp"].iloc[0] if "pos_grp" in chosen else None,"depth_pos":all_pos,"offensive_depth_pos":off_pos,
+            "depth_rank":pd.to_numeric(chosen["pos_rank"],errors="coerce").min(),"offensive_depth_rank":pd.to_numeric(off["pos_rank"],errors="coerce").min() if len(off) else np.nan,
+            "two_way_player":bool(has_off and has_def)})
+    depth=pd.DataFrame(rows); merged=roles.merge(depth,on=["name_key","team_key_2026"],how="left")
     merged["depth_matched"]=merged["depth_rank"].notna();merged["depth_starter"]=merged["depth_rank"].eq(1);merged["depth_backup"]=merged["depth_rank"].gt(1)
     confidence=pd.to_numeric(merged["role_confidence"],errors="coerce").fillna(0)
     confidence=np.where(merged["depth_starter"],np.maximum(confidence,.85),confidence);confidence=np.where(merged["depth_backup"],np.minimum(confidence,.55),confidence)
-    # Two-way offensive roles remain uncertain even when the player starts on defense.
-    confidence=np.where(merged["two_way_player"].fillna(False),np.minimum(confidence,.50),confidence)
-    merged["role_confidence"]=np.clip(confidence,0,1)
+    confidence=np.where(merged["two_way_player"].fillna(False),np.minimum(confidence,.50),confidence); merged["role_confidence"]=np.clip(confidence,0,1)
     qb=merged["position"].eq("QB");merged["qb_depth_starter_confirmed"]=qb&merged["depth_starter"];merged["qb_depth_backup_flag"]=qb&merged["depth_backup"]
     merged.loc[merged["qb_depth_backup_flag"],"needs_rookie_or_manual_role"]=True;merged.loc[merged["qb_depth_backup_flag"],"role_confidence"]=0.0
     a.out.parent.mkdir(parents=True,exist_ok=True);merged.to_csv(a.out,index=False)
-    print(f"Depth snapshot: {newest}");print(f"Fantasy players matched: {int(merged.depth_matched.sum())}/{len(merged)}");print(f"Depth starters: {int(merged.depth_starter.sum())}");print(f"Two-way players: {int(merged.two_way_player.fillna(False).sum())}");print(f"QB starters confirmed: {int(merged.qb_depth_starter_confirmed.sum())}");print(f"QB backups gated: {int(merged.qb_depth_backup_flag.sum())}")
-    watch=merged[merged["name"].eq("Travis Hunter")][[c for c in ["name","position","depth_pos","offensive_depth_pos","depth_rank","offensive_depth_rank","two_way_player","depth_starter","role_confidence"] if c in merged]]
-    if len(watch):print("Hunter depth:",watch.to_dict("records"))
+    print(f"Depth snapshot: {newest}"); print(f"Fantasy players matched: {int(merged.depth_matched.sum())}/{len(merged)}")
+    print(f"Team assignments auto-corrected: {len(corrections)}")
+    for name,old,new in corrections: print(f"TEAM FIX: {name}: {old} -> {new}")
+    rb_unmatched=merged[(merged.position.eq('RB')) & (~merged.depth_matched)]
+    print(f"RBs unmatched to current depth snapshot: {len(rb_unmatched)}")
+    if len(rb_unmatched): print("RB TEAM AUDIT UNMATCHED:",rb_unmatched[['name','team_2026']].to_dict('records'))
+    print(f"Depth starters: {int(merged.depth_starter.sum())}");print(f"Two-way players: {int(merged.two_way_player.fillna(False).sum())}");print(f"QB starters confirmed: {int(merged.qb_depth_starter_confirmed.sum())}");print(f"QB backups gated: {int(merged.qb_depth_backup_flag.sum())}")
     print(f"Wrote {a.out}")
 if __name__=="__main__":main()
