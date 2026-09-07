@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Reallocate receiving opportunity using recent same-team target hierarchy.
+"""Reallocate receiving opportunity using current-offense target evidence.
 
-Projection-only layer. Recent production earned with the player's current team/QB
-gets more weight than older production accumulated elsewhere. Current starter role
-still matters, and total team targets are preserved.
+Projection-only layer. For in-season acquisitions, full-season target history is
+explicitly discounted because some of it was earned in another offense. Players who
+spent the full prior season with the current team receive full continuity credit.
+Team target totals remain preserved and individual changes remain bounded.
 """
 from pathlib import Path
 import argparse, numpy as np, pandas as pd
@@ -16,7 +17,7 @@ def num(v,d=np.nan):
 
 def scale(m,idx,ratio):
     for c in ['projected_targets','projected_receptions','projected_receiving_yards','projected_receiving_tds']:
-        if c in m.columns and np.isfinite(num(m.at[idx,c])): m.at[idx,c]=num(m.at[idx,c],0)*ratio
+        if c in m.columns and np.isfinite(num(m.at[idx,c])):m.at[idx,c]=num(m.at[idx,c],0)*ratio
 
 def pts(r,rec):
     x=lambda k:num(r.get(k),0)
@@ -28,30 +29,36 @@ def main():
     cols=[c for c in ['name','position','team_2026','recent_team','targets_per_game','target_share','games','depth_starter','depth_rank','changed_team'] if c in r.columns]
     m=s.merge(r[cols].rename(columns={'team_2026':'role_team'}),on=['name','position'],how='left',suffixes=('','_hier'))
     eligible=m.projection_status.isin(['modeled_veteran','returning_fallback','rookie_model']) & m.position.isin(['WR','TE','RB'])
-    m['target_hierarchy_multiplier']=1.0;m['same_team_hierarchy_weight']=0.0
+    m['target_hierarchy_multiplier']=1.0;m['current_offense_evidence_weight']=1.0
     for team,g in m[eligible].groupby('team'):
         idx=g.index;cur=pd.to_numeric(m.loc[idx,'projected_targets'],errors='coerce').fillna(0)
         if cur.sum()<=0:continue
         pg=pd.to_numeric(m.loc[idx,'targets_per_game'],errors='coerce').fillna(0);share=pd.to_numeric(m.loc[idx,'target_share'],errors='coerce').fillna(0);games=pd.to_numeric(m.loc[idx,'games'],errors='coerce').fillna(0)
         starter=m.loc[idx,'depth_starter'].fillna(False).astype(bool);rank=pd.to_numeric(m.loc[idx,'depth_rank'],errors='coerce').fillna(9);changed=m.loc[idx,'changed_team'].fillna(False).astype(bool)
         recent_team=m.loc[idx,'recent_team'].fillna('') if 'recent_team' in m.columns else pd.Series('',index=idx)
-        same_team=recent_team.eq(team) | (~changed)
-        recent=(pg/pg.max() if pg.max()>0 else pg)*.58+(share/share.max() if share.max()>0 else share)*.42
+        # A changed-team player whose final team is the 2026 team may still have only a partial
+        # season of evidence in this offense. Approximate that uncertainty from games played:
+        # full-season returners = 1.0; in-season acquisitions = 0.58-0.78 depending sample.
+        continuity=pd.Series(1.0,index=idx,dtype=float)
+        for i in idx:
+            if changed.loc[i]:
+                if str(recent_team.loc[i])==str(team):
+                    continuity.loc[i]=float(np.clip(.48+.025*games.loc[i],.58,.78))
+                else:continuity.loc[i]=.48
+        # Discount full-season target rates for acquisitions before comparing hierarchy.
+        adj_pg=pg*continuity;adj_share=share*continuity
+        recent=(adj_pg/adj_pg.max() if adj_pg.max()>0 else adj_pg)*.58+(adj_share/adj_share.max() if adj_share.max()>0 else adj_share)*.42
         role=np.where(starter,1.0,np.where(rank.le(2),.90,np.where(rank.le(3),.78,.62)))
         sample=np.clip(games/12.0,.45,1.0)
-        # Same-team/QB evidence gets full credit. Players whose history is largely from
-        # another offense receive a meaningful discount until current-team evidence builds.
-        continuity=np.where(same_team,1.12,np.where(changed,.76,.96))
-        score=pd.Series(recent*role*sample*continuity,index=idx).clip(lower=.04)
+        score=pd.Series(recent*role*sample,index=idx).clip(lower=.04)
         current_share=cur/cur.sum();desired=score/score.sum()
-        # Expose 34% of distribution when same-team evidence exists; still bounded.
-        blended=.66*current_share+.34*desired
-        mult=(blended/current_share.replace(0,np.nan)).replace([np.inf,-np.inf],np.nan).fillna(1).clip(.76,1.24)
+        blended=.62*current_share+.38*desired
+        mult=(blended/current_share.replace(0,np.nan)).replace([np.inf,-np.inf],np.nan).fillna(1).clip(.72,1.28)
         new=cur*mult;new*=cur.sum()/new.sum()
         for i in idx:
             old=num(m.at[i,'projected_targets'],0);nt=float(new.loc[i])
             if old>0:
-                ratio=nt/old;scale(m,i,ratio);m.at[i,'target_hierarchy_multiplier']=ratio;m.at[i,'same_team_hierarchy_weight']=float(continuity[list(idx).index(i)])
+                ratio=nt/old;scale(m,i,ratio);m.at[i,'target_hierarchy_multiplier']=ratio;m.at[i,'current_offense_evidence_weight']=continuity.loc[i]
     for i in m[eligible].index:
         d=m.loc[i].to_dict();m.at[i,'ppr_points']=pts(d,1);m.at[i,'half_ppr_points']=pts(d,.5);m.at[i,'standard_points']=pts(d,0);m.at[i,'ppr_per_game']=m.at[i,'ppr_points']/GAMES;m.at[i,'half_ppr_per_game']=m.at[i,'half_ppr_points']/GAMES;m.at[i,'standard_per_game']=m.at[i,'standard_points']/GAMES
     for fmt in ['ppr_points','half_ppr_points','standard_points']:
@@ -59,5 +66,5 @@ def main():
         for pos in ['QB','RB','WR','TE']:
             mask=m.position.eq(pos)&m[fmt].notna();m.loc[mask,pc]=m.loc[mask,fmt].rank(method='min',ascending=False)
     drop=['role_team','recent_team','targets_per_game','target_share','games','depth_starter','depth_rank','changed_team'];m=m.drop(columns=[c for c in drop if c in m.columns],errors='ignore');nums=m.select_dtypes(include=[np.number]).columns;m[nums]=m[nums].round(3);m.to_csv(a.out,index=False)
-    watch=m[m.name.isin(['Parker Washington','Jakobi Meyers','Brian Thomas Jr.','Ladd McConkey'])];print(watch[['name','projected_targets','target_hierarchy_multiplier','same_team_hierarchy_weight','ppr_points','ppr_pos_rank']].sort_values('ppr_pos_rank').to_dict('records'));print(f'Wrote same-team target-hierarchy projections to {a.out}')
+    watch=m[m.name.isin(['Parker Washington','Jakobi Meyers','Brian Thomas Jr.','Ladd McConkey',"Ja'Marr Chase",'Justin Jefferson'])];print(watch[['name','projected_targets','target_hierarchy_multiplier','current_offense_evidence_weight','projected_receiving_tds','ppr_points','ppr_pos_rank']].sort_values('ppr_pos_rank').to_dict('records'));print(f'Wrote current-offense hierarchy projections to {a.out}')
 if __name__=='__main__':main()
