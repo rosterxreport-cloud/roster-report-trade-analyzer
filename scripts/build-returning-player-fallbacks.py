@@ -43,6 +43,11 @@ def main():
     args = parser.parse_args()
 
     roles = pd.read_csv(args.roles)
+    # Some upstream projection-only transforms rebuild/drop helper keys. Recreate them
+    # here from the canonical player name instead of assuming the helper column exists.
+    if "name_key" not in roles.columns:
+        roles["name_key"] = roles["name"].map(norm_name)
+
     features = pd.read_csv(args.features)
     features["name_key"] = features["player_display_name"].fillna(features.get("player_name", "")).map(norm_name)
     features["team_key"] = features["team"].map(norm_team)
