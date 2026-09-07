@@ -60,6 +60,8 @@ jobs:
         run: python scripts/reconcile-wr-depth-hierarchy.py
       - name: Apply competition-adjusted WR target growth guardrail
         run: python scripts/apply-target-growth-guardrail.py
+      - name: Apply WR YPC/YPRR efficiency weighting
+        run: python scripts/apply-wr-efficiency-weight.py
       - name: Reconcile starter QB passing
         run: python scripts/reconcile-qb-passing.py
       - name: Reconcile mobile QB rushing
@@ -103,13 +105,15 @@ jobs:
           if 'wr_depth_hierarchy_multiplier' not in stats.columns: raise SystemExit('WR depth hierarchy reconciliation missing')
           if 'target_growth_guardrail_applied' not in stats.columns: raise SystemExit('WR target growth guardrail missing')
           if 'target_growth_allowed_2026' not in stats.columns: raise SystemExit('WR target growth audit fields missing')
+          if 'wr_efficiency_multiplier' not in stats.columns: raise SystemExit('WR YPC/YPRR efficiency weighting missing')
+          if 'wr_yprr_2025' not in stats.columns: raise SystemExit('WR YPRR audit field missing')
           if 'td_allocation_share' not in stats.columns: raise SystemExit('TD allocation missing')
           for team,g in eligible[eligible['position'].isin(['RB','WR','TE'])].groupby('team'):
               role=players[players['team_2026'].eq(team)]
               if len(role) and role['projected_pass_attempts'].notna().any():
                   budget=float(role['projected_pass_attempts'].dropna().iloc[0])*.961
                   if g['projected_targets'].sum()>budget: raise SystemExit(f'{team} target budget exceeded')
-          print('team contexts',len(teams)); print('player contexts',len(players)); print('depth matched',int(players['depth_matched'].sum())); print('depth starters',int(players['depth_starter'].sum())); print('QB environment adjusted',int(stats['qb_environment_delta'].notna().sum())); print('vacated opportunity players',int((players['vacated_target_share_2026']>0).sum())); print('role expansion players',int(stats['role_expansion_applied'].sum())); print('recent-role breakouts',int(stats['recent_role_breakout'].sum())); print('WR depth hierarchy adjusted',int(stats['wr_depth_hierarchy_applied'].sum())); print('WR growth guardrail adjusted',int(stats['target_growth_guardrail_applied'].sum())); print('TD allocated players',int(stats['td_allocation_share'].notna().sum())); print('projected stat lines',len(eligible))
+          print('team contexts',len(teams)); print('player contexts',len(players)); print('depth matched',int(players['depth_matched'].sum())); print('depth starters',int(players['depth_starter'].sum())); print('QB environment adjusted',int(stats['qb_environment_delta'].notna().sum())); print('vacated opportunity players',int((players['vacated_target_share_2026']>0).sum())); print('role expansion players',int(stats['role_expansion_applied'].sum())); print('recent-role breakouts',int(stats['recent_role_breakout'].sum())); print('WR depth hierarchy adjusted',int(stats['wr_depth_hierarchy_applied'].sum())); print('WR growth guardrail adjusted',int(stats['target_growth_guardrail_applied'].sum())); print('WR efficiency adjusted',int(stats['wr_efficiency_multiplier'].ne(1.0).sum())); print('TD allocated players',int(stats['td_allocation_share'].notna().sum())); print('projected stat lines',len(eligible))
           PY
       - name: Upload projection build
         uses: actions/upload-artifact@v4
