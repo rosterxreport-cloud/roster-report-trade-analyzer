@@ -4,6 +4,9 @@
 Opportunity (targets/receptions) is left unchanged. Projected receiving yards are
 adjusted from a blended standardized signal of yards per route run and yards per
 catch, with YPRR receiving slightly more weight. Small samples shrink to neutral.
+
+YPRR source: SumerSports public WR statistics table. The prior source only exposed
+five rows publicly, so this layer requires broad source coverage before applying.
 """
 from pathlib import Path
 from html.parser import HTMLParser
@@ -13,12 +16,13 @@ import numpy as np
 import pandas as pd
 
 GAMES=17.0
-YPRR_URL='https://statrankings.com/nfl/advanced/players/receiving/yards-per-route-run'
+YPRR_URL='https://sumersports.com/players/wide-receiver/?plays=98'
 YPRR_WEIGHT=.60
 YPC_WEIGHT=.40
 MAX_ADJ=.12
 MIN_TARGETS=20.0
 FULL_SAMPLE_TARGETS=70.0
+MIN_YPRR_MATCHES=60
 
 
 def norm(v):
@@ -38,45 +42,73 @@ def points(r,rec):
     return .04*x('projected_passing_yards')+4*x('projected_passing_tds')-2*x('projected_interceptions')+.1*x('projected_rushing_yards')+6*x('projected_rushing_tds')+rec*x('projected_receptions')+.1*x('projected_receiving_yards')+6*x('projected_receiving_tds')
 
 
-class TableParser(HTMLParser):
+class TextCollector(HTMLParser):
+    """Collect visible-ish text tokens for SumerSports' responsive stats grid."""
     def __init__(self):
-        super().__init__(); self.tables=[]; self.table=None; self.row=None; self.cell=None
+        super().__init__(); self.tokens=[]; self.skip=0
     def handle_starttag(self,tag,attrs):
-        if tag=='table': self.table=[]
-        elif tag=='tr' and self.table is not None: self.row=[]
-        elif tag in ('td','th') and self.row is not None: self.cell=[]
-    def handle_data(self,data):
-        if self.cell is not None:self.cell.append(data)
+        if tag in ('script','style','noscript'): self.skip+=1
     def handle_endtag(self,tag):
-        if tag in ('td','th') and self.cell is not None:
-            self.row.append(' '.join(''.join(self.cell).split())); self.cell=None
-        elif tag=='tr' and self.row is not None:
-            if self.row:self.table.append(self.row)
-            self.row=None
-        elif tag=='table' and self.table is not None:
-            if self.table:self.tables.append(self.table)
-            self.table=None
+        if tag in ('script','style','noscript') and self.skip:self.skip-=1
+    def handle_data(self,data):
+        if self.skip:return
+        t=' '.join(data.split())
+        if t:self.tokens.append(t)
 
 
 def load_yprr(url,known_names):
-    req=Request(url,headers={'User-Agent':'Mozilla/5.0'})
-    html=urlopen(req,timeout=30).read().decode('utf-8','ignore')
-    p=TableParser();p.feed(html)
+    # First try a semantic HTML table if the site exposes one to pandas.
+    try:
+        tables=pd.read_html(url)
+    except Exception:
+        tables=[]
     rows=[]
-    for table in p.tables:
-        if not table:continue
-        header=table[0]
-        if 'Player' not in header or 'Position' not in header or '2025' not in header:continue
-        pi=header.index('Player'); posi=header.index('Position'); yi=header.index('2025')
-        for row in table[1:]:
-            if len(row)<=max(pi,posi,yi) or row[posi] != 'WR':continue
-            try:v=float(row[yi])
-            except:continue
-            raw=norm(row[pi]); matches=[k for k in known_names if raw.startswith(k)]
-            if not matches:continue
-            key=max(matches,key=len); rows.append((key,v))
-    y=pd.DataFrame(rows,columns=['name_key','yprr_2025']).drop_duplicates('name_key')
-    if len(y)<40:raise RuntimeError(f'YPRR source unexpectedly small after matching: {len(y)} WR rows')
+    for t in tables:
+        cols=[str(c).strip() for c in t.columns]
+        player=next((c for c in cols if c.lower() in ('player','player name')),None)
+        season=next((c for c in cols if c.lower()=='season'),None)
+        ycol=next((c for c in cols if c.upper()=='YPRR'),None)
+        if not player or not ycol:continue
+        x=t.copy();x.columns=cols
+        if season:x=x[pd.to_numeric(x[season],errors='coerce').eq(2025)]
+        for _,r in x.iterrows():
+            key=norm(r[player]);v=num(r[ycol])
+            if key in known_names and np.isfinite(v):rows.append((key,v))
+
+    # Responsive fallback: parse the repeated sequence beginning with ranked player
+    # labels and ending in YPRR. SumerSports renders each row as visible text tokens.
+    if len(set(k for k,_ in rows)) < MIN_YPRR_MATCHES:
+        req=Request(url,headers={'User-Agent':'Mozilla/5.0'})
+        html=urlopen(req,timeout=30).read().decode('utf-8','ignore')
+        p=TextCollector();p.feed(html); toks=p.tokens
+        # Player labels look like "1 . Jaxon Smith-Njigba". A 2025 row then contains
+        # numeric fields in this order: routes, receptions, yards, share, TD, YAC,
+        # aDOT, catch%, EPA, TPRR, YPRR. Extract by locating the next 2025 token.
+        rank_re=re.compile(r'^\s*\d+\s*\.\s*(.+?)\s*$')
+        for i,tok in enumerate(toks):
+            mm=rank_re.match(tok)
+            if not mm:continue
+            pname=mm.group(1); key=norm(pname)
+            if key not in known_names:continue
+            # Find season marker close to player label.
+            j=None
+            for q in range(i+1,min(i+12,len(toks))):
+                if toks[q]=='2025':j=q;break
+            if j is None:continue
+            vals=[]
+            for q in range(j+1,min(j+40,len(toks))):
+                s=toks[q].replace(',','').replace('%','')
+                try: vals.append(float(s))
+                except: continue
+                if len(vals)>=11:break
+            if len(vals)>=11:
+                yprr=vals[10]
+                if .2 <= yprr <= 6.0:rows.append((key,yprr))
+
+    y=pd.DataFrame(rows,columns=['name_key','yprr_2025']).drop_duplicates('name_key',keep='last')
+    if len(y)<MIN_YPRR_MATCHES:
+        raise RuntimeError(f'YPRR source coverage too small: {len(y)} matched WRs; need {MIN_YPRR_MATCHES}')
+    print('YPRR matched WRs:',len(y))
     return y
 
 
@@ -98,7 +130,7 @@ def main():
         observed=int(np.isfinite(yprr))+int(np.isfinite(ypc));score=YPRR_WEIGHT*zr+YPC_WEIGHT*zy
         if observed==1:score*=.65
         sample=float(np.clip((tg-MIN_TARGETS)/(FULL_SAMPLE_TARGETS-MIN_TARGETS),0,1));shrink=.45+.55*sample;mult=1+float(np.clip(score*.055*shrink,-MAX_ADJ,MAX_ADJ))
-        old=num(m.at[i,'projected_receiving_yards']);
+        old=num(m.at[i,'projected_receiving_yards'])
         if np.isfinite(old):m.at[i,'projected_receiving_yards']=old*mult
         m.at[i,'wr_efficiency_multiplier']=mult;m.at[i,'wr_efficiency_score']=score
     for i in m[eligible].index:
