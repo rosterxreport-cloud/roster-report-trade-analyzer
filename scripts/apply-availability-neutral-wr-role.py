@@ -2,9 +2,9 @@
 """Restore WR opportunity when seasonal totals understate on-field role.
 
 Uses 2025 routes/game and targets per route run (TPRR) to estimate an
-availability-neutral 17-game target pace. This is a bounded opportunity layer:
-it can restore volume that was lost because of missed games or an overly harsh
-season-total prior, but it cannot create an unsupported breakout. YPRR supplies
+availability-neutral 17-game target pace. This is a bounded, team-budget-neutral
+opportunity layer: it can restore share lost because of missed games or an overly
+harsh season-total prior, but cannot create extra team targets. YPRR supplies
 secondary evidence that the route-earned role was productive. Later depth-chart
 and competition guardrails still reconcile the final team opportunity.
 """
@@ -80,7 +80,6 @@ def load_route_metrics(url,known_names):
             if len(vals)>=11: break
         if len(vals)>=11:
             routes,tprr,yprr=vals[0],vals[9],vals[10]
-            # SumerSports displays TPRR as a decimal rate on the current table.
             if routes>=1 and 0.01<=tprr<=1.0 and .2<=yprr<=6.0:
                 rows.append((key,routes,tprr,yprr))
     x=pd.DataFrame(rows,columns=['name_key','routes_2025','tprr_2025','yprr_role_2025']).drop_duplicates('name_key',keep='last')
@@ -102,27 +101,40 @@ def main():
     m=s.copy(); m['name_key_avail']=m.name.map(norm); m=m.merge(hist,left_on='name_key_avail',right_on='name_key',how='left')
     m['availability_neutral_multiplier']=1.0; m['availability_neutral_target_pace']=np.nan; m['availability_neutral_evidence']=np.nan; m['availability_neutral_applied']=False; m['wr_routes_per_game_2025']=np.nan; m['wr_tprr_2025']=m.get('tprr_2025'); m['wr_role_yprr_2025']=m.get('yprr_role_2025')
     eligible=m.position.eq('WR') & m.projection_status.isin(['modeled_veteran','returning_fallback'])
+    original_targets=pd.to_numeric(m['projected_targets'],errors='coerce').copy()
+    team_wr_budget={team:float(pd.to_numeric(g.projected_targets,errors='coerce').fillna(0).sum()) for team,g in m[eligible].groupby('team')}
+
     for i in m[eligible].index:
         gp=num(m.at[i,'games_2025']); tg=num(m.at[i,'targets_2025_role']); routes=num(m.at[i,'routes_2025']); tprr=num(m.at[i,'tprr_2025']); yprr=num(m.at[i,'yprr_role_2025']); cur=num(m.at[i,'projected_targets'])
         if gp<MIN_GAMES or tg<MIN_TARGETS or routes<=0 or tprr<=0 or cur<=0: continue
         rpg=routes/gp; pace=rpg*tprr*GAMES
-        # Blend direct target/game pace as a stability check against parsing/source noise.
         direct=(tg/gp)*GAMES; pace=.65*pace+.35*direct
         m.at[i,'wr_routes_per_game_2025']=rpg; m.at[i,'availability_neutral_target_pace']=pace
-        # TPRR drives role evidence; YPRR only confirms that the earned role was productive.
         tscore=float(np.clip((tprr/max(tprr_med,.01)-.85)/.45,0,1))
         yscore=float(np.clip((yprr/max(yprr_med,.01)-.75)/.65,0,1)) if np.isfinite(yprr) else .5
         evidence=.72*tscore+.28*yscore; m.at[i,'availability_neutral_evidence']=evidence
         if pace<=cur*1.03 or evidence<.40: continue
         missed=float(np.clip((17-gp)/10,0,1))
-        # Missed games increase restoration weight; healthy players can still recover part
-        # of a demonstrated role when a seasonal prior pushes them materially below it.
         restore=(.30+.45*missed)*evidence
         desired=cur+restore*(pace-cur)
-        # Never exceed a modest premium to the demonstrated neutral pace, and cap the step.
         desired=min(desired,pace*1.02,cur*MAX_MULT)
         if desired<=cur*1.01: continue
-        ratio=desired/cur; scale(m,i,ratio); m.at[i,'availability_neutral_multiplier']=ratio; m.at[i,'availability_neutral_applied']=True
+        ratio=desired/cur; scale(m,i,ratio); m.at[i,'availability_neutral_applied']=True
+
+    # Preserve each team's pre-layer WR target budget. This converts restored volume
+    # into target-share redistribution rather than adding opportunity to the offense.
+    for team,idx in m[eligible].groupby('team').groups.items():
+        idx=list(idx); before=team_wr_budget.get(team,0.0); after=float(pd.to_numeric(m.loc[idx,'projected_targets'],errors='coerce').fillna(0).sum())
+        if before>0 and after>before+1e-9:
+            factor=before/after
+            for i in idx: scale(m,i,factor)
+
+    # Store the final net multiplier after team-budget reconciliation.
+    for i in m[eligible].index:
+        old=num(original_targets.loc[i]); new=num(m.at[i,'projected_targets'])
+        if old>0 and new>0:
+            ratio=new/old; m.at[i,'availability_neutral_multiplier']=ratio
+            if ratio<=1.005: m.at[i,'availability_neutral_applied']=False
 
     for i in m[eligible].index:
         d=m.loc[i].to_dict(); m.at[i,'ppr_points']=points(d,1); m.at[i,'half_ppr_points']=points(d,.5); m.at[i,'standard_points']=points(d,0); m.at[i,'ppr_per_game']=m.at[i,'ppr_points']/GAMES; m.at[i,'half_ppr_per_game']=m.at[i,'half_ppr_points']/GAMES; m.at[i,'standard_per_game']=m.at[i,'standard_points']/GAMES
