@@ -52,6 +52,8 @@ jobs:
         run: python scripts/reconcile-2026-opportunity.py
       - name: Apply young-player role expansion
         run: python scripts/apply-role-expansion.py
+      - name: Apply recent target hierarchy
+        run: python scripts/apply-target-hierarchy.py
       - name: Reconcile starter QB passing
         run: python scripts/reconcile-qb-passing.py
       - name: Reconcile mobile QB rushing
@@ -90,6 +92,7 @@ jobs:
           if 'qb_environment_delta' not in stats.columns: raise SystemExit('QB receiving environment missing')
           if 'vacated_target_share_2026' not in players.columns: raise SystemExit('Vacated opportunity missing')
           if 'role_expansion_applied' not in stats.columns: raise SystemExit('Role expansion missing')
+          if 'target_hierarchy_multiplier' not in stats.columns: raise SystemExit('Target hierarchy missing')
           if 'td_allocation_share' not in stats.columns: raise SystemExit('TD allocation missing')
           for team,g in eligible[eligible['position'].isin(['RB','WR','TE'])].groupby('team'):
               role=players[players['team_2026'].eq(team)]
