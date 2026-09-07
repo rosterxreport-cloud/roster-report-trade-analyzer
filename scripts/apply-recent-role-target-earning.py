@@ -2,10 +2,9 @@
 """Adjust 2026 WR/TE opportunity using late-2025 target earning windows.
 
 Projection-only layer. Separates ordinary recent improvement from a confirmed
-breakout/structural role change. Sustainability is based on whether the team's
-ESTABLISHED season-long target earners were present during the breakout window,
-so injury-created opportunity is regressed more than breakouts earned alongside
-the normal receiving hierarchy.
+breakout/structural role change. Sustainability controls how much upside from the
+recent breakout is trusted, but never creates a forced downside below the incoming
+baseline solely because the breakout may have been injury-aided.
 """
 from pathlib import Path
 import argparse, re, unicodedata
@@ -42,14 +41,6 @@ def window_features(w,weeks,suffix):
     return agg[['name_key','team_key',f'tpg_{suffix}',f'share_{suffix}']]
 
 def established_teammate_presence(w, team, player_key, weeks):
-    """Presence of established target earners, selected from the FULL season.
-
-    Peers qualify if they earned >= 50 season targets or >= 4.0 targets/game and
-    played at least four games. We examine the top two such peers excluding the
-    breakout player. A peer is considered present in a breakout-window week when
-    he records a row for that week (not only when he receives a target), avoiding
-    false injury flags from zero-target games.
-    """
     team_all=w[w.team_key.eq(team)].copy()
     if team_all.empty:return 1.0
     season=(team_all.groupby('name_key').agg(targets=('targets','sum'),games=('week','nunique')).reset_index())
@@ -83,10 +74,13 @@ def main():
         for i in idx[breakout.to_numpy()]:
             presence.loc[i]=established_teammate_presence(w,team,norm(m.at[i,'name']),windows['l6'])
         sustainability=(.75*presence+.25*np.clip(sustained/1.35,.70,1.15)).clip(.55,1.10)
-        # If established peers missed >= 25% of the breakout window, downgrade a
-        # nominal confirmed breakout to the more conservative breakout treatment.
         confirmed=confirmed & presence.ge(.75)
-        recent_weight=np.where(confirmed,.88*sustainability,np.where(breakout,.72*sustainability,.28));season_score=.55*season_tpg+.45*(season_share*30.0);recent_score=.55*tpg_recent+.45*(share_recent*30.0);score=pd.Series((1-recent_weight)*season_score+recent_weight*recent_score,index=idx).clip(lower=.25);current_share=cur/cur.sum();desired=score/score.sum();exposed=np.where(confirmed,.62*sustainability,np.where(breakout,.42*sustainability,.18));blended=current_share*(1-exposed)+desired*exposed;mult=(blended/current_share.replace(0,np.nan)).replace([np.inf,-np.inf],np.nan).fillna(1);lo=np.where(confirmed,.86,np.where(breakout,.90,.86));hi=np.where(confirmed,1.42*sustainability,np.where(breakout,1.26*sustainability,1.16));mult=np.minimum(np.maximum(mult,lo),hi);new=cur*mult;new*=cur.sum()/new.sum()
+        recent_weight=np.where(confirmed,.88*sustainability,np.where(breakout,.72*sustainability,.28));season_score=.55*season_tpg+.45*(season_share*30.0);recent_score=.55*tpg_recent+.45*(share_recent*30.0);score=pd.Series((1-recent_weight)*season_score+recent_weight*recent_score,index=idx).clip(lower=.25);current_share=cur/cur.sum();desired=score/score.sum();exposed=np.where(confirmed,.62*sustainability,np.where(breakout,.42*sustainability,.18));blended=current_share*(1-exposed)+desired*exposed;mult=(blended/current_share.replace(0,np.nan)).replace([np.inf,-np.inf],np.nan).fillna(1)
+        # Sustainability limits breakout UPSIDE only. It can no longer make the high
+        # bound fall below 1.0 and force an otherwise valid baseline projection down.
+        lo=np.where(confirmed,.86,np.where(breakout,1.00,.86))
+        hi=np.where(confirmed,np.maximum(1.00,1.42*sustainability),np.where(breakout,np.maximum(1.00,1.26*sustainability),1.16))
+        mult=np.minimum(np.maximum(mult,lo),hi);new=cur*mult;new*=cur.sum()/new.sum()
         for j,i in enumerate(idx):
             old=num(m.at[i,'projected_targets'],0);nt=float(new.loc[i])
             if old>0:
@@ -97,5 +91,5 @@ def main():
         m[fmt.replace('_points','_overall_rank')]=m[fmt].rank(method='min',ascending=False);pc=fmt.replace('_points','_pos_rank');m[pc]=np.nan
         for pos in ['QB','RB','WR','TE']:
             mask=m.position.eq(pos)&m[fmt].notna();m.loc[mask,pc]=m.loc[mask,fmt].rank(method='min',ascending=False)
-    drop=['team_2026','targets_per_game','target_share','depth_starter','depth_rank','tpg_l8','share_l8','tpg_l6','share_l6','tpg_l4','share_l4'];m=m.drop(columns=[c for c in drop if c in m.columns],errors='ignore');nums=m.select_dtypes(include=[np.number]).columns;m[nums]=m[nums].round(3);m.to_csv(a.out,index=False);watch=m[m.name.isin(['Parker Washington','Michael Wilson','DK Metcalf','Zay Flowers'])];print(watch[['name','projected_targets','recent_role_breakout','confirmed_role_breakout','breakout_teammate_presence','breakout_sustainability','recent_role_multiplier','ppr_points','ppr_pos_rank']].sort_values('ppr_pos_rank').to_dict('records'));print('Recent-role breakouts:',int(m.recent_role_breakout.sum()),'confirmed:',int(m.confirmed_role_breakout.sum()));print(f'Wrote recent-role projections to {a.out}')
+    drop=['team_2026','targets_per_game','target_share','depth_starter','depth_rank','tpg_l8','share_l8','tpg_l6','share_l6','tpg_l4','share_l4'];m=m.drop(columns=[c for c in drop if c in m.columns],errors='ignore');nums=m.select_dtypes(include=[np.number]).columns;m[nums]=m[nums].round(3);m.to_csv(a.out,index=False);watch=m[m.name.isin(['Jameson Williams','Christian Watson','A.J. Brown','Jaylen Waddle','DJ Moore','Zay Flowers'])];print(watch[['name','projected_targets','recent_role_breakout','confirmed_role_breakout','breakout_teammate_presence','breakout_sustainability','recent_role_multiplier','ppr_points','ppr_pos_rank']].sort_values('ppr_pos_rank').to_dict('records'));print('Recent-role breakouts:',int(m.recent_role_breakout.sum()),'confirmed:',int(m.confirmed_role_breakout.sum()));print(f'Wrote recent-role projections to {a.out}')
 if __name__=='__main__':main()
