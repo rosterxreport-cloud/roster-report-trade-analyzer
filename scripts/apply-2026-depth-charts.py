@@ -52,7 +52,7 @@ def main():
     # We deliberately require a unique team so common-name collisions cannot silently move players.
     roles["team_2026_source"]=roles["team_2026"]
     roles["team_assignment_corrected"]=False
-    roles["team_assignment_depth_team"]=np.nan
+    roles["team_assignment_depth_team"]=pd.Series([None]*len(roles),index=roles.index,dtype="object")
     corrections=[]
     for i,r in roles.iterrows():
         g=raw[raw["name_key"].eq(r["name_key"])]
