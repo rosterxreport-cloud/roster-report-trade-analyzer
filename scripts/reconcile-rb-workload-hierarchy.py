@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Reconcile RB workload using current hierarchy plus continuous competition strength.
+"""Reconcile RB workload using current hierarchy, competition strength and backfield-relative efficiency.
 
 Current role is the anchor. Competition strength is evaluated separately for carries and
 receiving so a back can face a rushing 1B, a passing-down specialist, both, or neither.
-Team RB opportunity is preserved and no player-specific overrides are used.
+Recent rushing efficiency can influence carry allocation inside genuine committees, while
+clear bell-cow workloads remain role-driven. Team RB opportunity is preserved and no
+player-specific overrides are used.
 """
 from pathlib import Path
 import re, unicodedata
@@ -14,6 +16,7 @@ GAMES=17.0
 STATS=Path('data/projections/stat_projections_2026.csv')
 ROLES=Path('data/projections/player_role_context_2026.csv')
 DRAFT=Path('data/projections/draft_picks_normalized.csv')
+FEATS=Path('data/projections/player_features_2023_2025.csv')
 
 def num(v,d=np.nan):
     try:
@@ -36,8 +39,41 @@ def draft_signal(pick):
     if pick<=180: return .35
     return .18
 
+def build_efficiency_map():
+    if not FEATS.exists(): return {}
+    f=pd.read_csv(FEATS,low_memory=False)
+    if 'position' not in f or 'season' not in f: return {}
+    f=f[f.position.eq('RB') & f.season.isin([2023,2024,2025])].copy()
+    if f.empty: return {}
+    name_col='player_display_name' if 'player_display_name' in f.columns else ('player_name' if 'player_name' in f.columns else None)
+    if not name_col: return {}
+    # Richer rushing metrics are consumed automatically whenever available.
+    wmap={'explosive_run_rate':.22,'missed_tackles_forced_per_attempt':.20,'yards_after_contact_per_attempt':.18,
+          'rushing_epa_per_attempt':.16,'rushing_first_down_rate':.10,'success_rate':.08,'yards_per_carry':.06}
+    avail=[c for c in wmap if c in f.columns]
+    if not avail: return {}
+    season_w={2023:.20,2024:.30,2025:.50}; f['_sw']=f.season.map(season_w).fillna(0.)
+    # League reference is season-level so players are compared on standardized recent ability.
+    refs={}
+    for c in avail:
+        x=pd.to_numeric(f[c],errors='coerce'); refs[c]=(float(x.mean()),float(x.std()))
+    out={}
+    for name,g in f.groupby(name_col):
+        vals=[]; ws=[]
+        for c in avail:
+            x=pd.to_numeric(g[c],errors='coerce'); mask=x.notna()
+            if not mask.any(): continue
+            sw=g.loc[mask,'_sw'].to_numpy(float); v=x[mask].to_numpy(float)
+            avg=float(np.average(v,weights=sw)) if sw.sum()>0 else float(np.mean(v))
+            mu,sd=refs[c]
+            if np.isfinite(sd) and sd>0:
+                z=float(np.clip((avg-mu)/sd,-2,2)); vals.append(z); ws.append(wmap[c])
+        if ws:
+            out[norm_name(name)]=float(np.average(vals,weights=ws))
+    return out
+
 def main():
-    s=pd.read_csv(STATS); r=pd.read_csv(ROLES)
+    s=pd.read_csv(STATS); r=pd.read_csv(ROLES); effmap=build_efficiency_map()
     keep=[c for c in ['name','position','team_2026','depth_rank','depth_starter','role_carry_share_2026','role_target_share_2026','carries_per_game','targets_per_game','projected_rush_attempts','projected_pass_attempts','rookie','role_confidence'] if c in r]
     rr=r[keep].copy().rename(columns={'team_2026':'team'}); rr['name_key']=rr['name'].map(norm_name)
     if DRAFT.exists():
@@ -52,7 +88,7 @@ def main():
     if 'draft_pick_direct' not in rr: rr['draft_pick_direct']=np.nan
     m=s.merge(rr.drop(columns=['name_key']),on=['name','position','team'],how='left',suffixes=('','_role'))
     eligible=m.projection_status.isin(['modeled_veteran','returning_fallback','rookie_model']) & m.position.eq('RB')
-    for col in ['rb_competition_carry_score','rb_competition_target_score','rb_competition_adjustment']:
+    for col in ['rb_competition_carry_score','rb_competition_target_score','rb_competition_adjustment','rb_relative_efficiency_score','rb_efficiency_workload_weight']:
         m[col]=np.nan
 
     for team,g in m[eligible].groupby('team'):
@@ -63,22 +99,23 @@ def main():
         old_t=pd.to_numeric(m.loc[idx,'projected_targets'],errors='coerce').fillna(0.0)
         carry_budget=min(old_c.sum(),team_rush*.86) if np.isfinite(team_rush) else old_c.sum(); target_budget=old_t.sum()
         if carry_budget<=0: continue
-        cw=[]; tw=[]; ranks=[]; starters=[]; picks=[]; role_cs=[]; role_ts=[]; cpgs=[]; tpgs=[]; confs=[]
+        cw=[]; tw=[]; ranks=[]; starters=[]; picks=[]; role_cs=[]; role_ts=[]; cpgs=[]; tpgs=[]; confs=[]; effs=[]
         for i in idx:
             row=m.loc[i]; rank=max(1,int(num(row.get('depth_rank'),4))); starter=bool(row.get('depth_starter',False)); conf=np.clip(num(row.get('role_confidence'),.55),0,1)
             depth_c={1:1.00,2:.58,3:.32,4:.18}.get(rank,.10); depth_t={1:1.00,2:.68,3:.42,4:.25}.get(rank,.15)
             if starter: depth_c*=1.10; depth_t*=1.06
             role_c=np.clip(num(row.get('role_carry_share_2026'),.12),.01,.90); role_t=np.clip(num(row.get('role_target_share_2026'),.04),.005,.35)
             cpg=max(0,num(row.get('carries_per_game'),0)); tpg=max(0,num(row.get('targets_per_game'),0)); hist_c=cpg*GAMES; hist_t=tpg*GAMES
-            # Historical usage decays quickly when current depth position is reduced.
             hist_decay={1:1.0,2:.62,3:.38,4:.22}.get(rank,.15)
             hist_c_share=(hist_c/max(hist_c+90,1))*hist_decay; hist_t_share=(hist_t/max(hist_t+45,1))*hist_decay
             rookie=bool(row.get('rookie',False)) or row.get('projection_status')=='rookie_model'; pick=num(row.get('draft_pick_direct'),999)
             capital=1.22 if rookie and pick<=32 else (1.12 if rookie and pick<=64 else (1.05 if rookie and pick<=120 else 1.0))
             c=(.60*depth_c+.25*(role_c/.35)+.15*hist_c_share)*capital
             t=(.55*depth_t+.25*(role_t/.10)+.20*hist_t_share)*(1.10 if rookie and pick<=32 else 1.0)
-            cw.append(max(.01,c)); tw.append(max(.01,t)); ranks.append(rank); starters.append(starter); picks.append(pick); role_cs.append(role_c); role_ts.append(role_t); cpgs.append(cpg); tpgs.append(tpg); confs.append(conf)
-        cw=np.asarray(cw,float); tw=np.asarray(tw,float); cw/=cw.sum(); tw/=tw.sum()
+            eff=effmap.get(norm_name(row.get('name')),0.0)
+            cw.append(max(.01,c)); tw.append(max(.01,t)); ranks.append(rank); starters.append(starter); picks.append(pick); role_cs.append(role_c); role_ts.append(role_t); cpgs.append(cpg); tpgs.append(tpg); confs.append(conf); effs.append(eff)
+        cw=np.asarray(cw,float); tw=np.asarray(tw,float); effs=np.asarray(effs,float)
+        cw/=cw.sum(); tw/=tw.sum()
 
         lead=[j for j,(rk,st) in enumerate(zip(ranks,starters)) if rk==1 and st]
         lead_floor=np.nan; lead_t_floor=np.nan; carry_comp=np.nan; target_comp=np.nan
@@ -87,8 +124,7 @@ def main():
             backup_c=[]; backup_t=[]
             for j in range(len(idx)):
                 if j==k: continue
-                depth_sig={2:.90,3:.55,4:.28}.get(ranks[j],.18)
-                ds=draft_signal(picks[j])
+                depth_sig={2:.90,3:.55,4:.28}.get(ranks[j],.18); ds=draft_signal(picks[j])
                 carry_claim=.30*np.clip(role_cs[j]/.30,0,1)+.25*np.clip(cpgs[j]/13,0,1)+.18*depth_sig+.12*ds+.15*confs[j]
                 target_claim=.30*np.clip(role_ts[j]/.10,0,1)+.25*np.clip(tpgs[j]/4.0,0,1)+.18*depth_sig+.12*ds+.15*confs[j]
                 backup_c.append(float(np.clip(carry_claim,0,1))); backup_t.append(float(np.clip(target_claim,0,1)))
@@ -97,21 +133,34 @@ def main():
                 if not vals: return 0.0
                 return float(np.clip(.72*vals[0]+(.28*vals[1] if len(vals)>1 else 0),0,1))
             carry_comp=combine(backup_c); target_comp=combine(backup_t)
-            # Continuous concentration: weak competition earns a stronger floor, strong 1B competition lowers it.
-            lead_floor=float(np.clip(.54+.15*(1-carry_comp),.54,.69))
-            if picks[k]<=32: lead_floor=min(.70,lead_floor+.025)
-            lead_t_floor=float(np.clip(.38+.18*(1-target_comp),.38,.56))
-            # Competition also nudges the unconstrained allocation rather than only acting as a hard floor.
+            # Strong competition can create genuine near-even splits; weak competition earns bell-cow room.
+            lead_floor=float(np.clip(.47+.22*(1-carry_comp),.47,.69))
+            if picks[k]<=32 and carry_comp<.55: lead_floor=min(.72,lead_floor+.025)
+            lead_t_floor=float(np.clip(.34+.22*(1-target_comp),.34,.56))
             c_adj=float(np.clip(1+.22*(.50-carry_comp),.88,1.12)); t_adj=float(np.clip(1+.20*(.50-target_comp),.90,1.10))
             cw[k]*=c_adj; tw[k]*=t_adj; cw/=cw.sum(); tw/=tw.sum()
+
+            # Relative rushing talent influences workload most in genuine committees. At high competition,
+            # recent efficiency can explain 15-20% of the split; with weak competition it has little effect.
+            committee_w=float(np.clip(.04+.18*carry_comp,.04,.20))
+            if np.any(np.abs(effs)>1e-9):
+                e=np.exp(np.clip(effs,-2,2)*.45); es=e/e.sum()
+                cw=(1-committee_w)*cw+committee_w*es; cw/=cw.sum()
+            m.loc[idx,'rb_relative_efficiency_score']=effs; m.loc[idx,'rb_efficiency_workload_weight']=committee_w
+
             if cw[k]<lead_floor:
-                need=lead_floor-cw[k]; oth=np.arange(len(cw))!=k; pool=cw[oth].sum(); cw[oth]*=max(0,pool-need)/pool; cw[k]=lead_floor
+                need=lead_floor-cw[k]; oth=np.arange(len(cw))!=k; pool=cw[oth].sum()
+                if pool>0: cw[oth]*=max(0,pool-need)/pool; cw[k]=lead_floor
             if tw[k]<lead_t_floor:
-                need=lead_t_floor-tw[k]; oth=np.arange(len(tw))!=k; pool=tw[oth].sum(); tw[oth]*=max(0,pool-need)/pool; tw[k]=lead_t_floor
+                need=lead_t_floor-tw[k]; oth=np.arange(len(tw))!=k; pool=tw[oth].sum()
+                if pool>0: tw[oth]*=max(0,pool-need)/pool; tw[k]=lead_t_floor
             m.at[idx[k],'rb_competition_carry_score']=carry_comp; m.at[idx[k],'rb_competition_target_score']=target_comp; m.at[idx[k],'rb_competition_adjustment']=c_adj
 
-        if len(cw)>1 and cw.max()>.72:
-            k=int(cw.argmax()); excess=cw[k]-.72; cw[k]=.72; oth=np.arange(len(cw))!=k; cw[oth]+=excess*cw[oth]/cw[oth].sum()
+        # Dynamic bell-cow ceiling. Strong committees stay close; weak competition can reach ~80%.
+        carry_cap=.80
+        if np.isfinite(carry_comp): carry_cap=float(np.clip(.66+.16*(1-carry_comp),.66,.80))
+        if len(cw)>1 and cw.max()>carry_cap:
+            k=int(cw.argmax()); excess=cw[k]-carry_cap; cw[k]=carry_cap; oth=np.arange(len(cw))!=k; cw[oth]+=excess*cw[oth]/cw[oth].sum()
         if len(tw)>1 and tw.max()>.68:
             k=int(tw.argmax()); excess=tw[k]-.68; tw[k]=.68; oth=np.arange(len(tw))!=k; tw[oth]+=excess*tw[oth]/tw[oth].sum()
 
@@ -139,7 +188,7 @@ def main():
             mask=m.position.eq(p)&m[f].notna(); m.loc[mask,pc]=m.loc[mask,f].rank(method='min',ascending=False)
     drop=[c for c in m.columns if c.endswith('_role') or c in {'depth_rank','depth_starter','role_carry_share_2026','role_target_share_2026','carries_per_game','targets_per_game','rookie_role','role_confidence','draft_pick_direct'}]
     m=m.drop(columns=drop,errors='ignore'); nums=m.select_dtypes(include=[np.number]).columns; m[nums]=m[nums].round(3); m.to_csv(STATS,index=False)
-    watch=['Jeremiyah Love','Omarion Hampton','Jaylen Warren','Tony Pollard','Alvin Kamara']
-    cols=['name','team','projected_rush_attempts','projected_targets','ppr_points','ppr_pos_rank','rb_workload_carry_share','rb_workload_target_share','rb_competition_carry_score','rb_competition_target_score','rb_lead_carry_floor','rb_lead_target_floor']
+    watch=['Rhamondre Stevenson','TreVeyon Henderson','Jaylen Warren','Rico Dowdle','Jeremiyah Love','Omarion Hampton','Kenneth Walker III']
+    cols=['name','team','projected_rush_attempts','projected_targets','ppr_points','ppr_pos_rank','rb_workload_carry_share','rb_competition_carry_score','rb_relative_efficiency_score','rb_efficiency_workload_weight','rb_lead_carry_floor']
     print(m[m.name.isin(watch)][cols].to_dict('records'))
 if __name__=='__main__': main()
