@@ -33,33 +33,27 @@ def main():
         idx=list(g.index); old=pd.to_numeric(m.loc[idx,'projected_rush_attempts'],errors='coerce').fillna(0.0)
         budget=float(old.sum())
         if budget<=0 or len(idx)<2: continue
-        shares=(old/budget).to_numpy(); ranks=[]; starters=[]; rook=[]; picks=[]; hist=[]
+        shares=(old/budget).to_numpy(copy=True); ranks=[]; starters=[]; rook=[]; picks=[]; hist=[]
         for i in idx:
             row=m.loc[i]; ranks.append(max(1,int(num(row.get('depth_rank'),4)))); starters.append(bool(row.get('depth_starter',False)))
             rook.append(row.get('projection_status')=='rookie_model'); picks.append(num(row.get('rb_workload_draft_pick'),999)); hist.append(max(0,num(row.get('carries_per_game'),0)))
         leads=[j for j,(rk,st) in enumerate(zip(ranks,starters)) if rk==1 and st]
         if len(leads)!=1: continue
         k=leads[0]
-        # Coaching/play-caller rushing tendency proxy: lower pass-rate / pass-volume history implies
-        # a modestly more RB-friendly rushing environment. Keep bounded because personnel baseline exists.
         cr=coach.get(team); rush_scheme=1.0
         if cr is not None:
             pri=num(cr.get('coach_pass_rate_index'),1.0); pvi=num(cr.get('coach_pass_volume_index'),1.0); conf=np.clip(num(cr.get('coaching_confidence'),0),0,1)
             rush_scheme=float(np.clip(1 + conf*(.55*(1-pri)+.25*(1-pvi)), .94, 1.08))
         backup_hist=max([hist[j] for j in range(len(idx)) if j!=k] or [0])
-        # Returning bell-cow prior: a current RB1 with strong recent healthy-game usage starts high.
-        # carries_per_game is availability-neutral recent usage; 14+ cpg implies majority work, 16+ strong bell cow.
         floor=.55
         if hist[k]>=14: floor=.62
         if hist[k]>=16: floor=.66
         if hist[k]>=18: floor=.69
-        # Clear rookie RB1: draft capital + weak competition replaces missing NFL history.
         if rook[k]:
             if picks[k]<=32: floor=max(floor,.64)
             elif picks[k]<=64: floor=max(floor,.61)
             elif picks[k]<=120: floor=max(floor,.58)
             if backup_hist<8: floor=min(.70,floor+.03)
-        # Scheme shifts concentration only a few points; committee coaches can pull the floor down.
         floor=float(np.clip(floor + .35*(rush_scheme-1), .53, .70))
         if shares[k]<floor:
             need=floor-shares[k]; others=np.arange(len(shares))!=k; pool=shares[others].sum()
