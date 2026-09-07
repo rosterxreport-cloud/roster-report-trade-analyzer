@@ -72,6 +72,8 @@ jobs:
         run: python scripts/apply-qb-receiving-environment.py
       - name: Reconcile receiving touchdowns
         run: python scripts/reconcile-receiving-touchdowns.py
+      - name: Validate current roster context
+        run: python scripts/validate-current-roster-context.py
       - name: Smoke test promoted runtime
         run: |
           node --input-type=module <<'JS'
