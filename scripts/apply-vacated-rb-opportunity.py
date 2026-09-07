@@ -5,6 +5,12 @@ import re, unicodedata
 import numpy as np
 import pandas as pd
 STATS=Path('data/projections/stat_projections_2026.csv'); ROLES=Path('data/projections/player_role_context_2026.csv'); FEATS=Path('data/projections/player_features_2023_2025.csv'); G=17.0
+TEAM_ALIASES={'JAX':'JAC','LA':'LAR','STL':'LAR','SD':'LAC','OAK':'LV'}
+def team_norm(v):
+    if pd.isna(v): return None
+    t=str(v).strip().upper()
+    if not t or t=='<NA>': return None
+    return TEAM_ALIASES.get(t,t)
 def num(v,d=np.nan):
     try:
         x=float(v); return x if np.isfinite(x) else d
@@ -15,40 +21,29 @@ def pts(r,rec=1.):
     x=lambda k:num(r.get(k),0.); return .1*x('projected_rushing_yards')+6*x('projected_rushing_tds')+rec*x('projected_receptions')+.1*x('projected_receiving_yards')+6*x('projected_receiving_tds')+.04*x('projected_passing_yards')+4*x('projected_passing_tds')-2*x('projected_interceptions')
 def main():
     s=pd.read_csv(STATS); r=pd.read_csv(ROLES); f=pd.read_csv(FEATS,low_memory=False)
+    s['team']=s['team'].map(team_norm)
+    if 'team_2026' in r: r['team_2026']=r['team_2026'].map(team_norm)
     keep=[c for c in ['name','position','team_2026','depth_rank','depth_starter','role_confidence','role_carry_share_2026','role_target_share_2026'] if c in r]
     rr=r[keep].rename(columns={'team_2026':'team'}).copy(); rr['nk']=rr['name'].map(norm)
-    # Preserve every current-team candidate per normalized name. Duplicate-name collisions are audited rather than silently overwritten.
-    team_sets=rr.groupby('nk')['team'].agg(lambda x: sorted({str(v).strip() for v in x if pd.notna(v) and str(v).strip()})).to_dict()
+    team_sets=rr.groupby('nk')['team'].agg(lambda x: sorted({team_norm(v) for v in x if team_norm(v)})).to_dict()
     current_team={k:(v[0] if len(v)==1 else None) for k,v in team_sets.items()}
     m=s.merge(rr.drop(columns=['nk']),on=['name','position','team'],how='left',suffixes=('','_vac'))
     f=f[(f.position.eq('RB')) & pd.to_numeric(f.season,errors='coerce').eq(2025)].copy(); nc='player_display_name' if 'player_display_name' in f else 'player_name'; f['nk']=f[nc].map(norm)
-    # Use the explicit season team. nflverse recent_team is authoritative when populated.
     recent=f['recent_team'].astype('string').str.strip() if 'recent_team' in f else pd.Series(pd.NA,index=f.index,dtype='string')
     team=f['team'].astype('string').str.strip() if 'team' in f else pd.Series(pd.NA,index=f.index,dtype='string')
-    old=recent.mask(recent.isna()|recent.eq('')|recent.eq('<NA>'),team); f['old_team']=old
+    old=recent.mask(recent.isna()|recent.eq('')|recent.eq('<NA>'),team); f['old_team_raw']=old; f['old_team']=old.map(team_norm)
     carrycol='carries' if 'carries' in f else 'rushing_attempts'; f['carries_2025']=pd.to_numeric(f.get(carrycol),errors='coerce').fillna(0.); f['targets_2025']=pd.to_numeric(f.get('targets'),errors='coerce').fillna(0.)
-    # Identity audit: print every meaningful 2025 RB row with old/current teams, plus exact Etienne/Tuten diagnostics.
-    audit=f.loc[(f.carries_2025>=20)|(f.targets_2025>=8),[c for c in [nc,'player_id','nk','recent_team','team','old_team','carries_2025','targets_2025'] if c in f]].copy()
-    audit['current_team_candidates']=audit['nk'].map(lambda k:'|'.join(team_sets.get(k,[])))
-    audit['resolved_current_team']=audit['nk'].map(current_team)
-    audit['is_departed']=audit.apply(lambda x: x['resolved_current_team']!=x['old_team'],axis=1)
-    print('RB_2025_IDENTITY_AUDIT',audit.sort_values(['old_team',nc]).to_dict('records'))
-    focal=audit[audit[nc].astype(str).str.contains('Etienne|Tuten',case=False,na=False)]
-    print('ETIENNE_TUTEN_IDENTITY_TRACE',focal.to_dict('records'))
-    collisions={k:v for k,v in team_sets.items() if len(v)>1}; print('CURRENT_RB_NAME_COLLISIONS',collisions)
+    audit=f.loc[(f.carries_2025>=20)|(f.targets_2025>=8),[c for c in [nc,'player_id','nk','recent_team','team','old_team_raw','old_team','carries_2025','targets_2025'] if c in f]].copy()
+    audit['current_team_candidates']=audit['nk'].map(lambda k:'|'.join(team_sets.get(k,[]))); audit['resolved_current_team']=audit['nk'].map(current_team); audit['is_departed']=audit.apply(lambda x: x['resolved_current_team']!=x['old_team'],axis=1)
+    print('RB_2025_IDENTITY_AUDIT',audit.sort_values(['old_team',nc]).to_dict('records')); print('ETIENNE_TUTEN_IDENTITY_TRACE',audit[audit[nc].astype(str).str.contains('Etienne|Tuten',case=False,na=False)].to_dict('records')); print('CURRENT_RB_NAME_COLLISIONS',{k:v for k,v in team_sets.items() if len(v)>1})
     rows=[]
     for old_team,g in f.dropna(subset=['old_team']).groupby('old_team'):
         tc=float(g.carries_2025.sum()); tt=float(g.targets_2025.sum()); vc=vt=0.; names=[]
         for _,x in g.iterrows():
-            candidates=team_sets.get(x.nk,[]); new=current_team.get(x.nk)
-            # A unique different current team or no current roster entry means the old workload is vacated.
-            departed=(len(candidates)==0) or (len(candidates)==1 and candidates[0]!=str(old_team))
-            # Ambiguous normalized-name collisions are not guessed; flag them in the audit and conservatively leave unvacated.
-            if departed:
-                vc+=float(x.carries_2025); vt+=float(x.targets_2025); names.append(f"{x.get(nc,'?')}->{new or 'OUT'}")
-        rows.append({'team':str(old_team),'rb_prev_carries':tc,'rb_prev_targets':tt,'rb_vacated_carries':vc,'rb_vacated_targets':vt,'rb_vacated_departures':'|'.join(names)})
-    vac=pd.DataFrame(rows); print('VACATED_RB_TEAM_AUDIT',vac.sort_values('team').to_dict('records'))
-    m=m.merge(vac,on='team',how='left')
+            candidates=team_sets.get(x.nk,[]); new=current_team.get(x.nk); departed=(len(candidates)==0) or (len(candidates)==1 and candidates[0]!=old_team)
+            if departed: vc+=float(x.carries_2025); vt+=float(x.targets_2025); names.append(f"{x.get(nc,'?')}->{new or 'OUT'}")
+        rows.append({'team':old_team,'rb_prev_carries':tc,'rb_prev_targets':tt,'rb_vacated_carries':vc,'rb_vacated_targets':vt,'rb_vacated_departures':'|'.join(names)})
+    vac=pd.DataFrame(rows); print('VACATED_RB_TEAM_AUDIT',vac.sort_values('team').to_dict('records')); m=m.merge(vac,on='team',how='left')
     for c in ['rb_prev_carries','rb_prev_targets','rb_vacated_carries','rb_vacated_targets']:m[c]=pd.to_numeric(m[c],errors='coerce').fillna(0.)
     m['rb_vacated_departures']=m['rb_vacated_departures'].fillna(''); m['rb_vacated_opportunity_applied']=False; m['rb_vacated_opportunity_share']=0.; m['rb_vacated_inheritance_weight']=0.; m['rb_vacated_carry_delta']=0.; m['rb_vacated_target_delta']=0.
     elig=m.position.eq('RB') & m.projection_status.isin(['modeled_veteran','returning_fallback','rookie_model'])
