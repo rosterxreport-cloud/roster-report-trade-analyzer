@@ -2,9 +2,9 @@
 """Joint veteran RB role-achievability sanity layer.
 
 Prevents a veteran in a worsening/committee role from accidentally recreating an old career
-peak because carries, targets and TD submodels are each independently optimistic. Recent
-healthy usage is weighted 2025 > 2024 > 2023; current depth/competition determines how much
-upside above that recent distribution is allowed. No player-specific overrides.
+peak because carries, targets and TD submodels are independently optimistic. Recent healthy
+usage and fantasy production are weighted 2025 > 2024 > 2023. Current role/competition
+controls how much upside above that recent distribution is allowed. No player overrides.
 """
 from pathlib import Path
 import re, unicodedata
@@ -34,8 +34,13 @@ def main():
                     good=ok&x.notna()
                     if good.any(): return float(np.average(x[good],weights=w[good]))
             return np.nan
-        hist[nk]={'cpg':avg(['carries','rushing_attempts'],True),'tpg':avg(['targets'],True),'rush_td_pg':avg(['rushing_tds'],True),'rec_td_pg':avg(['receiving_tds'],True)}
-    for c in ['rb_achievability_applied','rb_achievability_role_factor','rb_achievability_carry_cap','rb_achievability_target_cap','rb_achievability_td_cap','rb_achievability_joint_multiplier']:
+        ppg=avg(['ppr_per_game'],False)
+        if not np.isfinite(ppg):
+            # Reconstruct PPR/game when the feature table lacks a direct field.
+            ry=avg(['rushing_yards'],True); rtd=avg(['rushing_tds'],True); rec=avg(['receptions'],True); rey=avg(['receiving_yards'],True); retd=avg(['receiving_tds'],True)
+            ppg=sum([.1*num(ry,0),6*num(rtd,0),num(rec,0),.1*num(rey,0),6*num(retd,0)])
+        hist[nk]={'cpg':avg(['carries','rushing_attempts'],True),'tpg':avg(['targets'],True),'rush_td_pg':avg(['rushing_tds'],True),'rec_td_pg':avg(['receiving_tds'],True),'ppr_pg':ppg}
+    for c in ['rb_achievability_applied','rb_achievability_role_factor','rb_achievability_carry_cap','rb_achievability_target_cap','rb_achievability_td_cap','rb_achievability_ppr_cap','rb_achievability_joint_multiplier','rb_achievability_ppr_multiplier']:
         m[c]=False if c=='rb_achievability_applied' else np.nan
     elig=m.projection_status.isin(['modeled_veteran','returning_fallback']) & m.position.eq('RB')
     for i in m.index[elig]:
@@ -43,7 +48,6 @@ def main():
         if not h: continue
         rank=max(1,int(num(row.get('depth_rank'),4))); starter=bool(row.get('depth_starter',False)); conf=np.clip(num(row.get('role_confidence'),.6),0,1)
         ccomp=np.clip(num(row.get('rb_competition_carry_score'),.5),0,1); tcomp=np.clip(num(row.get('rb_competition_target_score'),.5),0,1)
-        # Current role controls how much a veteran may exceed his recent healthy baseline.
         if rank==1 and starter:
             role_factor=np.clip(1.16-.28*ccomp,.84,1.14); target_factor=np.clip(1.14-.32*tcomp,.78,1.12)
         elif rank==2:
@@ -51,20 +55,31 @@ def main():
         else:
             role_factor=.55; target_factor=.50
         role_factor=.75*role_factor+.25*conf
-        cpg=num(h.get('cpg'),np.nan); tpg=num(h.get('tpg'),np.nan); rtd=num(h.get('rush_td_pg'),np.nan); etd=num(h.get('rec_td_pg'),np.nan)
+        cpg=num(h.get('cpg'),np.nan); tpg=num(h.get('tpg'),np.nan); rtd=num(h.get('rush_td_pg'),np.nan); etd=num(h.get('rec_td_pg'),np.nan); hist_ppg=num(h.get('ppr_pg'),np.nan)
         carry_cap=(cpg*GAMES*max(.90,role_factor*1.18)) if np.isfinite(cpg) else np.inf
         target_cap=(tpg*GAMES*max(.82,target_factor*1.16)) if np.isfinite(tpg) else np.inf
-        # TD ceiling is tied to recent scoring rate and current role; committee competition hits high-value touches too.
         recent_td=((rtd if np.isfinite(rtd) else 0)+(etd if np.isfinite(etd) else 0))*GAMES
         td_cap=max(3.0,recent_td*np.clip(.92+.28*role_factor-.22*ccomp,.72,1.18)) if recent_td>0 else np.inf
         oc=num(row.get('projected_rush_attempts'),0); ot=num(row.get('projected_targets'),0); ort=num(row.get('projected_rushing_tds'),0); oet=num(row.get('projected_receiving_tds'),0)
-        cr=min(1.,carry_cap/max(oc,1e-9)); tr=min(1.,target_cap/max(ot,1e-9)); tdr=min(1.,td_cap/max(ort+oet,1e-9))
-        # Smooth, not hard-cliff: only suppress the optimistic tail.
-        cr=.35+.65*cr if cr<1 else 1.; tr=.30+.70*tr if tr<1 else 1.; tdr=.40+.60*tdr if tdr<1 else 1.
-        m.at[i,'projected_rush_attempts']=oc*cr; m.at[i,'projected_rushing_yards']=num(row.get('projected_rushing_yards'),0)*cr
-        m.at[i,'projected_targets']=ot*tr; m.at[i,'projected_receptions']=num(row.get('projected_receptions'),0)*tr; m.at[i,'projected_receiving_yards']=num(row.get('projected_receiving_yards'),0)*tr
-        m.at[i,'projected_rushing_tds']=ort*tdr; m.at[i,'projected_receiving_tds']=oet*tdr
-        m.at[i,'rb_achievability_applied']=True; m.at[i,'rb_achievability_role_factor']=role_factor; m.at[i,'rb_achievability_carry_cap']=carry_cap if np.isfinite(carry_cap) else np.nan; m.at[i,'rb_achievability_target_cap']=target_cap if np.isfinite(target_cap) else np.nan; m.at[i,'rb_achievability_td_cap']=td_cap if np.isfinite(td_cap) else np.nan; m.at[i,'rb_achievability_joint_multiplier']=min(cr,tr,tdr)
+        cr=min(1.,carry_cap/max(oc,1e-9)); tr=min(1.,target_cap/max(ot,1e-9)); tdr=min(1.,td_cap/max(ort+oet,1e-9)); cr=.35+.65*cr if cr<1 else 1.; tr=.30+.70*tr if tr<1 else 1.; tdr=.40+.60*tdr if tdr<1 else 1.
+        m.at[i,'projected_rush_attempts']=oc*cr; m.at[i,'projected_rushing_yards']=num(row.get('projected_rushing_yards'),0)*cr; m.at[i,'projected_targets']=ot*tr; m.at[i,'projected_receptions']=num(row.get('projected_receptions'),0)*tr; m.at[i,'projected_receiving_yards']=num(row.get('projected_receiving_yards'),0)*tr; m.at[i,'projected_rushing_tds']=ort*tdr; m.at[i,'projected_receiving_tds']=oet*tdr
+        # Joint fantasy-production ceiling: recent PPR level + current role. Strong committee competition
+        # gets little/no permission to jump materially above the recent healthy baseline.
+        d=m.loc[i].to_dict(); pre_ppr=score(d,1); ppr_mult=1.; ppr_cap=np.inf
+        if np.isfinite(hist_ppg) and hist_ppg>0:
+            if rank==1 and starter:
+                upside=np.clip(1.08+.12*(role_factor-1)-.10*ccomp-.06*tcomp,.92,1.10)
+            elif rank==2: upside=np.clip(.86-.08*ccomp-.06*tcomp,.70,.86)
+            else: upside=.68
+            ppr_cap=hist_ppg*GAMES*upside
+            raw=min(1.,ppr_cap/max(pre_ppr,1e-9))
+            # Smooth cap, but stronger than component caps because it catches correlated optimism.
+            ppr_mult=.18+.82*raw if raw<1 else 1.
+            if ppr_mult<1:
+                # Scale fantasy-producing volume/TDs together, preserving efficiency and role shape.
+                for col in ['projected_rush_attempts','projected_rushing_yards','projected_rushing_tds','projected_targets','projected_receptions','projected_receiving_yards','projected_receiving_tds']:
+                    m.at[i,col]=num(m.at[i,col],0)*ppr_mult
+        m.at[i,'rb_achievability_applied']=True; m.at[i,'rb_achievability_role_factor']=role_factor; m.at[i,'rb_achievability_carry_cap']=carry_cap if np.isfinite(carry_cap) else np.nan; m.at[i,'rb_achievability_target_cap']=target_cap if np.isfinite(target_cap) else np.nan; m.at[i,'rb_achievability_td_cap']=td_cap if np.isfinite(td_cap) else np.nan; m.at[i,'rb_achievability_ppr_cap']=ppr_cap if np.isfinite(ppr_cap) else np.nan; m.at[i,'rb_achievability_joint_multiplier']=min(cr,tr,tdr,ppr_mult); m.at[i,'rb_achievability_ppr_multiplier']=ppr_mult
     all_elig=m.projection_status.isin(['modeled_veteran','returning_fallback','rookie_model'])
     for i in m.index[all_elig]:
         d=m.loc[i].to_dict(); m.at[i,'ppr_points']=score(d,1); m.at[i,'half_ppr_points']=score(d,.5); m.at[i,'standard_points']=score(d,0); m.at[i,'ppr_per_game']=m.at[i,'ppr_points']/GAMES; m.at[i,'half_ppr_per_game']=m.at[i,'half_ppr_points']/GAMES; m.at[i,'standard_per_game']=m.at[i,'standard_points']/GAMES
@@ -73,5 +88,5 @@ def main():
         for p in ['QB','RB','WR','TE']:
             mask=m.position.eq(p)&m[fc].notna(); m.loc[mask,pc]=m.loc[mask,fc].rank(method='min',ascending=False)
     drop=[c for c in m if c.endswith('_role') or c in {'depth_rank','depth_starter','role_confidence'}]; m=m.drop(columns=drop,errors='ignore'); nums=m.select_dtypes(include=[np.number]).columns; m[nums]=m[nums].round(3); m.to_csv(STATS,index=False)
-    watch=['Rhamondre Stevenson','Jaylen Warren','Tony Pollard','Alvin Kamara','TreVeyon Henderson','Rico Dowdle']; print(m[m.name.isin(watch)][['name','team','projected_rush_attempts','projected_targets','projected_rushing_tds','projected_receiving_tds','ppr_points','ppr_pos_rank','rb_achievability_role_factor','rb_achievability_joint_multiplier']].to_dict('records'))
+    watch=['Rhamondre Stevenson','Jaylen Warren','Tony Pollard','Alvin Kamara','TreVeyon Henderson','Rico Dowdle']; print(m[m.name.isin(watch)][['name','team','projected_rush_attempts','projected_targets','ppr_points','ppr_pos_rank','rb_achievability_ppr_cap','rb_achievability_ppr_multiplier']].to_dict('records'))
 if __name__=='__main__': main()
