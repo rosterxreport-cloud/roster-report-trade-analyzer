@@ -5,8 +5,8 @@ Opportunity (targets/receptions) is left unchanged. Projected receiving yards ar
 adjusted from a blended standardized signal of yards per route run and yards per
 catch, with YPRR receiving slightly more weight. Small samples shrink to neutral.
 
-YPRR source: SumerSports public WR statistics table. The prior source only exposed
-five rows publicly, so this layer requires broad source coverage before applying.
+YPRR source: SumerSports public WR statistics table. Broad coverage is required
+before this adjustment is allowed to run.
 """
 from pathlib import Path
 from html.parser import HTMLParser
@@ -43,7 +43,6 @@ def points(r,rec):
 
 
 class TextCollector(HTMLParser):
-    """Collect visible-ish text tokens for SumerSports' responsive stats grid."""
     def __init__(self):
         super().__init__(); self.tokens=[]; self.skip=0
     def handle_starttag(self,tag,attrs):
@@ -57,12 +56,10 @@ class TextCollector(HTMLParser):
 
 
 def load_yprr(url,known_names):
-    # First try a semantic HTML table if the site exposes one to pandas.
-    try:
-        tables=pd.read_html(url)
-    except Exception:
-        tables=[]
     rows=[]
+    # Semantic table path when available.
+    try: tables=pd.read_html(url)
+    except Exception: tables=[]
     for t in tables:
         cols=[str(c).strip() for c in t.columns]
         player=next((c for c in cols if c.lower() in ('player','player name')),None)
@@ -75,35 +72,32 @@ def load_yprr(url,known_names):
             key=norm(r[player]);v=num(r[ycol])
             if key in known_names and np.isfinite(v):rows.append((key,v))
 
-    # Responsive fallback: parse the repeated sequence beginning with ranked player
-    # labels and ending in YPRR. SumerSports renders each row as visible text tokens.
+    # Responsive-grid fallback. Player rank and name may be separate DOM nodes, so
+    # match every visible token directly to our known 2025 WR names rather than
+    # requiring a combined "1. Player" label.
     if len(set(k for k,_ in rows)) < MIN_YPRR_MATCHES:
         req=Request(url,headers={'User-Agent':'Mozilla/5.0'})
         html=urlopen(req,timeout=30).read().decode('utf-8','ignore')
-        p=TextCollector();p.feed(html); toks=p.tokens
-        # Player labels look like "1 . Jaxon Smith-Njigba". A 2025 row then contains
-        # numeric fields in this order: routes, receptions, yards, share, TD, YAC,
-        # aDOT, catch%, EPA, TPRR, YPRR. Extract by locating the next 2025 token.
-        rank_re=re.compile(r'^\s*\d+\s*\.\s*(.+?)\s*$')
+        p=TextCollector();p.feed(html);toks=p.tokens
         for i,tok in enumerate(toks):
-            mm=rank_re.match(tok)
-            if not mm:continue
-            pname=mm.group(1); key=norm(pname)
-            if key not in known_names:continue
-            # Find season marker close to player label.
+            candidates=[tok,re.sub(r'^\s*\d+\s*\.\s*','',tok)]
+            key=next((norm(v) for v in candidates if norm(v) in known_names),None)
+            if not key:continue
             j=None
-            for q in range(i+1,min(i+12,len(toks))):
-                if toks[q]=='2025':j=q;break
+            for q in range(i+1,min(i+18,len(toks))):
+                if toks[q].strip()=='2025':j=q;break
             if j is None:continue
             vals=[]
-            for q in range(j+1,min(j+40,len(toks))):
-                s=toks[q].replace(',','').replace('%','')
-                try: vals.append(float(s))
-                except: continue
+            for q in range(j+1,min(j+55,len(toks))):
+                s=toks[q].replace(',','').replace('%','').strip()
+                # Skip rank labels so they cannot shift the expected stat sequence.
+                if re.fullmatch(r'\d+\s*\.',s):continue
+                try:vals.append(float(s))
+                except:continue
                 if len(vals)>=11:break
             if len(vals)>=11:
                 yprr=vals[10]
-                if .2 <= yprr <= 6.0:rows.append((key,yprr))
+                if .2<=yprr<=6.0:rows.append((key,yprr))
 
     y=pd.DataFrame(rows,columns=['name_key','yprr_2025']).drop_duplicates('name_key',keep='last')
     if len(y)<MIN_YPRR_MATCHES:
