@@ -63,12 +63,19 @@ def main():
         if g.empty: continue
         d=g.iloc[-1]
         att=max(num(d.get('rush_attempts'),0),1); ry=num(d.get('rush_yards'),0); rtd=num(d.get('rush_tds'),0)
-        rec=max(num(d.get('receptions'),0),0); tgt=max(num(d.get('targets'),rec),1); reyd=num(d.get('receiving_yards'),0); retd=num(d.get('receiving_tds'),0)
-        ypc=ry/att; catch=rec/tgt; ypt=reyd/tgt; rush_td=rtd/att; rec_td=retd/tgt
+        rec=max(num(d.get('receptions'),0),0); raw_tgt=num(d.get('targets'),np.nan); reyd=num(d.get('receiving_yards'),0); retd=num(d.get('receiving_tds'),0)
+        ypc=ry/att
+        # Target counts are not consistently published for college RBs. When missing,
+        # do not pretend every reception was a target; use a neutral rookie catch-rate
+        # anchor and translate receiving efficiency from yards per reception instead.
+        if np.isfinite(raw_tgt) and raw_tgt>=max(rec,1):
+            tgt=max(raw_tgt,1); catch=rec/tgt; ypt=reyd/tgt; rec_td=retd/tgt
+        else:
+            tgt=max(rec/max(NFL_PRIOR['catch'],.01),1); catch=NFL_PRIOR['catch']; ypt=(reyd/max(rec,1))*NFL_PRIOR['catch'] if rec>0 else NFL_PRIOR['ypt']; rec_td=(retd/max(rec,1))*NFL_PRIOR['catch'] if rec>0 else NFL_PRIOR['rec_td_rate']
+        rush_td=rtd/att
         mtf=num(d.get('missed_tackles_forced'),np.nan); yac=num(d.get('yards_after_contact_per_attempt'),np.nan); expl=num(d.get('explosive_runs_10plus'),np.nan)
         mtf_rate=mtf/att if np.isfinite(mtf) else np.nan; expl_rate=expl/att if np.isfinite(expl) else np.nan
         pick=num(d.get('draft_pick'),257); age=num(d.get('age'),22)
-        # College quality score: production + contact/explosive skill + receiving + draft/age.
         score=0.0
         score += clip((ypc-5.0)/2.0,-1,1)*.27
         if np.isfinite(yac): score += clip((yac-3.0)/2.0,-1,1)*.18
@@ -78,13 +85,11 @@ def main():
         score += clip((catch-.70)/.20,-1,1)*.05
         score += clip((80-pick)/80,-1,1)*.09
         score += clip((22-age)/2,-1,1)*.04
-        # Translation is deliberately narrow; college signal cannot manufacture NFL-level extremes.
         translated_ypc=clip(NFL_PRIOR['ypc'] + .55*score,3.75,4.85)
         translated_catch=clip(NFL_PRIOR['catch'] + .055*score,.64,.82)
         translated_ypt=clip(NFL_PRIOR['ypt'] + .85*score,4.8,7.0)
         translated_rtd=clip(NFL_PRIOR['rush_td_rate'] + .010*clip((rush_td-.05)/.05,-1,1)+.005*score,.015,.045)
         translated_rectd=clip(NFL_PRIOR['rec_td_rate'] + .008*clip((rec_td-.04)/.05,-1,1)+.003*score,.012,.040)
-        # Strongest for first-year no-NFL-history players, but still blended with existing rookie calibration.
         weight=clip(.48 + .12*(pick<=32) + .05*(pick<=10),.45,.65)
         carries=num(r.get('projected_rush_attempts'),0); targets=num(r.get('projected_targets'),0)
         old_ypc=num(r.get('projected_rushing_yards'),0)/carries if carries>0 else NFL_PRIOR['ypc']
