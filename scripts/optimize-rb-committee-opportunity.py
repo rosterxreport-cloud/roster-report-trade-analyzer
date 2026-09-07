@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-"""Optimize RB opportunity only after independently classifying a backfield as a true committee.
+"""Classify RB rooms independently, then apply a three-tier workload response.
 
-Committee classification does NOT use the projection being modified. It is driven by current
-depth-chart position/confidence, independent 2026 role shares, prior healthy-game usage,
-draft capital/trajectory, receiving role, teammate talent and coaching/backfield context.
-Once a committee is identified, projected team RB carries/targets are preserved and redistributed
-using merit. Clear lead backs remain untouched. No player-specific overrides.
+Classification and redistribution strength are separate. Projected team RB carries/targets are
+preserved. Clear leads are untouched; lead+1B rooms get only modest movement; true committees
+can receive full merit-based redistribution. No player-specific overrides.
 """
 from pathlib import Path
 import re, unicodedata
@@ -43,8 +41,7 @@ def draft_score(pick):
 def main():
     s=pd.read_csv(STATS); r=pd.read_csv(ROLES)
     keep=[c for c in ['name','position','team_2026','depth_rank','depth_starter','role_confidence','rookie',
-                      'role_carry_share_2026','role_target_share_2026','carries_per_game','targets_per_game',
-                      'projected_rush_attempts','projected_pass_attempts'] if c in r]
+                      'role_carry_share_2026','role_target_share_2026','carries_per_game','targets_per_game'] if c in r]
     rr=r[keep].rename(columns={'team_2026':'team'}).copy(); rr['nk']=rr['name'].map(norm)
     if DRAFT.exists():
         d=pd.read_csv(DRAFT,low_memory=False)
@@ -57,11 +54,13 @@ def main():
     if 'committee_draft_pick' not in rr: rr['committee_draft_pick']=np.nan
     m=s.merge(rr.drop(columns=['nk']),on=['name','position','team'],how='left',suffixes=('','_committee'))
     elig=m.position.eq('RB') & m.projection_status.isin(['modeled_veteran','returning_fallback','rookie_model'])
-    defaults={'rb_committee_optimizer_applied':False,'rb_committee_gate_passed':False}
-    for c in ['rb_committee_optimizer_applied','rb_committee_gate_passed','rb_committee_merit_score','rb_committee_carry_share',
-              'rb_committee_target_share','rb_committee_strength','rb_committee_carry_delta','rb_committee_target_delta',
-              'rb_committee_evidence_score','rb_committee_second_claim','rb_committee_lead_security']:
-        m[c]=defaults.get(c,np.nan)
+    boolcols=['rb_committee_optimizer_applied','rb_committee_gate_passed']
+    for c in boolcols:m[c]=False
+    for c in ['rb_committee_merit_score','rb_committee_carry_share','rb_committee_target_share','rb_committee_strength',
+              'rb_committee_carry_delta','rb_committee_target_delta','rb_committee_evidence_score','rb_committee_second_claim',
+              'rb_committee_lead_security','rb_committee_response_strength']:
+        m[c]=np.nan
+    m['rb_committee_tier']='clear_lead'
 
     for team,g in m[elig].groupby('team'):
         idx=list(g.index)
@@ -71,78 +70,66 @@ def main():
         cb=float(oldc.sum()); tb=float(oldt.sum())
         if cb<=0: continue
         base_c=oldc/cb; base_t=oldt/tb if tb>0 else np.ones(len(idx))/len(idx)
-
-        merits=[]; rec_merits=[]; independent=[]; depths=[]; starters=[]; confs=[]; role_cs=[]; role_ts=[]; cpgs=[]; tpgs=[]; picks=[]; rookie_flags=[]
+        merits=[]; rec_merits=[]; independent=[]; depths=[]; starters=[]; confs=[]; role_cs=[]; role_ts=[]; cpgs=[]; tpgs=[]; picks=[]
         for i in idx:
             row=m.loc[i]; dep=max(1,int(num(row.get('depth_rank'),4))); st=bool(row.get('depth_starter',False)); cf=float(np.clip(num(row.get('role_confidence'),.55),0,1))
             role_c=float(np.clip(num(row.get('role_carry_share_2026'),.10),0,.90)); role_t=float(np.clip(num(row.get('role_target_share_2026'),.03),0,.35))
             cpg=max(0.,num(row.get('carries_per_game'),0.)); tpg=max(0.,num(row.get('targets_per_game'),0.))
-            rush_talent=float(np.clip(num(row.get('rb_talent_rush_multiplier'),1.),.82,1.18)); rec_talent=float(np.clip(num(row.get('rb_talent_rec_multiplier'),1.),.82,1.18))
-            rel_eff=float(np.clip(num(row.get('rb_relative_efficiency_score'),0.),-2,2)); pick=num(row.get('committee_draft_pick'),999); ds=draft_score(pick)
-            rookie=bool(row.get('rookie_committee',row.get('rookie',False))) or row.get('projection_status')=='rookie_model'
-            age=num(row.get('rb_age_2026'),np.nan); trajectory=.64+.24*ds if rookie else (.54 if np.isfinite(age) and age>=30 else .69)
-            depth_component={1:1.0,2:.72,3:.44,4:.26}.get(dep,.16)
+            rush_talent=float(np.clip(num(row.get('rb_talent_rush_multiplier'),1.),.82,1.18)); rec_talent=float(np.clip(num(row.get('rb_talent_rec_multiplier'),1.),.82,1.18)); rel_eff=float(np.clip(num(row.get('rb_relative_efficiency_score'),0.),-2,2))
+            pick=num(row.get('committee_draft_pick'),999); ds=draft_score(pick); rookie=bool(row.get('rookie_committee',row.get('rookie',False))) or row.get('projection_status')=='rookie_model'; age=num(row.get('rb_age_2026'),np.nan)
+            trajectory=.64+.24*ds if rookie else (.54 if np.isfinite(age) and age>=30 else .69); depth_component={1:1.0,2:.72,3:.44,4:.26}.get(dep,.16)
             rush_merit=.16*depth_component+.14*cf+.28*((rush_talent-.82)/.36)+.28*np.clip((rel_eff+2)/4,0,1)+.14*trajectory
             rec_merit=.16*depth_component+.14*cf+.30*((rec_talent-.82)/.36)+.24*np.clip(role_t/.12,0,1)+.16*trajectory
-            # Independent opportunity claim: only contextual/historical evidence; never current projection share.
-            hist_c=np.clip(cpg/13.0,0,1); hist_t=np.clip(tpg/4.5,0,1)
-            role_c_sig=np.clip(role_c/.35,0,1); role_t_sig=np.clip(role_t/.10,0,1)
-            depth_sig={1:1.0,2:.82,3:.48,4:.28}.get(dep,.18)
-            current_claim=.25*role_c_sig+.17*role_t_sig+.18*hist_c+.12*hist_t+.12*depth_sig+.08*cf+.08*ds
-            if rookie: current_claim += .05*ds
-            independent.append(float(np.clip(current_claim,0,1.15)))
-            merits.append(max(.05,rush_merit)); rec_merits.append(max(.05,rec_merit)); depths.append(dep); starters.append(st); confs.append(cf); role_cs.append(role_c); role_ts.append(role_t); cpgs.append(cpg); tpgs.append(tpg); picks.append(pick); rookie_flags.append(rookie)
-
-        merits=np.asarray(merits,float); rec_merits=np.asarray(rec_merits,float); independent=np.asarray(independent,float)
-        # Identify nominal lead independently: current depth first, then independent claim.
-        depth1=[j for j,(d,st) in enumerate(zip(depths,starters)) if d==1 and st]
-        lead=depth1[0] if len(depth1)==1 else int(np.argmax(independent))
-        others=[j for j in range(len(idx)) if j!=lead]
-        second=max(others,key=lambda j: independent[j])
-        second_claim=float(independent[second]); lead_claim=float(independent[lead])
-        claim_ratio=float(second_claim/max(lead_claim,1e-9))
-        merit_ratio=float(merits[second]/max(merits[lead],1e-9))
-
-        # Lead security is independent evidence that the nominal RB1 owns the backfield.
-        lead_security=(.27*np.clip(role_cs[lead]/.45,0,1)+.18*np.clip(cpgs[lead]/15,0,1)+.14*np.clip(role_ts[lead]/.10,0,1)+
-                       .13*(1.0 if depths[lead]==1 else .35)+.10*confs[lead]+.10*(1-np.clip(second_claim,.0,1))+.08*(1-draft_score(picks[second])))
-        # Committee evidence asks whether RB2 has a credible independent workload/talent case.
-        committee_evidence=(.30*second_claim+.20*np.clip(claim_ratio,0,1)+.18*np.clip(merit_ratio,0,1)+
-                            .12*np.clip(role_cs[second]/.30,0,1)+.08*np.clip(role_ts[second]/.09,0,1)+
-                            .07*(1.0 if depths[second]<=2 else .35)+.05*confs[second])
-        committee_evidence=float(np.clip(committee_evidence,0,1)); lead_security=float(np.clip(lead_security,0,1))
-
-        # True committee requires substantial independent RB2 evidence AND insufficient lead security.
-        strong_second = second_claim>=.46 or (second_claim>=.38 and merit_ratio>=.92) or (role_cs[second]>=.27 and confs[second]>=.45)
-        protected_lead = lead_security>=.70 and second_claim<.46
-        gate = strong_second and committee_evidence>=.55 and not protected_lead
-        m.loc[idx,'rb_committee_evidence_score']=committee_evidence; m.loc[idx,'rb_committee_second_claim']=second_claim; m.loc[idx,'rb_committee_lead_security']=lead_security
-        if not gate: continue
-
+            hist_c=np.clip(cpg/13.,0,1); hist_t=np.clip(tpg/4.5,0,1); role_c_sig=np.clip(role_c/.35,0,1); role_t_sig=np.clip(role_t/.10,0,1); depth_sig={1:1.,2:.82,3:.48,4:.28}.get(dep,.18)
+            claim=.25*role_c_sig+.17*role_t_sig+.18*hist_c+.12*hist_t+.12*depth_sig+.08*cf+.08*ds+( .05*ds if rookie else 0)
+            independent.append(float(np.clip(claim,0,1.15))); merits.append(max(.05,rush_merit)); rec_merits.append(max(.05,rec_merit)); depths.append(dep); starters.append(st); confs.append(cf); role_cs.append(role_c); role_ts.append(role_t); cpgs.append(cpg); tpgs.append(tpg); picks.append(pick)
+        merits=np.asarray(merits); rec_merits=np.asarray(rec_merits); independent=np.asarray(independent)
+        depth1=[j for j,(d,st) in enumerate(zip(depths,starters)) if d==1 and st]; lead=depth1[0] if len(depth1)==1 else int(np.argmax(independent)); others=[j for j in range(len(idx)) if j!=lead]; second=max(others,key=lambda j: independent[j])
+        second_claim=float(independent[second]); lead_claim=float(independent[lead]); claim_ratio=second_claim/max(lead_claim,1e-9); merit_ratio=float(merits[second]/max(merits[lead],1e-9))
+        lead_security=(.27*np.clip(role_cs[lead]/.45,0,1)+.18*np.clip(cpgs[lead]/15,0,1)+.14*np.clip(role_ts[lead]/.10,0,1)+.13*(1. if depths[lead]==1 else .35)+.10*confs[lead]+.10*(1-np.clip(second_claim,0,1))+.08*(1-draft_score(picks[second])))
+        evidence=.30*second_claim+.20*np.clip(claim_ratio,0,1)+.18*np.clip(merit_ratio,0,1)+.12*np.clip(role_cs[second]/.30,0,1)+.08*np.clip(role_ts[second]/.09,0,1)+.07*(1. if depths[second]<=2 else .35)+.05*confs[second]
+        evidence=float(np.clip(evidence,0,1)); lead_security=float(np.clip(lead_security,0,1))
+        # Classification and response magnitude are intentionally separate.
+        true_committee=(second_claim>=.50 and evidence>=.62 and lead_security<.66) or (second_claim>=.44 and claim_ratio>=.80 and merit_ratio>=.94 and evidence>=.60 and lead_security<.64)
+        meaningful_1b=(not true_committee) and ((second_claim>=.38 and evidence>=.50) or (depths[second]<=2 and second_claim>=.33 and merit_ratio>=.90 and evidence>=.48)) and lead_security<.82
+        tier='true_committee' if true_committee else ('lead_plus_1b' if meaningful_1b else 'clear_lead')
+        m.loc[idx,'rb_committee_evidence_score']=evidence; m.loc[idx,'rb_committee_second_claim']=second_claim; m.loc[idx,'rb_committee_lead_security']=lead_security; m.loc[idx,'rb_committee_tier']=tier
+        if tier=='clear_lead': continue
         m.loc[idx,'rb_committee_gate_passed']=True
         merit_c=merits/merits.sum(); merit_t=rec_merits/rec_merits.sum()
-        # Blend strength is tied to independent committee evidence, not projected share.
-        blend_c=float(np.clip(.20+.24*committee_evidence,.20,.44)); blend_t=float(np.clip(.22+.26*committee_evidence,.22,.48))
+        if tier=='lead_plus_1b':
+            # A credible 1B matters, but cannot erase an established lead role. Cap lead losses at 8% carries / 10% targets.
+            blend_c=float(np.clip(.07+.08*evidence,.07,.14)); blend_t=float(np.clip(.08+.09*evidence,.08,.16)); max_c_loss=.08*oldc[lead]; max_t_loss=.10*oldt[lead]
+        else:
+            blend_c=float(np.clip(.24+.26*evidence,.24,.50)); blend_t=float(np.clip(.26+.28*evidence,.26,.54)); max_c_loss=.32*oldc[lead]; max_t_loss=.36*oldt[lead]
         new_c=(1-blend_c)*base_c+blend_c*merit_c; new_t=(1-blend_t)*base_t+blend_t*merit_t
-
-        # Strong second backs earn floors only after independent committee classification.
-        if depths[second]<=2 and merit_ratio>=.88:
-            rush_floor=float(np.clip(.29+.08*merit_ratio,.29,.37)); target_ratio=float(rec_merits[second]/max(rec_merits[lead],1e-9)); target_floor=float(np.clip(.23+.09*target_ratio,.23,.33))
+        # Floors belong only to true committees. Lead+1B rooms get gradual merit movement, never forced near-even shares.
+        if tier=='true_committee' and depths[second]<=2 and merit_ratio>=.88:
+            rush_floor=float(np.clip(.30+.08*merit_ratio,.30,.38)); target_ratio=float(rec_merits[second]/max(rec_merits[lead],1e-9)); target_floor=float(np.clip(.24+.09*target_ratio,.24,.34))
             if new_c[second]<rush_floor:
                 need=rush_floor-new_c[second]; new_c[lead]=max(.01,new_c[lead]-need); new_c[second]=rush_floor
             if new_t[second]<target_floor:
                 need=target_floor-new_t[second]; new_t[lead]=max(.01,new_t[lead]-need); new_t[second]=target_floor
-        if new_c[lead]<new_c[second]:
-            avg=(new_c[lead]+new_c[second])/2; new_c[lead]=avg+.0125; new_c[second]=avg-.0125
         new_c/=new_c.sum(); new_t/=new_t.sum()
-
+        # Hard cap on how much a lead can lose in this layer; redistribute any excess back from non-leads proportionally.
+        min_lead_c=max(0.,oldc[lead]-max_c_loss)/cb; min_lead_t=max(0.,oldt[lead]-max_t_loss)/tb if tb>0 else new_t[lead]
+        if new_c[lead]<min_lead_c:
+            add=min_lead_c-new_c[lead]; pool=sum(new_c[j] for j in others)
+            if pool>0:
+                for j in others:new_c[j]-=add*(new_c[j]/pool)
+                new_c[lead]=min_lead_c
+        if tb>0 and new_t[lead]<min_lead_t:
+            add=min_lead_t-new_t[lead]; pool=sum(new_t[j] for j in others)
+            if pool>0:
+                for j in others:new_t[j]-=add*(new_t[j]/pool)
+                new_t[lead]=min_lead_t
+        new_c=np.clip(new_c,.001,None); new_t=np.clip(new_t,.001,None); new_c/=new_c.sum(); new_t/=new_t.sum()
+        response=max(blend_c,blend_t); m.loc[idx,'rb_committee_response_strength']=response
         for j,i in enumerate(idx):
-            row=m.loc[i]; nc=cb*new_c[j]; nt=tb*new_t[j]; oc=max(oldc[j],1e-9); ot=max(oldt[j],1e-9)
-            cr=nc/oc if oldc[j]>0 else 1.; tr=nt/ot if oldt[j]>0 else 1.
+            row=m.loc[i]; nc=cb*new_c[j]; nt=tb*new_t[j]; cr=nc/max(oldc[j],1e-9) if oldc[j]>0 else 1.; tr=nt/max(oldt[j],1e-9) if oldt[j]>0 else 1.
             m.at[i,'projected_rush_attempts']=nc; m.at[i,'projected_rushing_yards']=num(row.get('projected_rushing_yards'),0.)*cr; m.at[i,'projected_rushing_tds']=num(row.get('projected_rushing_tds'),0.)*cr
             m.at[i,'projected_targets']=nt; m.at[i,'projected_receptions']=num(row.get('projected_receptions'),0.)*tr; m.at[i,'projected_receiving_yards']=num(row.get('projected_receiving_yards'),0.)*tr; m.at[i,'projected_receiving_tds']=num(row.get('projected_receiving_tds'),0.)*tr
-            m.at[i,'rb_committee_optimizer_applied']=True; m.at[i,'rb_committee_merit_score']=merits[j]; m.at[i,'rb_committee_carry_share']=new_c[j]; m.at[i,'rb_committee_target_share']=new_t[j]; m.at[i,'rb_committee_strength']=committee_evidence; m.at[i,'rb_committee_carry_delta']=nc-oldc[j]; m.at[i,'rb_committee_target_delta']=nt-oldt[j]
-
+            m.at[i,'rb_committee_optimizer_applied']=True; m.at[i,'rb_committee_merit_score']=merits[j]; m.at[i,'rb_committee_carry_share']=new_c[j]; m.at[i,'rb_committee_target_share']=new_t[j]; m.at[i,'rb_committee_strength']=evidence; m.at[i,'rb_committee_carry_delta']=nc-oldc[j]; m.at[i,'rb_committee_target_delta']=nt-oldt[j]
     for i in m.index[elig]:
         d=m.loc[i].to_dict(); m.at[i,'ppr_points']=score(d,1); m.at[i,'half_ppr_points']=score(d,.5); m.at[i,'standard_points']=score(d,0); m.at[i,'ppr_per_game']=m.at[i,'ppr_points']/GAMES; m.at[i,'half_ppr_per_game']=m.at[i,'half_ppr_points']/GAMES; m.at[i,'standard_per_game']=m.at[i,'standard_points']/GAMES
     for fc in ['ppr_points','half_ppr_points','standard_points']:
@@ -152,7 +139,6 @@ def main():
     drop=[c for c in m.columns if c.endswith('_committee') or c in {'depth_rank','depth_starter','role_confidence','role_carry_share_2026','role_target_share_2026','carries_per_game','targets_per_game','committee_draft_pick'}]
     m=m.drop(columns=drop,errors='ignore'); nums=m.select_dtypes(include=[np.number]).columns; m[nums]=m[nums].round(3); m.to_csv(STATS,index=False)
     watch=['Christian McCaffrey','Jahmyr Gibbs','Bijan Robinson','De\'Von Achane','Kenneth Walker III','Omarion Hampton','TreVeyon Henderson','Rico Dowdle','Bhayshul Tuten','RJ Harvey','Jordan Mason','Bucky Irving','Jeremiyah Love','Jadarian Price']
-    cols=['name','team','projected_rush_attempts','projected_targets','ppr_points','ppr_pos_rank','rb_committee_gate_passed','rb_committee_evidence_score','rb_committee_second_claim','rb_committee_lead_security','rb_committee_carry_delta','rb_committee_target_delta']
+    cols=['name','team','projected_rush_attempts','projected_targets','ppr_points','ppr_pos_rank','rb_committee_tier','rb_committee_evidence_score','rb_committee_second_claim','rb_committee_lead_security','rb_committee_response_strength','rb_committee_carry_delta','rb_committee_target_delta']
     print(m[m.name.isin(watch)][[c for c in cols if c in m]].to_dict('records'))
-
-if __name__=='__main__': main()
+if __name__=='__main__':main()
