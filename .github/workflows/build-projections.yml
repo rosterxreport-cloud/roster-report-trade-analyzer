@@ -100,6 +100,8 @@ jobs:
         run: python scripts/reallocate-rb-achievability-opportunity.py
       - name: Optimize RB committee opportunity
         run: python scripts/optimize-rb-committee-opportunity.py
+      - name: Correct RB committee hierarchy audit ratio
+        run: python scripts/correct-rb-committee-hierarchy-audit.py
       - name: Apply RB negative role decay and total-touch plausibility
         run: python scripts/apply-rb-role-decay-touch-plausibility.py
       - name: Apply evidence-sensitive RB aging curve
