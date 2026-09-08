@@ -80,6 +80,10 @@ jobs:
         run: python scripts/apply-target-hierarchy.py
       - name: Apply recent-role target earning
         run: python scripts/apply-recent-role-target-earning.py
+      - name: Finalize TE team target budgets after generic role adjustments
+        run: python scripts/reconcile-te-target-budget.py
+      - name: Finalize availability-neutral TE target hierarchy
+        run: python scripts/apply-te-elite-target-hierarchy.py
       - name: Apply availability-neutral WR target earning
         run: python scripts/apply-availability-neutral-wr-role.py
       - name: Reconcile same-team WR depth hierarchy
