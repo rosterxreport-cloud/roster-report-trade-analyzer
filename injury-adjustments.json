@@ -1,4 +1,14 @@
 {
-  "updatedAt": "2026-09-10T13:40:00Z",
-  "players": {}
+  "updatedAt": "2026-09-10T13:46:00Z",
+  "players": {
+    "TreVeyon Henderson": {
+      "availability": 0.90,
+      "workload": 0.95,
+      "longTermRisk": 0.98,
+      "status": "OUT - Week 1 (ankle)",
+      "note": "Ruled out for the season opener after not practicing since suffering an ankle injury on Aug. 24. Week 2 remains uncertain; if active next week, an initial workload ramp-up is plausible.",
+      "expectedReturn": "Earliest Week 2; currently uncertain",
+      "updatedAt": "2026-09-10T13:46:00Z"
+    }
+  }
 }
