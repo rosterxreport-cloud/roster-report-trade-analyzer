@@ -1,203 +1,28 @@
 {
-  "updatedAt": "2026-09-10T17:56:00Z",
+  "updatedAt": "2026-09-10T19:18:00Z",
   "players": {
-    "TreVeyon Henderson": {
-      "availability": 0.90,
-      "workload": 0.95,
-      "longTermRisk": 0.98,
-      "status": "OUT - Week 1 (ankle)",
-      "note": "Ruled out for the season opener after missing all game-week practices with the ankle injury suffered Aug. 24. Week 2 remains uncertain.",
-      "expectedReturn": "Earliest Week 2; uncertain",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Zach Charbonnet": {
-      "availability": 0.80,
-      "workload": 0.88,
-      "longTermRisk": 0.94,
-      "status": "PUP - ACL recovery",
-      "note": "Unavailable for at least the first four games while rehabbing a torn ACL. Seattle has been encouraged by his rehab, but there is no firm return date.",
-      "expectedReturn": "Week 5 or later",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Tory Horton": {
-      "availability": 0.90,
-      "workload": 0.90,
-      "longTermRisk": 0.97,
-      "status": "Inactive Week 1 - hamstring",
-      "note": "Was limited throughout game week and inactive for Seattle's opener. Hamstring issue follows an injury-interrupted 2025 season.",
-      "expectedReturn": "Week 2 possible; not confirmed",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "George Kittle": {
-      "availability": 0.97,
-      "workload": 0.82,
-      "longTermRisk": 0.95,
-      "status": "Cleared Week 1 - Achilles ramp-up",
-      "note": "No final game designation and expected to play, but San Francisco has indicated it will manage his workload in his return from the Achilles tear.",
-      "expectedReturn": "Active Week 1",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Rome Odunze": {
-      "availability": 0.95,
-      "workload": 0.90,
-      "longTermRisk": 0.99,
-      "status": "Questionable trend - calf",
-      "note": "Limited on the first Week 1 report with a new calf injury after sitting out earlier work. Day-to-day and not yet fully cleared.",
-      "expectedReturn": "Week 1 possible",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Jonathon Brooks": {
-      "availability": 0.95,
-      "workload": 0.72,
-      "longTermRisk": 0.90,
-      "status": "Limited - groin / ACL return",
-      "note": "Returned to team practice as a limited participant while working back from a second ACL tear and current groin soreness. Even if active, an early-season workload cap is likely.",
-      "expectedReturn": "Week 1 possible",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Zay Flowers": {
-      "availability": 0.97,
-      "workload": 0.94,
-      "longTermRisk": 0.99,
-      "status": "Limited - hamstring",
-      "note": "Limited on Baltimore's first Week 1 injury report with a hamstring issue but currently expects to play Sunday.",
-      "expectedReturn": "Expected Week 1",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Michael Penix Jr.": {
-      "availability": 0.80,
-      "workload": 0.70,
-      "longTermRisk": 0.94,
-      "status": "OUT Week 1 - knee / ACL recovery",
-      "note": "Inactive for the opener while continuing recovery from the 2025 ACL tear. Tua Tagovailoa has been named Atlanta's Week 1 starter.",
-      "expectedReturn": "No firm game-return date",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Alvin Kamara": {
-      "availability": 0.95,
-      "workload": 0.82,
-      "longTermRisk": 0.97,
-      "status": "Limited - MCL",
-      "note": "Returned to practice as a limited participant after an MCL sprain. Availability has improved, but Week 1 workload remains uncertain.",
-      "expectedReturn": "Week 1 possible",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Isiah Pacheco": {
-      "availability": 0.62,
-      "workload": 0.80,
-      "longTermRisk": 0.94,
-      "status": "IR - back",
-      "note": "On injured reserve and must miss at least four games. Detroit has not provided a firm return timetable.",
-      "expectedReturn": "Week 5 or later; uncertain",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Tank Dell": {
-      "availability": 0.75,
-      "workload": 0.85,
-      "longTermRisk": 0.92,
-      "status": "IR - knee",
-      "note": "On injured reserve with a knee issue and unavailable until at least Week 5.",
-      "expectedReturn": "Week 5 or later",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "James Conner": {
-      "availability": 0.72,
-      "workload": 0.85,
-      "longTermRisk": 0.93,
-      "status": "IR - foot",
-      "note": "On injured reserve with a foot injury and unavailable for the opening portion of the season.",
-      "expectedReturn": "Week 5 or later",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Jeremiyah Love": {
-      "availability": 0.95,
-      "workload": 0.78,
-      "longTermRisk": 0.97,
-      "status": "Returning - high ankle sprain",
-      "note": "Arizona is optimistic he can play Week 1, but he is returning from a high-ankle sprain and is listed behind Tyler Allgeier on the unofficial depth chart. Initial workload could be reduced.",
-      "expectedReturn": "Week 1 possible",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Josh Jacobs": {
-      "availability": 0.55,
-      "workload": 1.00,
-      "longTermRisk": 0.98,
-      "status": "Unavailable - Commissioner/Exempt status",
-      "note": "Currently unavailable to play because of an off-field league status with no established football return date. This adjustment reflects availability uncertainty, not injury performance risk.",
-      "expectedReturn": "Unknown",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Brock Bowers": {
-      "availability": 0.90,
-      "workload": 0.92,
-      "longTermRisk": 0.96,
-      "status": "Doubtful Week 1 - meniscus trim",
-      "note": "Underwent a meniscus trim and is expected to miss one to two games. No major long-term efficiency penalty is assumed yet.",
-      "expectedReturn": "Week 2-3 range",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Malik Nabers": {
-      "availability": 0.99,
-      "workload": 0.92,
-      "longTermRisk": 0.95,
-      "status": "Full practice - ACL return",
-      "note": "Full participant and expected to play Week 1. A small workload and post-ACL risk modifier remains until normal game usage is confirmed.",
-      "expectedReturn": "Expected Week 1",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Xavier Legette": {
-      "availability": 0.90,
-      "workload": 0.90,
-      "longTermRisk": 0.98,
-      "status": "Uncertain - ankle",
-      "note": "Ankle injury has required a walking boot and Week 1 availability remains unclear.",
-      "expectedReturn": "Week 1 uncertain",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Jakobi Meyers": {
-      "availability": 0.97,
-      "workload": 0.94,
-      "longTermRisk": 0.99,
-      "status": "Limited - thumb",
-      "note": "Practicing in a non-contact jersey with a thumb injury. Current concern is primarily Week 1 workload rather than long-term availability.",
-      "expectedReturn": "Week 1 possible",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Marvin Mims Jr.": {
-      "availability": 0.94,
-      "workload": 0.92,
-      "longTermRisk": 0.99,
-      "status": "Practice concern - foot",
-      "note": "Was not spotted at Monday practice while managing a foot issue. Week 1 participation still needs confirmation.",
-      "expectedReturn": "Week 1 uncertain",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "Patrick Mahomes": {
-      "availability": 0.99,
-      "workload": 0.97,
-      "longTermRisk": 0.96,
-      "status": "Expected Week 1 - knee recovery",
-      "note": "Andy Reid says Mahomes has a strong chance to start the opener following ACL/LCL rehabilitation. Small mobility and durability modifiers remain until live-game movement is confirmed.",
-      "expectedReturn": "Expected Week 1",
-      "updatedAt": "2026-09-10T13:58:00Z"
-    },
-    "A.J. Brown": {
-      "availability": 0.95,
-      "workload": 0.98,
-      "longTermRisk": 0.99,
-      "status": "High-ankle sprain - MRI pending",
-      "note": "Exited New England's Week 1 game with a right ankle injury and did not return. X-rays reportedly showed no fracture, but a high-ankle sprain is suspected and MRI results are pending. Initial adjustment is intentionally conservative until the absence timeline is confirmed.",
-      "expectedReturn": "TBD after MRI; multi-week absence possible",
-      "updatedAt": "2026-09-10T14:18:41Z"
-    },
-    "Sam Darnold": {
-      "availability": 0.88,
-      "workload": 0.98,
-      "longTermRisk": 0.995,
-      "status": "OUT Week 2 - hip strain; no structural damage",
-      "note": "Follow-up testing showed no structural damage after the right hip injury suffered in Seattle's opener. The injury is muscular rather than a fracture or major structural issue. Darnold is expected to miss Week 2, with a possible return in Week 3 if his recovery progresses normally.",
-      "expectedReturn": "Week 3 possible; Week 2 ruled out",
-      "updatedAt": "2026-09-10T17:56:00Z"
-    }
+    "TreVeyon Henderson": {"availability":0.90,"workload":0.95,"longTermRisk":0.98,"status":"OUT - Week 1 (ankle)","note":"Ruled out for the season opener after missing all game-week practices with the ankle injury suffered Aug. 24. Week 2 remains uncertain.","expectedReturn":"Earliest Week 2; uncertain","updatedAt":"2026-09-10T13:58:00Z"},
+    "Zach Charbonnet": {"availability":0.80,"workload":0.88,"longTermRisk":0.94,"status":"PUP - ACL recovery","note":"Unavailable for at least the first four games while rehabbing a torn ACL. Seattle has been encouraged by his rehab, but there is no firm return date.","expectedReturn":"Week 5 or later","updatedAt":"2026-09-10T13:58:00Z"},
+    "Tory Horton": {"availability":0.90,"workload":0.90,"longTermRisk":0.97,"status":"Inactive Week 1 - hamstring","note":"Was limited throughout game week and inactive for Seattle's opener. Hamstring issue follows an injury-interrupted 2025 season.","expectedReturn":"Week 2 possible; not confirmed","updatedAt":"2026-09-10T13:58:00Z"},
+    "George Kittle": {"availability":0.97,"workload":0.82,"longTermRisk":0.95,"status":"Cleared Week 1 - Achilles ramp-up","note":"No final game designation and expected to play, but San Francisco has indicated it will manage his workload in his return from the Achilles tear.","expectedReturn":"Active Week 1","updatedAt":"2026-09-10T13:58:00Z"},
+    "Rome Odunze": {"availability":0.95,"workload":0.90,"longTermRisk":0.99,"status":"Questionable trend - calf","note":"Limited on the first Week 1 report with a new calf injury after sitting out earlier work. Day-to-day and not yet fully cleared.","expectedReturn":"Week 1 possible","updatedAt":"2026-09-10T13:58:00Z"},
+    "Jonathon Brooks": {"availability":0.95,"workload":0.72,"longTermRisk":0.90,"status":"Limited - groin / ACL return","note":"Returned to team practice as a limited participant while working back from a second ACL tear and current groin soreness. Even if active, an early-season workload cap is likely.","expectedReturn":"Week 1 possible","updatedAt":"2026-09-10T13:58:00Z"},
+    "Zay Flowers": {"availability":0.97,"workload":0.94,"longTermRisk":0.99,"status":"Limited - hamstring","note":"Limited on Baltimore's first Week 1 injury report with a hamstring issue but currently expects to play Sunday.","expectedReturn":"Expected Week 1","updatedAt":"2026-09-10T13:58:00Z"},
+    "Michael Penix Jr.": {"availability":1.00,"workload":1.00,"longTermRisk":0.98,"status":"Full practice - knee/ACL return","note":"Logged a full Week 1 practice while continuing his return from the 2025 ACL injury. No current injury-based availability or workload penalty is warranted; only a small residual long-term risk modifier remains. Tua Tagovailoa remains Atlanta's Week 1 starter, which is a role decision rather than an injury adjustment.","expectedReturn":"Medically available Week 1","updatedAt":"2026-09-10T19:18:00Z"},
+    "Alvin Kamara": {"availability":0.95,"workload":0.82,"longTermRisk":0.97,"status":"Limited - MCL","note":"Returned to practice as a limited participant after an MCL sprain. Availability has improved, but Week 1 workload remains uncertain.","expectedReturn":"Week 1 possible","updatedAt":"2026-09-10T13:58:00Z"},
+    "Isiah Pacheco": {"availability":0.62,"workload":0.80,"longTermRisk":0.94,"status":"IR - back","note":"On injured reserve and must miss at least four games. Detroit has not provided a firm return timetable.","expectedReturn":"Week 5 or later; uncertain","updatedAt":"2026-09-10T13:58:00Z"},
+    "Tank Dell": {"availability":0.75,"workload":0.85,"longTermRisk":0.92,"status":"IR - knee","note":"On injured reserve with a knee issue and unavailable until at least Week 5.","expectedReturn":"Week 5 or later","updatedAt":"2026-09-10T13:58:00Z"},
+    "James Conner": {"availability":0.72,"workload":0.85,"longTermRisk":0.93,"status":"IR - foot","note":"On injured reserve with a foot injury and unavailable for the opening portion of the season.","expectedReturn":"Week 5 or later","updatedAt":"2026-09-10T13:58:00Z"},
+    "Jeremiyah Love": {"availability":0.95,"workload":0.78,"longTermRisk":0.97,"status":"Returning - high ankle sprain","note":"Arizona is optimistic he can play Week 1, but he is returning from a high-ankle sprain and is listed behind Tyler Allgeier on the unofficial depth chart. Initial workload could be reduced.","expectedReturn":"Week 1 possible","updatedAt":"2026-09-10T13:58:00Z"},
+    "Josh Jacobs": {"availability":0.55,"workload":1.00,"longTermRisk":0.98,"status":"Unavailable - Commissioner/Exempt status","note":"Currently unavailable to play because of an off-field league status with no established football return date. This adjustment reflects availability uncertainty, not injury performance risk.","expectedReturn":"Unknown","updatedAt":"2026-09-10T13:58:00Z"},
+    "Brock Bowers": {"availability":0.90,"workload":0.92,"longTermRisk":0.96,"status":"Doubtful Week 1 - meniscus trim","note":"Underwent a meniscus trim and is expected to miss one to two games. No major long-term efficiency penalty is assumed yet.","expectedReturn":"Week 2-3 range","updatedAt":"2026-09-10T13:58:00Z"},
+    "Malik Nabers": {"availability":0.99,"workload":0.92,"longTermRisk":0.95,"status":"Full practice - ACL return","note":"Full participant and expected to play Week 1. A small workload and post-ACL risk modifier remains until normal game usage is confirmed.","expectedReturn":"Expected Week 1","updatedAt":"2026-09-10T13:58:00Z"},
+    "Xavier Legette": {"availability":0.90,"workload":0.90,"longTermRisk":0.98,"status":"Uncertain - ankle","note":"Ankle injury has required a walking boot and Week 1 availability remains unclear.","expectedReturn":"Week 1 uncertain","updatedAt":"2026-09-10T13:58:00Z"},
+    "Jakobi Meyers": {"availability":0.97,"workload":0.94,"longTermRisk":0.99,"status":"Limited - thumb","note":"Practicing in a non-contact jersey with a thumb injury. Current concern is primarily Week 1 workload rather than long-term availability.","expectedReturn":"Week 1 possible","updatedAt":"2026-09-10T13:58:00Z"},
+    "Marvin Mims Jr.": {"availability":0.94,"workload":0.92,"longTermRisk":0.99,"status":"Practice concern - foot","note":"Was not spotted at Monday practice while managing a foot issue. Week 1 participation still needs confirmation.","expectedReturn":"Week 1 uncertain","updatedAt":"2026-09-10T13:58:00Z"},
+    "Patrick Mahomes": {"availability":0.99,"workload":0.97,"longTermRisk":0.96,"status":"Expected Week 1 - knee recovery","note":"Andy Reid says Mahomes has a strong chance to start the opener following ACL/LCL rehabilitation. Small mobility and durability modifiers remain until live-game movement is confirmed.","expectedReturn":"Expected Week 1","updatedAt":"2026-09-10T13:58:00Z"},
+    "A.J. Brown": {"availability":0.95,"workload":0.98,"longTermRisk":0.99,"status":"High-ankle sprain - MRI pending","note":"Exited New England's Week 1 game with a right ankle injury and did not return. X-rays reportedly showed no fracture, but a high-ankle sprain is suspected and MRI results are pending. Initial adjustment is intentionally conservative until the absence timeline is confirmed.","expectedReturn":"TBD after MRI; multi-week absence possible","updatedAt":"2026-09-10T14:18:41Z"},
+    "Sam Darnold": {"availability":0.88,"workload":0.98,"longTermRisk":0.995,"status":"OUT Week 2 - hip strain; no structural damage","note":"Follow-up testing showed no structural damage after the right hip injury suffered in Seattle's opener. The injury is muscular rather than a fracture or major structural issue. Darnold is expected to miss Week 2, with a possible return in Week 3 if his recovery progresses normally.","expectedReturn":"Week 3 possible; Week 2 ruled out","updatedAt":"2026-09-10T17:56:00Z"},
+    "Alec Pierce": {"availability":0.98,"workload":0.95,"longTermRisk":0.99,"status":"Limited - heel surgery recovery","note":"Practiced on a limited basis on Indianapolis' first Week 1 injury report while returning from heel surgery. He is trending toward availability, so the adjustment is limited primarily to possible early workload restriction.","expectedReturn":"Week 1 possible; trending toward playing","updatedAt":"2026-09-10T19:18:00Z"}
   }
 }
