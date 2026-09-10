@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-10T13:58:00Z",
+  "updatedAt": "2026-09-10T14:18:41Z",
   "players": {
     "TreVeyon Henderson": {
       "availability": 0.90,
@@ -180,6 +180,15 @@
       "note": "Andy Reid says Mahomes has a strong chance to start the opener following ACL/LCL rehabilitation. Small mobility and durability modifiers remain until live-game movement is confirmed.",
       "expectedReturn": "Expected Week 1",
       "updatedAt": "2026-09-10T13:58:00Z"
+    },
+    "A.J. Brown": {
+      "availability": 0.95,
+      "workload": 0.98,
+      "longTermRisk": 0.99,
+      "status": "High-ankle sprain - MRI pending",
+      "note": "Exited New England's Week 1 game with a right ankle injury and did not return. X-rays reportedly showed no fracture, but a high-ankle sprain is suspected and MRI results are pending. Initial adjustment is intentionally conservative until the absence timeline is confirmed.",
+      "expectedReturn": "TBD after MRI; multi-week absence possible",
+      "updatedAt": "2026-09-10T14:18:41Z"
     }
   }
 }
