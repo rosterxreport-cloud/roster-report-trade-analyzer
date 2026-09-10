@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-10T15:55:30Z",
+  "updatedAt": "2026-09-10T17:56:00Z",
   "players": {
     "TreVeyon Henderson": {
       "availability": 0.90,
@@ -191,13 +191,13 @@
       "updatedAt": "2026-09-10T14:18:41Z"
     },
     "Sam Darnold": {
-      "availability": 0.90,
-      "workload": 0.97,
-      "longTermRisk": 0.98,
-      "status": "Hip injury - MRI pending",
-      "note": "Exited Seattle's Week 1 opener after the first offensive series with a right hip injury and did not return. X-rays and CT imaging ruled out a fracture, but an MRI is pending and Week 2 availability remains uncertain.",
-      "expectedReturn": "Week 2 uncertain pending MRI",
-      "updatedAt": "2026-09-10T15:55:30Z"
+      "availability": 0.88,
+      "workload": 0.98,
+      "longTermRisk": 0.995,
+      "status": "OUT Week 2 - hip strain; no structural damage",
+      "note": "Follow-up testing showed no structural damage after the right hip injury suffered in Seattle's opener. The injury is muscular rather than a fracture or major structural issue. Darnold is expected to miss Week 2, with a possible return in Week 3 if his recovery progresses normally.",
+      "expectedReturn": "Week 3 possible; Week 2 ruled out",
+      "updatedAt": "2026-09-10T17:56:00Z"
     }
   }
 }
