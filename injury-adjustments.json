@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-10T14:18:41Z",
+  "updatedAt": "2026-09-10T15:55:30Z",
   "players": {
     "TreVeyon Henderson": {
       "availability": 0.90,
@@ -189,6 +189,15 @@
       "note": "Exited New England's Week 1 game with a right ankle injury and did not return. X-rays reportedly showed no fracture, but a high-ankle sprain is suspected and MRI results are pending. Initial adjustment is intentionally conservative until the absence timeline is confirmed.",
       "expectedReturn": "TBD after MRI; multi-week absence possible",
       "updatedAt": "2026-09-10T14:18:41Z"
+    },
+    "Sam Darnold": {
+      "availability": 0.90,
+      "workload": 0.97,
+      "longTermRisk": 0.98,
+      "status": "Hip injury - MRI pending",
+      "note": "Exited Seattle's Week 1 opener after the first offensive series with a right hip injury and did not return. X-rays and CT imaging ruled out a fracture, but an MRI is pending and Week 2 availability remains uncertain.",
+      "expectedReturn": "Week 2 uncertain pending MRI",
+      "updatedAt": "2026-09-10T15:55:30Z"
     }
   }
 }
