@@ -93,7 +93,7 @@ function renderSide(side,list){
   if(!list.length){el.innerHTML='<div class="empty-state">Add one or more players</div>';return;}
   el.innerHTML=list.map((p,i)=>`<div class="player-row">
     <div class="player-rank">#${p.rank}</div>
-    <div><div class="player-name">${escapeHtml(p.name)}</div><div class="player-meta">${p.pos} • ${p.team} • ${p.rookie?"ROOKIE • ":""}AW #${p.awRank}</div></div>
+    <div><div class="player-name">${escapeHtml(p.name)}</div><div class="player-meta">${p.pos} • ${p.team}${p.rookie?" • ROOKIE":""}${p.awRank==null?"":` • AW #${p.awRank}`}</div></div>
     <div class="player-value">${p.value.toFixed(1)}</div>
     <button class="remove-btn" onclick="removePlayer('${side}',${i})" aria-label="Remove ${escapeHtml(p.name)}">×</button>
   </div>`).join("");
@@ -270,7 +270,7 @@ function initTeam(){
   section.innerHTML=`<h2 id="teamTitle">My Team</h2><p class="team-note">Save your roster and league settings to see how trades affect your starting lineup and depth. Saved on this browser only; clearing browser data removes your team.</p>
     <form id="teamSettings"><div class="team-settings"><label>League size<input id="teamLeague" type="number" min="4" max="32" value="12" required></label><label>Scoring<select id="teamScoring"><option value="half">Half PPR</option><option value="ppr">Full PPR</option><option value="standard">Standard</option></select></label>
     ${Object.entries(SLOT_DEFAULTS).map(([p,n])=>`<label>${p==='SF'?'Superflex (SF)':p}<input id="slot${p}" type="number" min="0" max="6" value="${n}" required></label>`).join('')}<label>Bench<input id="teamBench" type="number" min="0" max="20" value="6" required></label></div>
-    <p class="team-note">FLEX accepts RB, WR or TE. Superflex (SF) accepts QB, RB, WR or TE. Save with SF above zero to apply increased QB scarcity values throughout the analyzer and rankings. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 0 SF, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
+    <p class="team-note">FLEX accepts RB, WR or TE. Superflex (SF) accepts QB, RB, WR or TE only; kickers and D/ST are never Superflex eligible. Save with SF above zero to apply increased QB scarcity values throughout the analyzer and rankings. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 0 SF, 0 K, 0 D/ST, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
     <p id="scarcityStatus" class="team-note" role="status"></p>
     <form class="team-add" id="teamAdd"><input id="rosterSearch" list="rosterOptions" autocomplete="off" placeholder="Search a roster player…" aria-label="Player to add to My Team" required><datalist id="rosterOptions"></datalist><button class="team-action" type="submit">Add player</button></form>
     <p class="team-note">Players are limited to the current Top 250 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;

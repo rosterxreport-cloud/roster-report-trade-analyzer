@@ -1,0 +1,90 @@
+name: Refresh 2026 In-Season Player Data
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/refresh-2026-player-data.yml'
+      - 'scripts/refresh-live-player-data.py'
+      - 'scripts/validate-live-player-data.py'
+      - 'scripts/create-refresh-baseline.py'
+  schedule:
+    # GitHub cron has no biweekly primitive; the ISO-week gate runs even weeks.
+    - cron: '17 9 * * 2'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-2026-player-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Enforce biweekly schedule
+        id: cadence
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" != "schedule" ]] || (( 10#$(date -u +%V) % 2 == 0 )); then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.cadence.outputs.run == 'true'
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        if: steps.cadence.outputs.run == 'true'
+        with:
+          python-version: '3.12'
+      - name: Install pinned refresh dependencies
+        if: steps.cadence.outputs.run == 'true'
+        run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'beautifulsoup4==4.13.5'
+      - name: Refresh model and special teams
+        if: steps.cadence.outputs.run == 'true'
+        shell: bash
+        run: |
+          if [[ ! -f data/live-refresh-baseline.json ]]; then
+            python scripts/create-refresh-baseline.py
+          fi
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            python scripts/refresh-live-player-data.py --special-teams-only
+          else
+            python scripts/refresh-live-player-data.py
+          fi
+      - name: Fail-closed validation
+        if: steps.cadence.outputs.run == 'true'
+        run: python scripts/validate-live-player-data.py
+      - name: Verify My Team and Superflex
+        if: steps.cadence.outputs.run == 'true'
+        run: node tests/test-app.mjs
+      - name: Detect website update
+        if: steps.cadence.outputs.run == 'true'
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- players.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Upload refresh summary
+        if: steps.cadence.outputs.run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: roster-report-refresh-${{ github.run_number }}
+          path: refresh-summary.md
+          retention-days: 90
+      - name: Commit validated website data
+        if: steps.cadence.outputs.run == 'true' && steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name 'roster-report-data-bot'
+          git config user.email 'rosterxreport@gmail.com'
+          git add players.json data/live-refresh-baseline.json
+          git commit -m 'Refresh 2026 in-season player data'
+          git push origin HEAD:main
