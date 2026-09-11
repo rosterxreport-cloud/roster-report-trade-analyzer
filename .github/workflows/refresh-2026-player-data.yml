@@ -8,6 +8,8 @@ on:
       - 'scripts/refresh-live-player-data.py'
       - 'scripts/validate-live-player-data.py'
       - 'scripts/create-refresh-baseline.py'
+      - 'scripts/build-scoring-profiles.py'
+      - 'scoring-settings.js'
   schedule:
     # GitHub cron has no biweekly primitive; the ISO-week gate runs even weeks.
     - cron: '17 9 * * 2'
@@ -43,7 +45,7 @@ jobs:
           python-version: '3.12'
       - name: Install pinned refresh dependencies
         if: steps.cadence.outputs.run == 'true'
-        run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'beautifulsoup4==4.13.5'
+        run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'beautifulsoup4==4.13.5' 'pyarrow==21.0.0'
       - name: Refresh model and special teams
         if: steps.cadence.outputs.run == 'true'
         shell: bash
@@ -56,18 +58,19 @@ jobs:
           else
             python scripts/refresh-live-player-data.py
           fi
+          python scripts/build-scoring-profiles.py
       - name: Fail-closed validation
         if: steps.cadence.outputs.run == 'true'
-        run: python scripts/validate-live-player-data.py
+        run: python scripts/validate-live-player-data.py && python tests/test-scoring-profiles.py
       - name: Verify My Team and Superflex
         if: steps.cadence.outputs.run == 'true'
-        run: node tests/test-app.mjs
+        run: node tests/test-app.mjs && node tests/test-scoring-settings.mjs
       - name: Detect website update
         if: steps.cadence.outputs.run == 'true'
         id: changes
         shell: bash
         run: |
-          if git diff --quiet -- players.json; then
+          if git diff --quiet -- players.json scoring-profiles.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -85,6 +88,6 @@ jobs:
         run: |
           git config user.name 'roster-report-data-bot'
           git config user.email 'rosterxreport@gmail.com'
-          git add players.json data/live-refresh-baseline.json
+          git add players.json data/live-refresh-baseline.json scoring-profiles.json
           git commit -m 'Refresh 2026 in-season player data'
           git push origin HEAD:main

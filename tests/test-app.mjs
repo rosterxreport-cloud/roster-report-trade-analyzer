@@ -1,8 +1,10 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 import assert from 'node:assert/strict';
+const context={console,document:{getElementById:()=>null},localStorage:{}};context.window=context;vm.createContext(context);
+vm.runInContext(fs.readFileSync(new URL('../scoring-settings.js',import.meta.url),'utf8'),context);
 let source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8').replace(/init\(\)\.catch\([\s\S]*$/,'');
-const context={console,document:{getElementById:()=>null},localStorage:{}};context.window=context;vm.createContext(context);vm.runInContext(source,context);
+vm.runInContext(source,context);
 const roster=[{name:'QB',pos:'QB',value:80,rank:1},{name:'RB',pos:'RB',value:70,rank:2},{name:'Kicker',pos:'K',value:20,rank:251},{name:'Defense',pos:'DST',value:18,rank:252}];
 let lineup=context.optimalLineup(roster,{QB:0,RB:0,WR:0,TE:0,FLEX:0,SF:1,K:1,DST:1});
 assert.equal(lineup.lineup.find(x=>x.slot==='SF').player.name,'QB');

@@ -50,9 +50,15 @@ Veterans:
 
 The site reads scoring-specific v10 final values for Half PPR, Full PPR, and Standard. All 32 current primary kickers and all 32 team defenses are searchable. K and D/ST use separate, deliberately compressed replacement-level models and never enter the QB/RB/WR/TE analytics formula.
 
+## League Scoring Settings
+
+Users can layer custom passing-yard, passing/rushing/receiving touchdown, rushing/receiving first-down, documented 40+/50+ touchdown bonus, and TE-reception-premium scoring onto the selected Half-PPR, Full-PPR, or Standard baseline. Default settings bypass the layer and return the exact live values. Active settings use `scoring-profiles.json`, cap each player's scoring-driven change at ±10%, rerank dynamically, and preserve the base rank/value internally. Players with missing inputs receive no adjustment for that field.
+
+The calculation order is: live Roster Report value (including the existing RB premium) → custom scoring adjustment → existing Superflex QB scarcity → existing trade-package and Tier 0 adjustments. Settings persist only in the user's browser and can be reset to defaults.
+
 ## 2026 in-season refresh
 
-`.github/workflows/refresh-2026-player-data.yml` runs on alternating ISO weeks and with `workflow_dispatch`. It reads the latest nflverse 2026 player/team data, moves only the current-season portion of the locked 35% analytics component, rebuilds all three scoring formats, and rechecks every primary kicker against PFN's current all-team depth chart. AW inputs, veteran and rookie pathways, Superflex behavior, trade-engine thresholds, and the Tier 0 Bijan Robinson/Jahmyr Gibbs premium are not rewritten.
+`.github/workflows/refresh-2026-player-data.yml` runs on alternating ISO weeks and with `workflow_dispatch`. It reads the latest nflverse 2026 player/team data, moves only the current-season portion of the locked 35% analytics component, rebuilds all three scoring formats, refreshes documented scoring profiles, and rechecks every primary kicker against PFN's current all-team depth chart. AW inputs, veteran and rookie pathways, Superflex behavior, trade-engine thresholds, and the Tier 0 Bijan Robinson/Jahmyr Gibbs premium are not rewritten.
 
 Publishing is fail closed. The workflow will not commit if source columns, schemas, values, core Top 250 coverage, uniqueness, or 32-team K/D/ST coverage are invalid. Each run uploads `refresh-summary.md` with ranking movers, kicker changes, warnings, and update status. A validated `players.json` change is committed to `main`, which triggers the existing Vercel deployment.
 

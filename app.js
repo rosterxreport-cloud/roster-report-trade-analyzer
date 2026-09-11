@@ -2,19 +2,24 @@ let DB = null;
 let format = "half";
 let give = [];
 let get = [];
+let scoringProfiles={};
+let scoringSettings={...SCORING_DEFAULTS};
+const SCORING_KEY="roster-report-scoring-v1";
 
 const $ = (id) => document.getElementById(id);
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
 async function init(){
-  const source = await fetch("players.json").then(r=>r.json());
+  const [source,profiles] = await Promise.all([fetch("players.json").then(r=>r.json()),fetch("scoring-profiles.json").then(r=>r.ok?r.json():{}).catch(()=>({}))]);
+  scoringProfiles=profiles;
   DB = Object.fromEntries(Object.entries(source).map(([scoring, list])=>[scoring, applyRbPremium(list)]));
+  initScoringSettings();
   initTeam();
   bind();
   render();
 }
 
-function players(){ return applyLeagueScarcity(DB[format],team); }
+function players(){ return applyLeagueScarcity(applyCustomScoring(DB[format],scoringProfiles,scoringSettings),team); }
 function findPlayer(name){ return players().find(p=>p.name===name); }
 
 function applyLeagueScarcity(list,profile){
@@ -49,6 +54,22 @@ function bind(){
   document.addEventListener("click",(e)=>{
     if(!e.target.closest(".search-wrap")) document.querySelectorAll(".suggestions").forEach(x=>x.style.display="none");
   });
+  bindScoringSettings();
+}
+
+function initScoringSettings(){
+  try{scoringSettings=normalizeScoringSettings(JSON.parse(localStorage.getItem(SCORING_KEY)||"{}"));}catch{scoringSettings={...SCORING_DEFAULTS};}
+  writeScoringInputs();
+}
+function scoringInputs(){return {passTd:'scorePassTd',passYard:'scorePassYard',rushTd:'scoreRushTd',receiveTd:'scoreReceiveTd',longTdBonus:'scoreLongBonus',longTdThreshold:'scoreLongThreshold',rushFirstDown:'scoreRushFirstDown',receiveFirstDown:'scoreReceiveFirstDown',tePremium:'scoreTePremium'};}
+function writeScoringInputs(){for(const [key,id] of Object.entries(scoringInputs()))if($(id))$(id).value=scoringSettings[key];}
+function readScoringInputs(){return normalizeScoringSettings(Object.fromEntries(Object.entries(scoringInputs()).map(([key,id])=>[key,$(id).value])));}
+function saveScoringSettings(){try{localStorage.setItem(SCORING_KEY,JSON.stringify(scoringSettings));}catch{}}
+function refreshSelectedPlayers(){give=give.map(p=>findPlayer(p.name)).filter(Boolean);get=get.map(p=>findPlayer(p.name)).filter(Boolean);}
+function bindScoringSettings(){
+  const form=$('scoringSettingsForm');if(!form)return;
+  form.addEventListener('input',()=>{if(!form.reportValidity())return;scoringSettings=readScoringInputs();saveScoringSettings();refreshSelectedPlayers();render();});
+  $('resetScoring').addEventListener('click',()=>{scoringSettings={...SCORING_DEFAULTS};writeScoringInputs();saveScoringSettings();refreshSelectedPlayers();render();});
 }
 
 function setupSearch(inputId, suggestionsId, side){
@@ -177,6 +198,9 @@ function render(){
     btn.classList.toggle("active",active);
     btn.setAttribute("aria-pressed",String(active));
   });
+  const custom=customScoringActive(scoringSettings);
+  $('customScoringStatus')?.classList.toggle('active',custom);
+  if($('customScoringStatus'))$('customScoringStatus').textContent=custom?'CUSTOM SCORING ACTIVE':'DEFAULT SCORING';
   renderSide("give",give);
   renderSide("get",get);
   renderResult();
@@ -204,9 +228,11 @@ function applyRbPremium(list){
 
 function renderRankings(){
   const label=format==="half"?"Half PPR":format==="ppr"?"Full PPR":"Standard";
-  $("rankingsCaption").textContent=`${label} • Top 250 Redraft Rankings`;
+  const custom=customScoringActive(scoringSettings);
+  $("rankingsCaption").textContent=`${label} • Top 250 Redraft Rankings${custom?' • Custom Scoring Active':''}`;
+  $('baseRankHeader').hidden=!custom;
   $("rankingsRows").innerHTML=[...players()].sort((a,b)=>a.rank-b.rank).map(p=>`<tr>
-    <td>${p.rank}</td><th scope="row">${escapeHtml(p.name)}</th><td>${escapeHtml(p.pos)}</td><td>${escapeHtml(p.team)}</td><td>${p.value.toFixed(1)}</td>
+    <td>${p.rank}</td>${custom?`<td>${p.scoringBaseRank??p.rank}</td>`:''}<th scope="row">${escapeHtml(p.name)}</th><td>${escapeHtml(p.pos)}</td><td>${escapeHtml(p.team)}</td><td>${p.value.toFixed(1)}</td>
   </tr>`).join("");
 }
 

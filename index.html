@@ -33,6 +33,24 @@
         <button class="format-btn" data-format="ppr">Full PPR</button>
         <button class="format-btn" data-format="standard">Standard</button>
       </div>
+      <details class="scoring-panel">
+        <summary>League Scoring Settings <span id="customScoringStatus">DEFAULT SCORING</span></summary>
+        <form id="scoringSettingsForm">
+          <div class="scoring-grid">
+            <label>Passing TD points<input id="scorePassTd" type="number" min="0" max="10" step="0.1" value="4"></label>
+            <label>Points per passing yard<input id="scorePassYard" type="number" min="0" max="0.1" step="0.001" value="0.04"></label>
+            <label>Rushing TD points<input id="scoreRushTd" type="number" min="0" max="12" step="0.1" value="6"></label>
+            <label>Receiving TD points<input id="scoreReceiveTd" type="number" min="0" max="12" step="0.1" value="6"></label>
+            <label>Long-TD bonus<input id="scoreLongBonus" type="number" min="0" max="20" step="0.1" value="0"></label>
+            <label>Long-TD threshold<select id="scoreLongThreshold"><option value="40">40+ yards</option><option value="50">50+ yards</option></select></label>
+            <label>Rushing first-down points<input id="scoreRushFirstDown" type="number" min="0" max="3" step="0.1" value="0"></label>
+            <label>Receiving first-down points<input id="scoreReceiveFirstDown" type="number" min="0" max="3" step="0.1" value="0"></label>
+            <label>TE premium per reception<input id="scoreTePremium" type="number" min="0" max="3" step="0.1" value="0"></label>
+          </div>
+          <p class="fine-print">Custom scoring is a capped adjustment to the selected Roster Report baseline. Missing player statistics receive no adjustment.</p>
+          <button id="resetScoring" class="scoring-reset" type="button">Reset to Defaults</button>
+        </form>
+      </details>
     </section>
 
     <section class="trade-grid">
@@ -91,7 +109,7 @@
       <div class="rankings-table-wrap" tabindex="0" role="region" aria-label="Top 250 player rankings">
         <table class="rankings-table">
           <caption id="rankingsCaption">Loading rankings…</caption>
-          <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Position</th><th scope="col">Team</th><th scope="col">Value</th></tr></thead>
+          <thead><tr><th scope="col">Rank</th><th scope="col" id="baseRankHeader" hidden>Base rank</th><th scope="col">Player</th><th scope="col">Position</th><th scope="col">Team</th><th scope="col">Value</th></tr></thead>
           <tbody id="rankingsRows"></tbody>
         </table>
       </div>
@@ -118,6 +136,7 @@
     <span>@ROSTERXREPORT</span>
   </footer>
 
+  <script src="scoring-settings.js"></script>
   <script src="team-needs.js"></script>
   <script src="injury-layer.js"></script>
   <script src="app.js"></script>
