@@ -64,7 +64,7 @@ jobs:
             python scripts/refresh-live-player-data.py
           fi
           python scripts/build-scoring-profiles.py
-          if [[ "${{ inputs.experiment }}" == "true" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             cp players.json experiment-players.json
             cp scoring-profiles.json experiment-scoring-profiles.json
           fi
