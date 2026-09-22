@@ -159,6 +159,47 @@ def live_scores(data,scoring):
         f.loc[g.index,"score"]=score
     return dict(zip(f.player_display_name.map(namekey),f.score))
 
+def role_reality_modifier(p, matches):
+    """Post-blend 2026 role check, separate from injury/availability.
+
+    This intentionally does not punish missed games. It only reacts to the
+    opportunity a player receives in games in which he records season stats,
+    allowing preseason priors to remain meaningful while preventing a healthy
+    fringe role from being protected by that prior.
+    """
+    if matches.empty or p.get("pos") not in CORE:
+        return 1.0
+    g=float(pd.to_numeric(matches.get("games"),errors="coerce").max() or 0)
+    if g < 1:
+        return 1.0
+    row=matches.iloc[-1]
+    def n(col):
+        try: return max(0.0,float(row.get(col,0) or 0))
+        except (TypeError,ValueError): return 0.0
+    pos=p["pos"]
+    if pos=="RB":
+        opp=(n("carries")+n("targets"))/g
+        # 18+ opportunities = feature role; <=5 = fringe role.
+        role=max(0.0,min(1.0,(opp-5.0)/13.0))
+    elif pos in {"WR","TE"}:
+        targets=n("targets")/g
+        receptions=n("receptions")/g
+        yards=n("receiving_yards")/g
+        # Targets drive the check; catches/yards prevent a low-target but
+        # productive player from being treated like an afterthought.
+        t=max(0.0,min(1.0,(targets-2.0)/6.0))
+        r=max(0.0,min(1.0,receptions/5.0))
+        y=max(0.0,min(1.0,yards/65.0))
+        role=.65*t+.15*r+.20*y
+    else:  # QB
+        attempts=n("attempts")/g
+        rush=n("carries")/g
+        role=max(0.0,min(1.0,.85*(attempts/30.0)+.15*(rush/6.0)))
+    # Nonlinear downside only. Strong/normal roles get no artificial boost.
+    # Fringe roles can reduce the post-blend value by as much as 25%.
+    penalty=.25*((1.0-role)**2)
+    return max(.75,1.0-penalty)
+
 def special(nm,tm,pos,d,rank):
     return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False}
 
@@ -174,6 +215,11 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injurie
             # cannot erase more than 12 value points from the preseason prior.
             # Missing games affect only the amount of live-season evidence; injury/availability is handled once by the explicit injury layer.
             if games>=2: raw_value=max(raw_value,preseason-12.0)
+            # Role Reality is applied after the blend/guardrail but before the
+            # injury layer. That keeps poor healthy usage distinct from missed
+            # time and prevents injury from being counted twice.
+            role_mod=role_reality_modifier(p,matches)
+            raw_value*=role_mod
             q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);adj=injuries.get(p["name"]);q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
         out.append(q)
     next_rank=251
