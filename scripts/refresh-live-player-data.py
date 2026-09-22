@@ -60,7 +60,7 @@ def rb_creation_stats(season):
     # so tackle-breaking/YAC metrics remain optional until we have a verified parser.
     ex["broken_tackle_rate"]=np.nan
     ex["yac_per_attempt"]=np.nan
-    return ex.merge(ag,on="name_key",how="outer")
+    return ex
 
 def require(df,cols,label):
     missing=sorted(set(cols)-set(df.columns))
