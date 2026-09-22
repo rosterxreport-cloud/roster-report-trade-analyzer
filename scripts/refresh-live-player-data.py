@@ -55,26 +55,11 @@ def rb_creation_stats(season):
     ex=rush.groupby("name_key",as_index=False).agg(rb_pbp_carries=("explosive","size"),explosive_runs=("explosive","sum"))
     ex["explosive_run_rate"]=ex.explosive_runs/ex.rb_pbp_carries.replace(0,np.nan)
 
-    # PFR advanced rushing supplies broken tackles and yards after contact.
-    adv=pd.read_csv(PFR_RUSH_URL.format(season=season),low_memory=False)
-    namecol=next((x for x in ("player","player_name","name","player_display_name") if x in adv.columns),None)
-    if not namecol:
-        # nflverse PFR exports may use a capitalized Player label.
-        namecol=next((x for x in adv.columns if str(x).strip().lower() in {"player","player_name","name","player display name","player_display_name"}),None)
-    if not namecol: raise RuntimeError("PFR advanced rushing missing player name")
-    def col(*names):
-        return next((x for x in names if x in adv.columns),None)
-    att=col("attempts","att","rushing_attempts")
-    brk=col("brk_tkl","broken_tackles","brk_tkl_rush")
-    yac=col("yards_after_contact","yac","rush_yac")
-    if not att or not brk: raise RuntimeError(f"PFR advanced rushing missing attempts/broken tackles; columns={list(adv.columns)}")
-    adv["name_key"]=adv[namecol].map(namekey)
-    adv["_att"]=pd.to_numeric(adv[att],errors="coerce").fillna(0)
-    adv["_brk"]=pd.to_numeric(adv[brk],errors="coerce").fillna(0)
-    adv["_yac"]=pd.to_numeric(adv[yac],errors="coerce").fillna(0) if yac else 0
-    ag=adv.groupby("name_key",as_index=False).agg(adv_carries=("_att","sum"),broken_tackles=("_brk","sum"),yards_after_contact=("_yac","sum"))
-    ag["broken_tackle_rate"]=ag.broken_tackles/ag.adv_carries.replace(0,np.nan)
-    ag["yac_per_attempt"]=ag.yards_after_contact/ag.adv_carries.replace(0,np.nan)
+    # Keep the experiment fail-safe: explosive rate is derived from nflverse play-by-play.
+    # PFR's weekly advanced-rushing schema is not stable enough for unattended ingestion,
+    # so tackle-breaking/YAC metrics remain optional until we have a verified parser.
+    ex["broken_tackle_rate"]=np.nan
+    ex["yac_per_attempt"]=np.nan
     return ex.merge(ag,on="name_key",how="outer")
 
 def require(df,cols,label):
