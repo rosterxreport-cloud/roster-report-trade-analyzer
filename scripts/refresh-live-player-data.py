@@ -259,6 +259,12 @@ def special(nm,tm,pos,d,rank):
 
 def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries):
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring);out=[]
+    if not special_only and scoring=="half":
+        debug=[]
+        for nm in ("Jahmyr Gibbs","Bijan Robinson","Christian McCaffrey","Jonathan Taylor","James Cook III"):
+            rows=p26.loc[p26.player_display_name.map(namekey).eq(namekey(nm))]
+            debug.append((nm,None if rows.empty else rows.iloc[-1].get("explosive_run_rate"),scores.get(namekey(nm))))
+        print("RB explosive scoring debug:",debug)
     for p in records:
         if p["pos"] in {"K","DST"}:continue
         q=copy.deepcopy(p);base=baseline.get(scoring,{}).get(p["name"])
