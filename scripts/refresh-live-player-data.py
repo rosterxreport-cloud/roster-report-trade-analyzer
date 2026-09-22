@@ -57,7 +57,10 @@ def rb_creation_stats(season):
 
     # PFR advanced rushing supplies broken tackles and yards after contact.
     adv=pd.read_csv(PFR_RUSH_URL.format(season=season),low_memory=False)
-    namecol=next((x for x in ("player","player_name","name") if x in adv.columns),None)
+    namecol=next((x for x in ("player","player_name","name","player_display_name") if x in adv.columns),None)
+    if not namecol:
+        # nflverse PFR exports may use a capitalized Player label.
+        namecol=next((x for x in adv.columns if str(x).strip().lower() in {"player","player_name","name","player display name","player_display_name"}),None)
     if not namecol: raise RuntimeError("PFR advanced rushing missing player name")
     def col(*names):
         return next((x for x in names if x in adv.columns),None)
