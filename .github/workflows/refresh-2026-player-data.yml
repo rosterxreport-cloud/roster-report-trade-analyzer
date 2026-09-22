@@ -96,7 +96,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 90
       - name: Commit validated website data
-        if: steps.cadence.outputs.run == 'true' && steps.changes.outputs.changed == 'true' && inputs.experiment != 'true'
+        if: steps.cadence.outputs.run == 'true' && steps.changes.outputs.changed == 'true' && github.event_name != 'workflow_dispatch'
         shell: bash
         run: |
           git config user.name 'roster-report-data-bot'
