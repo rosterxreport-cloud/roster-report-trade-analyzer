@@ -318,9 +318,12 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             # Missing-preseason QBs get a conservative replacement-level prior;
             # their 2026 play can then earn them upward movement without inventing
             # an AW/market preseason grade that never existed.
-            qb_existing=[p for p in out if p["pos"]=="QB"]
-            prior=float(np.median([p["analyticsScore"] for p in qb_existing if p.get("analyticsScore") is not None]))
-            preseason=float(np.median([p["value"] for p in qb_existing]))
+            qb_existing=sorted([p for p in out if p["pos"]=="QB"],key=lambda p:p["value"])
+            # Anchor missing-preseason QBs to replacement-level incumbents
+            # (bottom quartile of the existing QB pool), not the position median.
+            replacement=qb_existing[:max(4,int(math.ceil(len(qb_existing)*.25)))]
+            prior=float(np.median([p["analyticsScore"] for p in replacement if p.get("analyticsScore") is not None]))
+            preseason=float(np.median([p["value"] for p in replacement]))
             season_w=.45 if games>=2 else .30;pre_w=.40 if games>=2 else .50;ctx_w=1-season_w-pre_w
             val=season_w*live+pre_w*preseason+ctx_w*prior
             tm=team(str(row.get("recent_team") or row.get("team") or ""))
