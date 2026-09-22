@@ -16,6 +16,7 @@ ALIASES={"LA":"LAR","JAC":"JAX","WSH":"WAS","OAK":"LV","SD":"LAC","STL":"LAR"}
 DEPTH_URL="https://www.profootballnetwork.com/nfl-hq/depth-charts"
 PLAYER_URL="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.csv"
 TEAM_URL="https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_reg_{season}.csv"
+SNAP_URL="https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_{season}.csv"
 SCHEDULE_URL="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
 SCHEMA={"rank","name","team","pos","value","awRank","analytics","analyticsScore","posRank","scarcity","market","rookie"}
 
@@ -29,6 +30,20 @@ def fetch(url):
         if r.status!=200: raise RuntimeError(f"HTTP {r.status}: {url}")
         return r.read().decode()
 def stats(url,season): return pd.read_csv(url.format(season=season),low_memory=False)
+def snap_stats(season):
+    try:
+        df=pd.read_csv(SNAP_URL.format(season=season),low_memory=False)
+    except Exception as e:
+        raise RuntimeError(f"2026 snap-count feed unavailable: {e}")
+    require(df,{"player","position","offense_snaps","offense_pct"},"2026 snap counts")
+    df=df[df.position.isin(CORE)].copy()
+    df["name_key"]=df.player.map(namekey)
+    df["offense_snaps"]=pd.to_numeric(df.offense_snaps,errors="coerce").fillna(0)
+    df["offense_pct"]=pd.to_numeric(df.offense_pct,errors="coerce").fillna(0)
+    # PFR game-level snap rows -> season totals plus snap-weighted share.
+    agg=df.groupby("name_key",as_index=False).agg(offense_snaps=("offense_snaps","sum"),snap_games=("offense_snaps",lambda s:int((s>0).sum())))
+    pct=df.groupby("name_key").apply(lambda g: np.average(g.offense_pct,weights=g.offense_snaps.clip(lower=1)) if len(g) else 0,include_groups=False).reset_index(name="offense_pct")
+    return agg.merge(pct,on="name_key",how="left")
 def require(df,cols,label):
     missing=sorted(set(cols)-set(df.columns))
     if missing: raise RuntimeError(f"{label} missing required source columns: {missing}")
@@ -218,14 +233,14 @@ def role_reality_modifier(p, matches):
 def special(nm,tm,pos,d,rank):
     return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False}
 
-def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injuries):
+def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries):
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring);out=[]
     for p in records:
         if p["pos"] in {"K","DST"}:continue
         q=copy.deepcopy(p);base=baseline.get(scoring,{}).get(p["name"])
         if base:q.update(value=base["value"],analyticsScore=base["analyticsScore"],rank=base["rank"])
         if not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None:
-            matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))];games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else 0.0;pre_w=.40 if games>=2 else .50 if games==1 else .65;ctx_w=1-season_w-pre_w;sample_reliability=100.0;ctx_adj=context;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
+            matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))].copy();sk=namekey(p["name"]);sr=snaps26.loc[snaps26.name_key.eq(sk)];\n            if not matches.empty and not sr.empty:\n                matches.loc[:,"offense_snaps"]=float(sr.iloc[0].offense_snaps);matches.loc[:,"offense_pct"]=float(sr.iloc[0].offense_pct)\n            games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else 0.0;pre_w=.40 if games>=2 else .50 if games==1 else .65;ctx_w=1-season_w-pre_w;sample_reliability=100.0;ctx_adj=context;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
             # Early-season downside guardrail: through two games, performance alone
             # cannot erase more than 12 value points from the preseason prior.
             # Missing games affect only the amount of live-season evidence; injury/availability is handled once by the explicit injury layer.
@@ -321,6 +336,5 @@ def main():
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
-    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
-    after={s:update(before[s],s,kickers,kvals,dvals,p26,a.special_teams_only,baseline,injuries) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
+    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)\n    after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
 if __name__=="__main__":main()
