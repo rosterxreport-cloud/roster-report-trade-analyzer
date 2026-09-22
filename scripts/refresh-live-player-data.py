@@ -174,7 +174,7 @@ def live_scores(data,scoring):
       "RB":[("_fp_g",.32),("_carries_g",.18),("_rushing_yards_g",.09),("_ypc",.02),
             ("_rb_td_rate",.10),("_targets_g",.07),("_receptions_g",.04),
             ("_receiving_yards_g",.03),("_target_share",.03),("_first_down_g",.03),("_epa_g",.05),
-            ("_explosive_run_rate",.04)],
+            ("_explosive_run_rate",.03)],
       "WR":[("_fp_g",.30),("_targets_g",.18),("_receptions_g",.08),("_receiving_yards_g",.15),
             ("_rec_td_rate",.08),("_target_share",.08),("_air_yards_share",.04),("_wopr",.05),
             ("_rec_epa_g",.02),("_receiving_first_downs_g",.02)],
