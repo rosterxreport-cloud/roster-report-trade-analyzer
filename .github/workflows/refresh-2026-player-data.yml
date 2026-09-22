@@ -64,10 +64,6 @@ jobs:
             python scripts/refresh-live-player-data.py
           fi
           python scripts/build-scoring-profiles.py
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            cp players.json experiment-players.json
-            cp scoring-profiles.json experiment-scoring-profiles.json
-          fi
       - name: Fail-closed validation
         if: steps.cadence.outputs.run == 'true'
         run: python scripts/validate-live-player-data.py && python tests/test-scoring-profiles.py
@@ -91,8 +87,8 @@ jobs:
           name: roster-report-refresh-${{ github.run_number }}
           path: |
             refresh-summary.md
-            experiment-players.json
-            experiment-scoring-profiles.json
+            players.json
+            scoring-profiles.json
           if-no-files-found: ignore
           retention-days: 90
       - name: Commit validated website data
