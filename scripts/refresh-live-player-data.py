@@ -230,7 +230,33 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injurie
             out.append(special(nm,tm,pos,source[tm],rank))
         for i,p in enumerate(sorted([x for x in out if x["pos"]==pos],key=lambda x:(-x["value"],x["name"])),1):p["posRank"]=i
     if not special_only:
-        for i,p in enumerate(sorted([x for x in out if x["rank"]<=250],key=lambda x:(-x["value"],x["rank"])),1):p["rank"]=i
+        # Temporary elite-preseason buffer through Week 3. Protect only the
+        # Roster Report preseason Top 15; do not rewrite their values/analytics.
+        # Major injury/availability or role-loss profiles can override it.
+        candidates=[x for x in out if x["rank"]<=250]
+        ordered=sorted(candidates,key=lambda x:(-x["value"],x["rank"]))
+        provisional={p["name"]:i for i,p in enumerate(ordered,1)}
+        max_drop=15  # Weeks 1-2; loosen to 20-25 for Week 3, remove Week 4+
+        protected={}
+        for p in ordered:
+            b=baseline.get(scoring,{}).get(p["name"],{})
+            pre_rank=int(b.get("rank",999))
+            if pre_rank>15: continue
+            adj=injuries.get(p["name"])
+            severe=bool(adj and (float(adj.get("availability",1))<=.35 or float(adj.get("longTermRisk",1))<=.45))
+            matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))]
+            role_mod=role_reality_modifier(p,matches)
+            major_role_loss=role_mod<=.82
+            if not severe and not major_role_loss:
+                protected[p["name"]]=min(250,pre_rank+max_drop)
+        # Stable insertion enforces only a rank floor; underlying values remain
+        # untouched so the 2026 signal is still visible and auditable.
+        final=list(ordered)
+        for nm,floor_rank in sorted(protected.items(),key=lambda z:z[1]):
+            idx=next((i for i,p in enumerate(final) if p["name"]==nm),None)
+            if idx is not None and idx+1>floor_rank:
+                player=final.pop(idx);final.insert(floor_rank-1,player)
+        for i,p in enumerate(final,1):p["rank"]=i
     return sorted(out,key=lambda p:(p["rank"],p["pos"],p["name"]))
 
 def validate(data):
