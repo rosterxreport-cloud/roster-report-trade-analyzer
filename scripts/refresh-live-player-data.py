@@ -169,7 +169,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline):
         q=copy.deepcopy(p);base=baseline.get(scoring,{}).get(p["name"])
         if base:q.update(value=base["value"],analyticsScore=base["analyticsScore"],rank=base["rank"])
         if not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None and namekey(p["name"]) in scores:
-            games=float(p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"])),"games"].max() or 0);prior=float(q["analyticsScore"]);live=scores[namekey(p["name"])];new=.45*prior+.55*live;q["analyticsScore"]=round(new,2);q["value"]=round(float(q["value"])+.55*(live-prior),2)
+            games=float(p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"])),"games"].max() or 0);prior=float(q["analyticsScore"]);live=scores[namekey(p["name"])];scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);established=max(0.0,min(100.0,(float(q["value"])*.55+market*.30+scarcity*.15)));new=.30*prior+.55*live+.15*scarcity;q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,.55*live+.30*established+.15*scarcity)),2)
         out.append(q)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
