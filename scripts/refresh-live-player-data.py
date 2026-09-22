@@ -273,11 +273,19 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))].copy();sk=namekey(p["name"]);sr=snaps26.loc[snaps26.name_key.eq(sk)];
             if not matches.empty and not sr.empty:
                 matches.loc[:,"offense_snaps"]=float(sr.iloc[0].offense_snaps);matches.loc[:,"offense_pct"]=float(sr.iloc[0].offense_pct)
-            games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else 0.0;pre_w=.40 if games>=2 else .50 if games==1 else .65;ctx_w=1-season_w-pre_w;sample_reliability=100.0;ctx_adj=context;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
+            games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else 0.0;pre_w=.40 if games>=2 else .50 if games==1 else .65
+            # TE-specific early-season acceleration: opportunity stabilizes faster
+            # than TD production, so after 2+ games give current role/production
+            # modestly more influence while retaining a meaningful preseason prior.
+            if p["pos"]=="TE" and games>=2:
+                season_w=.55;pre_w=.30
+            ctx_w=1-season_w-pre_w;sample_reliability=100.0;ctx_adj=context;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
             # Early-season downside guardrail: through two games, performance alone
             # cannot erase more than 12 value points from the preseason prior.
             # Missing games affect only the amount of live-season evidence; injury/availability is handled once by the explicit injury layer.
-            if games>=2: raw_value=max(raw_value,preseason-12.0)
+            if games>=2:
+                downside=16.0 if p["pos"]=="TE" else 12.0
+                raw_value=max(raw_value,preseason-downside)
             # Role Reality is applied after the blend/guardrail but before the
             # injury layer. That keeps poor healthy usage distinct from missed
             # time and prevents injury from being counted twice.
