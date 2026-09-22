@@ -90,11 +90,73 @@ def dst_model(t25,t26,schedules):
     return {r.team:r.to_dict() for _,r in f.iterrows()}
 
 def live_scores(data,scoring):
-    cols={"player_display_name","position","games","fantasy_points","fantasy_points_ppr","attempts","carries","targets"};require(data,cols,"2026 player stats")
-    f=data[data.position.isin(CORE)].copy();games=pd.to_numeric(f.games,errors="coerce").replace(0,np.nan);std=pd.to_numeric(f.fantasy_points,errors="coerce");ppr=pd.to_numeric(f.fantasy_points_ppr,errors="coerce");points=ppr if scoring=="ppr" else std if scoring=="standard" else (std+ppr)/2
-    f["production"]=points/games;f["volume"]=(pd.to_numeric(f.attempts,errors="coerce").fillna(0)+pd.to_numeric(f.carries,errors="coerce").fillna(0)+pd.to_numeric(f.targets,errors="coerce").fillna(0))/games
-    f["score"]=0.0
-    for pos,g in f.groupby("position"):f.loc[g.index,"score"]=(.7*pct(g.production)+.3*pct(g.volume)).values
+    """Position-specific 2026 signal using the established Roster Report formulas.
+
+    Each metric is converted to a within-position percentile before weighting.
+    The caller still controls sample-size influence (games / 17), so this
+    replaces only the generic 70/30 live signal and does not rewrite the
+    preseason/AW/market/scarcity framework.
+    """
+    common={"player_display_name","position","games","fantasy_points","fantasy_points_ppr"}
+    require(data,common,"2026 player stats")
+    f=data[data.position.isin(CORE)].copy()
+    games=pd.to_numeric(f.games,errors="coerce").replace(0,np.nan)
+
+    def num(col,default=0):
+        if col not in f.columns:return pd.Series(default,index=f.index,dtype=float)
+        return pd.to_numeric(f[col],errors="coerce").fillna(default)
+
+    # Per-game / rate building blocks. Missing advanced source fields fail
+    # gracefully to neutral inputs; source availability is recorded by the
+    # formula through only metrics nflverse publishes in the season summary.
+    std=num("fantasy_points"); ppr=num("fantasy_points_ppr")
+    fp=ppr if scoring=="ppr" else std if scoring=="standard" else (std+ppr)/2
+    f["_fp_g"]=fp/games
+    for col in ("carries","rushing_yards","rushing_tds","targets","receptions",
+                "receiving_yards","receiving_tds","receiving_first_downs",
+                "passing_yards","passing_tds","interceptions","rushing_first_downs"):
+        f[f"_{col}_g"]=num(col)/games
+    f["_ypc"]=num("rushing_yards")/num("carries").replace(0,np.nan)
+    f["_rb_td_rate"]=(num("rushing_tds")+num("receiving_tds"))/(num("carries")+num("targets")).replace(0,np.nan)
+    f["_rec_td_rate"]=num("receiving_tds")/num("targets").replace(0,np.nan)
+    f["_completion_pct"]=num("completions")/num("attempts").replace(0,np.nan)
+    f["_int_avoid"]=-(num("interceptions")/num("attempts").replace(0,np.nan))
+    f["_epa_g"]=(num("passing_epa")+num("rushing_epa")+num("receiving_epa"))/games
+    f["_qb_epa_g"]=(num("passing_epa")+num("rushing_epa"))/games
+    f["_rec_epa_g"]=num("receiving_epa")/games
+    f["_first_down_g"]=(num("receiving_first_downs")+num("rushing_first_downs"))/games
+
+    # nflverse season summaries expose these as rate/share fields when
+    # available. A neutral 50th percentile is used if a field is absent.
+    share_cols=("target_share","air_yards_share","wopr")
+    for col in share_cols:
+        f[f"_{col}"]=num(col,np.nan)
+
+    weights={
+      "RB":[("_fp_g",.32),("_carries_g",.18),("_rushing_yards_g",.09),("_ypc",.07),
+            ("_rb_td_rate",.10),("_targets_g",.07),("_receptions_g",.04),
+            ("_receiving_yards_g",.03),("_target_share",.03),("_first_down_g",.03),("_epa_g",.04)],
+      "WR":[("_fp_g",.30),("_targets_g",.18),("_receptions_g",.08),("_receiving_yards_g",.15),
+            ("_rec_td_rate",.08),("_target_share",.08),("_air_yards_share",.04),("_wopr",.05),
+            ("_rec_epa_g",.02),("_receiving_first_downs_g",.02)],
+      "TE":[("_fp_g",.32),("_targets_g",.20),("_receptions_g",.09),("_receiving_yards_g",.11),
+            ("_receiving_tds_g",.09),("_target_share",.07),("_air_yards_share",.03),("_wopr",.04),
+            ("_rec_epa_g",.03),("_receiving_first_downs_g",.02)],
+      "QB":[("_fp_g",.36),("_passing_yards_g",.14),("_passing_tds_g",.12),("_int_avoid",.05),
+            ("_rushing_yards_g",.10),("_rushing_tds_g",.08),("_completion_pct",.05),("_qb_epa_g",.10)]
+    }
+    f["score"]=50.0
+    for pos,g in f.groupby("position"):
+        score=pd.Series(0.0,index=g.index)
+        for metric,w in weights[pos]:
+            s=pd.to_numeric(g[metric],errors="coerce")
+            if s.notna().any():
+                ranked=s.rank(method="average",pct=True,ascending=True)*100
+                ranked=ranked.fillna(50)
+            else:
+                ranked=pd.Series(50.0,index=g.index)
+            score=score+w*ranked
+        f.loc[g.index,"score"]=score
     return dict(zip(f.player_display_name.map(namekey),f.score))
 
 def special(nm,tm,pos,d,rank):
