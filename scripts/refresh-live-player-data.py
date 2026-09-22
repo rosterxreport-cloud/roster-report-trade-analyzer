@@ -214,7 +214,7 @@ def injury_multiplier(adj):
     return max(floor,min(1.0,weighted))
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injuries=(json.loads(Path("injury-adjustments.json").read_text()).get("players",{}) if Path("injury-adjustments.json").exists() else {})
+    ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injury_path=a.players.parent/"injury-adjustments.json";injuries=(json.loads(injury_path.read_text()).get("players",{}) if injury_path.exists() else {})
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
