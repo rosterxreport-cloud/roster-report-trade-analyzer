@@ -160,43 +160,58 @@ def live_scores(data,scoring):
     return dict(zip(f.player_display_name.map(namekey),f.score))
 
 def role_reality_modifier(p, matches):
-    """Post-blend 2026 role check, separate from injury/availability.
+    """2026 role check using participation when the data supports it.
 
-    This intentionally does not punish missed games. It only reacts to the
-    opportunity a player receives in games in which he records season stats,
-    allowing preseason priors to remain meaningful while preventing a healthy
-    fringe role from being protected by that prior.
+    Prefer snaps/routes over games-played denominators so an injury-shortened
+    appearance is not mistaken for a role collapse. Fall back conservatively
+    to per-game opportunity only when participation fields are unavailable.
     """
     if matches.empty or p.get("pos") not in CORE:
-        return 1.0
-    g=float(pd.to_numeric(matches.get("games"),errors="coerce").max() or 0)
-    if g < 1:
         return 1.0
     row=matches.iloc[-1]
     def n(col):
         try: return max(0.0,float(row.get(col,0) or 0))
         except (TypeError,ValueError): return 0.0
+    def first(*cols):
+        for col in cols:
+            v=n(col)
+            if v>0:return v
+        return 0.0
     pos=p["pos"]
+    snaps=first("offense_snaps","offensive_snaps","snap_count","snaps")
+    snap_pct=first("offense_pct","offensive_snap_pct","snap_pct","snap_share")
+    if snap_pct>1.5:snap_pct/=100.0
+    routes=first("routes","routes_run","route_count")
+    team_routes=first("team_routes","team_routes_run")
     if pos=="RB":
-        opp=(n("carries")+n("targets"))/g
-        # 18+ opportunities = feature role; <=5 = fringe role.
-        role=max(0.0,min(1.0,(opp-5.0)/13.0))
+        opp=n("carries")+n("targets")
+        if snaps>0:
+            opp_rate=opp/snaps
+            participation=max(0.0,min(1.0,snap_pct if snap_pct>0 else snaps/55.0))
+            involvement=max(0.0,min(1.0,opp_rate/.38))
+            role=.55*participation+.45*involvement
+        elif snap_pct>0:
+            involvement=max(0.0,min(1.0,(opp/max(1.0,n("games"))-4.0)/14.0))
+            role=.60*max(0.0,min(1.0,snap_pct))+.40*involvement
+        else:
+            g=max(1.0,n("games"));per_game=opp/g
+            role=max(0.0,min(1.0,(per_game-5.0)/13.0))
     elif pos in {"WR","TE"}:
-        targets=n("targets")/g
-        receptions=n("receptions")/g
-        yards=n("receiving_yards")/g
-        # Targets drive the check; catches/yards prevent a low-target but
-        # productive player from being treated like an afterthought.
-        t=max(0.0,min(1.0,(targets-2.0)/6.0))
-        r=max(0.0,min(1.0,receptions/5.0))
-        y=max(0.0,min(1.0,yards/65.0))
-        role=.65*t+.15*r+.20*y
-    else:  # QB
-        attempts=n("attempts")/g
-        rush=n("carries")/g
+        targets=n("targets")
+        if routes>0:
+            route_part=max(0.0,min(1.0,(routes/team_routes) if team_routes>0 else routes/32.0))
+            tprr=max(0.0,min(1.0,(targets/routes)/.25))
+            role=.65*route_part+.35*tprr
+        elif snaps>0 or snap_pct>0:
+            participation=max(0.0,min(1.0,snap_pct if snap_pct>0 else snaps/60.0))
+            tgt_rate=max(0.0,min(1.0,(targets/max(1.0,snaps))/.14)) if snaps>0 else .5
+            role=.70*participation+.30*tgt_rate
+        else:
+            g=max(1.0,n("games"));tpg=targets/g;rpg=n("receptions")/g;ypg=n("receiving_yards")/g
+            role=.65*max(0.0,min(1.0,(tpg-2.0)/6.0))+.15*max(0.0,min(1.0,rpg/5.0))+.20*max(0.0,min(1.0,ypg/65.0))
+    else:
+        g=max(1.0,n("games"));attempts=n("attempts")/g;rush=n("carries")/g
         role=max(0.0,min(1.0,.85*(attempts/30.0)+.15*(rush/6.0)))
-    # Nonlinear downside only. Strong/normal roles get no artificial boost.
-    # Fringe roles can reduce the post-blend value by as much as 25%.
     penalty=.25*((1.0-role)**2)
     return max(.75,1.0-penalty)
 
