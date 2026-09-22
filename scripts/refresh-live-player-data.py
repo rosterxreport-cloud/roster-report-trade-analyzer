@@ -178,8 +178,8 @@ def live_scores(data,scoring):
       "WR":[("_fp_g",.30),("_targets_g",.18),("_receptions_g",.08),("_receiving_yards_g",.15),
             ("_rec_td_rate",.08),("_target_share",.08),("_air_yards_share",.04),("_wopr",.05),
             ("_rec_epa_g",.02),("_receiving_first_downs_g",.02)],
-      "TE":[("_fp_g",.32),("_targets_g",.20),("_receptions_g",.09),("_receiving_yards_g",.11),
-            ("_receiving_tds_g",.09),("_target_share",.07),("_air_yards_share",.03),("_wopr",.04),
+      "TE":[("_fp_g",.32),("_targets_g",.22),("_receptions_g",.09),("_receiving_yards_g",.13),
+            ("_receiving_tds_g",.05),("_target_share",.07),("_air_yards_share",.03),("_wopr",.04),
             ("_rec_epa_g",.03),("_receiving_first_downs_g",.02)],
       "QB":[("_fp_g",.36),("_passing_yards_g",.14),("_passing_tds_g",.12),("_int_avoid",.05),
             ("_rushing_yards_g",.10),("_rushing_tds_g",.08),("_completion_pct",.05),("_qb_epa_g",.10)]
