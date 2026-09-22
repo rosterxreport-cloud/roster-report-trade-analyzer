@@ -4,6 +4,7 @@ let give = [];
 let get = [];
 let scoringProfiles={};
 let scoringSettings={...SCORING_DEFAULTS};
+let rankingsQuery="",rankingsPosition="ALL",rankingsSort="overall";
 const SCORING_KEY="roster-report-scoring-v1";
 
 const $ = (id) => document.getElementById(id);
@@ -55,6 +56,7 @@ function bind(){
     if(!e.target.closest(".search-wrap")) document.querySelectorAll(".suggestions").forEach(x=>x.style.display="none");
   });
   bindScoringSettings();
+  bindRankingsControls();
 }
 
 function initScoringSettings(){
@@ -226,14 +228,32 @@ function applyRbPremium(list){
     .map((p,i)=>({...p,rank:i+1}));
 }
 
+function bindRankingsControls(){
+  const search=$("rankingsSearch"),pos=$("rankingsPosition"),sort=$("rankingsSort");
+  if(search)search.addEventListener("input",()=>{rankingsQuery=search.value.trim().toLowerCase();renderRankings();});
+  if(pos)pos.addEventListener("change",()=>{rankingsPosition=pos.value;renderRankings();});
+  if(sort)sort.addEventListener("change",()=>{rankingsSort=sort.value;renderRankings();});
+}
+
 function renderRankings(){
   const label=format==="half"?"Half PPR":format==="ppr"?"Full PPR":"Standard";
   const custom=customScoringActive(scoringSettings);
   $("rankingsCaption").textContent=`${label} • Top 250 Redraft Rankings${custom?' • Custom Scoring Active':''}`;
   $('baseRankHeader').hidden=!custom;
-  $("rankingsRows").innerHTML=[...players()].sort((a,b)=>a.rank-b.rank).map(p=>`<tr>
-    <td>${p.rank}</td>${custom?`<td>${p.scoringBaseRank??p.rank}</td>`:''}<th scope="row">${escapeHtml(p.name)}</th><td>${escapeHtml(p.pos)}</td><td>${escapeHtml(p.team)}</td><td>${p.value.toFixed(1)}</td>
-  </tr>`).join("");
+  let rows=[...players()];
+  const posRanks=new Map();
+  for(const pos of ["QB","RB","WR","TE","K","DST"]){
+    rows.filter(p=>p.pos===pos).sort((a,b)=>b.value-a.value||a.rank-b.rank).forEach((p,i)=>posRanks.set(p.name,i+1));
+  }
+  if(rankingsPosition!=="ALL")rows=rows.filter(p=>p.pos===rankingsPosition);
+  if(rankingsQuery)rows=rows.filter(p=>`${p.name} ${p.team} ${p.pos}`.toLowerCase().includes(rankingsQuery));
+  if(rankingsSort==="value")rows.sort((a,b)=>b.value-a.value||a.rank-b.rank);
+  else if(rankingsSort==="position")rows.sort((a,b)=>(posRanks.get(a.name)||999)-(posRanks.get(b.name)||999)||a.rank-b.rank);
+  else rows.sort((a,b)=>a.rank-b.rank);
+  $("rankingsCaption").textContent=`${label} • ${rankingsPosition==="ALL"?"Top 250":rankingsPosition+" rankings"}${custom?' • Custom Scoring Active':''}${rankingsQuery?` • Search: ${rankingsQuery}`:''}`;
+  $("rankingsRows").innerHTML=rows.length?rows.map(p=>`<tr>
+    <td>${p.rank}</td>${custom?`<td>${p.scoringBaseRank??p.rank}</td>`:''}<th scope="row">${escapeHtml(p.name)}</th><td>${escapeHtml(p.pos)}${rankingsPosition!=="ALL"?` #${posRanks.get(p.name)||"—"}`:""}</td><td>${escapeHtml(p.team)}</td><td>${p.value.toFixed(1)}</td>
+  </tr>`).join(""):`<tr><td colspan="${custom?6:5}" class="rankings-empty">No players match those filters.</td></tr>`;
 }
 
 const TEAM_KEY="roster-report-team-v1";
