@@ -120,3 +120,5 @@ footer{border-top:1px solid #193a56;padding:25px;text-align:center;color:#68849d
  .method-grid{grid-template-columns:1fr 1fr}
 }
 
+
+.rankings-controls{display:grid;grid-template-columns:minmax(220px,1fr) 150px 170px;gap:12px;margin:18px 0}.rankings-controls input,.rankings-controls select{width:100%;box-sizing:border-box;padding:12px;background:#04111f;border:2px solid #2a5276;color:#fff;font:inherit}.rankings-select{display:grid;gap:5px;color:#b8cce0;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em}.rankings-search{align-self:end}.rankings-controls input:focus-visible,.rankings-controls select:focus-visible{outline:2px solid white;outline-offset:2px}.rankings-empty{text-align:center!important;padding:24px!important;color:#b8cce0}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:650px){.rankings-controls{grid-template-columns:1fr 1fr}.rankings-search{grid-column:1/-1}}
