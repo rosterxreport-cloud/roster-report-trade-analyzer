@@ -48,11 +48,13 @@ def snap_stats(season):
     return agg.merge(pct,on="name_key",how="left")
 def rb_creation_stats(season):
     # Explosive runs are calculated directly from play-by-play (10+ yards).
-    pbp=pd.read_parquet(PBP_URL.format(season=season),columns=["rusher_player_name","rush_attempt","yards_gained"])
+    pbp=pd.read_parquet(PBP_URL.format(season=season),columns=["rusher_player_id","rusher_player_name","rush_attempt","yards_gained"])
     rush=pbp[pd.to_numeric(pbp.rush_attempt,errors="coerce").fillna(0).eq(1)].copy()
-    rush["name_key"]=rush.rusher_player_name.map(namekey)
+    # nflverse PBP abbreviates player names (e.g. "J.Gibbs"), so use
+    # GSIS player IDs to join to the season-summary player_id when available.
+    rush["player_id"]=rush.rusher_player_id.astype(str)
     rush["explosive"]=pd.to_numeric(rush.yards_gained,errors="coerce").fillna(0).ge(10).astype(int)
-    ex=rush.groupby("name_key",as_index=False).agg(rb_pbp_carries=("explosive","size"),explosive_runs=("explosive","sum"))
+    ex=rush.groupby("player_id",as_index=False).agg(rb_pbp_carries=("explosive","size"),explosive_runs=("explosive","sum"))
     ex["explosive_run_rate"]=ex.explosive_runs/ex.rb_pbp_carries.replace(0,np.nan)
 
     # Keep the experiment fail-safe: explosive rate is derived from nflverse play-by-play.
@@ -361,7 +363,9 @@ def main():
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
-    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey);p26=p26.merge(rbx,on="name_key",how="left");
+    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey)
+    p26["player_id"]=p26["player_id"].astype(str)
+    p26=p26.merge(rbx,on="player_id",how="left");
     # Verify the experimental metric is actually attached to current RB rows.
     rb_rows=p26[p26.position.eq("RB")]
     matched=int(pd.to_numeric(rb_rows.get("explosive_run_rate"),errors="coerce").notna().sum())
