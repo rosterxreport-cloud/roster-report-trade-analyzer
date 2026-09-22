@@ -174,7 +174,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline):
             # cannot erase more than 12 value points from the preseason prior.
             # Availability/context can still lower zero/one-game players separately.
             if games>=2: raw_value=max(raw_value,preseason-12.0)
-            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2)
+            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);adj=injuries.get(p["name"]);q["value"]=round(q["value"]*injury_multiplier(adj),2) if adj else q["value"]
         out.append(q)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
@@ -204,8 +204,17 @@ def make_summary(before,after,oldk,newk,changed):
     lines=["# Roster Report refresh summary","",f"Generated: {datetime.now(timezone.utc).isoformat()}",f"Website dataset updated: **{'yes' if changed else 'no'}**","","## Biggest ranking risers"]+[f"- {n}: {a} → {b} ({d:+d})" for d,n,a,b in moves[:10]]+["","## Biggest ranking fallers"]+[f"- {n}: {a} → {b} ({d:+d})" for d,n,a,b in sorted(moves)[:10]]+["","## Kicker changes"]+[f"- {t}: {a or 'not previously present'} → {b}" for t,a,b in changes]+["","## Data-quality warnings","- None. All fail-closed validations passed.",""]
     return "\n".join(lines)
 
+def injury_multiplier(adj):
+    if not adj:return 1.0
+    a=max(0,min(1,float(adj.get("availability",1))))
+    w=max(0,min(1,float(adj.get("workload",1))))
+    r=max(0,min(1,float(adj.get("longTermRisk",1))))
+    weighted=a*.50+w*.30+r*.20
+    floor=.84 if a<.90 else .92
+    return max(floor,min(1.0,weighted))
+
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text())
+    ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injuries=(json.loads(Path("injury-adjustments.json").read_text()).get("players",{}) if Path("injury-adjustments.json").exists() else {})
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
