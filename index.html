@@ -110,6 +110,11 @@
         <button class="format-btn" data-format="ppr">Full PPR</button>
         <button class="format-btn" data-format="standard">Standard</button>
       </div>
+      <div class="rankings-controls">
+        <label class="rankings-search"><span class="sr-only">Search rankings</span><input id="rankingsSearch" type="search" autocomplete="off" placeholder="Search player, team or position…" aria-label="Search rankings"></label>
+        <label class="rankings-select">Position<select id="rankingsPosition" aria-label="Filter rankings by position"><option value="ALL">All</option><option>QB</option><option>RB</option><option>WR</option><option>TE</option><option>K</option><option value="DST">D/ST</option></select></label>
+        <label class="rankings-select">Sort<select id="rankingsSort" aria-label="Sort rankings"><option value="overall">Overall rank</option><option value="position">Position rank</option><option value="value">Trade value</option></select></label>
+      </div>
       <div class="rankings-table-wrap" tabindex="0" role="region" aria-label="Top 250 player rankings">
         <table class="rankings-table">
           <caption id="rankingsCaption">Loading rankings…</caption>
