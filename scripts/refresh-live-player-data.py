@@ -162,7 +162,7 @@ def live_scores(data,scoring):
 def special(nm,tm,pos,d,rank):
     return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False}
 
-def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline):
+def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injuries):
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring);out=[]
     for p in records:
         if p["pos"] in {"K","DST"}:continue
