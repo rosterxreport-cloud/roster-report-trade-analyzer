@@ -174,7 +174,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injurie
             # cannot erase more than 12 value points from the preseason prior.
             # Missing games affect only the amount of live-season evidence; injury/availability is handled once by the explicit injury layer.
             if games>=2: raw_value=max(raw_value,preseason-12.0)
-            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);adj=injuries.get(p["name"]);q["value"]=round(q["value"]*injury_multiplier(adj),2) if adj else q["value"]
+            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);adj=injuries.get(p["name"]);q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
         out.append(q)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
@@ -204,14 +204,16 @@ def make_summary(before,after,oldk,newk,changed):
     lines=["# Roster Report refresh summary","",f"Generated: {datetime.now(timezone.utc).isoformat()}",f"Website dataset updated: **{'yes' if changed else 'no'}**","","## Biggest ranking risers"]+[f"- {n}: {a} → {b} ({d:+d})" for d,n,a,b in moves[:10]]+["","## Biggest ranking fallers"]+[f"- {n}: {a} → {b} ({d:+d})" for d,n,a,b in sorted(moves)[:10]]+["","## Kicker changes"]+[f"- {t}: {a or 'not previously present'} → {b}" for t,a,b in changes]+["","## Data-quality warnings","- None. All fail-closed validations passed.",""]
     return "\n".join(lines)
 
-def injury_multiplier(adj):
-    if not adj:return 1.0
+def injury_deduction(adj):
+    if not adj:return 0.0
     a=max(0,min(1,float(adj.get("availability",1))))
     w=max(0,min(1,float(adj.get("workload",1))))
     r=max(0,min(1,float(adj.get("longTermRisk",1))))
-    weighted=a*.50+w*.30+r*.20
-    floor=.84 if a<.90 else .92
-    return max(floor,min(1.0,weighted))
+    severity=1.0-(a*.50+w*.30+r*.20)
+    # Soft ROS penalty: ordinary injuries are capped at six value points.
+    # Only clearly severe/long-term profiles can extend toward 12.
+    cap=12.0 if (a<=.35 or r<=.45) else 6.0
+    return min(cap,max(0.0,severity*25.0))
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injury_path=a.players.parent/"injury-adjustments.json";injuries=(json.loads(injury_path.read_text()).get("players",{}) if injury_path.exists() else {})
