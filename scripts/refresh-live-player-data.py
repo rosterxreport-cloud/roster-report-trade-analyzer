@@ -243,11 +243,15 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injurie
             pre_rank=int(b.get("rank",999))
             if pre_rank>15: continue
             adj=injuries.get(p["name"])
+            status=str((adj or {}).get("status","")).lower()
+            on_ir=("injured reserve" in status or "reserve/injured" in status or status.startswith("ir ") or status.startswith("ir -") or " pup" in (" "+status))
             severe=bool(adj and (float(adj.get("availability",1))<=.35 or float(adj.get("longTermRisk",1))<=.45))
             matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))]
             role_mod=role_reality_modifier(p,matches)
             major_role_loss=role_mod<=.82
-            if not severe and not major_role_loss:
+            # IR/PUP explicitly overrides the early elite buffer. Those players
+            # may fall as far as their normal model + injury deduction dictates.
+            if not on_ir and not severe and not major_role_loss:
                 protected[p["name"]]=min(250,pre_rank+max_drop)
         # Stable insertion enforces only a rank floor; underlying values remain
         # untouched so the 2026 signal is still visible and auditable.
