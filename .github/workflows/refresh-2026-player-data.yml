@@ -2,6 +2,11 @@ name: Refresh 2026 In-Season Player Data
 
 on:
   workflow_dispatch:
+    inputs:
+      experiment:
+        description: 'Run position-specific analytics experiment without publishing'
+        required: false
+        default: 'false'
   push:
     paths:
       - '.github/workflows/refresh-2026-player-data.yml'
@@ -80,10 +85,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: roster-report-refresh-${{ github.run_number }}
-          path: refresh-summary.md
+          path: |
+            refresh-summary.md
+            players.json
+            scoring-profiles.json
+          if-no-files-found: ignore
           retention-days: 90
       - name: Commit validated website data
-        if: steps.cadence.outputs.run == 'true' && steps.changes.outputs.changed == 'true'
+        if: steps.cadence.outputs.run == 'true' && steps.changes.outputs.changed == 'true' && github.event_name != 'workflow_dispatch'
         shell: bash
         run: |
           git config user.name 'roster-report-data-bot'
