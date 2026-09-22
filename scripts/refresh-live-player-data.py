@@ -361,6 +361,11 @@ def main():
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
-    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey);p26=p26.merge(rbx,on="name_key",how="left");t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
+    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey);p26=p26.merge(rbx,on="name_key",how="left");
+    # Verify the experimental metric is actually attached to current RB rows.
+    rb_rows=p26[p26.position.eq("RB")]
+    matched=int(pd.to_numeric(rb_rows.get("explosive_run_rate"),errors="coerce").notna().sum())
+    if matched<20: raise RuntimeError(f"Explosive-run merge coverage too low: {matched} RBs")
+    print(f"Explosive-run metric attached to {matched} RB rows")t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
     after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
 if __name__=="__main__":main()
