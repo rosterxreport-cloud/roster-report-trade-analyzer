@@ -219,8 +219,18 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline,injurie
             # injury layer. That keeps poor healthy usage distinct from missed
             # time and prevents injury from being counted twice.
             role_mod=role_reality_modifier(p,matches)
+            adj=injuries.get(p["name"])
+            # Injury-shortened games can masquerade as role loss in season
+            # totals. When the injury file shows an active availability/workload
+            # concern, soften only the Role Reality downside; the dedicated
+            # injury deduction below still prices the injury exactly once.
+            if adj and role_mod<1.0:
+                a=max(0.0,min(1.0,float(adj.get("availability",1))))
+                w=max(0.0,min(1.0,float(adj.get("workload",1))))
+                injury_context=max(0.0,min(1.0,1.0-(a*.55+w*.45)))
+                role_mod=role_mod+(1.0-role_mod)*min(.80,injury_context*1.6)
             raw_value*=role_mod
-            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);adj=injuries.get(p["name"]);q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
+            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
         out.append(q)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
