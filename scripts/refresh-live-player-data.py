@@ -334,6 +334,13 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             if idx is not None and idx+1>floor_rank:
                 player=final.pop(idx);final.insert(floor_rank-1,player)
         for i,p in enumerate(final,1):p["rank"]=i
+        # Recompute positional ranks from the finalized model order instead of
+        # preserving stale preseason positional ranks.
+        core_positions={"QB","RB","WR","TE"}
+        for pos in core_positions:
+            pos_players=[p for p in final if p["pos"]==pos]
+            for i,p in enumerate(pos_players,1):
+                p["posRank"]=i
     return sorted(out,key=lambda p:(p["rank"],p["pos"],p["name"]))
 
 def validate(data):
