@@ -168,8 +168,13 @@ def update(records,scoring,kickers,kvals,dvals,p26,special_only,baseline):
         if p["pos"] in {"K","DST"}:continue
         q=copy.deepcopy(p);base=baseline.get(scoring,{}).get(p["name"])
         if base:q.update(value=base["value"],analyticsScore=base["analyticsScore"],rank=base["rank"])
-        if not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None and namekey(p["name"]) in scores:
-            games=float(p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"])),"games"].max() or 0);prior=float(q["analyticsScore"]);live=scores[namekey(p["name"])];scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else .15;pre_w=.40+(2-games)*.075 if games<2 else .40;ctx_w=1-season_w-pre_w;availability=100.0 if games>=2 else 82.0 if games==1 else 68.0;ctx_adj=.75*context+.25*availability;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,season_w*live+pre_w*preseason+ctx_w*ctx_adj)),2)
+        if not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None:
+            matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))];games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else 0.0;pre_w=.40 if games>=2 else .50 if games==1 else .65;ctx_w=1-season_w-pre_w;availability=100.0 if games>=2 else 82.0 if games==1 else 68.0;ctx_adj=.75*context+.25*availability;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
+            # Early-season downside guardrail: through two games, performance alone
+            # cannot erase more than 12 value points from the preseason prior.
+            # Availability/context can still lower zero/one-game players separately.
+            if games>=2: raw_value=max(raw_value,preseason-12.0)
+            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2)
         out.append(q)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
