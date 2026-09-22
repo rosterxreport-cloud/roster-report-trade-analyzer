@@ -17,6 +17,8 @@ DEPTH_URL="https://www.profootballnetwork.com/nfl-hq/depth-charts"
 PLAYER_URL="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{season}.csv"
 TEAM_URL="https://github.com/nflverse/nflverse-data/releases/download/stats_team/stats_team_reg_{season}.csv"
 SNAP_URL="https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_{season}.csv"
+PBP_URL="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.parquet"
+PFR_RUSH_URL="https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_{season}.csv"
 SCHEDULE_URL="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
 SCHEMA={"rank","name","team","pos","value","awRank","analytics","analyticsScore","posRank","scarcity","market","rookie"}
 
@@ -44,6 +46,34 @@ def snap_stats(season):
     agg=df.groupby("name_key",as_index=False).agg(offense_snaps=("offense_snaps","sum"),snap_games=("offense_snaps",lambda s:int((s>0).sum())))
     pct=df.groupby("name_key").apply(lambda g: np.average(g.offense_pct,weights=g.offense_snaps.clip(lower=1)) if len(g) else 0,include_groups=False).reset_index(name="offense_pct")
     return agg.merge(pct,on="name_key",how="left")
+def rb_creation_stats(season):
+    # Explosive runs are calculated directly from play-by-play (10+ yards).
+    pbp=pd.read_parquet(PBP_URL.format(season=season),columns=["rusher_player_name","rush_attempt","yards_gained"])
+    rush=pbp[pd.to_numeric(pbp.rush_attempt,errors="coerce").fillna(0).eq(1)].copy()
+    rush["name_key"]=rush.rusher_player_name.map(namekey)
+    rush["explosive"]=pd.to_numeric(rush.yards_gained,errors="coerce").fillna(0).ge(10).astype(int)
+    ex=rush.groupby("name_key",as_index=False).agg(rb_pbp_carries=("explosive","size"),explosive_runs=("explosive","sum"))
+    ex["explosive_run_rate"]=ex.explosive_runs/ex.rb_pbp_carries.replace(0,np.nan)
+
+    # PFR advanced rushing supplies broken tackles and yards after contact.
+    adv=pd.read_csv(PFR_RUSH_URL.format(season=season),low_memory=False)
+    namecol=next((x for x in ("player","player_name","name") if x in adv.columns),None)
+    if not namecol: raise RuntimeError("PFR advanced rushing missing player name")
+    def col(*names):
+        return next((x for x in names if x in adv.columns),None)
+    att=col("attempts","att","rushing_attempts")
+    brk=col("brk_tkl","broken_tackles","brk_tkl_rush")
+    yac=col("yards_after_contact","yac","rush_yac")
+    if not att or not brk: raise RuntimeError(f"PFR advanced rushing missing attempts/broken tackles; columns={list(adv.columns)}")
+    adv["name_key"]=adv[namecol].map(namekey)
+    adv["_att"]=pd.to_numeric(adv[att],errors="coerce").fillna(0)
+    adv["_brk"]=pd.to_numeric(adv[brk],errors="coerce").fillna(0)
+    adv["_yac"]=pd.to_numeric(adv[yac],errors="coerce").fillna(0) if yac else 0
+    ag=adv.groupby("name_key",as_index=False).agg(adv_carries=("_att","sum"),broken_tackles=("_brk","sum"),yards_after_contact=("_yac","sum"))
+    ag["broken_tackle_rate"]=ag.broken_tackles/ag.adv_carries.replace(0,np.nan)
+    ag["yac_per_attempt"]=ag.yards_after_contact/ag.adv_carries.replace(0,np.nan)
+    return ex.merge(ag,on="name_key",how="outer")
+
 def require(df,cols,label):
     missing=sorted(set(cols)-set(df.columns))
     if missing: raise RuntimeError(f"{label} missing required source columns: {missing}")
@@ -140,6 +170,9 @@ def live_scores(data,scoring):
     f["_qb_epa_g"]=(num("passing_epa")+num("rushing_epa"))/games
     f["_rec_epa_g"]=num("receiving_epa")/games
     f["_first_down_g"]=(num("receiving_first_downs")+num("rushing_first_downs"))/games
+    f["_explosive_run_rate"]=num("explosive_run_rate",np.nan)
+    f["_broken_tackle_rate"]=num("broken_tackle_rate",np.nan)
+    f["_yac_per_attempt"]=num("yac_per_attempt",np.nan)
 
     # nflverse season summaries expose these as rate/share fields when
     # available. A neutral 50th percentile is used if a field is absent.
@@ -339,6 +372,6 @@ def main():
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
-    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
+    kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey);p26=p26.merge(rbx,on="name_key",how="left");t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
     after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
 if __name__=="__main__":main()
