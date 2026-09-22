@@ -303,6 +303,31 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             raw_value*=role_mod
             q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
         out.append(q)
+    # Restore any 2026 QB who is missing from the locked preseason pool but has
+    # played a meaningful role. Forty offensive snaps is roughly a substantial
+    # portion of one game and excludes ordinary mop-up appearances.
+    if not special_only:
+        existing={namekey(p["name"]) for p in out}
+        qb_snaps=snaps26.loc[snaps26.offense_snaps.ge(40)].copy()
+        live_qbs=p26.loc[p26.position.eq("QB")].copy()
+        for _,row in live_qbs.iterrows():
+            nm=str(row.get("player_display_name") or "").strip();nk=namekey(nm)
+            sr=qb_snaps.loc[qb_snaps.name_key.eq(nk)]
+            if not nm or nk in existing or sr.empty: continue
+            live=float(scores.get(nk,50.0));games=float(row.get("games") or 0)
+            # Missing-preseason QBs get a conservative replacement-level prior;
+            # their 2026 play can then earn them upward movement without inventing
+            # an AW/market preseason grade that never existed.
+            qb_existing=[p for p in out if p["pos"]=="QB"]
+            prior=float(np.median([p["analyticsScore"] for p in qb_existing if p.get("analyticsScore") is not None]))
+            preseason=float(np.median([p["value"] for p in qb_existing]))
+            season_w=.45 if games>=2 else .30;pre_w=.40 if games>=2 else .50;ctx_w=1-season_w-pre_w
+            val=season_w*live+pre_w*preseason+ctx_w*prior
+            tm=team(str(row.get("recent_team") or row.get("team") or ""))
+            q={"rank":999,"name":nm,"team":tm,"pos":"QB","value":round(max(0,min(100,val)),2),
+               "awRank":None,"analytics":round(live,3),"analyticsScore":round(season_w*live+(1-season_w)*prior,2),
+               "posRank":0,"scarcity":round(prior,2),"market":round(preseason,2),"rookie":False}
+            out.append(q);existing.add(nk)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
         for tm,nm in names.items():
