@@ -51,9 +51,12 @@ def team(v):
  v=str(v or "").strip().upper()
  return TEAM_ALIAS.get(v,v)
 opp={}
-for _,g in future.iterrows():
- h,a=team(g.home_team),team(g.away_team)
+schedule_by_team={}
+for _,gm in future.iterrows():
+ h,a=team(gm.home_team),team(gm.away_team)
  opp.setdefault(h,a);opp.setdefault(a,h)
+ schedule_by_team.setdefault(h,[]).append(a)
+ schedule_by_team.setdefault(a,[]).append(h)
 # Normalize defensive keys too, so every mapped opponent can receive its defense.
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="RB"};rows=[]
@@ -74,19 +77,24 @@ for _,r in stats.iterrows():
  catch_rate=(rec/max(.1,t)) if t>0 else .65
  adj_catch=.65*catch_rate+.35*.72;rp=min(tp,tp*max(.50,min(.88,adj_catch)))
  rey=rp*max(5.5,min(10.5,adj_ypr*(.90+.05*strength+.05*value)))
- # TDs are the noisiest early-season stat. Keep only 35% of observed TD/game,
- # regress the rest toward a role/rank expectation, and cap expectation below 1.
- role_td=max(.18,min(.78,.80-(min(60,int(p["posRank"]))-1)*.011))
- tdp=max(.08,min(.90,.35*td+.65*role_td))
+ # TD expectation: observed scoring is noisy, so combine current TD/game with
+ # rank/role and projected opportunity. This avoids a pile-up at a hard ceiling.
+ role_td=max(.12,min(.72,.74-(min(60,int(p["posRank"]))-1)*.0105))
+ opportunity_td=max(.10,min(.78,.018*cp+.010*tp))
+ tdp=max(.06,min(.88,.25*td+.45*role_td+.30*opportunity_td))
  base=ry/10+rey/10+rp*.5+tdp*6
  player_team=team(p["team"]);opponent=opp.get(player_team)
  if not opponent:
   print(f"WARNING: no upcoming opponent mapped for {p['name']} ({p['team']})")
  mm=float(defmap.get(opponent,1.0));weekly=base*mm
- # ROS keeps the player baseline; schedule-level ROS adjustment comes next,
- # rather than incorrectly applying one opponent to the whole season.
- left=max(0,17-int(g))
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSpointsBaseline":round(base*left,1)})
+ # Apply each remaining opponent separately for ROS instead of extrapolating
+ # the next matchup. Bye weeks naturally disappear because they are not games.
+ remaining_opps=schedule_by_team.get(player_team,[])
+ ros_mults=[float(defmap.get(o,1.0)) for o in remaining_opps]
+ ros_points=sum(base*m for m in ros_mults)
+ left=len(remaining_opps)
+ ros_ppg=(ros_points/left) if left else 0.0
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(ros_mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ros_ppg,1),"ROSpoints":round(ros_points,1)})
 rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
 Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:25],indent=2))
