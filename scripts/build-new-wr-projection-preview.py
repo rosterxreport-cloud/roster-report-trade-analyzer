@@ -27,17 +27,18 @@ metrics=["pass_epa","pass_success","explosive","rztd","wr_ypt"]
 for m in metrics:
  s=pd.to_numeric(dg[m],errors="coerce");dg[m+"_badpct"]=s.rank(pct=True).fillna(.5)
 dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
-# Player-level WR opportunity from 2026 PBP: target share, air-yard share,
-# aDOT, red-zone/end-zone opportunity proxy, and explosive-target rate.
-tgt=pbp[pbp.receiver_player_id.notna()].copy()
-tgt["air_yards_num"]=pd.to_numeric(tgt.air_yards,errors="coerce").fillna(0)
-tgt["rz_target"]=(pd.to_numeric(tgt.yardline_100,errors="coerce")<=20).astype(float)
-tgt["deep_target"]=(tgt["air_yards_num"]>=20).astype(float)
-teamopp=tgt.groupby("posteam").agg(team_targets=("receiver_player_id","count"),team_air=("air_yards_num","sum")).reset_index()
-po=tgt.groupby("receiver_player_id").agg(pbp_targets=("receiver_player_id","count"),air_yards=("air_yards_num","sum"),rz_targets=("rz_target","sum"),deep_targets=("deep_target","sum")).reset_index()
-po=po.merge(teamopp,left_on=tgt.groupby("receiver_player_id")["posteam"].first().values,right_on="posteam",how="left")
-po["target_share"]=po.pbp_targets/po.team_targets.replace(0,np.nan);po["air_yard_share"]=po.air_yards/po.team_air.replace(0,np.nan);po["adot"]=po.air_yards/po.pbp_targets.replace(0,np.nan)
-oppmap={str(r.receiver_player_id):r for _,r in po.iterrows()}
+# Use nflverse's published receiver market-share fields when available.
+# These are calculated from team targets and team air yards by nflfastR.
+oppmap={}
+for _,sr in stats.iterrows():
+ oppmap[str(sr.get("player_id",""))]={
+  "target_share":sr.get("target_share",np.nan),
+  "air_yard_share":sr.get("air_yards_share",sr.get("air_yard_share",np.nan)),
+  "adot":(n(sr,"receiving_air_yards")/max(1.,n(sr,"targets"))) if n(sr,"receiving_air_yards") else np.nan,
+  "rz_targets":0,
+  "deep_targets":0,
+  "pbp_targets":max(1.,n(sr,"targets"))
+ }
 # Upcoming opponent.
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
