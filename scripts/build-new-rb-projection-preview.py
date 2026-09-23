@@ -54,9 +54,21 @@ for _,r in stats.iterrows():
  p=ranked[k];g=max(1.,n(r,"games"));c=n(r,"carries")/g;t=n(r,"targets")/g;rec=n(r,"receptions")/g
  ypc=n(r,"rushing_yards")/max(1.,n(r,"carries"));ypr=n(r,"receiving_yards")/max(1.,n(r,"receptions"));td=(n(r,"rushing_tds")+n(r,"receiving_tds"))/g
  strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.))
- cp=c*(.72+.18*strength+.10*value);tp=t*(.72+.18*strength+.10*value)
- ry=cp*max(3.2,min(6.2,ypc*(.82+.10*strength+.08*value)));rp=min(tp,rec*(.78+.12*strength+.10*value))
- rey=rp*max(5.,min(12.,ypr*(.84+.08*strength+.08*value)));tdp=max(.05,min(1.25,td*(.70+.18*strength+.12*value)))
+ # Two games of usage should inform the projection, not become the projection.
+ # Regress volume toward a rank-derived role baseline, with current usage at 60%.
+ role_carries=max(6.0,min(19.0,20.0-(min(60,int(p["posRank"]))-1)*0.30))
+ role_targets=max(1.5,min(6.5,6.2-(min(60,int(p["posRank"]))-1)*0.09))
+ cp=.60*c+.40*role_carries;tp=.60*t+.40*role_targets
+ # Efficiency is also regressed to sustainable RB baselines.
+ adj_ypc=.55*ypc+.45*4.35;adj_ypr=.55*ypr+.45*7.5
+ ry=cp*max(3.5,min(5.8,adj_ypc*(.88+.07*strength+.05*value)))
+ catch_rate=(rec/max(.1,t)) if t>0 else .65
+ adj_catch=.65*catch_rate+.35*.72;rp=min(tp,tp*max(.50,min(.88,adj_catch)))
+ rey=rp*max(5.5,min(10.5,adj_ypr*(.90+.05*strength+.05*value)))
+ # TDs are the noisiest early-season stat. Keep only 35% of observed TD/game,
+ # regress the rest toward a role/rank expectation, and cap expectation below 1.
+ role_td=max(.18,min(.78,.80-(min(60,int(p["posRank"]))-1)*.011))
+ tdp=max(.08,min(.90,.35*td+.65*role_td))
  base=ry/10+rey/10+rp*.5+tdp*6
  opponent=opp.get(p["team"]);mm=float(defmap.get(opponent,1.0));weekly=base*mm
  # ROS keeps the player baseline; schedule-level ROS adjustment comes next,
