@@ -110,5 +110,31 @@ for _,r in stats.iterrows():
  projected.add(k);g=max(1.,n(r,"games"));op=oppmap.get(str(r.get("player_id","")));emit(ranked[k],n(r,"targets")/g,n(r,"receptions")/g,n(r,"receiving_yards")/max(1.,n(r,"receptions")),n(r,"receiving_tds")/g,"2026 production + opportunity + ranking role",op)
 for k,p in ranked.items():
  if k not in projected: emit(p,0,0,12,0,"ranking-role fallback")
+# Redistribute a conservative share of unavailable WR opportunity to active
+# same-team WRs, weighted by their existing projected target role. This affects
+# weekly projections only; ROS remains independently availability-adjusted.
+by_team={}
+for x in rows: by_team.setdefault(team(x["team"]),[]).append(x)
+for tm,grp in by_team.items():
+ unavailable=[x for x in grp if float(x.get("weekAvailability",1.0))<1.0]
+ active=[x for x in grp if float(x.get("weekAvailability",1.0))>=1.0]
+ if not unavailable or not active: continue
+ vacated=sum(float(x["targets"])*(1.0-float(x.get("weekAvailability",1.0))) for x in unavailable)
+ # Only 65% of vacated WR targets are reassigned to WR teammates; the rest can
+ # flow to TE/RB or disappear through changed play calling.
+ pool=vacated*.65
+ denom=sum(max(1.,float(x["targets"])) for x in active)
+ for x in active:
+  add=pool*(max(1.,float(x["targets"]))/denom)
+  old_t=max(.1,float(x["targets"]));new_t=old_t+add;scale=new_t/old_t
+  # Incremental targets retain the player's modeled catch/yard efficiency,
+  # but TD expectation receives only a modest opportunity bump.
+  old_week=float(x["weeklyHalfPPR"]);old_base=float(x["baselineHalfPPR"])
+  rec=float(x["receptions"])*scale;yd=float(x["recYds"])*scale
+  td=min(.90,float(x["TD"])+add*.025)
+  new_base=yd/10+rec*.5+td*6
+  x["targets"]=round(new_t,1);x["receptions"]=round(rec,1);x["recYds"]=round(yd,1);x["TD"]=round(td,2)
+  x["weeklyHalfPPR"]=round(new_base*float(x["defenseMultiplier"]),1)
+  x["redistributedTargets"]=round(add,1)
 rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
 Path("data/new-wr-projection-preview.json").write_text(json.dumps(rows,indent=2));print(json.dumps(rows[:25],indent=2))
