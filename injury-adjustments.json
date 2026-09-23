@@ -1,50 +1,419 @@
 {
-  "updatedAt": "2026-09-20T17:09:14Z",
+  "updatedAt": "2026-09-22T23:59:00Z",
   "players": {
-    "TreVeyon Henderson": {"availability":1.00,"workload":1.00,"longTermRisk":0.99,"status":"Cleared Week 2 - ankle; full practice all week, no designation","note":"Henderson practiced fully throughout the week and was removed from New England's final injury report. He is expected to make his season debut Sunday with no injury-related workload restriction indicated.","expectedReturn":"Active Week 2; no injury-related restriction expected","updatedAt":"2026-09-19T04:21:06Z"},
-    "Zach Charbonnet": {"availability":0.84,"workload":0.90,"longTermRisk":0.95,"status":"PUP - ACL recovery; return to practice approaching","note":"Seattle says Charbonnet's return to practice is coming soon with no reported rehabilitation setback. He remains on PUP and cannot play before Week 5, but the improving rehab trajectory modestly strengthens confidence in an early-window return.","expectedReturn":"Week 5 increasingly plausible; eligible to begin practicing before activation","updatedAt":"2026-09-19T04:21:06Z"},
-    "Tory Horton": {"availability":1.00,"workload":1.00,"longTermRisk":0.99,"status":"Cleared Week 2 - hamstring; full practice all week, no designation","note":"Horton completed a full week of unrestricted practice and was removed from Seattle's final injury report. He will make his season debut Sunday; no injury-related workload restriction has been reported.","expectedReturn":"Active Week 2","updatedAt":"2026-09-19T04:21:06Z"},
-    "George Kittle": {"availability":1.00,"workload":0.90,"longTermRisk":0.95,"status":"Active Week 1 - Achilles return completed","note":"Successfully returned from the January Achilles tear in San Francisco's Week 1 win over the Rams, catching two of five targets for 12 yards with no reported in-game setback. His usage remained below a normal Kittle workload, but completing the game materially improves near-term availability confidence. Participation is expected to increase progressively in coming weeks.","expectedReturn":"Active; workload expected to ramp up","updatedAt":"2026-09-11T10:48:22Z"},
-    "Rome Odunze": {"availability":1.00,"workload":0.92,"longTermRisk":0.99,"status":"Active Week 1 - calf; cleared through pregame testing","note":"Odunze is officially active against Carolina after passing through pregame testing without a reported setback. That removes the remaining short-term availability uncertainty from his questionable designation. A modest workload cushion remains because he was limited in all three game-week practices while returning from the right calf strain.","expectedReturn":"Active Week 1; modest workload limitation still possible","updatedAt":"2026-09-13T16:53:14Z"},
-    "Jonathon Brooks": {"availability":1.00,"workload":1.00,"longTermRisk":0.92,"status":"Cleared Week 1 - groin resolved; no limitations","note":"Carolina removed Brooks from the final Week 1 injury report after he practiced fully Friday. Head coach Dave Canales said Brooks has no limitations entering the opener. The groin-related availability and workload penalties are removed; the residual long-term-risk modifier reflects his history of back-to-back right ACL surgeries rather than the resolved groin issue.","expectedReturn":"Active Week 1; no injury limitations","updatedAt":"2026-09-11T20:18:13Z"},
-    "Zay Flowers": {"availability":0.52,"workload":0.82,"longTermRisk":0.93,"status":"OUT Week 2 - hamstring; downgraded Saturday","note":"Baltimore downgraded Flowers from doubtful to out Saturday after he returned only to a very limited Friday practice following consecutive DNPs. The confirmed Week 2 absence further lowers immediate availability, while the Friday practice remains an encouraging sign for a possible Week 3 return.","expectedReturn":"Week 3 possible if hamstring continues improving","updatedAt":"2026-09-20T01:02:09Z"},
-    "Michael Penix Jr.": {"availability":0.82,"workload":0.93,"longTermRisk":0.96,"status":"OUT Week 2 - ACL recovery; Week 3 start now possible","note":"Penix remains out for Week 2, but Sunday reporting says he is close to returning and could make his 2026 debut Thursday night in Week 3 against Green Bay. He practiced fully throughout Week 2 preparation, materially improving the near-term return outlook.","expectedReturn":"Week 3 possible; could start Thursday at Green Bay","updatedAt":"2026-09-20T17:09:14Z"},
-    "Tua Tagovailoa": {"availability":0.52,"workload":0.80,"longTermRisk":0.95,"status":"INACTIVE Week 2 - oblique; second straight absence","note":"Tagovailoa is officially inactive for Week 2 after failing to practice during the week. Cooper Rush starts again. The confirmed absence validates the existing short-term penalty without requiring an additional multiplier downgrade.","expectedReturn":"Week 3 possible; practice progression next week required","updatedAt":"2026-09-20T17:09:14Z"},
-    "Alvin Kamara": {"availability":1.00,"workload":0.99,"longTermRisk":0.98,"status":"Cleared Week 2 - full practice Friday; no designation","note":"Kamara practiced fully Friday and was removed from the final injury report. He is cleared to make his season debut Sunday. The near-term availability penalty is removed, with only a minimal workload cushion and residual MCL recurrence risk retained.","expectedReturn":"Active Week 2","updatedAt":"2026-09-18T22:50:27Z"},
-    "Isiah Pacheco": {"availability":0.40,"workload":0.78,"longTermRisk":0.90,"status":"IR - back surgery; approximately 12-week recovery","note":"Dan Campbell confirmed Monday that Pacheco required surgery for the back injury, and NFL Network's Ian Rapoport reports the procedure removed a body pressing on a nerve. The reported recovery timeline is approximately 12 weeks, with a chance to return in early December. That is materially worse than the prior open-ended Week 5-or-later outlook and warrants a substantial near-term availability downgrade plus added return-to-workload and residual back-risk penalties.","expectedReturn":"Approximately 12 weeks; early December possible","updatedAt":"2026-09-14T23:14:33Z"},
-    "Tank Dell": {"availability":0.75,"workload":0.85,"longTermRisk":0.92,"status":"IR - knee","note":"On injured reserve with a knee issue and unavailable until at least Week 5.","expectedReturn":"Week 5 or later","updatedAt":"2026-09-10T13:58:00Z"},
-    "James Conner": {"availability":0.72,"workload":0.85,"longTermRisk":0.93,"status":"IR - foot","note":"On injured reserve with a foot injury and unavailable for the opening portion of the season.","expectedReturn":"Week 5 or later","updatedAt":"2026-09-10T13:58:00Z"},
-    "Jeremiyah Love": {"availability":1.00,"workload":0.92,"longTermRisk":0.98,"status":"Off Week 2 injury report - ankle; workload ramp continuing","note":"Arizona removed Love entirely from the Week 2 injury report after he played through the high-ankle sprain in Week 1. The absence of an injury designation materially improves confidence in his health and allows the injury-related workload penalty to be reduced, while a small workload cushion remains as Arizona continues ramping up the rookie rather than assuming an immediate full bell-cow role.","expectedReturn":"Active Week 2; workload expected to continue ramping up","updatedAt":"2026-09-17T17:37:01Z"},
-    "Josh Jacobs": {"availability":0.55,"workload":1.00,"longTermRisk":0.98,"status":"Unavailable - Commissioner/Exempt status","note":"Currently unavailable to play because of an off-field league status with no established football return date. This adjustment reflects availability uncertainty, not injury performance risk.","expectedReturn":"Unknown","updatedAt":"2026-09-10T13:58:00Z"},
-    "Brock Bowers": {"availability":0.68,"workload":0.86,"longTermRisk":0.95,"status":"Returned to practice Friday - meniscus trim; doubtful Week 2","note":"Bowers practiced Friday for the first time since his meniscus procedure but is officially doubtful for Sunday and would need substantial progress in pregame testing to play. The return to practice is encouraging for the medium-term outlook, while the doubtful designation keeps a significant Week 2 availability penalty. Las Vegas is optimistic about Week 3.","expectedReturn":"Week 2 unlikely; Week 3 increasingly likely","updatedAt":"2026-09-18T22:50:27Z"},
-    "Malik Nabers": {"availability":1.00,"workload":0.90,"longTermRisk":0.95,"status":"Active Week 1 - ACL/meniscus return","note":"Nabers is officially active for Sunday Night Football against Dallas after practicing fully throughout the week. That resolves the prior game-time availability uncertainty and materially improves his near-term outlook. A modest workload cushion remains because this is his first regular-season game back from ACL reconstruction with meniscus repair and a later follow-up procedure, and the Giants have not ruled out managing his snaps.","expectedReturn":"Active Week 1; modest workload management still possible","updatedAt":"2026-09-13T23:55:58Z"},
-    "Xavier Legette": {"availability":1.00,"workload":1.00,"longTermRisk":1.00,"status":"Cleared - ankle resolved","note":"Not listed on Carolina's Week 1 injury report after recovering from the August ankle injury and walking-boot period. He is medically cleared for the opener; any playing-time limitation is role-based rather than injury-based.","expectedReturn":"Active Week 1","updatedAt":"2026-09-10T21:08:43Z"},
-    "Jakobi Meyers": {"availability":1.00,"workload":0.98,"longTermRisk":0.99,"status":"Cleared Week 1 - thumb","note":"Jacksonville gave Meyers no final game designation after three limited practices with the thumb injury. He is cleared to play against Cleveland. A very small workload cushion remains because he practiced in a non-contact jersey earlier in the week and the injury involves his catching hand, but the prior availability concern is removed.","expectedReturn":"Active Week 1","updatedAt":"2026-09-12T03:02:26Z"},
-    "Marvin Mims Jr.": {"availability":0.52,"workload":0.82,"longTermRisk":0.96,"status":"OUT Week 2 - foot; DNP all week","note":"Denver officially ruled Mims out for Week 2 after he again did not practice Friday, completing a week of non-participation with the foot injury. The confirmed absence materially lowers immediate availability and adds a larger return-to-workload cushion for his next game.","expectedReturn":"Week 3 possible; practice progression next week required","updatedAt":"2026-09-18T23:37:49Z"},
-    "Patrick Mahomes": {"availability":1.00,"workload":1.00,"longTermRisk":0.98,"status":"Cleared Week 1 - knee recovery","note":"Fully cleared following ACL/LCL rehabilitation and expected to start Week 1. Mahomes has reported no planned playing restrictions; only a minimal residual long-term post-reconstruction risk modifier remains until regular-season game action is confirmed.","expectedReturn":"Active Week 1; no restrictions expected","updatedAt":"2026-09-10T21:28:07Z"},
-    "A.J. Brown": {"availability":0.76,"workload":0.90,"longTermRisk":0.97,"status":"IR - high-ankle sprain; approximately six-week absence expected","note":"NFL Network's Ian Rapoport now reports Brown is expected to miss about six weeks with the right high-ankle sprain, a more specific and slightly longer outlook than the prior four-to-six-week range. New England has already placed him on injured reserve. The tighter six-week expectation lowers near-term availability and adds a modest return-to-workload and reinjury cushion.","expectedReturn":"Approximately six weeks; likely Week 7-8 range","updatedAt":"2026-09-13T15:30:32Z"},
-    "Sam Darnold": {"availability":0.74,"workload":0.92,"longTermRisk":0.98,"status":"Expected OUT multiple weeks - glute soft-tissue injury; about four-week return-to-play timeline","note":"NFL Network's Mike Garafolo now reports Darnold is looking at about a four-week return-to-play timeline for the glute injury, with a chance to return somewhat sooner. This is materially more specific and less optimistic than the prior Week 3-4 possibility. Seattle still considers the injury short-term and has not placed him on injured reserve, but the clearer multi-week expectation warrants lower near-term availability plus modest workload and recurrence cushions for his eventual return.","expectedReturn":"About four weeks from Week 1 injury; early October possible, potentially sooner","updatedAt":"2026-09-15T19:16:05Z"},
-    "Alec Pierce": {"availability":1.00,"workload":1.00,"longTermRisk":0.99,"status":"Cleared Week 2 - full practice Friday; heel maintenance","note":"Pierce returned to a full Friday practice and carries no injury designation. Indianapolis clarified that Thursday's absence was maintenance rather than a setback. The temporary availability and workload penalties are removed.","expectedReturn":"Active Week 2; normal workload expected","updatedAt":"2026-09-18T22:50:27Z"},
-    "Jacory Croskey-Merritt": {"availability":1.00,"workload":0.97,"longTermRisk":0.995,"status":"Cleared Week 1 - groin","note":"Washington says its full 53-man roster is medically cleared for Week 1, including Croskey-Merritt after he was limited Wednesday and Thursday with the groin injury. A modest workload cushion remains because the team indicated snap-count decisions could still be discussed for players returning from injuries, but he no longer carries a meaningful availability penalty.","expectedReturn":"Active Week 1; medically cleared","updatedAt":"2026-09-11T18:49:48Z"},
-    "De'Zhaun Stribling": {"availability":0.45,"workload":0.78,"longTermRisk":0.90,"status":"IR - ankle surgery for ruptured deltoid ligament; close to 10 weeks expected","note":"Kyle Shanahan confirmed Stribling underwent surgery to repair a ruptured deltoid ligament in his left ankle and is expected to miss close to 10 weeks. This is materially worse than the prior one-month-plus estimate when surgery was only being considered, warranting a major near-term availability downgrade and additional return-to-workload and residual-risk penalties.","expectedReturn":"Approximately 10 weeks; late November range","updatedAt":"2026-09-17T00:03:06Z"},
-    "Sean Tucker": {"availability":1.00,"workload":1.00,"longTermRisk":0.995,"status":"Cleared Week 2 - hamstring; no game designation","note":"Tucker practiced fully throughout the Week 2 workweek and carries no final injury designation. He is medically available Sunday, removing the remaining near-term availability and workload penalties from the hamstring issue.","expectedReturn":"Active Week 2","updatedAt":"2026-09-18T23:37:49Z"},
-    "Jalen McMillan": {"availability":1.00,"workload":0.88,"longTermRisk":0.99,"status":"ACTIVE Week 2 - knee; managed role expected","note":"McMillan is officially active and will make his 2026 debut after missing Week 1. Reporting says Tampa Bay does not expect him to have a full role yet, so the availability penalty is removed while a larger workload cushion is applied for the managed return.","expectedReturn":"Active Week 2; reduced snap/route workload expected","updatedAt":"2026-09-20T17:09:14Z"},
-    "Dylan Sampson": {"availability":0.58,"workload":0.84,"longTermRisk":0.93,"status":"IR - left knee; minimum four-game absence","note":"Cleveland officially placed Sampson on injured reserve September 15 after the left-knee injury suffered in Week 1. The transaction guarantees a minimum four-game absence and confirms the prior expectation that he would miss significant time. Availability is reduced modestly from the prior IR-possible assumption; return-to-workload and residual-risk multipliers remain unchanged until a more specific diagnosis or rehabilitation timeline is reported.","expectedReturn":"Eligible after four games; potentially before Cleveland's Oct. 18 game vs. Baltimore","updatedAt":"2026-09-16T02:48:07Z"},
-    "Omar Cooper Jr.": {"availability":0.58,"workload":0.84,"longTermRisk":0.93,"status":"IR - ankle sprain; minimum four-game absence","note":"The Jets placed Cooper on injured reserve Saturday after he failed to practice during the week. Initial reporting had him week-to-week with hope of avoiding IR, so the transaction materially worsens immediate availability and guarantees at least four missed games.","expectedReturn":"Eligible after four games; return timeline depends on ankle recovery","updatedAt":"2026-09-19T18:34:38Z"},
-    "Ja'Kobi Lane": {"availability":0.64,"workload":0.86,"longTermRisk":0.95,"status":"IR - wrist surgery; minimum four-game absence","note":"Baltimore officially placed Lane on injured reserve after wrist surgery, guaranteeing at least four missed games. The operation was already expected, but the IR transaction removes any chance of an earlier return and slightly lowers near-term availability while preserving the existing workload and residual-risk assumptions.","expectedReturn":"Eligible after four games; recovery expected roughly four-to-six weeks","updatedAt":"2026-09-17T00:03:06Z"},
-    "Kyler Murray": {"availability":0.60,"workload":0.90,"longTermRisk":0.97,"status":"OUT Week 2 - concussion protocol","note":"Minnesota ruled Murray out for Week 2 because he has not yet cleared concussion protocol. He made progress during the week, and Kevin O'Connell said the Vikings fully anticipate him clearing the protocol early next week, so the downgrade is primarily immediate availability rather than long-term workload risk.","expectedReturn":"Week 3 expected if concussion protocol is cleared early next week","updatedAt":"2026-09-18T22:50:27Z"},
-    "Najee Harris": {"availability":1.00,"workload":1.00,"longTermRisk":0.94,"status":"Healthy scratch Week 1 - Achilles medically cleared","note":"Updated reporting clarifies that Harris was not inactive because of the Achilles injury. He was a healthy scratch/coach's decision and was not listed on the Giants' injury report. The prior near-term availability and workload penalties are therefore removed. A small long-term-risk cushion remains because he is returning this season from the 2025 Achilles tear, but any Week 2 playing-time uncertainty is now treated as a depth-chart/role issue rather than an injury limitation.","expectedReturn":"Medically available Week 2; role/activation is coach's decision","updatedAt":"2026-09-14T15:35:53Z"},
-    "Ladd McConkey": {"availability":0.86,"workload":0.90,"longTermRisk":0.98,"status":"Limited Friday - rib; questionable Week 2","note":"McConkey returned to practice Friday after missing Wednesday and Thursday and was listed as questionable. The limited session materially improves his chance to play compared with consecutive DNPs, but the rib injury and uncertain game status still warrant availability and workload cushions.","expectedReturn":"Week 2 possible; game-time status remains uncertain","updatedAt":"2026-09-18T22:50:27Z"},
-    "Chig Okonkwo": {"availability":0.55,"workload":0.80,"longTermRisk":0.95,"status":"OUT Week 2 - lower-body soft-tissue injury","note":"Washington officially ruled Okonkwo out for Week 2 after he failed to progress enough during the practice week. The confirmed absence lowers immediate availability and preserves a meaningful return-to-workload and recurrence cushion for next week.","expectedReturn":"Week 3 possible; practice progression next week required","updatedAt":"2026-09-18T22:50:27Z"},
-    "Brian Thomas Jr.": {"availability":1.00,"workload":0.98,"longTermRisk":0.97,"status":"Cleared Week 2 - shoulder; limited all week, no designation","note":"Thomas was limited in practice throughout the week to manage the shoulder he aggravated in Week 1 but carries no final game designation and is cleared to play Sunday. The availability penalty is removed while small workload and recurrence cushions remain because the shoulder issue has recurred.","expectedReturn":"Active Week 2","updatedAt":"2026-09-19T04:21:06Z"},
-    "Nico Collins": {"availability":0.58,"workload":0.82,"longTermRisk":0.94,"status":"OUT Week 2 - Grade 1 hamstring strain; DNP Thursday-Friday","note":"Houston officially ruled Collins out after he missed Thursday and Friday practices following the hamstring strain suffered Wednesday. The injury is not believed serious and he has not been placed on IR, but his prior hamstring history and confirmed Week 2 absence warrant a substantial near-term availability reduction plus workload and recurrence cushions.","expectedReturn":"Week 3-4 range; monitor next week's practice participation","updatedAt":"2026-09-18T22:50:27Z"},
-    "RJ Harvey": {"availability":0.62,"workload":0.84,"longTermRisk":0.96,"status":"Unlikely Week 2 - hamstring; limited Thursday-Friday","note":"Sunday reporting says Harvey is unlikely to play against Jacksonville despite limited practices Thursday and Friday. That is a meaningful downgrade from the prior questionable/game-time outlook and warrants a larger immediate availability and return-to-workload penalty.","expectedReturn":"Week 2 unlikely; Week 3 possible if hamstring improves","updatedAt":"2026-09-20T17:09:14Z"},
-    "Jordan Mason": {"availability":0.55,"workload":0.82,"longTermRisk":0.97,"status":"IR - fractured right thumb repaired; minimum four-game absence","note":"Minnesota placed Mason on injured reserve Wednesday after a small fracture in his right thumb was repaired. He must miss at least four games, and Kevin O'Connell expressed optimism that Mason can return after the minimum absence. With Minnesota's Week 6 bye, Week 7 is his earliest game back. The hand injury also warrants a modest return-to-workload cushion for ball security and contact when activated.","expectedReturn":"Week 7 earliest; expected back after minimum IR absence if healing stays on track","updatedAt":"2026-09-17T01:25:03Z"},
-    "D'Andre Swift": {"availability":1.00,"workload":1.00,"longTermRisk":0.99,"status":"Cleared Week 2 - ankle/knee; full Friday, no designation","note":"Swift progressed from limited practices Wednesday and Thursday to full participation Friday and was removed from Chicago's final injury report. The ankle and knee issues are not expected to limit him Sunday, so the temporary availability and workload penalties are removed.","expectedReturn":"Active Week 2; no injury-related restriction expected","updatedAt":"2026-09-19T04:21:06Z"},
-    "Michael Pittman Jr.": {"availability":0.55,"workload":0.82,"longTermRisk":0.96,"status":"OUT Week 2 - foot; DNP Thursday-Friday","note":"Pittman has been downgraded from questionable to out for Week 2 after missing both Thursday and Friday practices with the foot injury. The confirmed absence materially lowers immediate availability and adds a larger return-to-workload cushion for his next game.","expectedReturn":"Week 3 possible; practice progression next week required","updatedAt":"2026-09-19T18:34:38Z"},
-    "Puka Nacua": {"availability":0.72,"workload":0.86,"longTermRisk":0.95,"status":"DNP Friday-Saturday - hip; questionable Week 2","note":"Nacua missed a second consecutive practice Saturday with the hip injury and is officially questionable for Monday night against the Giants. He was not on Thursday's injury report, so the consecutive late-week DNPs materially increase short-term availability and workload uncertainty compared with the prior Friday-only adjustment.","expectedReturn":"Week 2 uncertain; game-time decision Monday night","updatedAt":"2026-09-19T22:34:19Z"},
-    "DJ Moore": {"availability":0.86,"workload":0.91,"longTermRisk":0.97,"status":"Day-to-day - shoulder/AC-joint sprain after Week 2 exit","note":"Moore left Thursday night's game with a shoulder injury and was ruled out. Follow-up reporting indicates the injury is not considered serious and is believed to be an AC-joint sprain. He is day-to-day with the extended break before Buffalo's next game providing additional recovery time.","expectedReturn":"Week 3 possible; next practice will clarify availability","updatedAt":"2026-09-19T04:21:06Z"},
-    "Kaelon Black": {"availability":0.95,"workload":0.91,"longTermRisk":0.97,"status":"Expected ACTIVE Week 2 - groin; late-week limitation","note":"Sunday reporting says Black is expected to play against Miami after being limited Thursday and Friday with groin tightness. The improved availability outlook removes most of the game-status penalty, while a modest workload and recurrence cushion remains because the soft-tissue issue surfaced late in the week.","expectedReturn":"Expected active Week 2; modest workload caution possible","updatedAt":"2026-09-20T17:09:14Z"},
-    "Chris Olave": {"availability":0.98,"workload":0.95,"longTermRisk":0.98,"status":"ACTIVE Week 2 - hamstring; cleared pregame","note":"Olave is officially active against Baltimore after progressing from the late-week hamstring issue. The game-status uncertainty is removed, while modest workload and recurrence cushions remain because the hamstring issue surfaced during the week.","expectedReturn":"Active Week 2","updatedAt":"2026-09-20T17:09:14Z"}
+    "TreVeyon Henderson": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.99,
+      "status": "Cleared Week 2 - ankle; full practice all week, no designation",
+      "note": "Henderson practiced fully throughout the week and was removed from New England's final injury report. He is expected to make his season debut Sunday with no injury-related workload restriction indicated.",
+      "expectedReturn": "Active Week 2; no injury-related restriction expected",
+      "updatedAt": "2026-09-19T04:21:06Z"
+    },
+    "Zach Charbonnet": {
+      "availability": 0.84,
+      "workload": 0.9,
+      "longTermRisk": 0.95,
+      "status": "PUP - ACL recovery; return to practice approaching",
+      "note": "Seattle says Charbonnet's return to practice is coming soon with no reported rehabilitation setback. He remains on PUP and cannot play before Week 5, but the improving rehab trajectory modestly strengthens confidence in an early-window return.",
+      "expectedReturn": "Week 5 increasingly plausible; eligible to begin practicing before activation",
+      "updatedAt": "2026-09-19T04:21:06Z"
+    },
+    "Tory Horton": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.99,
+      "status": "Cleared Week 2 - hamstring; full practice all week, no designation",
+      "note": "Horton completed a full week of unrestricted practice and was removed from Seattle's final injury report. He will make his season debut Sunday; no injury-related workload restriction has been reported.",
+      "expectedReturn": "Active Week 2",
+      "updatedAt": "2026-09-19T04:21:06Z"
+    },
+    "George Kittle": {
+      "availability": 1,
+      "workload": 0.9,
+      "longTermRisk": 0.95,
+      "status": "Active Week 1 - Achilles return completed",
+      "note": "Successfully returned from the January Achilles tear in San Francisco's Week 1 win over the Rams, catching two of five targets for 12 yards with no reported in-game setback. His usage remained below a normal Kittle workload, but completing the game materially improves near-term availability confidence. Participation is expected to increase progressively in coming weeks.",
+      "expectedReturn": "Active; workload expected to ramp up",
+      "updatedAt": "2026-09-11T10:48:22Z"
+    },
+    "Rome Odunze": {
+      "availability": 1,
+      "workload": 0.92,
+      "longTermRisk": 0.99,
+      "status": "Active Week 1 - calf; cleared through pregame testing",
+      "note": "Odunze is officially active against Carolina after passing through pregame testing without a reported setback. That removes the remaining short-term availability uncertainty from his questionable designation. A modest workload cushion remains because he was limited in all three game-week practices while returning from the right calf strain.",
+      "expectedReturn": "Active Week 1; modest workload limitation still possible",
+      "updatedAt": "2026-09-13T16:53:14Z"
+    },
+    "Jonathon Brooks": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.92,
+      "status": "Cleared Week 1 - groin resolved; no limitations",
+      "note": "Carolina removed Brooks from the final Week 1 injury report after he practiced fully Friday. Head coach Dave Canales said Brooks has no limitations entering the opener. The groin-related availability and workload penalties are removed; the residual long-term-risk modifier reflects his history of back-to-back right ACL surgeries rather than the resolved groin issue.",
+      "expectedReturn": "Active Week 1; no injury limitations",
+      "updatedAt": "2026-09-11T20:18:13Z"
+    },
+    "Zay Flowers": {
+      "availability": 0.52,
+      "workload": 0.82,
+      "longTermRisk": 0.93,
+      "status": "OUT Week 2 - hamstring; downgraded Saturday",
+      "note": "Baltimore downgraded Flowers from doubtful to out Saturday after he returned only to a very limited Friday practice following consecutive DNPs. The confirmed Week 2 absence further lowers immediate availability, while the Friday practice remains an encouraging sign for a possible Week 3 return.",
+      "expectedReturn": "Week 3 possible if hamstring continues improving",
+      "updatedAt": "2026-09-20T01:02:09Z"
+    },
+    "Michael Penix Jr.": {
+      "availability": 0.82,
+      "workload": 0.93,
+      "longTermRisk": 0.96,
+      "status": "OUT Week 2 - ACL recovery; Week 3 start now possible",
+      "note": "Penix remains out for Week 2, but Sunday reporting says he is close to returning and could make his 2026 debut Thursday night in Week 3 against Green Bay. He practiced fully throughout Week 2 preparation, materially improving the near-term return outlook.",
+      "expectedReturn": "Week 3 possible; could start Thursday at Green Bay",
+      "updatedAt": "2026-09-20T17:09:14Z"
+    },
+    "Tua Tagovailoa": {
+      "availability": 0.52,
+      "workload": 0.8,
+      "longTermRisk": 0.95,
+      "status": "INACTIVE Week 2 - oblique; second straight absence",
+      "note": "Tagovailoa is officially inactive for Week 2 after failing to practice during the week. Cooper Rush starts again. The confirmed absence validates the existing short-term penalty without requiring an additional multiplier downgrade.",
+      "expectedReturn": "Week 3 possible; practice progression next week required",
+      "updatedAt": "2026-09-20T17:09:14Z"
+    },
+    "Alvin Kamara": {
+      "availability": 1,
+      "workload": 0.99,
+      "longTermRisk": 0.98,
+      "status": "Cleared Week 2 - full practice Friday; no designation",
+      "note": "Kamara practiced fully Friday and was removed from the final injury report. He is cleared to make his season debut Sunday. The near-term availability penalty is removed, with only a minimal workload cushion and residual MCL recurrence risk retained.",
+      "expectedReturn": "Active Week 2",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "Isiah Pacheco": {
+      "availability": 0.4,
+      "workload": 0.78,
+      "longTermRisk": 0.9,
+      "status": "IR - back surgery; approximately 12-week recovery",
+      "note": "Dan Campbell confirmed Monday that Pacheco required surgery for the back injury, and NFL Network's Ian Rapoport reports the procedure removed a body pressing on a nerve. The reported recovery timeline is approximately 12 weeks, with a chance to return in early December. That is materially worse than the prior open-ended Week 5-or-later outlook and warrants a substantial near-term availability downgrade plus added return-to-workload and residual back-risk penalties.",
+      "expectedReturn": "Approximately 12 weeks; early December possible",
+      "updatedAt": "2026-09-14T23:14:33Z"
+    },
+    "Tank Dell": {
+      "availability": 0.75,
+      "workload": 0.85,
+      "longTermRisk": 0.92,
+      "status": "IR - knee",
+      "note": "On injured reserve with a knee issue and unavailable until at least Week 5.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-09-10T13:58:00Z"
+    },
+    "James Conner": {
+      "availability": 0.72,
+      "workload": 0.85,
+      "longTermRisk": 0.93,
+      "status": "IR - foot",
+      "note": "On injured reserve with a foot injury and unavailable for the opening portion of the season.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-09-10T13:58:00Z"
+    },
+    "Jeremiyah Love": {
+      "availability": 1,
+      "workload": 0.92,
+      "longTermRisk": 0.98,
+      "status": "Off Week 2 injury report - ankle; workload ramp continuing",
+      "note": "Arizona removed Love entirely from the Week 2 injury report after he played through the high-ankle sprain in Week 1. The absence of an injury designation materially improves confidence in his health and allows the injury-related workload penalty to be reduced, while a small workload cushion remains as Arizona continues ramping up the rookie rather than assuming an immediate full bell-cow role.",
+      "expectedReturn": "Active Week 2; workload expected to continue ramping up",
+      "updatedAt": "2026-09-17T17:37:01Z"
+    },
+    "Josh Jacobs": {
+      "availability": 0.55,
+      "workload": 1,
+      "longTermRisk": 0.98,
+      "status": "Unavailable - Commissioner/Exempt status",
+      "note": "Currently unavailable to play because of an off-field league status with no established football return date. This adjustment reflects availability uncertainty, not injury performance risk.",
+      "expectedReturn": "Unknown",
+      "updatedAt": "2026-09-10T13:58:00Z"
+    },
+    "Brock Bowers": {
+      "availability": 0.68,
+      "workload": 0.86,
+      "longTermRisk": 0.95,
+      "status": "Returned to practice Friday - meniscus trim; doubtful Week 2",
+      "note": "Bowers practiced Friday for the first time since his meniscus procedure but is officially doubtful for Sunday and would need substantial progress in pregame testing to play. The return to practice is encouraging for the medium-term outlook, while the doubtful designation keeps a significant Week 2 availability penalty. Las Vegas is optimistic about Week 3.",
+      "expectedReturn": "Week 2 unlikely; Week 3 increasingly likely",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "Malik Nabers": {
+      "availability": 1,
+      "workload": 0.9,
+      "longTermRisk": 0.95,
+      "status": "Active Week 1 - ACL/meniscus return",
+      "note": "Nabers is officially active for Sunday Night Football against Dallas after practicing fully throughout the week. That resolves the prior game-time availability uncertainty and materially improves his near-term outlook. A modest workload cushion remains because this is his first regular-season game back from ACL reconstruction with meniscus repair and a later follow-up procedure, and the Giants have not ruled out managing his snaps.",
+      "expectedReturn": "Active Week 1; modest workload management still possible",
+      "updatedAt": "2026-09-13T23:55:58Z"
+    },
+    "Xavier Legette": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 1,
+      "status": "Cleared - ankle resolved",
+      "note": "Not listed on Carolina's Week 1 injury report after recovering from the August ankle injury and walking-boot period. He is medically cleared for the opener; any playing-time limitation is role-based rather than injury-based.",
+      "expectedReturn": "Active Week 1",
+      "updatedAt": "2026-09-10T21:08:43Z"
+    },
+    "Jakobi Meyers": {
+      "availability": 1,
+      "workload": 0.98,
+      "longTermRisk": 0.99,
+      "status": "Cleared Week 1 - thumb",
+      "note": "Jacksonville gave Meyers no final game designation after three limited practices with the thumb injury. He is cleared to play against Cleveland. A very small workload cushion remains because he practiced in a non-contact jersey earlier in the week and the injury involves his catching hand, but the prior availability concern is removed.",
+      "expectedReturn": "Active Week 1",
+      "updatedAt": "2026-09-12T03:02:26Z"
+    },
+    "Marvin Mims Jr.": {
+      "availability": 0.52,
+      "workload": 0.82,
+      "longTermRisk": 0.96,
+      "status": "OUT Week 2 - foot; DNP all week",
+      "note": "Denver officially ruled Mims out for Week 2 after he again did not practice Friday, completing a week of non-participation with the foot injury. The confirmed absence materially lowers immediate availability and adds a larger return-to-workload cushion for his next game.",
+      "expectedReturn": "Week 3 possible; practice progression next week required",
+      "updatedAt": "2026-09-18T23:37:49Z"
+    },
+    "Patrick Mahomes": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.98,
+      "status": "Cleared Week 1 - knee recovery",
+      "note": "Fully cleared following ACL/LCL rehabilitation and expected to start Week 1. Mahomes has reported no planned playing restrictions; only a minimal residual long-term post-reconstruction risk modifier remains until regular-season game action is confirmed.",
+      "expectedReturn": "Active Week 1; no restrictions expected",
+      "updatedAt": "2026-09-10T21:28:07Z"
+    },
+    "A.J. Brown": {
+      "availability": 0.76,
+      "workload": 0.9,
+      "longTermRisk": 0.97,
+      "status": "IR - high-ankle sprain; approximately six-week absence expected",
+      "note": "NFL Network's Ian Rapoport now reports Brown is expected to miss about six weeks with the right high-ankle sprain, a more specific and slightly longer outlook than the prior four-to-six-week range. New England has already placed him on injured reserve. The tighter six-week expectation lowers near-term availability and adds a modest return-to-workload and reinjury cushion.",
+      "expectedReturn": "Approximately six weeks; likely Week 7-8 range",
+      "updatedAt": "2026-09-13T15:30:32Z"
+    },
+    "Sam Darnold": {
+      "availability": 0.74,
+      "workload": 0.92,
+      "longTermRisk": 0.98,
+      "status": "Expected OUT multiple weeks - glute soft-tissue injury; about four-week return-to-play timeline",
+      "note": "NFL Network's Mike Garafolo now reports Darnold is looking at about a four-week return-to-play timeline for the glute injury, with a chance to return somewhat sooner. This is materially more specific and less optimistic than the prior Week 3-4 possibility. Seattle still considers the injury short-term and has not placed him on injured reserve, but the clearer multi-week expectation warrants lower near-term availability plus modest workload and recurrence cushions for his eventual return.",
+      "expectedReturn": "About four weeks from Week 1 injury; early October possible, potentially sooner",
+      "updatedAt": "2026-09-15T19:16:05Z"
+    },
+    "Alec Pierce": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.99,
+      "status": "Cleared Week 2 - full practice Friday; heel maintenance",
+      "note": "Pierce returned to a full Friday practice and carries no injury designation. Indianapolis clarified that Thursday's absence was maintenance rather than a setback. The temporary availability and workload penalties are removed.",
+      "expectedReturn": "Active Week 2; normal workload expected",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "Jacory Croskey-Merritt": {
+      "availability": 1,
+      "workload": 0.97,
+      "longTermRisk": 0.995,
+      "status": "Cleared Week 1 - groin",
+      "note": "Washington says its full 53-man roster is medically cleared for Week 1, including Croskey-Merritt after he was limited Wednesday and Thursday with the groin injury. A modest workload cushion remains because the team indicated snap-count decisions could still be discussed for players returning from injuries, but he no longer carries a meaningful availability penalty.",
+      "expectedReturn": "Active Week 1; medically cleared",
+      "updatedAt": "2026-09-11T18:49:48Z"
+    },
+    "De'Zhaun Stribling": {
+      "availability": 0.45,
+      "workload": 0.78,
+      "longTermRisk": 0.9,
+      "status": "IR - ankle surgery for ruptured deltoid ligament; close to 10 weeks expected",
+      "note": "Kyle Shanahan confirmed Stribling underwent surgery to repair a ruptured deltoid ligament in his left ankle and is expected to miss close to 10 weeks. This is materially worse than the prior one-month-plus estimate when surgery was only being considered, warranting a major near-term availability downgrade and additional return-to-workload and residual-risk penalties.",
+      "expectedReturn": "Approximately 10 weeks; late November range",
+      "updatedAt": "2026-09-17T00:03:06Z"
+    },
+    "Sean Tucker": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.995,
+      "status": "Cleared Week 2 - hamstring; no game designation",
+      "note": "Tucker practiced fully throughout the Week 2 workweek and carries no final injury designation. He is medically available Sunday, removing the remaining near-term availability and workload penalties from the hamstring issue.",
+      "expectedReturn": "Active Week 2",
+      "updatedAt": "2026-09-18T23:37:49Z"
+    },
+    "Jalen McMillan": {
+      "availability": 1,
+      "workload": 0.88,
+      "longTermRisk": 0.99,
+      "status": "ACTIVE Week 2 - knee; managed role expected",
+      "note": "McMillan is officially active and will make his 2026 debut after missing Week 1. Reporting says Tampa Bay does not expect him to have a full role yet, so the availability penalty is removed while a larger workload cushion is applied for the managed return.",
+      "expectedReturn": "Active Week 2; reduced snap/route workload expected",
+      "updatedAt": "2026-09-20T17:09:14Z"
+    },
+    "Dylan Sampson": {
+      "availability": 0.58,
+      "workload": 0.84,
+      "longTermRisk": 0.93,
+      "status": "IR - left knee; minimum four-game absence",
+      "note": "Cleveland officially placed Sampson on injured reserve September 15 after the left-knee injury suffered in Week 1. The transaction guarantees a minimum four-game absence and confirms the prior expectation that he would miss significant time. Availability is reduced modestly from the prior IR-possible assumption; return-to-workload and residual-risk multipliers remain unchanged until a more specific diagnosis or rehabilitation timeline is reported.",
+      "expectedReturn": "Eligible after four games; potentially before Cleveland's Oct. 18 game vs. Baltimore",
+      "updatedAt": "2026-09-16T02:48:07Z"
+    },
+    "Omar Cooper Jr.": {
+      "availability": 0.58,
+      "workload": 0.84,
+      "longTermRisk": 0.93,
+      "status": "IR - ankle sprain; minimum four-game absence",
+      "note": "The Jets placed Cooper on injured reserve Saturday after he failed to practice during the week. Initial reporting had him week-to-week with hope of avoiding IR, so the transaction materially worsens immediate availability and guarantees at least four missed games.",
+      "expectedReturn": "Eligible after four games; return timeline depends on ankle recovery",
+      "updatedAt": "2026-09-19T18:34:38Z"
+    },
+    "Ja'Kobi Lane": {
+      "availability": 0.64,
+      "workload": 0.86,
+      "longTermRisk": 0.95,
+      "status": "IR - wrist surgery; minimum four-game absence",
+      "note": "Baltimore officially placed Lane on injured reserve after wrist surgery, guaranteeing at least four missed games. The operation was already expected, but the IR transaction removes any chance of an earlier return and slightly lowers near-term availability while preserving the existing workload and residual-risk assumptions.",
+      "expectedReturn": "Eligible after four games; recovery expected roughly four-to-six weeks",
+      "updatedAt": "2026-09-17T00:03:06Z"
+    },
+    "Kyler Murray": {
+      "availability": 0.6,
+      "workload": 0.9,
+      "longTermRisk": 0.97,
+      "status": "OUT Week 2 - concussion protocol",
+      "note": "Minnesota ruled Murray out for Week 2 because he has not yet cleared concussion protocol. He made progress during the week, and Kevin O'Connell said the Vikings fully anticipate him clearing the protocol early next week, so the downgrade is primarily immediate availability rather than long-term workload risk.",
+      "expectedReturn": "Week 3 expected if concussion protocol is cleared early next week",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "Najee Harris": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.94,
+      "status": "Healthy scratch Week 1 - Achilles medically cleared",
+      "note": "Updated reporting clarifies that Harris was not inactive because of the Achilles injury. He was a healthy scratch/coach's decision and was not listed on the Giants' injury report. The prior near-term availability and workload penalties are therefore removed. A small long-term-risk cushion remains because he is returning this season from the 2025 Achilles tear, but any Week 2 playing-time uncertainty is now treated as a depth-chart/role issue rather than an injury limitation.",
+      "expectedReturn": "Medically available Week 2; role/activation is coach's decision",
+      "updatedAt": "2026-09-14T15:35:53Z"
+    },
+    "Ladd McConkey": {
+      "availability": 0.86,
+      "workload": 0.9,
+      "longTermRisk": 0.98,
+      "status": "Limited Friday - rib; questionable Week 2",
+      "note": "McConkey returned to practice Friday after missing Wednesday and Thursday and was listed as questionable. The limited session materially improves his chance to play compared with consecutive DNPs, but the rib injury and uncertain game status still warrant availability and workload cushions.",
+      "expectedReturn": "Week 2 possible; game-time status remains uncertain",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "Chig Okonkwo": {
+      "availability": 0.55,
+      "workload": 0.8,
+      "longTermRisk": 0.95,
+      "status": "OUT Week 2 - lower-body soft-tissue injury",
+      "note": "Washington officially ruled Okonkwo out for Week 2 after he failed to progress enough during the practice week. The confirmed absence lowers immediate availability and preserves a meaningful return-to-workload and recurrence cushion for next week.",
+      "expectedReturn": "Week 3 possible; practice progression next week required",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "Brian Thomas Jr.": {
+      "availability": 1,
+      "workload": 0.98,
+      "longTermRisk": 0.97,
+      "status": "Cleared Week 2 - shoulder; limited all week, no designation",
+      "note": "Thomas was limited in practice throughout the week to manage the shoulder he aggravated in Week 1 but carries no final game designation and is cleared to play Sunday. The availability penalty is removed while small workload and recurrence cushions remain because the shoulder issue has recurred.",
+      "expectedReturn": "Active Week 2",
+      "updatedAt": "2026-09-19T04:21:06Z"
+    },
+    "Nico Collins": {
+      "availability": 0.58,
+      "workload": 0.82,
+      "longTermRisk": 0.94,
+      "status": "OUT Week 2 - Grade 1 hamstring strain; DNP Thursday-Friday",
+      "note": "Houston officially ruled Collins out after he missed Thursday and Friday practices following the hamstring strain suffered Wednesday. The injury is not believed serious and he has not been placed on IR, but his prior hamstring history and confirmed Week 2 absence warrant a substantial near-term availability reduction plus workload and recurrence cushions.",
+      "expectedReturn": "Week 3-4 range; monitor next week's practice participation",
+      "updatedAt": "2026-09-18T22:50:27Z"
+    },
+    "RJ Harvey": {
+      "availability": 0.62,
+      "workload": 0.84,
+      "longTermRisk": 0.96,
+      "status": "Unlikely Week 2 - hamstring; limited Thursday-Friday",
+      "note": "Sunday reporting says Harvey is unlikely to play against Jacksonville despite limited practices Thursday and Friday. That is a meaningful downgrade from the prior questionable/game-time outlook and warrants a larger immediate availability and return-to-workload penalty.",
+      "expectedReturn": "Week 2 unlikely; Week 3 possible if hamstring improves",
+      "updatedAt": "2026-09-20T17:09:14Z"
+    },
+    "Jordan Mason": {
+      "availability": 0.55,
+      "workload": 0.82,
+      "longTermRisk": 0.97,
+      "status": "IR - fractured right thumb repaired; minimum four-game absence",
+      "note": "Minnesota placed Mason on injured reserve Wednesday after a small fracture in his right thumb was repaired. He must miss at least four games, and Kevin O'Connell expressed optimism that Mason can return after the minimum absence. With Minnesota's Week 6 bye, Week 7 is his earliest game back. The hand injury also warrants a modest return-to-workload cushion for ball security and contact when activated.",
+      "expectedReturn": "Week 7 earliest; expected back after minimum IR absence if healing stays on track",
+      "updatedAt": "2026-09-17T01:25:03Z"
+    },
+    "D'Andre Swift": {
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 0.99,
+      "status": "Cleared Week 2 - ankle/knee; full Friday, no designation",
+      "note": "Swift progressed from limited practices Wednesday and Thursday to full participation Friday and was removed from Chicago's final injury report. The ankle and knee issues are not expected to limit him Sunday, so the temporary availability and workload penalties are removed.",
+      "expectedReturn": "Active Week 2; no injury-related restriction expected",
+      "updatedAt": "2026-09-19T04:21:06Z"
+    },
+    "Michael Pittman Jr.": {
+      "availability": 0.55,
+      "workload": 0.82,
+      "longTermRisk": 0.96,
+      "status": "OUT Week 2 - foot; DNP Thursday-Friday",
+      "note": "Pittman has been downgraded from questionable to out for Week 2 after missing both Thursday and Friday practices with the foot injury. The confirmed absence materially lowers immediate availability and adds a larger return-to-workload cushion for his next game.",
+      "expectedReturn": "Week 3 possible; practice progression next week required",
+      "updatedAt": "2026-09-19T18:34:38Z"
+    },
+    "Puka Nacua": {
+      "availability": 0.72,
+      "workload": 0.86,
+      "longTermRisk": 0.95,
+      "status": "DNP Friday-Saturday - hip; questionable Week 2",
+      "note": "Nacua missed a second consecutive practice Saturday with the hip injury and is officially questionable for Monday night against the Giants. He was not on Thursday's injury report, so the consecutive late-week DNPs materially increase short-term availability and workload uncertainty compared with the prior Friday-only adjustment.",
+      "expectedReturn": "Week 2 uncertain; game-time decision Monday night",
+      "updatedAt": "2026-09-19T22:34:19Z"
+    },
+    "DJ Moore": {
+      "availability": 0.86,
+      "workload": 0.91,
+      "longTermRisk": 0.97,
+      "status": "Day-to-day - shoulder/AC-joint sprain after Week 2 exit",
+      "note": "Moore left Thursday night's game with a shoulder injury and was ruled out. Follow-up reporting indicates the injury is not considered serious and is believed to be an AC-joint sprain. He is day-to-day with the extended break before Buffalo's next game providing additional recovery time.",
+      "expectedReturn": "Week 3 possible; next practice will clarify availability",
+      "updatedAt": "2026-09-19T04:21:06Z"
+    },
+    "Kaelon Black": {
+      "availability": 0.95,
+      "workload": 0.91,
+      "longTermRisk": 0.97,
+      "status": "Expected ACTIVE Week 2 - groin; late-week limitation",
+      "note": "Sunday reporting says Black is expected to play against Miami after being limited Thursday and Friday with groin tightness. The improved availability outlook removes most of the game-status penalty, while a modest workload and recurrence cushion remains because the soft-tissue issue surfaced late in the week.",
+      "expectedReturn": "Expected active Week 2; modest workload caution possible",
+      "updatedAt": "2026-09-20T17:09:14Z"
+    },
+    "Chris Olave": {
+      "availability": 0.98,
+      "workload": 0.95,
+      "longTermRisk": 0.98,
+      "status": "ACTIVE Week 2 - hamstring; cleared pregame",
+      "note": "Olave is officially active against Baltimore after progressing from the late-week hamstring issue. The game-status uncertainty is removed, while modest workload and recurrence cushions remain because the hamstring issue surfaced during the week.",
+      "expectedReturn": "Active Week 2",
+      "updatedAt": "2026-09-20T17:09:14Z"
+    },
+    "Jayden Daniels": {
+      "availability": 0.55,
+      "workload": 0.7,
+      "longTermRisk": 0.88,
+      "status": "Out Week 3 - left elbow dislocation",
+      "note": "Daniels dislocated his left elbow in Week 2. Washington has named Marcus Mariota the Week 3 starter while Daniels receives additional specialist evaluation. No firm return timetable has been announced.",
+      "expectedReturn": "Week 3 ruled out; return timetable TBD",
+      "updatedAt": "2026-09-22T23:59:00Z"
+    }
   }
 }
