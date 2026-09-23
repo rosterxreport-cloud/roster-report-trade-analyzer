@@ -68,35 +68,9 @@ try:
  _pass=pbp[pbp["pass_attempt"].fillna(0).eq(1)].copy()
  _games=_pass.groupby("posteam")["game_id"].nunique()
  _atts=_pass.groupby("posteam")["pass_attempt"].sum()
- team_pass_pg={team(k):float(_atts[k])/max(1.,float(_games[k])) for k in _atts.index}
+ team_pass_pg={str(k).strip().upper():float(_atts[k])/max(1.,float(_games[k])) for k in _atts.index}
 except Exception as ex:
  print(f"Team pass-volume fallback: {ex}")
-# Safe scoring opportunity map: blend 2025 stability with 2026 role.
-scoreopp={}
-try:
- try: pbp25=pd.read_parquet(PBP25,columns=cols)
- except Exception: pbp25=pd.read_parquet(PBP25)
- pbp25=pbp25[pbp25.season_type.eq("REG")].copy()
- def scoring_rates(frame):
-  t=frame[frame.receiver_player_id.notna()].copy()
-  t["_rz"]=(pd.to_numeric(t["yardline_100"],errors="coerce")<=20).astype(float)
-  t["_ez"]=(pd.to_numeric(t["yardline_100"],errors="coerce")<=10).astype(float)
-  t["_deep"]=(pd.to_numeric(t["air_yards"],errors="coerce").fillna(0)>=20).astype(float)
-  g=t.groupby("receiver_player_id").agg(rz=("_rz","sum"),ez=("_ez","sum"),deep=("_deep","sum"),n=("receiver_player_id","count"))
-  return {str(pid):{"rz":float(r.rz)/max(1.,float(r.n)),"ez":float(r.ez)/max(1.,float(r.n)),"deep":float(r.deep)/max(1.,float(r.n)),"n":float(r.n)} for pid,r in g.iterrows()}
- r25=scoring_rates(pbp25);r26=scoring_rates(pbp)
- for pid in set(r25)|set(r26):
-  a,b=r25.get(pid),r26.get(pid)
-  if a and b: rz=.65*a["rz"]+.35*b["rz"];ez=.65*a["ez"]+.35*b["ez"];deep=.65*a["deep"]+.35*b["deep"];sample_n=max(1.,b["n"])
-  elif b: rz,ez,deep,sample_n=b["rz"],b["ez"],b["deep"],max(1.,b["n"])
-  else: rz,ez,deep,sample_n=a["rz"],a["ez"],a["deep"],max(1.,a["n"])
-  scoreopp[pid]={"rz_targets":rz*sample_n,"endzone_targets":ez*sample_n,"deep_targets":deep*sample_n,"pbp_targets":sample_n}
-except Exception as ex:
- print(f"Scoring-opportunity blend fallback: {ex}")
-oppmap={}
-for _,sr in stats.iterrows():
- _pid=str(sr.get("player_id",""));_so=scoreopp.get(_pid,{})
- oppmap[_pid]={"target_share":sr.get("target_share",np.nan),"air_yard_share":sr.get("air_yards_share",sr.get("air_yard_share",np.nan)),"adot":(n(sr,"receiving_air_yards")/max(1.,n(sr,"targets"))) if n(sr,"receiving_air_yards") else np.nan,"rz_targets":_so.get("rz_targets",0),"endzone_targets":_so.get("endzone_targets",0),"deep_targets":_so.get("deep_targets",0),"pbp_targets":_so.get("pbp_targets",max(1.,n(sr,"targets")))}
 # Upcoming opponent.
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
@@ -166,34 +140,6 @@ for _,r in q.iterrows():
  base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
  ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"2026 player stats + ranking role"})
-for k,p in ranked.items(): bylast.setdefault(lname(p["name"]),[]).append((k,p))
-rows=[];seen=set()
-for _,r in q.iterrows():
- cand=bylast.get(lname(r["passer_player_name"]),[])
- if len(cand)!=1: continue
- k,p=cand[0];seen.add(k);g=max(1.,float(r["games"]))
- att=float(r["attempts"])/g;comp=float(r["completions"])/g;py=float(r["pass_yards"])/g;ptd=float(r["pass_td"])/g;ints=float(r["interceptions"])/g
- ay=float(r["air_yards"])/g;ypa=py/max(1.,att);aypa=ay/max(1.,att)
- car=float(r["carries"])/g;ry=float(r["rush_yards"])/g;rtd=float(r["rush_td"])/g
- pr=min(50,int(p["posRank"]));role_att=max(26.,min(39.,37.5-(pr-1)*.28))
- # Stabilize two-game passing volume/efficiency with role priors.
- patt=.55*att+.45*role_att
- role_ypa=max(6.5,min(8.4,8.15-(pr-1)*.035));pypa=.45*ypa+.55*role_ypa
- role_aypa=max(6.8,min(9.6,9.1-(pr-1)*.04));paypa=.45*aypa+.55*role_aypa
- pcomp=max(.54,min(.74,.55*(comp/max(1.,att))+.45*.645))
- pyd=patt*pypa;pcompn=patt*pcomp;pair=patt*paypa
- # Regress TD/INT rates aggressively early in season.
- td_rate=.40*(ptd/max(1.,att))+.60*.045;int_rate=.40*(ints/max(1.,att))+.60*.022
- pptd=patt*td_rate;pint=patt*int_rate
- # Preserve real QB rushing signal while preventing two-game spikes.
- role_car=max(1.5,min(7.5,5.8-(pr-1)*.08));pcar=.55*car+.45*role_car
- ypc=ry/max(1.,car) if car else 4.5;pry=pcar*max(3.0,min(7.0,.55*ypc+.45*4.8))
- prtd=.45*rtd+.55*.18
- pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0))
- avail=AUTO_AVAILABILITY.get(key(p["name"]),{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy()
- fp=(pyd*.04+pptd*4-pint*2+pry*.1+prtd*6)*mm*float(avail["week_factor"])
- ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];base=(pyd*.04+pptd*4-pint*2+pry*.1+prtd*6);rosppg=base*(sum(mults)/len(mults) if mults else 1)
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"]})
 for k,p in ranked.items():
  if k in seen: continue
  # Do not fabricate a detailed stat line for unmatched QBs; expose them as fallback.
