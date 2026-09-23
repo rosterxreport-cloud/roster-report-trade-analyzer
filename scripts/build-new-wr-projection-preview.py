@@ -39,6 +39,16 @@ metrics=["pass_epa","pass_success","explosive","rztd","wr_ypt"]
 for m in metrics:
  s=pd.to_numeric(dg[m],errors="coerce");dg[m+"_badpct"]=s.rank(pct=True).fillna(.5)
 dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
+# Actual 2026 team pass attempts/game from PBP. Use each player's own offense
+# rather than a league-wide arbitrary attempts baseline.
+team_pass_pg={}
+try:
+ _pass=pbp[pbp["pass_attempt"].fillna(0).eq(1)].copy()
+ _games=_pass.groupby("posteam")["game_id"].nunique()
+ _atts=_pass.groupby("posteam")["pass_attempt"].sum()
+ team_pass_pg={team(k):float(_atts[k])/max(1.,float(_games[k])) for k in _atts.index}
+except Exception as ex:
+ print(f"Team pass-volume fallback: {ex}")
 # Safe scoring opportunity map: blend 2025 stability with 2026 role.
 scoreopp={}
 try:
@@ -115,8 +125,8 @@ def emit(p,t,rec,ypr,td,source,op=None):
  # Convert target share to expected targets using a regressed team pass-volume
  # baseline rather than a fixed 34 attempts. This prevents high-share players
  # on lower-volume passing offenses from being mechanically inflated.
- team_pass_baseline=32.0
- share_targets=role_targets if np.isnan(target_share) else max(2.,min(11.5,target_share*team_pass_baseline))
+ team_pass_baseline=float(team_pass_pg.get(team(p["team"]),32.0))
+ share_targets=role_targets if np.isnan(target_share) else max(2.,min(12.5,target_share*team_pass_baseline))
  # Two games of raw volume are too noisy for established high-ranked WRs.
  # Give the locked role baseline more weight while still allowing current
  # target share to identify genuine role changes.
@@ -149,7 +159,7 @@ def emit(p,t,rec,ypr,td,source,op=None):
  role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;ez_rate=ez_t/pbp_t;opp_td=max(.06,min(.62,.018*tp+.0055*rey+.14*rz_rate+.16*ez_rate+.05*deep_rate))
  tdp=max(.04,min(.68,.22*td+.48*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm*float(avail["week_factor"]);ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);miss=min(left,int(avail["ros_missed_games"]));active_mults=mults[miss:];ros=sum(base*m for m in active_mults);ppg=ros/left if left else 0
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"endzoneTargets":int(ez_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"teamPassAttemptsPerGame":round(team_pass_baseline,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"endzoneTargets":int(ez_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
 for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
