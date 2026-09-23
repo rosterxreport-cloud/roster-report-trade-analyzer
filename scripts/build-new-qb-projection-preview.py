@@ -41,26 +41,26 @@ try:
   AUTO_AVAILABILITY[key(_name)]={"week_factor":_wf,"ros_missed_games":0,"status":str(_x.get("status","ACTIVE")),"source":"injury-adjustments.json"}
 except Exception as ex:
  print(f"Automatic injury availability fallback: {ex}")
-stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("WR")].copy();stats["k"]=stats.player_display_name.map(key)
+stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("QB")].copy();stats["k"]=stats.player_display_name.map(key)
 # nflverse season stats can refresh between runs. The preview must not silently
 # change historical inputs while we are tuning a fixed Week 3 model.
 # Record a deterministic input snapshot in the artifact for auditability.
 INPUT_SNAPSHOT_COLS=[x for x in ["player_id","player_display_name","recent_team","games","targets","receptions","receiving_yards","receiving_tds","target_share","air_yards_share","receiving_air_yards"] if x in stats.columns]
 Path("data/wr-projection-input-snapshot.json").write_text(stats[INPUT_SNAPSHOT_COLS].fillna("").to_json(orient="records",indent=2))
-cols=["season_type","posteam","defteam","play_type","pass_attempt","complete_pass","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards","air_yards","pass_location"]
+cols=["game_id","season_type","posteam","defteam","play_type","pass_attempt","complete_pass","yards_gained","epa","success","touchdown","yardline_100","passer_player_id","passer_player_name","passing_yards","pass_touchdown","interception","air_yards","rusher_player_id","rushing_yards","rush_attempt","rush_touchdown"]
 try: pbp=pd.read_parquet(PBP,columns=cols)
 except Exception: pbp=pd.read_parquet(PBP)
 pbp=pbp[pbp.season_type.eq("REG")].copy();pas=pbp[pd.to_numeric(pbp.pass_attempt,errors="coerce").fillna(0).eq(1)].copy()
 pas["explosive"]=((pd.to_numeric(pas.complete_pass,errors="coerce").fillna(0)==1)&(pd.to_numeric(pas.yards_gained,errors="coerce").fillna(0)>=20)).astype(float)
 pas["rz"]=(pd.to_numeric(pas.yardline_100,errors="coerce")<=20).fillna(False);pas["rztd"]=((pd.to_numeric(pas.touchdown,errors="coerce").fillna(0)==1)&pas.rz).astype(float)
 dg=pas.groupby("defteam").agg(pass_epa=("epa","mean"),pass_success=("success","mean"),explosive=("explosive","mean"),rztd=("rztd","mean")).reset_index()
-idpos=dict(zip(stats.player_id.astype(str),stats.position)) if "player_id" in stats.columns else {};pbp["receiver_position"]=pbp.receiver_player_id.astype(str).map(idpos)
-wr=pbp[(pbp.play_type.eq("pass"))&(pbp.receiver_position.eq("WR"))].groupby("defteam").agg(wr_yards=("receiving_yards","sum"),wr_targets=("pass_attempt","sum")).reset_index()
-dg=dg.merge(wr,on="defteam",how="left");dg["wr_ypt"]=dg.wr_yards/dg.wr_targets.replace(0,np.nan)
-metrics=["pass_epa","pass_success","explosive","rztd","wr_ypt"]
-for m in metrics:
+# QB defensive environment: passing efficiency allowed, explosive rate, and red-zone TD rate.
+dg["def_bad"]=dg[["pass_epa_badpct","pass_success_badpct","explosive_badpct","rztd_badpct"]].mean(axis=1) if "pass_epa_badpct" in dg else .5
+# Rebuild percentile columns for QB-relevant defensive metrics.
+for m in ["pass_epa","pass_success","explosive","rztd"]:
  s=pd.to_numeric(dg[m],errors="coerce");dg[m+"_badpct"]=s.rank(pct=True).fillna(.5)
-dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
+dg["def_bad"]=dg[[m+"_badpct" for m in ["pass_epa","pass_success","explosive","rztd"]]].mean(axis=1)
+dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
 # Actual 2026 team pass attempts/game from PBP. Use each player's own offense
 # rather than a league-wide arbitrary attempts baseline.
 team_pass_pg={}
