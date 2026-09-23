@@ -13,6 +13,10 @@ PROJECTION_AVAILABILITY={
  "jaxsondart":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT WEEK 3 - KNEE"},
  "samdarnold":{"week_factor":0.55,"ros_missed_games":0,"status":"WEEK 3 QUESTIONABLE - GLUTE"},
  "tuatagovailoa":{"week_factor":0.0,"ros_missed_games":0,"status":"NOT WEEK 3 STARTER - OBLIQUE"},
+ "russellwilson":{"week_factor":0.0,"ros_missed_games":0,"status":"NOT ACTIVE WEEK 3 QB"},
+ "macjones":{"week_factor":0.0,"ros_missed_games":0,"status":"BACKUP - NO STARTER PROJECTION"},
+ "jjmccarthy":{"week_factor":0.0,"ros_missed_games":0,"status":"QB3 - NO STARTER PROJECTION"},
+ "derekcarr":{"week_factor":0.0,"ros_missed_games":0,"status":"NOT ACTIVE WEEK 3 QB"},
 
  "nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"},
  "zayflowers":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT"},
