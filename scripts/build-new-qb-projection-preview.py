@@ -8,6 +8,12 @@ PBP25="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_p
 SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
 INJURY_FILE=Path("injury-adjustments.json")
 PROJECTION_AVAILABILITY={
+ "jaydendaniels":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT WEEK 3 - ELBOW"},
+ "calebwilliams":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT WEEK 3 - HAMSTRING"},
+ "jaxsondart":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT WEEK 3 - KNEE"},
+ "samdarnold":{"week_factor":0.55,"ros_missed_games":0,"status":"WEEK 3 QUESTIONABLE - GLUTE"},
+ "tuatagovailoa":{"week_factor":0.0,"ros_missed_games":0,"status":"NOT WEEK 3 STARTER - OBLIQUE"},
+
  "nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"},
  "zayflowers":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT"},
  "pukanacua":{"week_factor":0.50,"ros_missed_games":0,"status":"QUESTIONABLE"},
