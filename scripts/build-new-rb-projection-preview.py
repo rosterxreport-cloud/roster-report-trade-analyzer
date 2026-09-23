@@ -44,6 +44,11 @@ defmap=dict(zip(dg.defteam,dg.matchup_mult))
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
 future=sch[(sch.season.eq(2026))&(~played)].sort_values("week")
+# IMPORTANT: "this week" must mean the league's next chronological week,
+# not each team's first unplayed game. This prevents stale/postponed rows or
+# schedule quirks from assigning different NFL weeks to different players.
+next_week=int(future["week"].min())
+this_week=future[future["week"].eq(next_week)].copy()
 # Normalize the few common abbreviation variants before matching rankings,
 # schedules and nflverse defensive PBP.
 TEAM_ALIAS={"LA":"LAR","JAC":"JAX","WSH":"WAS"}
@@ -52,11 +57,16 @@ def team(v):
  return TEAM_ALIAS.get(v,v)
 opp={}
 schedule_by_team={}
+for _,gm in this_week.iterrows():
+ h,a=team(gm.home_team),team(gm.away_team)
+ opp[h]=a;opp[a]=h
 for _,gm in future.iterrows():
  h,a=team(gm.home_team),team(gm.away_team)
- opp.setdefault(h,a);opp.setdefault(a,h)
  schedule_by_team.setdefault(h,[]).append(a)
  schedule_by_team.setdefault(a,[]).append(h)
+print(f"Projection week: {next_week}; mapped teams: {len(opp)}")
+if len(opp) != 32:
+ raise SystemExit(f"Expected 32 team opponent mappings for Week {next_week}, got {len(opp)}")
 # Normalize defensive keys too, so every mapped opponent can receive its defense.
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="RB"};rows=[];projected=set()
