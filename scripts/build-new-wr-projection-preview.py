@@ -38,22 +38,7 @@ metrics=["pass_epa","pass_success","explosive","rztd","wr_ypt"]
 for m in metrics:
  s=pd.to_numeric(dg[m],errors="coerce");dg[m+"_badpct"]=s.rank(pct=True).fillna(.5)
 dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
-# Use nflverse's published receiver market-share fields when available.
-# These are calculated from team targets and team air yards by nflfastR.
-oppmap={}
-for _,sr in stats.iterrows():
- _pid=str(sr.get("player_id",""))
- _so=scoreopp.get(_pid,{})
- oppmap[_pid]={
-  "target_share":sr.get("target_share",np.nan),
-  "air_yard_share":sr.get("air_yards_share",sr.get("air_yard_share",np.nan)),
-  "adot":(n(sr,"receiving_air_yards")/max(1.,n(sr,"targets"))) if n(sr,"receiving_air_yards") else np.nan,
-  "rz_targets":0,
-  "deep_targets":0,
-  "pbp_targets":max(1.,n(sr,"targets"))
- }
-# Safe player scoring-opportunity layer. Missing PBP/player mappings never
-# abort the projection run; the existing role/TD expectation remains fallback.
+# Safe scoring opportunity map.
 scoreopp={}
 try:
  _t=pbp[pbp.receiver_player_id.notna()].copy()
@@ -64,6 +49,10 @@ try:
  scoreopp={str(r.receiver_player_id):{"rz_targets":float(r.rz_targets),"endzone_targets":float(r.endzone_targets),"deep_targets":float(r.deep_targets),"pbp_targets":float(r.pbp_targets)} for _,r in _so.iterrows()}
 except Exception as e:
  print(f"Scoring-opportunity layer fallback: {e}")
+oppmap={}
+for _,sr in stats.iterrows():
+ _pid=str(sr.get("player_id",""));_so=scoreopp.get(_pid,{})
+ oppmap[_pid]={"target_share":sr.get("target_share",np.nan),"air_yard_share":sr.get("air_yards_share",sr.get("air_yard_share",np.nan)),"adot":(n(sr,"receiving_air_yards")/max(1.,n(sr,"targets"))) if n(sr,"receiving_air_yards") else np.nan,"rz_targets":_so.get("rz_targets",0),"endzone_targets":_so.get("endzone_targets",0),"deep_targets":_so.get("deep_targets",0),"pbp_targets":_so.get("pbp_targets",max(1.,n(sr,"targets")))}
 # Upcoming opponent.
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
