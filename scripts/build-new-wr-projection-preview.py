@@ -164,10 +164,10 @@ for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
  projected.add(k);g=max(1.,n(r,"games"));op=oppmap.get(str(r.get("player_id","")))
- # Projection team comes from current nflverse stats when available, not a
- # potentially stale rankings-team field. Rankings/value data remain unchanged.
- pp=dict(ranked[k]);rt=str(r.get("recent_team","") or "").strip()
- if rt: pp["team"]=team(rt)
+ # Keep the curated 2026 rankings roster as the authoritative current team.
+ # nflverse recent_team is retained in the input snapshot for auditing only;
+ # it must not silently override verified roster assignments.
+ pp=dict(ranked[k])
  emit(pp,n(r,"targets")/g,n(r,"receptions")/g,n(r,"receiving_yards")/max(1.,n(r,"receptions")),n(r,"receiving_tds")/g,"2026 production + opportunity + ranking role",op)
 for k,p in ranked.items():
  if k not in projected: emit(p,0,0,12,0,"ranking-role fallback")
