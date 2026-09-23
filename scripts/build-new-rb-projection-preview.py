@@ -59,11 +59,11 @@ for _,gm in future.iterrows():
  schedule_by_team.setdefault(a,[]).append(h)
 # Normalize defensive keys too, so every mapped opponent can receive its defense.
 defmap={team(k):v for k,v in defmap.items()}
-db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="RB"};rows=[]
+db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="RB"};rows=[];projected=set()
 for _,r in stats.iterrows():
  k=r.k
  if k not in ranked or n(r,"games")<1:continue
- p=ranked[k];g=max(1.,n(r,"games"));c=n(r,"carries")/g;t=n(r,"targets")/g;rec=n(r,"receptions")/g
+ p=ranked[k];projected.add(k);g=max(1.,n(r,"games"));c=n(r,"carries")/g;t=n(r,"targets")/g;rec=n(r,"receptions")/g
  ypc=n(r,"rushing_yards")/max(1.,n(r,"carries"));ypr=n(r,"receiving_yards")/max(1.,n(r,"receptions"));td=(n(r,"rushing_tds")+n(r,"receiving_tds"))/g
  strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.))
  # Two games of usage should inform the projection, not become the projection.
@@ -95,6 +95,17 @@ for _,r in stats.iterrows():
  left=len(remaining_opps)
  ros_ppg=(ros_points/left) if left else 0.0
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(ros_mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ros_ppg,1),"ROSpoints":round(ros_points,1)})
+# Every ranked RB gets a projection. If current nflverse stats are unavailable,
+# use the locked ranking/role baseline rather than silently dropping the player.
+for k,p in ranked.items():
+ if k in projected: continue
+ pr=min(60,int(p["posRank"]));strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.))
+ cp=max(6.0,min(19.0,20.0-(pr-1)*0.30));tp=max(1.5,min(6.5,6.2-(pr-1)*0.09))
+ ry=cp*4.35*(.88+.07*strength+.05*value);rp=tp*.72;rey=rp*7.5*(.90+.05*strength+.05*value)
+ role_td=max(.12,min(.72,.74-(pr-1)*.0105));opportunity_td=max(.10,min(.78,.018*cp+.010*tp));tdp=max(.06,min(.88,.70*role_td+.30*opportunity_td))
+ base=ry/10+rey/10+rp*.5+tdp*6;player_team=team(p["team"]);opponent=opp.get(player_team);mm=float(defmap.get(opponent,1.0));weekly=base*mm
+ remaining_opps=schedule_by_team.get(player_team,[]);ros_mults=[float(defmap.get(o,1.0)) for o in remaining_opps];left=len(remaining_opps);ros_points=sum(base*m for m in ros_mults);ros_ppg=ros_points/left if left else 0.0
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(ros_mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ros_ppg,1),"ROSpoints":round(ros_points,1),"projectionSource":"ranking-role fallback"})
 rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
 Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:25],indent=2))
