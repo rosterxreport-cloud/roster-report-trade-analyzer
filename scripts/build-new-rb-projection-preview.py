@@ -5,6 +5,8 @@ import pandas as pd, numpy as np
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_2026.csv"
 PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+# Week 3 2026 official NFL schedule cross-check. Kept projection-only.
+EXPECTED_WEEK3={"ATL":"GB","GB":"ATL","LAC":"BUF","BUF":"LAC","CAR":"CLE","CLE":"CAR","NYJ":"DET","DET":"NYJ","HOU":"IND","IND":"HOU","NE":"JAX","JAX":"NE","KC":"MIA","MIA":"KC","TEN":"NYG","NYG":"TEN","CIN":"PIT","PIT":"CIN","SEA":"WAS","WAS":"SEA","TB":"NO","NO":"TB","LV":"DEN","DEN":"LV","DAL":"BAL","BAL":"DAL","SF":"ARI","ARI":"SF","LAR":"MIN","MIN":"LAR","PHI":"CHI","CHI":"PHI"}
 def key(v):
  v=unicodedata.normalize("NFKD",str(v or "")).encode("ascii","ignore").decode().lower()
  return re.sub(r"[^a-z0-9]","",re.sub(r"\b(jr|sr|ii|iii|iv)\.?\b","",v))
@@ -67,6 +69,10 @@ for _,gm in future.iterrows():
 print(f"Projection week: {next_week}; mapped teams: {len(opp)}")
 if len(opp) != 32:
  raise SystemExit(f"Expected 32 team opponent mappings for Week {next_week}, got {len(opp)}")
+if next_week == 3:
+ mismatches={t:(opp.get(t),o) for t,o in EXPECTED_WEEK3.items() if opp.get(t)!=o}
+ if mismatches:
+  raise SystemExit(f"Week 3 schedule does not match official NFL cross-check: {mismatches}")
 # Normalize defensive keys too, so every mapped opponent can receive its defense.
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="RB"};rows=[];projected=set()
