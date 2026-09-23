@@ -378,10 +378,11 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
                 player=final.pop(idx);final.insert(floor_rank-1,player)
         for i,p in enumerate(final,1):p["rank"]=i
         # Recompute positional ranks from the finalized model order instead of
-        # preserving stale preseason positional ranks.
+        # preserving stale preseason positional ranks. Use the full output so
+        # newly restored QBs outside the Top 250 never retain posRank=0.
         core_positions={"QB","RB","WR","TE"}
         for pos in core_positions:
-            pos_players=[p for p in final if p["pos"]==pos]
+            pos_players=sorted([p for p in out if p["pos"]==pos],key=lambda p:(p["rank"],-p["value"],p["name"]))
             for i,p in enumerate(pos_players,1):
                 p["posRank"]=i
     return sorted(out,key=lambda p:(p["rank"],p["pos"],p["name"]))
