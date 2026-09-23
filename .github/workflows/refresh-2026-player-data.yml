@@ -49,9 +49,14 @@ jobs:
           # All refresh triggers run the full in-season model. The old push path
           # refreshed only K/DST, which left core QB/RB/WR/TE rankings stale after
           # model-code changes were merged.
-          python scripts/refresh-live-player-data.py
-          python scripts/build-scoring-profiles.py
-          python scripts/build-new-rb-projection-preview.py
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.experiment }}" == "true" ]]; then
+            # Projection experiments consume the current committed ranking model.
+            # Do not rerun or mutate the production rankings pipeline.
+            python scripts/build-new-rb-projection-preview.py
+          else
+            python scripts/refresh-live-player-data.py
+            python scripts/build-scoring-profiles.py
+          fi
           # Injury freshness is enforced only when this workflow can publish.
           if [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
             python -c 'import json,datetime,pathlib; d=json.loads(pathlib.Path("injury-adjustments.json").read_text()); s=d.get("updatedAt"); assert s, "injury-adjustments.json has no updatedAt timestamp"; ts=datetime.datetime.fromisoformat(s.replace("Z","+00:00")); age=datetime.datetime.now(datetime.timezone.utc)-ts; assert age <= datetime.timedelta(days=7), f"injury-adjustments.json is stale ({age.days} days old); refresh injuries before publishing rankings"; print(f"Injury layer freshness OK: {s}")'
