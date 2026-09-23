@@ -80,7 +80,12 @@ db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p
 def emit(p,t,rec,ypr,td,source,op=None):
  avail=PROJECTION_AVAILABILITY.get(key(p["name"]),{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE"})
  pr=min(100,int(p["posRank"]));op=op or {}
- target_share=float(op.get("target_share",np.nan));air_share=float(op.get("air_yard_share",np.nan));adot=float(op.get("adot",np.nan));rz_t=float(op.get("rz_targets",0) or 0);deep_t=float(op.get("deep_targets",0) or 0);pbp_t=max(1.,float(op.get("pbp_targets",0) or 0))
+ def safe_float(v,default=np.nan):
+  try:
+   if v is None or pd.isna(v): return default
+   return float(v)
+  except: return default
+ target_share=safe_float(op.get("target_share",np.nan));air_share=safe_float(op.get("air_yard_share",np.nan));adot=safe_float(op.get("adot",np.nan));rz_t=safe_float(op.get("rz_targets",0),0.);deep_t=safe_float(op.get("deep_targets",0),0.);pbp_t=max(1.,safe_float(op.get("pbp_targets",0),0.))
  strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(11.0,11.0-(pr-1)*.085))
  share_targets=role_targets if np.isnan(target_share) else max(2.,min(12.,target_share*34.))
  # Two games of raw volume are too noisy for established high-ranked WRs.
