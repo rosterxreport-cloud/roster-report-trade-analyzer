@@ -38,17 +38,28 @@ metrics=["pass_epa","pass_success","explosive","rztd","wr_ypt"]
 for m in metrics:
  s=pd.to_numeric(dg[m],errors="coerce");dg[m+"_badpct"]=s.rank(pct=True).fillna(.5)
 dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
-# Safe scoring opportunity map.
+# Safe scoring opportunity map: blend 2025 stability with 2026 role.
 scoreopp={}
 try:
- _t=pbp[pbp.receiver_player_id.notna()].copy()
- _t["_rz"]=(pd.to_numeric(_t["yardline_100"],errors="coerce")<=20).astype(float)
- _t["_ez"]=(pd.to_numeric(_t["yardline_100"],errors="coerce")<=10).astype(float)
- _t["_deep"]=(pd.to_numeric(_t["air_yards"],errors="coerce").fillna(0)>=20).astype(float)
- _so=_t.groupby("receiver_player_id").agg(rz_targets=("_rz","sum"),endzone_targets=("_ez","sum"),deep_targets=("_deep","sum"),pbp_targets=("receiver_player_id","count")).reset_index()
- scoreopp={str(r.receiver_player_id):{"rz_targets":float(r.rz_targets),"endzone_targets":float(r.endzone_targets),"deep_targets":float(r.deep_targets),"pbp_targets":float(r.pbp_targets)} for _,r in _so.iterrows()}
-except Exception as e:
- print(f"Scoring-opportunity layer fallback: {e}")
+ try: pbp25=pd.read_parquet(PBP25,columns=cols)
+ except Exception: pbp25=pd.read_parquet(PBP25)
+ pbp25=pbp25[pbp25.season_type.eq("REG")].copy()
+ def scoring_rates(frame):
+  t=frame[frame.receiver_player_id.notna()].copy()
+  t["_rz"]=(pd.to_numeric(t["yardline_100"],errors="coerce")<=20).astype(float)
+  t["_ez"]=(pd.to_numeric(t["yardline_100"],errors="coerce")<=10).astype(float)
+  t["_deep"]=(pd.to_numeric(t["air_yards"],errors="coerce").fillna(0)>=20).astype(float)
+  g=t.groupby("receiver_player_id").agg(rz=("_rz","sum"),ez=("_ez","sum"),deep=("_deep","sum"),n=("receiver_player_id","count"))
+  return {str(pid):{"rz":float(r.rz)/max(1.,float(r.n)),"ez":float(r.ez)/max(1.,float(r.n)),"deep":float(r.deep)/max(1.,float(r.n)),"n":float(r.n)} for pid,r in g.iterrows()}
+ r25=scoring_rates(pbp25);r26=scoring_rates(pbp)
+ for pid in set(r25)|set(r26):
+  a,b=r25.get(pid),r26.get(pid)
+  if a and b: rz=.65*a["rz"]+.35*b["rz"];ez=.65*a["ez"]+.35*b["ez"];deep=.65*a["deep"]+.35*b["deep"];n=max(1.,b["n"])
+  elif b: rz,ez,deep,n=b["rz"],b["ez"],b["deep"],max(1.,b["n"])
+  else: rz,ez,deep,n=a["rz"],a["ez"],a["deep"],max(1.,a["n"])
+  scoreopp[pid]={"rz_targets":rz*n,"endzone_targets":ez*n,"deep_targets":deep*n,"pbp_targets":n}
+except Exception as ex:
+ print(f"Scoring-opportunity blend fallback: {ex}")
 oppmap={}
 for _,sr in stats.iterrows():
  _pid=str(sr.get("player_id",""));_so=scoreopp.get(_pid,{})
