@@ -52,23 +52,9 @@ jobs:
           python scripts/refresh-live-player-data.py
           python scripts/build-scoring-profiles.py
           python scripts/build-new-rb-projection-preview.py
-          # Production Tuesday publishes fail closed on stale injury data.
-          # Manual experiment runs may use the existing injury snapshot because
-          # they do not publish rankings to main.
+          # Injury freshness is enforced only when this workflow can publish.
           if [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
-            python - <<'PY'
-          import json, datetime, pathlib
-          p=pathlib.Path("injury-adjustments.json")
-          d=json.loads(p.read_text())
-          stamp=d.get("updatedAt")
-          if not stamp:
-              raise SystemExit("injury-adjustments.json has no updatedAt timestamp")
-          ts=datetime.datetime.fromisoformat(stamp.replace("Z","+00:00"))
-          age=datetime.datetime.now(datetime.timezone.utc)-ts
-          if age > datetime.timedelta(days=7):
-              raise SystemExit(f"injury-adjustments.json is stale ({age.days} days old); refresh injuries before publishing rankings")
-          print(f"Injury layer freshness OK: {stamp}")
-          PY
+            python -c 'import json,datetime,pathlib; d=json.loads(pathlib.Path("injury-adjustments.json").read_text()); s=d.get("updatedAt"); assert s, "injury-adjustments.json has no updatedAt timestamp"; ts=datetime.datetime.fromisoformat(s.replace("Z","+00:00")); age=datetime.datetime.now(datetime.timezone.utc)-ts; assert age <= datetime.timedelta(days=7), f"injury-adjustments.json is stale ({age.days} days old); refresh injuries before publishing rankings"; print(f"Injury layer freshness OK: {s}")'
           fi
       - name: Fail-closed validation
         run: python scripts/validate-live-player-data.py && python tests/test-scoring-profiles.py
