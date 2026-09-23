@@ -5,7 +5,12 @@ import pandas as pd, numpy as np
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_2026.csv"
 PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
-PROJECTION_AVAILABILITY={"nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"}}
+PROJECTION_AVAILABILITY={
+ "nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"},
+ "zayflowers":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT"},
+ "pukanacua":{"week_factor":0.50,"ros_missed_games":0,"status":"QUESTIONABLE"},
+ "djmoore":{"week_factor":0.45,"ros_missed_games":0,"status":"WEEK 3 AVAILABILITY IN DOUBT"}
+}
 EXPECTED_WEEK3={"ATL":"GB","GB":"ATL","LAC":"BUF","BUF":"LAC","CAR":"CLE","CLE":"CAR","NYJ":"DET","DET":"NYJ","HOU":"IND","IND":"HOU","NE":"JAX","JAX":"NE","KC":"MIA","MIA":"KC","TEN":"NYG","NYG":"TEN","CIN":"PIT","PIT":"CIN","SEA":"WAS","WAS":"SEA","TB":"NO","NO":"TB","LV":"DEN","DEN":"LV","DAL":"BAL","BAL":"DAL","SF":"ARI","ARI":"SF","LAR":"MIN","MIN":"LAR","PHI":"CHI","CHI":"PHI"}
 def key(v):
  v=unicodedata.normalize("NFKD",str(v or "")).encode("ascii","ignore").decode().lower()
