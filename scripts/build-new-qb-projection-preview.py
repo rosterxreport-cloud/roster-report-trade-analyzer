@@ -135,18 +135,37 @@ defmap={team(k):v for k,v in defmap.items()}
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"]
 ranked={key(p["name"]):p for p in db if p["pos"]=="QB"}
-# QB-level 2026 passing/rushing production and opportunity.
-q=pbp[pbp["passer_player_id"].notna()].groupby(["passer_player_id","passer_player_name"]).agg(
- attempts=("pass_attempt","sum"),completions=("complete_pass","sum"),pass_yards=("passing_yards","sum"),
- pass_td=("pass_touchdown","sum"),interceptions=("interception","sum"),
- air_yards=("air_yards","sum"),games=("game_id","nunique")).reset_index()
-rush=pbp[pbp["rusher_player_id"].notna()].groupby("rusher_player_id").agg(
- carries=("rush_attempt","sum"),rush_yards=("rushing_yards","sum"),rush_td=("rush_touchdown","sum")).reset_index()
-q=q.merge(rush,left_on="passer_player_id",right_on="rusher_player_id",how="left").fillna(0)
-# Resolve nflverse abbreviated names to curated QB records by last name first, then
-# use ranking-role fallback for any QB not matched.
-def lname(s): return key(str(s).split()[-1])
-bylast={}
+# QB-level 2026 production comes from nflverse player stats, whose player_id is
+# the canonical GSIS key and player_display_name is the full name. This avoids
+# brittle matching against abbreviated PBP passer names.
+q=stats.copy()
+for _col in ["attempts","completions","passing_yards","passing_tds","passing_interceptions","passing_air_yards","carries","rushing_yards","rushing_tds","games"]:
+ if _col not in q.columns: q[_col]=0
+# Season stats are already aggregated; use normalized full display names to join
+# directly to the curated rankings roster.
+rows=[];seen=set()
+for _,r in q.iterrows():
+ k=key(r.get("player_display_name",""))
+ if k not in ranked: continue
+ p=ranked[k];seen.add(k);g=max(1.,float(r.get("games",0) or 0))
+ att=float(r.get("attempts",0) or 0)/g;comp=float(r.get("completions",0) or 0)/g;py=float(r.get("passing_yards",0) or 0)/g;ptd=float(r.get("passing_tds",0) or 0)/g;ints=float(r.get("passing_interceptions",0) or 0)/g
+ ay=float(r.get("passing_air_yards",0) or 0)/g;ypa=py/max(1.,att);aypa=ay/max(1.,att)
+ car=float(r.get("carries",0) or 0)/g;ry=float(r.get("rushing_yards",0) or 0)/g;rtd=float(r.get("rushing_tds",0) or 0)/g
+ pr=min(50,int(p["posRank"]));role_att=max(26.,min(39.,37.5-(pr-1)*.28))
+ patt=.55*att+.45*role_att
+ role_ypa=max(6.5,min(8.4,8.15-(pr-1)*.035));pypa=.45*ypa+.55*role_ypa
+ role_aypa=max(6.8,min(9.6,9.1-(pr-1)*.04));paypa=.45*aypa+.55*role_aypa
+ pcomp=max(.54,min(.74,.55*(comp/max(1.,att))+.45*.645))
+ pyd=patt*pypa;pcompn=patt*pcomp;pair=patt*paypa
+ td_rate=.40*(ptd/max(1.,att))+.60*.045;int_rate=.40*(ints/max(1.,att))+.60*.022
+ pptd=patt*td_rate;pint=patt*int_rate
+ role_car=max(1.5,min(7.5,5.8-(pr-1)*.08));pcar=.55*car+.45*role_car
+ ypc=ry/max(1.,car) if car else 4.5;pry=pcar*max(3.0,min(7.0,.55*ypc+.45*4.8));prtd=.45*rtd+.55*.18
+ pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0))
+ avail=AUTO_AVAILABILITY.get(k,{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy()
+ base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
+ ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"2026 player stats + ranking role"})
 for k,p in ranked.items(): bylast.setdefault(lname(p["name"]),[]).append((k,p))
 rows=[];seen=set()
 for _,r in q.iterrows():
