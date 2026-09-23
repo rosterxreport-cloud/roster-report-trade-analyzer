@@ -44,9 +44,18 @@ defmap=dict(zip(dg.defteam,dg.matchup_mult))
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
 future=sch[(sch.season.eq(2026))&(~played)].sort_values("week")
+# Normalize the few common abbreviation variants before matching rankings,
+# schedules and nflverse defensive PBP.
+TEAM_ALIAS={"LA":"LAR","JAC":"JAX","WSH":"WAS"}
+def team(v):
+ v=str(v or "").strip().upper()
+ return TEAM_ALIAS.get(v,v)
 opp={}
 for _,g in future.iterrows():
- opp.setdefault(str(g.home_team),str(g.away_team));opp.setdefault(str(g.away_team),str(g.home_team))
+ h,a=team(g.home_team),team(g.away_team)
+ opp.setdefault(h,a);opp.setdefault(a,h)
+# Normalize defensive keys too, so every mapped opponent can receive its defense.
+defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="RB"};rows=[]
 for _,r in stats.iterrows():
  k=r.k
@@ -70,7 +79,10 @@ for _,r in stats.iterrows():
  role_td=max(.18,min(.78,.80-(min(60,int(p["posRank"]))-1)*.011))
  tdp=max(.08,min(.90,.35*td+.65*role_td))
  base=ry/10+rey/10+rp*.5+tdp*6
- opponent=opp.get(p["team"]);mm=float(defmap.get(opponent,1.0));weekly=base*mm
+ player_team=team(p["team"]);opponent=opp.get(player_team)
+ if not opponent:
+  print(f"WARNING: no upcoming opponent mapped for {p['name']} ({p['team']})")
+ mm=float(defmap.get(opponent,1.0));weekly=base*mm
  # ROS keeps the player baseline; schedule-level ROS adjustment comes next,
  # rather than incorrectly applying one opponent to the whole season.
  left=max(0,17-int(g))
