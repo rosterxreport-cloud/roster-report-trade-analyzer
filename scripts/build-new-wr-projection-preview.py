@@ -55,10 +55,10 @@ try:
  r25=scoring_rates(pbp25);r26=scoring_rates(pbp)
  for pid in set(r25)|set(r26):
   a,b=r25.get(pid),r26.get(pid)
-  if a and b: rz=.65*a["rz"]+.35*b["rz"];ez=.65*a["ez"]+.35*b["ez"];deep=.65*a["deep"]+.35*b["deep"];n=max(1.,b["n"])
-  elif b: rz,ez,deep,n=b["rz"],b["ez"],b["deep"],max(1.,b["n"])
-  else: rz,ez,deep,n=a["rz"],a["ez"],a["deep"],max(1.,a["n"])
-  scoreopp[pid]={"rz_targets":rz*n,"endzone_targets":ez*n,"deep_targets":deep*n,"pbp_targets":n}
+  if a and b: rz=.65*a["rz"]+.35*b["rz"];ez=.65*a["ez"]+.35*b["ez"];deep=.65*a["deep"]+.35*b["deep"];sample_n=max(1.,b["n"])
+  elif b: rz,ez,deep,sample_n=b["rz"],b["ez"],b["deep"],max(1.,b["n"])
+  else: rz,ez,deep,sample_n=a["rz"],a["ez"],a["deep"],max(1.,a["n"])
+  scoreopp[pid]={"rz_targets":rz*sample_n,"endzone_targets":ez*sample_n,"deep_targets":deep*sample_n,"pbp_targets":sample_n}
 except Exception as ex:
  print(f"Scoring-opportunity blend fallback: {ex}")
 oppmap={}
