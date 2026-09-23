@@ -13,7 +13,7 @@ def n(r,c):
  try:return max(0.,float(r.get(c,0) or 0))
  except:return 0.
 stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("WR")].copy();stats["k"]=stats.player_display_name.map(key)
-cols=["season_type","posteam","defteam","play_type","pass_attempt","complete_pass","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards"]
+cols=["season_type","posteam","defteam","play_type","pass_attempt","complete_pass","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards","air_yards","pass_location"]
 try: pbp=pd.read_parquet(PBP,columns=cols)
 except Exception: pbp=pd.read_parquet(PBP)
 pbp=pbp[pbp.season_type.eq("REG")].copy();pas=pbp[pd.to_numeric(pbp.pass_attempt,errors="coerce").fillna(0).eq(1)].copy()
@@ -27,6 +27,17 @@ metrics=["pass_epa","pass_success","explosive","rztd","wr_ypt"]
 for m in metrics:
  s=pd.to_numeric(dg[m],errors="coerce");dg[m+"_badpct"]=s.rank(pct=True).fillna(.5)
 dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad));defmap=dict(zip(dg.defteam,dg.matchup_mult))
+# Player-level WR opportunity from 2026 PBP: target share, air-yard share,
+# aDOT, red-zone/end-zone opportunity proxy, and explosive-target rate.
+tgt=pbp[pbp.receiver_player_id.notna()].copy()
+tgt["air_yards_num"]=pd.to_numeric(tgt.air_yards,errors="coerce").fillna(0)
+tgt["rz_target"]=(pd.to_numeric(tgt.yardline_100,errors="coerce")<=20).astype(float)
+tgt["deep_target"]=(tgt["air_yards_num"]>=20).astype(float)
+teamopp=tgt.groupby("posteam").agg(team_targets=("receiver_player_id","count"),team_air=("air_yards_num","sum")).reset_index()
+po=tgt.groupby("receiver_player_id").agg(pbp_targets=("receiver_player_id","count"),air_yards=("air_yards_num","sum"),rz_targets=("rz_target","sum"),deep_targets=("deep_target","sum")).reset_index()
+po=po.merge(teamopp,left_on=tgt.groupby("receiver_player_id")["posteam"].first().values,right_on="posteam",how="left")
+po["target_share"]=po.pbp_targets/po.team_targets.replace(0,np.nan);po["air_yard_share"]=po.air_yards/po.team_air.replace(0,np.nan);po["adot"]=po.air_yards/po.pbp_targets.replace(0,np.nan)
+oppmap={str(r.receiver_player_id):r for _,r in po.iterrows()}
 # Upcoming opponent.
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
@@ -64,16 +75,20 @@ defmap={team(k):v for k,v in defmap.items()}
 
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="WR"};rows=[];projected=set()
-def emit(p,t,rec,ypr,td,source):
- pr=min(100,int(p["posRank"]));strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(10.5,10.5-(pr-1)*.09));tp=.62*t+.38*role_targets if source!="ranking-role fallback" else role_targets
- catch=(rec/max(.1,t)) if t>0 else .65;rp=tp*max(.45,min(.82,.65*catch+.35*.65));adj_ypr=.58*ypr+.42*12.;rey=rp*max(8.,min(17.,adj_ypr*(.90+.06*strength+.04*value)))
- role_td=max(.08,min(.62,.62-(pr-1)*.006));opp_td=max(.06,min(.65,.025*tp+.008*rey));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
+def emit(p,t,rec,ypr,td,source,op=None):
+ pr=min(100,int(p["posRank"]));op=op or {}
+ target_share=float(op.get("target_share",np.nan));air_share=float(op.get("air_yard_share",np.nan));adot=float(op.get("adot",np.nan));rz_t=float(op.get("rz_targets",0) or 0);deep_t=float(op.get("deep_targets",0) or 0);pbp_t=max(1.,float(op.get("pbp_targets",0) or 0))
+ strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(10.5,10.5-(pr-1)*.09))
+ share_targets=role_targets if np.isnan(target_share) else max(2.,min(12.,target_share*34.))
+ tp=.46*t+.30*role_targets+.24*share_targets if source!="ranking-role fallback" else role_targets
+ catch=(rec/max(.1,t)) if t>0 else .65;rp=tp*max(.45,min(.82,.65*catch+.35*.65));opp_adot=12. if np.isnan(adot) else max(5.,min(22.,adot));air_bonus=1.0 if np.isnan(air_share) else max(.90,min(1.10,.92+.32*air_share));adj_ypr=.46*ypr+.34*12.+.20*opp_adot;rey=rp*max(8.,min(17.,adj_ypr*(.90+.06*strength+.04*value)*air_bonus))
+ role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;opp_td=max(.06,min(.65,.020*tp+.007*rey+.22*rz_rate+.08*deep_rate));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm;ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);ros=sum(base*m for m in mults);ppg=ros/left if left else 0
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"projectionSource":source})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"deepTargets":int(deep_t),"projectionSource":source})
 for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
- projected.add(k);g=max(1.,n(r,"games"));emit(ranked[k],n(r,"targets")/g,n(r,"receptions")/g,n(r,"receiving_yards")/max(1.,n(r,"receptions")),n(r,"receiving_tds")/g,"2026 production + ranking role")
+ projected.add(k);g=max(1.,n(r,"games"));op=oppmap.get(str(r.get("player_id","")));emit(ranked[k],n(r,"targets")/g,n(r,"receptions")/g,n(r,"receiving_yards")/max(1.,n(r,"receptions")),n(r,"receiving_tds")/g,"2026 production + opportunity + ranking role",op)
 for k,p in ranked.items():
  if k not in projected: emit(p,0,0,12,0,"ranking-role fallback")
 rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
