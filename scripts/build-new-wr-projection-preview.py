@@ -5,7 +5,8 @@ import pandas as pd, numpy as np
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_2026.csv"
 PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 PBP25="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.parquet"
-SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"\nINJURY_FILE=Path("injury-adjustments.json")
+SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+INJURY_FILE=Path("injury-adjustments.json")
 PROJECTION_AVAILABILITY={
  "nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"},
  "zayflowers":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT"},
