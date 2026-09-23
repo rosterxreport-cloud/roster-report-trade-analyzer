@@ -79,9 +79,15 @@ db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p
 def emit(p,t,rec,ypr,td,source,op=None):
  pr=min(100,int(p["posRank"]));op=op or {}
  target_share=float(op.get("target_share",np.nan));air_share=float(op.get("air_yard_share",np.nan));adot=float(op.get("adot",np.nan));rz_t=float(op.get("rz_targets",0) or 0);deep_t=float(op.get("deep_targets",0) or 0);pbp_t=max(1.,float(op.get("pbp_targets",0) or 0))
- strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(10.5,10.5-(pr-1)*.09))
+ strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(11.0,11.0-(pr-1)*.085))
  share_targets=role_targets if np.isnan(target_share) else max(2.,min(12.,target_share*34.))
- tp=.46*t+.30*role_targets+.24*share_targets if source!="ranking-role fallback" else role_targets
+ # Two games of raw volume are too noisy for established high-ranked WRs.
+ # Give the locked role baseline more weight while still allowing current
+ # target share to identify genuine role changes.
+ current_w=.34 if pr<=20 else .42
+ role_w=.42 if pr<=20 else .34
+ share_w=1.0-current_w-role_w
+ tp=current_w*t+role_w*role_targets+share_w*share_targets if source!="ranking-role fallback" else role_targets
  catch=(rec/max(.1,t)) if t>0 else .65;rp=tp*max(.45,min(.82,.65*catch+.35*.65));opp_adot=12. if np.isnan(adot) else max(5.,min(22.,adot));air_bonus=1.0 if np.isnan(air_share) else max(.90,min(1.10,.92+.32*air_share));adj_ypr=.46*ypr+.34*12.+.20*opp_adot;rey=rp*max(8.,min(17.,adj_ypr*(.90+.06*strength+.04*value)*air_bonus))
  role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;opp_td=max(.06,min(.65,.020*tp+.007*rey+.22*rz_rate+.08*deep_rate));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm;ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);ros=sum(base*m for m in mults);ppg=ros/left if left else 0
