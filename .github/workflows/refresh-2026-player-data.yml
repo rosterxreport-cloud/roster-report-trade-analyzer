@@ -7,6 +7,10 @@ on:
         description: 'Run position-specific analytics experiment without publishing'
         required: false
         default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
   push:
     paths:
       - '.github/workflows/refresh-2026-player-data.yml'
@@ -49,7 +53,7 @@ jobs:
           # All refresh triggers run the full in-season model. The old push path
           # refreshed only K/DST, which left core QB/RB/WR/TE rankings stale after
           # model-code changes were merged.
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" && "${{ github.event.inputs.experiment }}" == "true" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             # Projection experiments consume the current committed ranking model.
             # Do not rerun or mutate the production rankings pipeline.
             python scripts/build-new-rb-projection-preview.py
