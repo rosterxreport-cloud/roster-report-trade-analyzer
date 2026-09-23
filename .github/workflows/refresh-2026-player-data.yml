@@ -21,6 +21,7 @@ on:
       - 'scoring-settings.js'
       - 'injury-adjustments.json'
       - 'scripts/build-new-rb-projection-preview.py'
+      - 'scripts/build-new-wr-projection-preview.py'
   schedule:
     - cron: '17 9 * * 2'
 
@@ -57,6 +58,7 @@ jobs:
             # Projection experiments consume the current committed ranking model.
             # Do not rerun or mutate the production rankings pipeline.
             python scripts/build-new-rb-projection-preview.py
+            python scripts/build-new-wr-projection-preview.py
           else
             python scripts/refresh-live-player-data.py
             python scripts/build-scoring-profiles.py
@@ -87,6 +89,7 @@ jobs:
             players.json
             scoring-profiles.json
             data/new-rb-projection-preview.json
+            data/new-wr-projection-preview.json
           if-no-files-found: ignore
           retention-days: 90
       - name: Commit validated website data
