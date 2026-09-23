@@ -52,11 +52,12 @@ jobs:
           python scripts/refresh-live-player-data.py
           python scripts/build-scoring-profiles.py
           python scripts/build-new-rb-projection-preview.py
-          # Injury adjustments are part of the same Tuesday publication cycle.
-          # Fail closed if the injury file is stale so rankings cannot silently
-          # publish with an outdated availability layer.
-          python - <<'PY'
-          import json, datetime, pathlib, sys
+          # Production Tuesday publishes fail closed on stale injury data.
+          # Manual experiment runs may use the existing injury snapshot because
+          # they do not publish rankings to main.
+          if [[ "${{ github.event_name }}" != "workflow_dispatch" ]]; then
+            python - <<'PY'
+          import json, datetime, pathlib
           p=pathlib.Path("injury-adjustments.json")
           d=json.loads(p.read_text())
           stamp=d.get("updatedAt")
@@ -68,6 +69,7 @@ jobs:
               raise SystemExit(f"injury-adjustments.json is stale ({age.days} days old); refresh injuries before publishing rankings")
           print(f"Injury layer freshness OK: {stamp}")
           PY
+          fi
       - name: Fail-closed validation
         run: python scripts/validate-live-player-data.py && python tests/test-scoring-profiles.py
       - name: Verify My Team and Superflex
