@@ -120,7 +120,11 @@ def emit(p,t,rec,ypr,td,source,op=None):
  role_w=.42 if pr<=20 else .34
  share_w=1.0-current_w-role_w
  tp=current_w*t+role_w*role_targets+share_w*share_targets if source!="ranking-role fallback" else role_targets
- catch=(rec/max(.1,t)) if t>0 else .65;rp=tp*max(.45,min(.82,.65*catch+.35*.65));# Early-season receiving depth/efficiency is noisy too. Regress established
+ catch=(rec/max(.1,t)) if t>0 else .65
+ # Catch-rate calibration: preserve player signal but regress early-season
+ # extremes and cap the projection conversion at a sustainable range.
+ proj_catch=max(.48,min(.76,.55*catch+.45*.65))
+ rp=tp*proj_catch;# Early-season receiving depth/efficiency is noisy too. Regress established
  # WRs more strongly toward role-based priors, while allowing later-ranked WRs
  # to react faster to genuine role/efficiency changes.
  current_adot=12. if np.isnan(adot) else max(5.,min(22.,adot))
@@ -132,8 +136,14 @@ def emit(p,t,rec,ypr,td,source,op=None):
  adj_ypr=ypr_current_w*ypr+(1-ypr_current_w)*role_ypr
  # aDOT still informs the yardage conversion, but no longer dominates it.
  adj_ypr=.78*adj_ypr+.22*opp_adot
- air_bonus=1.0 if np.isnan(air_share) else max(.92,min(1.08,.94+.24*air_share));rey=rp*max(8.,min(17.,adj_ypr*(.90+.06*strength+.04*value)*air_bonus))
- role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;ez_rate=ez_t/pbp_t;opp_td=max(.06,min(.70,.020*tp+.007*rey+.16*rz_rate+.18*ez_rate+.06*deep_rate));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
+ air_bonus=1.0 if np.isnan(air_share) else max(.94,min(1.06,.955+.18*air_share))
+ raw_ypr=adj_ypr*(.92+.045*strength+.035*value)*air_bonus
+ # Projection-only yardage calibration. Compress extreme early-season
+ # efficiency rather than imposing a fantasy-point cap.
+ proj_ypr=max(8.5,min(15.0,12.2+.72*(raw_ypr-12.2)))
+ rey=rp*proj_ypr
+ role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;ez_rate=ez_t/pbp_t;opp_td=max(.06,min(.62,.018*tp+.0055*rey+.14*rz_rate+.16*ez_rate+.05*deep_rate))
+ tdp=max(.04,min(.68,.22*td+.48*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm*float(avail["week_factor"]);ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);miss=min(left,int(avail["ros_missed_games"]));active_mults=mults[miss:];ros=sum(base*m for m in active_mults);ppg=ros/left if left else 0
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"endzoneTargets":int(ez_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
 for _,r in stats.iterrows():
