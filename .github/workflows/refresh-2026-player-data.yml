@@ -16,6 +16,7 @@ on:
       - 'scripts/build-scoring-profiles.py'
       - 'scoring-settings.js'
       - 'injury-adjustments.json'
+      - 'scripts/build-new-rb-projection-preview.py'
   schedule:
     - cron: '17 9 * * 2'
 
@@ -50,6 +51,7 @@ jobs:
           # model-code changes were merged.
           python scripts/refresh-live-player-data.py
           python scripts/build-scoring-profiles.py
+          python scripts/build-new-rb-projection-preview.py
           # Injury adjustments are part of the same Tuesday publication cycle.
           # Fail closed if the injury file is stale so rankings cannot silently
           # publish with an outdated availability layer.
@@ -87,6 +89,7 @@ jobs:
             refresh-summary.md
             players.json
             scoring-profiles.json
+            data/new-rb-projection-preview.json
           if-no-files-found: ignore
           retention-days: 90
       - name: Commit validated website data
