@@ -324,7 +324,14 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             replacement=qb_existing[:max(4,int(math.ceil(len(qb_existing)*.25)))]
             prior=float(np.median([p["analyticsScore"] for p in replacement if p.get("analyticsScore") is not None]))
             preseason=float(np.median([p["value"] for p in replacement]))
-            season_w=.45 if games>=2 else .30;pre_w=.40 if games>=2 else .50;ctx_w=1-season_w-pre_w
+            season_w=.45 if games>=2 else .30;pre_w=.40 if games>=2 else .50
+            # Once a previously unranked QB has 100+ offensive snaps, actual
+            # 2026 play is a meaningful sample. Reduce the synthetic replacement
+            # prior and let current performance drive most of the valuation.
+            total_snaps=float(sr.iloc[0].offense_snaps)
+            if total_snaps>=100:
+                season_w=.65;pre_w=.20
+            ctx_w=1-season_w-pre_w
             val=season_w*live+pre_w*preseason+ctx_w*prior
             tm=team(str(row.get("recent_team") or row.get("team") or ""))
             q={"rank":999,"name":nm,"team":tm,"pos":"QB","value":round(max(0,min(100,val)),2),
