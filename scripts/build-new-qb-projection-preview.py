@@ -117,6 +117,20 @@ if len(opp) != 32:
 defmap={team(k):v for k,v in defmap.items()}
 
 defmap={team(k):v for k,v in defmap.items()}
+# Week 3 starter eligibility is an allow-list, not a blacklist. Only the current
+# starter/expected starter for each team can receive a weekly projection.
+# Update this map from current depth charts/injury news before each weekly run.
+WEEK_STARTER={
+ "BUF":"Josh Allen","MIA":"Malik Willis","NE":"Drake Maye","NYJ":"Geno Smith",
+ "BAL":"Lamar Jackson","CIN":"Joe Burrow","CLE":"Bryce Young","PIT":"Kirk Cousins",
+ "HOU":"C.J. Stroud","IND":"Daniel Jones","JAX":"Trevor Lawrence","TEN":"Fernando Mendoza",
+ "DEN":"Bo Nix","KC":"Patrick Mahomes","LAC":"Justin Herbert","LV":"Baker Mayfield",
+ "DAL":"Dak Prescott","NYG":"Cooper Rush","PHI":"Jalen Hurts","WAS":"Marcus Mariota",
+ "CHI":"Tyson Bagent","DET":"Jared Goff","GB":"Jordan Love","MIN":"Carson Wentz",
+ "ATL":"Michael Penix Jr.","CAR":"Tyler Shough","NO":"Tyler Shough","TB":"Baker Mayfield",
+ "ARI":"Jacoby Brissett","LAR":"Matthew Stafford","SF":"Brock Purdy","SEA":"Drew Lock"
+}
+STARTER_KEYS={key(v) for v in WEEK_STARTER.values()}
 db=json.loads(Path("players.json").read_text())["half"]
 ranked={key(p["name"]):p for p in db if p["pos"]=="QB"}
 # QB-level 2026 production comes from nflverse player stats, whose player_id is
@@ -134,7 +148,7 @@ for _col in ["attempts","completions","passing_yards","passing_tds","passing_int
 rows=[];seen=set()
 for _,r in q.iterrows():
  k=key(r.get("player_display_name",""))
- if k not in ranked: continue
+ if k not in ranked or k not in STARTER_KEYS: continue
  p=ranked[k];seen.add(k);g=max(1.,float(r.get("games",0) or 0))
  att=float(r.get("attempts",0) or 0)/g;comp=float(r.get("completions",0) or 0)/g;py=float(r.get("passing_yards",0) or 0)/g;ptd=float(r.get("passing_tds",0) or 0)/g;ints=float(r.get("passing_interceptions",0) or 0)/g
  ay=float(r.get("passing_air_yards",0) or 0)/g;ypa=py/max(1.,att);aypa=ay/max(1.,att)
@@ -169,7 +183,7 @@ for _,r in q.iterrows():
  ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"2026 player stats + ranking role"})
 for k,p in ranked.items():
- if k in seen: continue
+ if k in seen or k not in STARTER_KEYS: continue
  # Do not fabricate a detailed stat line for unmatched QBs; expose them as fallback.
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opp.get(team(p["team"])),"projectionSource":"ranking-role fallback","weeklyPoints":None})
 rows.sort(key=lambda x:(x.get("weeklyPoints") is not None,x.get("weeklyPoints") or -999),reverse=True)
