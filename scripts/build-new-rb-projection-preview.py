@@ -16,14 +16,13 @@ stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("RB")].c
 # Current defense from 2026 PBP: run EPA/success/YPC/explosives, RB receiving,
 # and red-zone rushing TD rate. Blend 65% current / 35% neutral because Week 3
 # is still a small defensive sample.
-cols=["season_type","posteam","defteam","play_type","rush_attempt","pass_attempt","yards_gained","epa","success","td_team","touchdown","yardline_100","receiver_position","receiving_yards"]
-pbp=pd.read_parquet(PBP,columns=cols);pbp=pbp[pbp.season_type.eq("REG")].copy()
+cols=["season_type","posteam","defteam","play_type","rush_attempt","pass_attempt","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards"]\npbp=pd.read_parquet(PBP,columns=cols);pbp=pbp[pbp.season_type.eq("REG")].copy()
 rush=pbp[pd.to_numeric(pbp.rush_attempt,errors="coerce").fillna(0).eq(1)].copy()
 rush["explosive"]=(pd.to_numeric(rush.yards_gained,errors="coerce").fillna(0)>=10).astype(float)
 rush["rz"]=(pd.to_numeric(rush.yardline_100,errors="coerce")<=20).fillna(False)
 rush["rztd"]=((pd.to_numeric(rush.touchdown,errors="coerce").fillna(0)==1)&rush.rz).astype(float)
 dg=rush.groupby("defteam").agg(run_epa=("epa","mean"),run_success=("success","mean"),ypc=("yards_gained","mean"),explosive=("explosive","mean"),rztd=("rztd","mean")).reset_index()
-rbrec=pbp[(pbp.play_type.eq("pass"))&(pbp.receiver_position.eq("RB"))].groupby("defteam").agg(rb_rec_yards=("receiving_yards","sum"),rb_targets=("pass_attempt","sum")).reset_index()
+# nflverse PBP does not expose receiver_position directly. Join receiver IDs to\n# the current player table so RB receiving defense is still measured accurately.\nidpos=dict(zip(stats.player_id.astype(str),stats.position)) if "player_id" in stats.columns else {}\npbp["receiver_position"]=pbp.receiver_player_id.astype(str).map(idpos)\nrbrec=pbp[(pbp.play_type.eq("pass"))&(pbp.receiver_position.eq("RB"))].groupby("defteam").agg(rb_rec_yards=("receiving_yards","sum"),rb_targets=("pass_attempt","sum")).reset_index()
 dg=dg.merge(rbrec,on="defteam",how="left");dg["rb_rec_ypt"]=dg.rb_rec_yards/dg.rb_targets.replace(0,np.nan)
 metrics=["run_epa","run_success","ypc","explosive","rztd","rb_rec_ypt"]
 for m in metrics:
