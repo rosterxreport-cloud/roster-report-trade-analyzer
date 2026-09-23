@@ -203,12 +203,15 @@ for tm,grp in by_team.items():
  active=[x for x in grp if float(x.get("weekAvailability",1.0))>=1.0]
  if not unavailable or not active: continue
  vacated=sum(float(x["targets"])*(1.0-float(x.get("weekAvailability",1.0))) for x in unavailable)
- # Only 65% of vacated WR targets are reassigned to WR teammates; the rest can
- # flow to TE/RB or disappear through changed play calling.
- pool=vacated*.65
+ # Injury absences do not create one-for-one replacement volume. Reassign only
+ # 35% of vacated WR targets to WR teammates; the remainder can shift to TE/RB,
+ # lower team pass volume, or other personnel. Also cap any individual WR's
+ # injury-driven gain at 1.5 targets to prevent thin depth charts from creating
+ # artificial weekly stars.
+ pool=vacated*.35
  denom=sum(max(1.,float(x["targets"])) for x in active)
  for x in active:
-  add=pool*(max(1.,float(x["targets"]))/denom)
+  add=min(1.5,pool*(max(1.,float(x["targets"]))/denom))
   old_t=max(.1,float(x["targets"]));new_t=old_t+add;scale=new_t/old_t
   # Incremental targets retain the player's modeled catch/yard efficiency,
   # but TD expectation receives only a modest opportunity bump.
