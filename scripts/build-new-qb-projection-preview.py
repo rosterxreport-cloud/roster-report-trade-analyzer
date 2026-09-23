@@ -133,8 +133,6 @@ if len(opp) != 32:
 defmap={team(k):v for k,v in defmap.items()}
 
 defmap={team(k):v for k,v in defmap.items()}
-db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="WR"};rows=[];projected=set()
-def emit(p,t,rec,ypr,td,source,op=None):
 db=json.loads(Path("players.json").read_text())["half"]
 ranked={key(p["name"]):p for p in db if p["pos"]=="QB"}
 # QB-level 2026 passing/rushing production and opportunity.
