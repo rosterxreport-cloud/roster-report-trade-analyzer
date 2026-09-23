@@ -63,5 +63,6 @@ for _,r in stats.iterrows():
  # rather than incorrectly applying one opponent to the whole season.
  left=max(0,17-int(g))
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSpointsBaseline":round(base*left,1)})
-rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True);Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2)+"
-");print(json.dumps(rows[:25],indent=2))
+rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
+Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2))
+print(json.dumps(rows[:25],indent=2))
