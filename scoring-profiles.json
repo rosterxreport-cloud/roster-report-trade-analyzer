@@ -35,6 +35,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Aaron Rodgers": {
+    "passingYards": 3345.7250000000004,
+    "passingTds": 21.481250000000003,
+    "rushingTds": 0.8375,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 3.35,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.8375,
+    "baselinePoints": 212.99775000000002,
+    "longTds40": 3.0,
+    "longTds50": 2.0
+  },
   "Adonai Mitchell": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -251,6 +263,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Bryce Young": {
+    "passingYards": 3416.7625000000003,
+    "passingTds": 27.549999999999997,
+    "rushingTds": 3.0562500000000004,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 16.1625,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 259.2955,
+    "longTds40": 2.21875,
+    "longTds50": 8.5
+  },
   "Bucky Irving": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -356,6 +380,18 @@
     "receivingFirstDowns": 17.0,
     "receptions": 59.5,
     "baselinePoints": 114.75,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Carson Wentz": {
+    "passingYards": 1399.625,
+    "passingTds": 9.16875,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 5.275,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 94.18687500000001,
     "longTds40": null,
     "longTds50": null
   },
@@ -527,6 +563,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Cooper Rush": {
+    "passingYards": 570.06875,
+    "passingTds": 1.38125,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 1.38125,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 8.56775,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Courtland Sutton": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -632,6 +680,18 @@
     "receivingFirstDowns": 42.331250000000004,
     "receptions": 90.775,
     "baselinePoints": 195.09562499999998,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Daniel Jones": {
+    "passingYards": 3116.4375,
+    "passingTds": 18.675,
+    "rushingTds": 4.1875,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 18.675,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 217.87625000000003,
     "longTds40": null,
     "longTds50": null
   },
@@ -791,6 +851,18 @@
     "longTds40": 1.0,
     "longTds50": null
   },
+  "Deshaun Watson": {
+    "passingYards": 3765.5,
+    "passingTds": 25.5,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 42.5,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 286.62,
+    "longTds40": 17.0,
+    "longTds50": 8.5
+  },
   "Devaughn Vele": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -838,6 +910,18 @@
     "baselinePoints": 319.408,
     "longTds40": 2.0,
     "longTds50": 2.0
+  },
+  "Drew Lock": {
+    "passingYards": 595.45,
+    "passingTds": 5.525,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 47.294875,
+    "longTds40": 17.0,
+    "longTds50": 8.5
   },
   "Dylan Sampson": {
     "passingYards": 0.0,
@@ -1208,6 +1292,18 @@
     "receivingFirstDowns": 24.7875,
     "receptions": 29.8125,
     "baselinePoints": 94.83375000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Jameis Winston": {
+    "passingYards": 674.25,
+    "passingTds": 1.8375,
+    "rushingTds": 0.91875,
+    "receivingTds": 0.91875,
+    "rushingFirstDowns": 4.137499999999999,
+    "receivingFirstDowns": 0.91875,
+    "receptions": 0.91875,
+    "baselinePoints": 43.271875,
     "longTds40": null,
     "longTds50": null
   },
@@ -1726,6 +1822,18 @@
     "baselinePoints": 108.320625,
     "longTds40": 1.0,
     "longTds50": 1.0
+  },
+  "Kirk Cousins": {
+    "passingYards": 2011.7937500000003,
+    "passingTds": 16.6625,
+    "rushingTds": 0.8375,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 3.35,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 133.70487500000002,
+    "longTds40": 2.21875,
+    "longTds50": null
   },
   "Kyle Monangai": {
     "passingYards": 0.0,

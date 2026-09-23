@@ -1199,27 +1199,13 @@
       "awRank": 130,
       "analytics": 116.357,
       "analyticsScore": 79.13,
-      "posRank": 9,
+      "posRank": 10,
       "scarcity": 26.76,
       "market": 47.44,
       "rookie": false
     },
     {
       "rank": 87,
-      "name": "Jayden Daniels",
-      "team": "WAS",
-      "pos": "QB",
-      "value": 65.99,
-      "awRank": 71,
-      "analytics": 114.44,
-      "analyticsScore": 69.68,
-      "posRank": 10,
-      "scarcity": 72.73,
-      "market": 73.33,
-      "rookie": false
-    },
-    {
-      "rank": 88,
       "name": "Dallas Goedert",
       "team": "PHI",
       "pos": "TE",
@@ -1233,7 +1219,7 @@
       "rookie": false
     },
     {
-      "rank": 89,
+      "rank": 88,
       "name": "Colston Loveland",
       "team": "CHI",
       "pos": "TE",
@@ -1247,7 +1233,7 @@
       "rookie": false
     },
     {
-      "rank": 90,
+      "rank": 89,
       "name": "Terrance Ferguson",
       "team": "LAR",
       "pos": "TE",
@@ -1261,7 +1247,7 @@
       "rookie": false
     },
     {
-      "rank": 91,
+      "rank": 90,
       "name": "Tyler Shough",
       "team": "NO",
       "pos": "QB",
@@ -1275,7 +1261,7 @@
       "rookie": false
     },
     {
-      "rank": 92,
+      "rank": 91,
       "name": "Dalton Schultz",
       "team": "HOU",
       "pos": "TE",
@@ -1289,7 +1275,7 @@
       "rookie": false
     },
     {
-      "rank": 93,
+      "rank": 92,
       "name": "Trevor Lawrence",
       "team": "JAC",
       "pos": "QB",
@@ -1303,7 +1289,7 @@
       "rookie": false
     },
     {
-      "rank": 94,
+      "rank": 93,
       "name": "Matthew Golden",
       "team": "GB",
       "pos": "WR",
@@ -1317,7 +1303,7 @@
       "rookie": false
     },
     {
-      "rank": 95,
+      "rank": 94,
       "name": "Josh Downs",
       "team": "IND",
       "pos": "WR",
@@ -1331,7 +1317,7 @@
       "rookie": false
     },
     {
-      "rank": 96,
+      "rank": 95,
       "name": "Blake Corum",
       "team": "LAR",
       "pos": "RB",
@@ -1345,7 +1331,7 @@
       "rookie": false
     },
     {
-      "rank": 97,
+      "rank": 96,
       "name": "Drake Maye",
       "team": "NE",
       "pos": "QB",
@@ -1359,7 +1345,7 @@
       "rookie": false
     },
     {
-      "rank": 98,
+      "rank": 97,
       "name": "Kyle Monangai",
       "team": "CHI",
       "pos": "RB",
@@ -1373,7 +1359,7 @@
       "rookie": false
     },
     {
-      "rank": 99,
+      "rank": 98,
       "name": "Jordyn Tyson",
       "team": "NO",
       "pos": "WR",
@@ -1387,7 +1373,7 @@
       "rookie": true
     },
     {
-      "rank": 100,
+      "rank": 99,
       "name": "Juwan Johnson",
       "team": "NO",
       "pos": "TE",
@@ -1401,7 +1387,7 @@
       "rookie": false
     },
     {
-      "rank": 101,
+      "rank": 100,
       "name": "Tre Tucker",
       "team": "LV",
       "pos": "WR",
@@ -1415,7 +1401,7 @@
       "rookie": false
     },
     {
-      "rank": 102,
+      "rank": 101,
       "name": "KC Concepcion",
       "team": "CLE",
       "pos": "WR",
@@ -1429,7 +1415,7 @@
       "rookie": true
     },
     {
-      "rank": 103,
+      "rank": 102,
       "name": "Aaron Jones Sr.",
       "team": "MIN",
       "pos": "RB",
@@ -1443,7 +1429,7 @@
       "rookie": false
     },
     {
-      "rank": 104,
+      "rank": 103,
       "name": "Quentin Johnston",
       "team": "LAC",
       "pos": "WR",
@@ -1454,6 +1440,20 @@
       "posRank": 44,
       "scarcity": 63.83,
       "market": 70.47,
+      "rookie": false
+    },
+    {
+      "rank": 104,
+      "name": "Jayden Daniels",
+      "team": "WAS",
+      "pos": "QB",
+      "value": 60.15,
+      "awRank": 71,
+      "analytics": 114.44,
+      "analyticsScore": 69.68,
+      "posRank": 14,
+      "scarcity": 72.73,
+      "market": 73.33,
       "rookie": false
     },
     {
@@ -1479,7 +1479,7 @@
       "awRank": 84,
       "analytics": 111.139,
       "analyticsScore": 63.94,
-      "posRank": 14,
+      "posRank": 15,
       "scarcity": 54.55,
       "market": 67.98,
       "rookie": false
@@ -1633,7 +1633,7 @@
       "awRank": 83,
       "analytics": 115.184,
       "analyticsScore": 61.71,
-      "posRank": 15,
+      "posRank": 18,
       "scarcity": 59.09,
       "market": 68.39,
       "rookie": false
@@ -1885,7 +1885,7 @@
       "awRank": 122,
       "analytics": 112.513,
       "analyticsScore": 62.58,
-      "posRank": 16,
+      "posRank": 20,
       "scarcity": 29.7,
       "market": 51.23,
       "rookie": false
@@ -2067,7 +2067,7 @@
       "awRank": 110,
       "analytics": 112.574,
       "analyticsScore": 55.89,
-      "posRank": 17,
+      "posRank": 21,
       "scarcity": 36.58,
       "market": 56.72,
       "rookie": false
@@ -2081,7 +2081,7 @@
       "awRank": 143,
       "analytics": 112.475,
       "analyticsScore": 59.56,
-      "posRank": 18,
+      "posRank": 22,
       "scarcity": 21.73,
       "market": 41.01,
       "rookie": false
@@ -2221,7 +2221,7 @@
       "awRank": 169,
       "analytics": 107.419,
       "analyticsScore": 59.17,
-      "posRank": 19,
+      "posRank": 23,
       "scarcity": 17.64,
       "market": 26.73,
       "rookie": false
@@ -2249,7 +2249,7 @@
       "awRank": 144,
       "analytics": 113.083,
       "analyticsScore": 58.24,
-      "posRank": 20,
+      "posRank": 24,
       "scarcity": 19.58,
       "market": 40.5,
       "rookie": false
@@ -2417,7 +2417,7 @@
       "awRank": 171,
       "analytics": 107.342,
       "analyticsScore": 55.05,
-      "posRank": 21,
+      "posRank": 26,
       "scarcity": 15.9,
       "market": 25.51,
       "rookie": false
@@ -2515,7 +2515,7 @@
       "awRank": 205,
       "analytics": 113.937,
       "analyticsScore": 55.24,
-      "posRank": 22,
+      "posRank": 27,
       "scarcity": 13.6,
       "market": 1.85,
       "rookie": false
@@ -2529,7 +2529,7 @@
       "awRank": 202,
       "analytics": 112.812,
       "analyticsScore": 53.95,
-      "posRank": 23,
+      "posRank": 28,
       "scarcity": 14.75,
       "market": 1.96,
       "rookie": false
@@ -2655,7 +2655,7 @@
       "awRank": 209,
       "analytics": 114.227,
       "analyticsScore": 52.68,
-      "posRank": 24,
+      "posRank": 30,
       "scarcity": 12.45,
       "market": 1.71,
       "rookie": false
@@ -2767,7 +2767,7 @@
       "awRank": 105,
       "analytics": 108.651,
       "analyticsScore": 50.64,
-      "posRank": 25,
+      "posRank": 31,
       "scarcity": 40.6,
       "market": 58.95,
       "rookie": false
@@ -3061,7 +3061,7 @@
       "awRank": 141,
       "analytics": 104.668,
       "analyticsScore": 45.93,
-      "posRank": 26,
+      "posRank": 35,
       "scarcity": 24.12,
       "market": 42.03,
       "rookie": false
@@ -3103,7 +3103,7 @@
       "awRank": 214,
       "analytics": 113.206,
       "analyticsScore": 50.1,
-      "posRank": 27,
+      "posRank": 36,
       "scarcity": 10.15,
       "market": 1.52,
       "rookie": false
@@ -3159,7 +3159,7 @@
       "awRank": 215,
       "analytics": 112.879,
       "analyticsScore": 48.83,
-      "posRank": 28,
+      "posRank": 37,
       "scarcity": 9,
       "market": 1.49,
       "rookie": false
@@ -3271,7 +3271,7 @@
       "awRank": 220,
       "analytics": null,
       "analyticsScore": 33.87,
-      "posRank": 29,
+      "posRank": 38,
       "scarcity": 7.85,
       "market": 1.3,
       "rookie": true
@@ -3341,7 +3341,7 @@
       "awRank": 212,
       "analytics": 114.005,
       "analyticsScore": 51.69,
-      "posRank": 30,
+      "posRank": 39,
       "scarcity": 11.3,
       "market": 1.6,
       "rookie": false
@@ -4213,6 +4213,132 @@
       "scarcity": 28.28,
       "market": 13.66,
       "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Aaron Rodgers",
+      "team": "PIT",
+      "pos": "QB",
+      "value": 32.84,
+      "awRank": null,
+      "analytics": 31.425,
+      "analyticsScore": 38.06,
+      "posRank": 32,
+      "scarcity": 50.37,
+      "market": 24.29,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Bryce Young",
+      "team": "CAR",
+      "pos": "QB",
+      "value": 68.12,
+      "awRank": null,
+      "analytics": 85.657,
+      "analyticsScore": 72.26,
+      "posRank": 9,
+      "scarcity": 47.38,
+      "market": 26.68,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Carson Wentz",
+      "team": "MIN",
+      "pos": "QB",
+      "value": 41.85,
+      "awRank": null,
+      "analytics": 45.484,
+      "analyticsScore": 46.65,
+      "posRank": 25,
+      "scarcity": 48.83,
+      "market": 24.82,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Cooper Rush",
+      "team": "ATL",
+      "pos": "QB",
+      "value": 31.41,
+      "awRank": null,
+      "analytics": 29.42,
+      "analyticsScore": 36.21,
+      "posRank": 33,
+      "scarcity": 48.83,
+      "market": 24.82,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Daniel Jones",
+      "team": "IND",
+      "pos": "QB",
+      "value": 38.79,
+      "awRank": null,
+      "analytics": 40.529,
+      "analyticsScore": 42.93,
+      "posRank": 29,
+      "scarcity": 47.38,
+      "market": 26.68,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Deshaun Watson",
+      "team": "CLE",
+      "pos": "QB",
+      "value": 57.39,
+      "awRank": null,
+      "analytics": 69.393,
+      "analyticsScore": 62.2,
+      "posRank": 16,
+      "scarcity": 48.83,
+      "market": 24.82,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Drew Lock",
+      "team": "SEA",
+      "pos": "QB",
+      "value": 56.33,
+      "awRank": null,
+      "analytics": 68.422,
+      "analyticsScore": 60.55,
+      "posRank": 17,
+      "scarcity": 45.93,
+      "market": 24.82,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Jameis Winston",
+      "team": "NYG",
+      "pos": "QB",
+      "value": 28.53,
+      "awRank": null,
+      "analytics": 21.625,
+      "analyticsScore": 41.11,
+      "posRank": 34,
+      "scarcity": 49.47,
+      "market": 24.29,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Kirk Cousins",
+      "team": "LV",
+      "pos": "QB",
+      "value": 51.72,
+      "awRank": null,
+      "analytics": 60.685,
+      "analyticsScore": 56.76,
+      "posRank": 19,
+      "scarcity": 49.47,
+      "market": 24.29,
+      "rookie": false
     }
   ],
   "ppr": [
@@ -4631,7 +4757,7 @@
       "awRank": 22,
       "analytics": null,
       "analyticsScore": 64.95,
-      "posRank": 12,
+      "posRank": 17,
       "scarcity": 84.29,
       "market": 92.32,
       "rookie": true
@@ -4673,7 +4799,7 @@
       "awRank": 28,
       "analytics": 112.609,
       "analyticsScore": 80.27,
-      "posRank": 13,
+      "posRank": 12,
       "scarcity": 81.43,
       "market": 90.08,
       "rookie": false
@@ -4687,7 +4813,7 @@
       "awRank": 19,
       "analytics": 118.406,
       "analyticsScore": 82.56,
-      "posRank": 14,
+      "posRank": 13,
       "scarcity": 87.14,
       "market": 93.44,
       "rookie": false
@@ -4715,7 +4841,7 @@
       "awRank": 38,
       "analytics": 115.128,
       "analyticsScore": 83.19,
-      "posRank": 15,
+      "posRank": 14,
       "scarcity": 75.71,
       "market": 86.3,
       "rookie": false
@@ -4799,7 +4925,7 @@
       "awRank": 52,
       "analytics": 114.518,
       "analyticsScore": 82.4,
-      "posRank": 16,
+      "posRank": 15,
       "scarcity": 68.57,
       "market": 80.9,
       "rookie": false
@@ -4813,7 +4939,7 @@
       "awRank": 31,
       "analytics": 109.972,
       "analyticsScore": 76.38,
-      "posRank": 17,
+      "posRank": 16,
       "scarcity": 80,
       "market": 88.96,
       "rookie": false
@@ -5401,27 +5527,13 @@
       "awRank": 129,
       "analytics": 116.357,
       "analyticsScore": 79.18,
-      "posRank": 9,
+      "posRank": 10,
       "scarcity": 26.76,
       "market": 47.92,
       "rookie": false
     },
     {
       "rank": 86,
-      "name": "Jayden Daniels",
-      "team": "WAS",
-      "pos": "QB",
-      "value": 66.27,
-      "awRank": 69,
-      "analytics": 114.44,
-      "analyticsScore": 69.76,
-      "posRank": 10,
-      "scarcity": 72.73,
-      "market": 74.14,
-      "rookie": false
-    },
-    {
-      "rank": 87,
       "name": "Colston Loveland",
       "team": "CHI",
       "pos": "TE",
@@ -5435,7 +5547,7 @@
       "rookie": false
     },
     {
-      "rank": 88,
+      "rank": 87,
       "name": "Dallas Goedert",
       "team": "PHI",
       "pos": "TE",
@@ -5449,7 +5561,7 @@
       "rookie": false
     },
     {
-      "rank": 89,
+      "rank": 88,
       "name": "Chuba Hubbard",
       "team": "CAR",
       "pos": "RB",
@@ -5463,7 +5575,7 @@
       "rookie": false
     },
     {
-      "rank": 90,
+      "rank": 89,
       "name": "Tyler Shough",
       "team": "NO",
       "pos": "QB",
@@ -5477,7 +5589,7 @@
       "rookie": false
     },
     {
-      "rank": 91,
+      "rank": 90,
       "name": "Terrance Ferguson",
       "team": "LAR",
       "pos": "TE",
@@ -5491,7 +5603,7 @@
       "rookie": false
     },
     {
-      "rank": 92,
+      "rank": 91,
       "name": "Jordyn Tyson",
       "team": "NO",
       "pos": "WR",
@@ -5505,7 +5617,7 @@
       "rookie": true
     },
     {
-      "rank": 93,
+      "rank": 92,
       "name": "Dalton Schultz",
       "team": "HOU",
       "pos": "TE",
@@ -5519,7 +5631,7 @@
       "rookie": false
     },
     {
-      "rank": 94,
+      "rank": 93,
       "name": "Matthew Golden",
       "team": "GB",
       "pos": "WR",
@@ -5533,7 +5645,7 @@
       "rookie": false
     },
     {
-      "rank": 95,
+      "rank": 94,
       "name": "Josh Downs",
       "team": "IND",
       "pos": "WR",
@@ -5547,7 +5659,7 @@
       "rookie": false
     },
     {
-      "rank": 96,
+      "rank": 95,
       "name": "Trevor Lawrence",
       "team": "JAC",
       "pos": "QB",
@@ -5561,7 +5673,7 @@
       "rookie": false
     },
     {
-      "rank": 97,
+      "rank": 96,
       "name": "KC Concepcion",
       "team": "CLE",
       "pos": "WR",
@@ -5575,7 +5687,7 @@
       "rookie": true
     },
     {
-      "rank": 98,
+      "rank": 97,
       "name": "Drake Maye",
       "team": "NE",
       "pos": "QB",
@@ -5589,7 +5701,7 @@
       "rookie": false
     },
     {
-      "rank": 99,
+      "rank": 98,
       "name": "Blake Corum",
       "team": "LAR",
       "pos": "RB",
@@ -5603,7 +5715,7 @@
       "rookie": false
     },
     {
-      "rank": 100,
+      "rank": 99,
       "name": "Tre Tucker",
       "team": "LV",
       "pos": "WR",
@@ -5617,7 +5729,7 @@
       "rookie": false
     },
     {
-      "rank": 101,
+      "rank": 100,
       "name": "Kyle Monangai",
       "team": "CHI",
       "pos": "RB",
@@ -5631,7 +5743,7 @@
       "rookie": false
     },
     {
-      "rank": 102,
+      "rank": 101,
       "name": "De'Zhaun Stribling",
       "team": "SF",
       "pos": "WR",
@@ -5645,7 +5757,7 @@
       "rookie": true
     },
     {
-      "rank": 103,
+      "rank": 102,
       "name": "Quentin Johnston",
       "team": "LAC",
       "pos": "WR",
@@ -5659,7 +5771,7 @@
       "rookie": false
     },
     {
-      "rank": 104,
+      "rank": 103,
       "name": "Juwan Johnson",
       "team": "NO",
       "pos": "TE",
@@ -5673,6 +5785,20 @@
       "rookie": false
     },
     {
+      "rank": 104,
+      "name": "Jayden Daniels",
+      "team": "WAS",
+      "pos": "QB",
+      "value": 60.44,
+      "awRank": 69,
+      "analytics": 114.44,
+      "analyticsScore": 69.76,
+      "posRank": 14,
+      "scarcity": 72.73,
+      "market": 74.14,
+      "rookie": false
+    },
+    {
       "rank": 105,
       "name": "Matthew Stafford",
       "team": "LAR",
@@ -5681,7 +5807,7 @@
       "awRank": 84,
       "analytics": 111.139,
       "analyticsScore": 63.94,
-      "posRank": 14,
+      "posRank": 15,
       "scarcity": 54.55,
       "market": 67.98,
       "rookie": false
@@ -5835,7 +5961,7 @@
       "awRank": 83,
       "analytics": 115.184,
       "analyticsScore": 61.71,
-      "posRank": 15,
+      "posRank": 18,
       "scarcity": 59.09,
       "market": 68.39,
       "rookie": false
@@ -6101,7 +6227,7 @@
       "awRank": 121,
       "analytics": 112.513,
       "analyticsScore": 62.62,
-      "posRank": 16,
+      "posRank": 20,
       "scarcity": 29.7,
       "market": 51.7,
       "rookie": false
@@ -6241,7 +6367,7 @@
       "awRank": 108,
       "analytics": 112.574,
       "analyticsScore": 55.97,
-      "posRank": 17,
+      "posRank": 21,
       "scarcity": 36.58,
       "market": 57.62,
       "rookie": false
@@ -6269,7 +6395,7 @@
       "awRank": 140,
       "analytics": 112.475,
       "analyticsScore": 59.7,
-      "posRank": 18,
+      "posRank": 22,
       "scarcity": 21.73,
       "market": 42.53,
       "rookie": false
@@ -6409,7 +6535,7 @@
       "awRank": 167,
       "analytics": 107.419,
       "analyticsScore": 59.28,
-      "posRank": 19,
+      "posRank": 23,
       "scarcity": 17.64,
       "market": 27.92,
       "rookie": false
@@ -6423,7 +6549,7 @@
       "awRank": 141,
       "analytics": 113.083,
       "analyticsScore": 58.38,
-      "posRank": 20,
+      "posRank": 24,
       "scarcity": 19.58,
       "market": 42.03,
       "rookie": false
@@ -6619,7 +6745,7 @@
       "awRank": 169,
       "analytics": 107.342,
       "analyticsScore": 55.16,
-      "posRank": 21,
+      "posRank": 26,
       "scarcity": 15.9,
       "market": 26.73,
       "rookie": false
@@ -6689,7 +6815,7 @@
       "awRank": 205,
       "analytics": 113.937,
       "analyticsScore": 55.24,
-      "posRank": 22,
+      "posRank": 27,
       "scarcity": 13.6,
       "market": 1.85,
       "rookie": false
@@ -6759,7 +6885,7 @@
       "awRank": 202,
       "analytics": 112.812,
       "analyticsScore": 53.95,
-      "posRank": 23,
+      "posRank": 28,
       "scarcity": 14.75,
       "market": 1.96,
       "rookie": false
@@ -6871,7 +6997,7 @@
       "awRank": 209,
       "analytics": 114.227,
       "analyticsScore": 52.68,
-      "posRank": 24,
+      "posRank": 30,
       "scarcity": 12.45,
       "market": 1.71,
       "rookie": false
@@ -6969,7 +7095,7 @@
       "awRank": 104,
       "analytics": 108.651,
       "analyticsScore": 50.69,
-      "posRank": 25,
+      "posRank": 31,
       "scarcity": 40.6,
       "market": 59.39,
       "rookie": false
@@ -7249,7 +7375,7 @@
       "awRank": 139,
       "analytics": 104.668,
       "analyticsScore": 46.05,
-      "posRank": 26,
+      "posRank": 35,
       "scarcity": 24.12,
       "market": 43.03,
       "rookie": false
@@ -7305,7 +7431,7 @@
       "awRank": 214,
       "analytics": 113.206,
       "analyticsScore": 50.1,
-      "posRank": 27,
+      "posRank": 36,
       "scarcity": 10.15,
       "market": 1.52,
       "rookie": false
@@ -7375,7 +7501,7 @@
       "awRank": 215,
       "analytics": 112.879,
       "analyticsScore": 48.83,
-      "posRank": 28,
+      "posRank": 37,
       "scarcity": 9,
       "market": 1.49,
       "rookie": false
@@ -7487,7 +7613,7 @@
       "awRank": 220,
       "analytics": null,
       "analyticsScore": 33.87,
-      "posRank": 29,
+      "posRank": 38,
       "scarcity": 7.85,
       "market": 1.3,
       "rookie": true
@@ -7557,7 +7683,7 @@
       "awRank": 212,
       "analytics": 114.005,
       "analyticsScore": 51.69,
-      "posRank": 30,
+      "posRank": 39,
       "scarcity": 11.3,
       "market": 1.6,
       "rookie": false
@@ -8429,6 +8555,132 @@
       "scarcity": 28.28,
       "market": 13.66,
       "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Aaron Rodgers",
+      "team": "PIT",
+      "pos": "QB",
+      "value": 32.88,
+      "awRank": null,
+      "analytics": 31.425,
+      "analyticsScore": 38.06,
+      "posRank": 32,
+      "scarcity": 50.39,
+      "market": 24.45,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Bryce Young",
+      "team": "CAR",
+      "pos": "QB",
+      "value": 68.17,
+      "awRank": null,
+      "analytics": 85.657,
+      "analyticsScore": 72.28,
+      "posRank": 9,
+      "scarcity": 47.44,
+      "market": 26.88,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Carson Wentz",
+      "team": "MIN",
+      "pos": "QB",
+      "value": 41.92,
+      "awRank": null,
+      "analytics": 45.484,
+      "analyticsScore": 46.65,
+      "posRank": 25,
+      "scarcity": 48.83,
+      "market": 25.15,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Cooper Rush",
+      "team": "ATL",
+      "pos": "QB",
+      "value": 31.48,
+      "awRank": null,
+      "analytics": 29.42,
+      "analyticsScore": 36.21,
+      "posRank": 33,
+      "scarcity": 48.83,
+      "market": 25.15,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Daniel Jones",
+      "team": "IND",
+      "pos": "QB",
+      "value": 38.84,
+      "awRank": null,
+      "analytics": 40.529,
+      "analyticsScore": 42.95,
+      "posRank": 29,
+      "scarcity": 47.44,
+      "market": 26.88,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Deshaun Watson",
+      "team": "CLE",
+      "pos": "QB",
+      "value": 57.46,
+      "awRank": null,
+      "analytics": 69.393,
+      "analyticsScore": 62.2,
+      "posRank": 16,
+      "scarcity": 48.83,
+      "market": 25.15,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Drew Lock",
+      "team": "SEA",
+      "pos": "QB",
+      "value": 56.41,
+      "awRank": null,
+      "analytics": 68.422,
+      "analyticsScore": 60.59,
+      "posRank": 17,
+      "scarcity": 46.05,
+      "market": 25.15,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Jameis Winston",
+      "team": "NYG",
+      "pos": "QB",
+      "value": 28.61,
+      "awRank": null,
+      "analytics": 21.625,
+      "analyticsScore": 41.11,
+      "posRank": 34,
+      "scarcity": 49.47,
+      "market": 24.45,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Kirk Cousins",
+      "team": "LV",
+      "pos": "QB",
+      "value": 51.76,
+      "awRank": null,
+      "analytics": 60.685,
+      "analyticsScore": 56.76,
+      "posRank": 19,
+      "scarcity": 49.47,
+      "market": 24.45,
+      "rookie": false
     }
   ],
   "standard": [
@@ -8847,7 +9099,7 @@
       "awRank": 20,
       "analytics": null,
       "analyticsScore": 64.81,
-      "posRank": 14,
+      "posRank": 18,
       "scarcity": 84.29,
       "market": 93.07,
       "rookie": true
@@ -8889,7 +9141,7 @@
       "awRank": 34,
       "analytics": 115.128,
       "analyticsScore": 83.06,
-      "posRank": 15,
+      "posRank": 14,
       "scarcity": 75.71,
       "market": 87.82,
       "rookie": false
@@ -9001,7 +9253,7 @@
       "awRank": 44,
       "analytics": 114.518,
       "analyticsScore": 81.68,
-      "posRank": 16,
+      "posRank": 15,
       "scarcity": 68.57,
       "market": 84.01,
       "rookie": false
@@ -9015,7 +9267,7 @@
       "awRank": 23,
       "analytics": 109.972,
       "analyticsScore": 76.31,
-      "posRank": 17,
+      "posRank": 16,
       "scarcity": 80,
       "market": 91.95,
       "rookie": false
@@ -9029,7 +9281,7 @@
       "awRank": 11,
       "analytics": 119.691,
       "analyticsScore": 77.88,
-      "posRank": 18,
+      "posRank": 17,
       "scarcity": 90,
       "market": 96.37,
       "rookie": false
@@ -9645,27 +9897,13 @@
       "awRank": 128,
       "analytics": 116.357,
       "analyticsScore": 79.22,
-      "posRank": 9,
+      "posRank": 10,
       "scarcity": 26.76,
       "market": 48.4,
       "rookie": false
     },
     {
       "rank": 88,
-      "name": "Jayden Daniels",
-      "team": "WAS",
-      "pos": "QB",
-      "value": 66.42,
-      "awRank": 68,
-      "analytics": 114.44,
-      "analyticsScore": 69.79,
-      "posRank": 10,
-      "scarcity": 72.73,
-      "market": 74.55,
-      "rookie": false
-    },
-    {
-      "rank": 89,
       "name": "Dallas Goedert",
       "team": "PHI",
       "pos": "TE",
@@ -9679,7 +9917,7 @@
       "rookie": false
     },
     {
-      "rank": 90,
+      "rank": 89,
       "name": "Tyler Shough",
       "team": "NO",
       "pos": "QB",
@@ -9693,7 +9931,7 @@
       "rookie": false
     },
     {
-      "rank": 91,
+      "rank": 90,
       "name": "Dalton Schultz",
       "team": "HOU",
       "pos": "TE",
@@ -9707,7 +9945,7 @@
       "rookie": false
     },
     {
-      "rank": 92,
+      "rank": 91,
       "name": "Terrance Ferguson",
       "team": "LAR",
       "pos": "TE",
@@ -9721,7 +9959,7 @@
       "rookie": false
     },
     {
-      "rank": 93,
+      "rank": 92,
       "name": "Blake Corum",
       "team": "LAR",
       "pos": "RB",
@@ -9735,7 +9973,7 @@
       "rookie": false
     },
     {
-      "rank": 94,
+      "rank": 93,
       "name": "Drake Maye",
       "team": "NE",
       "pos": "QB",
@@ -9749,7 +9987,7 @@
       "rookie": false
     },
     {
-      "rank": 95,
+      "rank": 94,
       "name": "Trevor Lawrence",
       "team": "JAC",
       "pos": "QB",
@@ -9763,7 +10001,7 @@
       "rookie": false
     },
     {
-      "rank": 96,
+      "rank": 95,
       "name": "Kyle Monangai",
       "team": "CHI",
       "pos": "RB",
@@ -9777,7 +10015,7 @@
       "rookie": false
     },
     {
-      "rank": 97,
+      "rank": 96,
       "name": "Josh Downs",
       "team": "IND",
       "pos": "WR",
@@ -9791,7 +10029,7 @@
       "rookie": false
     },
     {
-      "rank": 98,
+      "rank": 97,
       "name": "Matthew Golden",
       "team": "GB",
       "pos": "WR",
@@ -9805,7 +10043,7 @@
       "rookie": false
     },
     {
-      "rank": 99,
+      "rank": 98,
       "name": "Juwan Johnson",
       "team": "NO",
       "pos": "TE",
@@ -9819,7 +10057,7 @@
       "rookie": false
     },
     {
-      "rank": 100,
+      "rank": 99,
       "name": "Tre Tucker",
       "team": "LV",
       "pos": "WR",
@@ -9833,7 +10071,7 @@
       "rookie": false
     },
     {
-      "rank": 101,
+      "rank": 100,
       "name": "Jordyn Tyson",
       "team": "NO",
       "pos": "WR",
@@ -9847,7 +10085,7 @@
       "rookie": true
     },
     {
-      "rank": 102,
+      "rank": 101,
       "name": "Aaron Jones Sr.",
       "team": "MIN",
       "pos": "RB",
@@ -9858,6 +10096,20 @@
       "posRank": 31,
       "scarcity": 43.52,
       "market": 55.37,
+      "rookie": false
+    },
+    {
+      "rank": 102,
+      "name": "Jayden Daniels",
+      "team": "WAS",
+      "pos": "QB",
+      "value": 60.58,
+      "awRank": 68,
+      "analytics": 114.44,
+      "analyticsScore": 69.79,
+      "posRank": 14,
+      "scarcity": 72.73,
+      "market": 74.55,
       "rookie": false
     },
     {
@@ -9897,7 +10149,7 @@
       "awRank": 84,
       "analytics": 111.139,
       "analyticsScore": 63.94,
-      "posRank": 14,
+      "posRank": 15,
       "scarcity": 54.55,
       "market": 67.98,
       "rookie": false
@@ -10079,7 +10331,7 @@
       "awRank": 83,
       "analytics": 115.184,
       "analyticsScore": 61.71,
-      "posRank": 15,
+      "posRank": 18,
       "scarcity": 59.09,
       "market": 68.39,
       "rookie": false
@@ -10289,7 +10541,7 @@
       "awRank": 121,
       "analytics": 112.513,
       "analyticsScore": 62.62,
-      "posRank": 16,
+      "posRank": 20,
       "scarcity": 29.7,
       "market": 51.7,
       "rookie": false
@@ -10499,7 +10751,7 @@
       "awRank": 110,
       "analytics": 112.574,
       "analyticsScore": 55.89,
-      "posRank": 17,
+      "posRank": 21,
       "scarcity": 36.58,
       "market": 56.72,
       "rookie": false
@@ -10513,7 +10765,7 @@
       "awRank": 142,
       "analytics": 112.475,
       "analyticsScore": 59.61,
-      "posRank": 18,
+      "posRank": 22,
       "scarcity": 21.73,
       "market": 41.52,
       "rookie": false
@@ -10611,7 +10863,7 @@
       "awRank": 168,
       "analytics": 107.419,
       "analyticsScore": 59.22,
-      "posRank": 19,
+      "posRank": 23,
       "scarcity": 17.64,
       "market": 27.33,
       "rookie": false
@@ -10653,7 +10905,7 @@
       "awRank": 143,
       "analytics": 113.083,
       "analyticsScore": 58.28,
-      "posRank": 20,
+      "posRank": 24,
       "scarcity": 19.58,
       "market": 41.01,
       "rookie": false
@@ -10835,7 +11087,7 @@
       "awRank": 170,
       "analytics": 107.342,
       "analyticsScore": 55.11,
-      "posRank": 21,
+      "posRank": 26,
       "scarcity": 15.9,
       "market": 26.12,
       "rookie": false
@@ -10947,7 +11199,7 @@
       "awRank": 205,
       "analytics": 113.937,
       "analyticsScore": 55.24,
-      "posRank": 22,
+      "posRank": 27,
       "scarcity": 13.6,
       "market": 1.85,
       "rookie": false
@@ -10975,7 +11227,7 @@
       "awRank": 202,
       "analytics": 112.812,
       "analyticsScore": 53.95,
-      "posRank": 23,
+      "posRank": 28,
       "scarcity": 14.75,
       "market": 1.96,
       "rookie": false
@@ -11087,7 +11339,7 @@
       "awRank": 209,
       "analytics": 114.227,
       "analyticsScore": 52.68,
-      "posRank": 24,
+      "posRank": 30,
       "scarcity": 12.45,
       "market": 1.71,
       "rookie": false
@@ -11171,7 +11423,7 @@
       "awRank": 104,
       "analytics": 108.651,
       "analyticsScore": 50.69,
-      "posRank": 25,
+      "posRank": 31,
       "scarcity": 40.6,
       "market": 59.39,
       "rookie": false
@@ -11493,7 +11745,7 @@
       "awRank": 140,
       "analytics": 104.668,
       "analyticsScore": 45.99,
-      "posRank": 26,
+      "posRank": 35,
       "scarcity": 24.12,
       "market": 42.53,
       "rookie": false
@@ -11535,7 +11787,7 @@
       "awRank": 214,
       "analytics": 113.206,
       "analyticsScore": 50.1,
-      "posRank": 27,
+      "posRank": 36,
       "scarcity": 10.15,
       "market": 1.52,
       "rookie": false
@@ -11591,7 +11843,7 @@
       "awRank": 215,
       "analytics": 112.879,
       "analyticsScore": 48.83,
-      "posRank": 28,
+      "posRank": 37,
       "scarcity": 9,
       "market": 1.49,
       "rookie": false
@@ -11703,7 +11955,7 @@
       "awRank": 220,
       "analytics": null,
       "analyticsScore": 33.87,
-      "posRank": 29,
+      "posRank": 38,
       "scarcity": 7.85,
       "market": 1.3,
       "rookie": true
@@ -11773,7 +12025,7 @@
       "awRank": 212,
       "analytics": 114.005,
       "analyticsScore": 51.69,
-      "posRank": 30,
+      "posRank": 39,
       "scarcity": 11.3,
       "market": 1.6,
       "rookie": false
@@ -12644,6 +12896,132 @@
       "posRank": 27,
       "scarcity": 28.28,
       "market": 13.66,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Aaron Rodgers",
+      "team": "PIT",
+      "pos": "QB",
+      "value": 32.86,
+      "awRank": null,
+      "analytics": 31.425,
+      "analyticsScore": 38.06,
+      "posRank": 32,
+      "scarcity": 50.39,
+      "market": 24.37,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Bryce Young",
+      "team": "CAR",
+      "pos": "QB",
+      "value": 68.14,
+      "awRank": null,
+      "analytics": 85.657,
+      "analyticsScore": 72.27,
+      "posRank": 9,
+      "scarcity": 47.41,
+      "market": 26.77,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Carson Wentz",
+      "team": "MIN",
+      "pos": "QB",
+      "value": 41.88,
+      "awRank": null,
+      "analytics": 45.484,
+      "analyticsScore": 46.65,
+      "posRank": 25,
+      "scarcity": 48.83,
+      "market": 24.98,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Cooper Rush",
+      "team": "ATL",
+      "pos": "QB",
+      "value": 31.44,
+      "awRank": null,
+      "analytics": 29.42,
+      "analyticsScore": 36.21,
+      "posRank": 33,
+      "scarcity": 48.83,
+      "market": 24.98,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Daniel Jones",
+      "team": "IND",
+      "pos": "QB",
+      "value": 38.81,
+      "awRank": null,
+      "analytics": 40.529,
+      "analyticsScore": 42.94,
+      "posRank": 29,
+      "scarcity": 47.41,
+      "market": 26.77,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Deshaun Watson",
+      "team": "CLE",
+      "pos": "QB",
+      "value": 57.43,
+      "awRank": null,
+      "analytics": 69.393,
+      "analyticsScore": 62.2,
+      "posRank": 16,
+      "scarcity": 48.83,
+      "market": 24.98,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Drew Lock",
+      "team": "SEA",
+      "pos": "QB",
+      "value": 56.37,
+      "awRank": null,
+      "analytics": 68.422,
+      "analyticsScore": 60.57,
+      "posRank": 17,
+      "scarcity": 45.99,
+      "market": 24.98,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Jameis Winston",
+      "team": "NYG",
+      "pos": "QB",
+      "value": 28.57,
+      "awRank": null,
+      "analytics": 21.625,
+      "analyticsScore": 41.11,
+      "posRank": 34,
+      "scarcity": 49.47,
+      "market": 24.37,
+      "rookie": false
+    },
+    {
+      "rank": 999,
+      "name": "Kirk Cousins",
+      "team": "LV",
+      "pos": "QB",
+      "value": 51.74,
+      "awRank": null,
+      "analytics": 60.685,
+      "analyticsScore": 56.76,
+      "posRank": 19,
+      "scarcity": 49.47,
+      "market": 24.37,
       "rookie": false
     }
   ]
