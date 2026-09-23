@@ -12,7 +12,7 @@ PROJECTION_AVAILABILITY={
  "pukanacua":{"week_factor":0.50,"ros_missed_games":0,"status":"QUESTIONABLE"},
  "djmoore":{"week_factor":0.45,"ros_missed_games":0,"status":"WEEK 3 AVAILABILITY IN DOUBT"}
 }
-EXPECTED_WEEK3={"ATL":"GB","GB":"ATL","LAC":"BUF","BUF":"LAC","CAR":"CLE","CLE":"CAR","NYJ":"DET","DET":"NYJ","HOU":"IND","IND":"HOU","NE":"JAX","JAX":"NE","KC":"MIA","MIA":"KC","TEN":"NYG","NYG":"TEN","CIN":"PIT","PIT":"CIN","SEA":"WAS","WAS":"SEA","TB":"NO","NO":"TB","LV":"DEN","DEN":"LV","DAL":"BAL","BAL":"DAL","SF":"ARI","ARI":"SF","LAR":"MIN","MIN":"LAR","PHI":"CHI","CHI":"PHI"}
+EXPECTED_WEEK3={"ATL":"GB","GB":"ATL","LAC":"BUF","BUF":"LAC","CAR":"CLE","CLE":"CAR","NYJ":"DET","DET":"NYJ","HOU":"IND","IND":"HOU","NE":"JAX","JAX":"NE","KC":"MIA","MIA":"KC","TEN":"NYG","NYG":"TEN","CIN":"PIT","PIT":"CIN","SEA":"WAS","WAS":"SEA","MIN":"TB","TB":"MIN","LV":"NO","NO":"LV","DAL":"BAL","BAL":"DAL","SF":"ARI","ARI":"SF","LAR":"DEN","DEN":"LAR","PHI":"CHI","CHI":"PHI"}
 def key(v):
  v=unicodedata.normalize("NFKD",str(v or "")).encode("ascii","ignore").decode().lower()
  return re.sub(r"[^a-z0-9]","",re.sub(r"\b(jr|sr|ii|iii|iv)\.?\b","",v))
