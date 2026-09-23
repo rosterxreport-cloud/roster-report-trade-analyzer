@@ -19,6 +19,11 @@ def n(r,c):
  try:return max(0.,float(r.get(c,0) or 0))
  except:return 0.
 stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("WR")].copy();stats["k"]=stats.player_display_name.map(key)
+# nflverse season stats can refresh between runs. The preview must not silently
+# change historical inputs while we are tuning a fixed Week 3 model.
+# Record a deterministic input snapshot in the artifact for auditability.
+INPUT_SNAPSHOT_COLS=[x for x in ["player_id","player_display_name","games","targets","receptions","receiving_yards","receiving_tds","target_share","air_yards_share","receiving_air_yards"] if x in stats.columns]
+Path("data/wr-projection-input-snapshot.json").write_text(stats[INPUT_SNAPSHOT_COLS].fillna("").to_json(orient="records",indent=2))
 cols=["season_type","posteam","defteam","play_type","pass_attempt","complete_pass","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards","air_yards","pass_location"]
 try: pbp=pd.read_parquet(PBP,columns=cols)
 except Exception: pbp=pd.read_parquet(PBP)
