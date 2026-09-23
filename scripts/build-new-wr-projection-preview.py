@@ -5,6 +5,7 @@ import pandas as pd, numpy as np
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_2026.csv"
 PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+PROJECTION_AVAILABILITY={"nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"}}
 EXPECTED_WEEK3={"ATL":"GB","GB":"ATL","LAC":"BUF","BUF":"LAC","CAR":"CLE","CLE":"CAR","NYJ":"DET","DET":"NYJ","HOU":"IND","IND":"HOU","NE":"JAX","JAX":"NE","KC":"MIA","MIA":"KC","TEN":"NYG","NYG":"TEN","CIN":"PIT","PIT":"CIN","SEA":"WAS","WAS":"SEA","TB":"NO","NO":"TB","LV":"DEN","DEN":"LV","DAL":"BAL","BAL":"DAL","SF":"ARI","ARI":"SF","LAR":"MIN","MIN":"LAR","PHI":"CHI","CHI":"PHI"}
 def key(v):
  v=unicodedata.normalize("NFKD",str(v or "")).encode("ascii","ignore").decode().lower()
@@ -77,6 +78,7 @@ defmap={team(k):v for k,v in defmap.items()}
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="WR"};rows=[];projected=set()
 def emit(p,t,rec,ypr,td,source,op=None):
+ avail=PROJECTION_AVAILABILITY.get(key(p["name"]),{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE"})
  pr=min(100,int(p["posRank"]));op=op or {}
  target_share=float(op.get("target_share",np.nan));air_share=float(op.get("air_yard_share",np.nan));adot=float(op.get("adot",np.nan));rz_t=float(op.get("rz_targets",0) or 0);deep_t=float(op.get("deep_targets",0) or 0);pbp_t=max(1.,float(op.get("pbp_targets",0) or 0))
  strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(11.0,11.0-(pr-1)*.085))
@@ -90,8 +92,8 @@ def emit(p,t,rec,ypr,td,source,op=None):
  tp=current_w*t+role_w*role_targets+share_w*share_targets if source!="ranking-role fallback" else role_targets
  catch=(rec/max(.1,t)) if t>0 else .65;rp=tp*max(.45,min(.82,.65*catch+.35*.65));opp_adot=12. if np.isnan(adot) else max(5.,min(22.,adot));air_bonus=1.0 if np.isnan(air_share) else max(.90,min(1.10,.92+.32*air_share));adj_ypr=.46*ypr+.34*12.+.20*opp_adot;rey=rp*max(8.,min(17.,adj_ypr*(.90+.06*strength+.04*value)*air_bonus))
  role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;opp_td=max(.06,min(.65,.020*tp+.007*rey+.22*rz_rate+.08*deep_rate));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
- pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm;ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);ros=sum(base*m for m in mults);ppg=ros/left if left else 0
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"deepTargets":int(deep_t),"projectionSource":source})
+ pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm*float(avail["week_factor"]);ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);miss=min(left,int(avail["ros_missed_games"]));active_mults=mults[miss:];ros=sum(base*m for m in active_mults);ppg=ros/left if left else 0
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
 for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
