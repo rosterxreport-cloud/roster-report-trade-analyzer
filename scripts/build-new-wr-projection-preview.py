@@ -3,7 +3,8 @@ import json,re,unicodedata
 from pathlib import Path
 import pandas as pd, numpy as np
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_2026.csv"
-PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"\nPBP25="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.parquet"
+PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
+PBP25="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.parquet"
 SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
 PROJECTION_AVAILABILITY={
  "nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"},
