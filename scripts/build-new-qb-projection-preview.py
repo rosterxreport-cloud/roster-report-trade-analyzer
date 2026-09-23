@@ -135,13 +135,21 @@ for _,r in q.iterrows():
  att=float(r.get("attempts",0) or 0)/g;comp=float(r.get("completions",0) or 0)/g;py=float(r.get("passing_yards",0) or 0)/g;ptd=float(r.get("passing_tds",0) or 0)/g;ints=float(r.get("passing_interceptions",0) or 0)/g
  ay=float(r.get("passing_air_yards",0) or 0)/g;ypa=py/max(1.,att);aypa=ay/max(1.,att)
  car=float(r.get("carries",0) or 0)/g;ry=float(r.get("rushing_yards",0) or 0)/g;rtd=float(r.get("rushing_tds",0) or 0)/g
- pr=min(50,int(p["posRank"]));role_att=max(26.,min(39.,37.5-(pr-1)*.28))
- patt=.55*att+.45*role_att
- role_ypa=max(6.5,min(8.4,8.15-(pr-1)*.035));pypa=.45*ypa+.55*role_ypa
- role_aypa=max(6.8,min(9.6,9.1-(pr-1)*.04));paypa=.45*aypa+.55*role_aypa
- pcomp=max(.54,min(.74,.55*(comp/max(1.,att))+.45*.645))
+ pr=min(50,int(p["posRank"]))
+ # Early-season passing priors should not be derived from fantasy rank. Anchor
+ # volume and efficiency to league-average QB rates, then let actual 2026 usage
+ # move the projection. This prevents hot starts from being amplified by rank.
+ team_att=team_pass_pg.get(team(p["team"]),32.5)
+ role_att=max(27.,min(40.,team_att))
+ patt=.60*att+.40*role_att
+ pypa=.40*ypa+.60*7.15
+ paypa=.40*aypa+.60*8.15
+ pcomp=max(.54,min(.74,.45*(comp/max(1.,att))+.55*.645))
  pyd=patt*pypa;pcompn=patt*pcomp;pair=patt*paypa
- td_rate=.40*(ptd/max(1.,att))+.60*.045;int_rate=.40*(ints/max(1.,att))+.60*.022
+ # TD/INT rates are highly volatile through two games. Regress more heavily than
+ # yardage efficiency so six early TDs do not become a 3-TD weekly expectation.
+ td_rate=.25*(ptd/max(1.,att))+.75*.045
+ int_rate=.30*(ints/max(1.,att))+.70*.022
  pptd=patt*td_rate;pint=patt*int_rate
  rp=RUSH_PRIOR.get(k);role_car=(rp["carries"] if rp else max(1.5,min(5.0,4.2-(pr-1)*.05)))
  pcar=.45*car+.55*role_car
