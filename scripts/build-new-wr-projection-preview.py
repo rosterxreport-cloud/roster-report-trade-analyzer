@@ -112,7 +112,11 @@ def emit(p,t,rec,ypr,td,source,op=None):
   except: return default
  target_share=safe_float(op.get("target_share",np.nan));air_share=safe_float(op.get("air_yard_share",np.nan));adot=safe_float(op.get("adot",np.nan));rz_t=safe_float(op.get("rz_targets",0),0.);ez_t=safe_float(op.get("endzone_targets",0),0.);deep_t=safe_float(op.get("deep_targets",0),0.);pbp_t=max(1.,safe_float(op.get("pbp_targets",0),0.))
  strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(11.0,11.0-(pr-1)*.085))
- share_targets=role_targets if np.isnan(target_share) else max(2.,min(12.,target_share*34.))
+ # Convert target share to expected targets using a regressed team pass-volume
+ # baseline rather than a fixed 34 attempts. This prevents high-share players
+ # on lower-volume passing offenses from being mechanically inflated.
+ team_pass_baseline=32.0
+ share_targets=role_targets if np.isnan(target_share) else max(2.,min(11.5,target_share*team_pass_baseline))
  # Two games of raw volume are too noisy for established high-ranked WRs.
  # Give the locked role baseline more weight while still allowing current
  # target share to identify genuine role changes.
