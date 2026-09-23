@@ -23,7 +23,7 @@ stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("WR")].c
 # nflverse season stats can refresh between runs. The preview must not silently
 # change historical inputs while we are tuning a fixed Week 3 model.
 # Record a deterministic input snapshot in the artifact for auditability.
-INPUT_SNAPSHOT_COLS=[x for x in ["player_id","player_display_name","games","targets","receptions","receiving_yards","receiving_tds","target_share","air_yards_share","receiving_air_yards"] if x in stats.columns]
+INPUT_SNAPSHOT_COLS=[x for x in ["player_id","player_display_name","recent_team","games","targets","receptions","receiving_yards","receiving_tds","target_share","air_yards_share","receiving_air_yards"] if x in stats.columns]
 Path("data/wr-projection-input-snapshot.json").write_text(stats[INPUT_SNAPSHOT_COLS].fillna("").to_json(orient="records",indent=2))
 cols=["season_type","posteam","defteam","play_type","pass_attempt","complete_pass","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards","air_yards","pass_location"]
 try: pbp=pd.read_parquet(PBP,columns=cols)
@@ -163,7 +163,12 @@ def emit(p,t,rec,ypr,td,source,op=None):
 for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
- projected.add(k);g=max(1.,n(r,"games"));op=oppmap.get(str(r.get("player_id","")));emit(ranked[k],n(r,"targets")/g,n(r,"receptions")/g,n(r,"receiving_yards")/max(1.,n(r,"receptions")),n(r,"receiving_tds")/g,"2026 production + opportunity + ranking role",op)
+ projected.add(k);g=max(1.,n(r,"games"));op=oppmap.get(str(r.get("player_id","")))
+ # Projection team comes from current nflverse stats when available, not a
+ # potentially stale rankings-team field. Rankings/value data remain unchanged.
+ pp=dict(ranked[k]);rt=str(r.get("recent_team","") or "").strip()
+ if rt: pp["team"]=team(rt)
+ emit(pp,n(r,"targets")/g,n(r,"receptions")/g,n(r,"receiving_yards")/max(1.,n(r,"receptions")),n(r,"receiving_tds")/g,"2026 production + opportunity + ranking role",op)
 for k,p in ranked.items():
  if k not in projected: emit(p,0,0,12,0,"ranking-role fallback")
 # Redistribute a conservative share of unavailable WR opportunity to active
