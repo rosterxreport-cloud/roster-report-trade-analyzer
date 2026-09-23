@@ -16,7 +16,12 @@ stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("RB")].c
 # Current defense from 2026 PBP: run EPA/success/YPC/explosives, RB receiving,
 # and red-zone rushing TD rate. Blend 65% current / 35% neutral because Week 3
 # is still a small defensive sample.
-cols=["season_type","posteam","defteam","play_type","rush_attempt","pass_attempt","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards"]\npbp=pd.read_parquet(PBP,columns=cols);pbp=pbp[pbp.season_type.eq("REG")].copy()
+cols=["season_type","posteam","defteam","play_type","rush_attempt","pass_attempt","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards"]\ntry:
+ pbp=pd.read_parquet(PBP,columns=cols)
+except Exception as e:
+ print("Defense PBP column subset unavailable; loading full 2026 PBP:",e)
+ pbp=pd.read_parquet(PBP)
+pbp=pbp[pbp.season_type.eq("REG")].copy()
 rush=pbp[pd.to_numeric(pbp.rush_attempt,errors="coerce").fillna(0).eq(1)].copy()
 rush["explosive"]=(pd.to_numeric(rush.yards_gained,errors="coerce").fillna(0)>=10).astype(float)
 rush["rz"]=(pd.to_numeric(rush.yardline_100,errors="coerce")<=20).fillna(False)
@@ -31,7 +36,9 @@ dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1)
 dg["matchup_mult"]=.35+(.65*(.88+.24*dg.def_bad))
 defmap=dict(zip(dg.defteam,dg.matchup_mult))
 # Upcoming opponent.
-sch=pd.read_csv(SCHED,low_memory=False);future=sch[(sch.season.eq(2026))&sch.result.isna()].sort_values("week")
+sch=pd.read_csv(SCHED,low_memory=False)
+played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
+future=sch[(sch.season.eq(2026))&(~played)].sort_values("week")
 opp={}
 for _,g in future.iterrows():
  opp.setdefault(str(g.home_team),str(g.away_team));opp.setdefault(str(g.away_team),str(g.home_team))
