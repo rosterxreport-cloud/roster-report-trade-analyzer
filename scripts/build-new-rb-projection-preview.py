@@ -16,7 +16,8 @@ stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("RB")].c
 # Current defense from 2026 PBP: run EPA/success/YPC/explosives, RB receiving,
 # and red-zone rushing TD rate. Blend 65% current / 35% neutral because Week 3
 # is still a small defensive sample.
-cols=["season_type","posteam","defteam","play_type","rush_attempt","pass_attempt","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards"]\ntry:
+cols=["season_type","posteam","defteam","play_type","rush_attempt","pass_attempt","yards_gained","epa","success","touchdown","yardline_100","receiver_player_id","receiving_yards"]
+try:
  pbp=pd.read_parquet(PBP,columns=cols)
 except Exception as e:
  print("Defense PBP column subset unavailable; loading full 2026 PBP:",e)
@@ -27,7 +28,11 @@ rush["explosive"]=(pd.to_numeric(rush.yards_gained,errors="coerce").fillna(0)>=1
 rush["rz"]=(pd.to_numeric(rush.yardline_100,errors="coerce")<=20).fillna(False)
 rush["rztd"]=((pd.to_numeric(rush.touchdown,errors="coerce").fillna(0)==1)&rush.rz).astype(float)
 dg=rush.groupby("defteam").agg(run_epa=("epa","mean"),run_success=("success","mean"),ypc=("yards_gained","mean"),explosive=("explosive","mean"),rztd=("rztd","mean")).reset_index()
-# nflverse PBP does not expose receiver_position directly. Join receiver IDs to\n# the current player table so RB receiving defense is still measured accurately.\nidpos=dict(zip(stats.player_id.astype(str),stats.position)) if "player_id" in stats.columns else {}\npbp["receiver_position"]=pbp.receiver_player_id.astype(str).map(idpos)\nrbrec=pbp[(pbp.play_type.eq("pass"))&(pbp.receiver_position.eq("RB"))].groupby("defteam").agg(rb_rec_yards=("receiving_yards","sum"),rb_targets=("pass_attempt","sum")).reset_index()
+# nflverse PBP does not expose receiver_position directly. Join receiver IDs to
+# the current player table so RB receiving defense is still measured accurately.
+idpos=dict(zip(stats.player_id.astype(str),stats.position)) if "player_id" in stats.columns else {}
+pbp["receiver_position"]=pbp.receiver_player_id.astype(str).map(idpos)
+rbrec=pbp[(pbp.play_type.eq("pass"))&(pbp.receiver_position.eq("RB"))].groupby("defteam").agg(rb_rec_yards=("receiving_yards","sum"),rb_targets=("pass_attempt","sum")).reset_index()
 dg=dg.merge(rbrec,on="defteam",how="left");dg["rb_rec_ypt"]=dg.rb_rec_yards/dg.rb_targets.replace(0,np.nan)
 metrics=["run_epa","run_success","ypc","explosive","rztd","rb_rec_ypt"]
 for m in metrics:
@@ -58,4 +63,5 @@ for _,r in stats.iterrows():
  # rather than incorrectly applying one opponent to the whole season.
  left=max(0,17-int(g))
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSpointsBaseline":round(base*left,1)})
-rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True);Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2)+"\n");print(json.dumps(rows[:25],indent=2))
+rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True);Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2)+"
+");print(json.dumps(rows[:25],indent=2))
