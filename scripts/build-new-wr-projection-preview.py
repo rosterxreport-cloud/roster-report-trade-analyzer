@@ -5,7 +5,7 @@ import pandas as pd, numpy as np
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_2026.csv"
 PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 PBP25="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2025.parquet"
-SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+SCHED="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"\nINJURY_FILE=Path("injury-adjustments.json")
 PROJECTION_AVAILABILITY={
  "nicocollins":{"week_factor":0.0,"ros_missed_games":4,"status":"IR"},
  "zayflowers":{"week_factor":0.0,"ros_missed_games":1,"status":"OUT"},
@@ -22,6 +22,24 @@ def key(v):
 def n(r,c):
  try:return max(0.,float(r.get(c,0) or 0))
  except:return 0.
+# Automatic projection availability from the repository's refreshed injury layer.
+# Confirmed IR/PUP/NFI/OUT/inactive/unavailable statuses are zero for the current
+# week. Questionable/doubtful players use the maintained availability/workload
+# factors. Manual entries below remain only as explicit projection overrides.
+AUTO_AVAILABILITY={}
+try:
+ _inj=json.loads(INJURY_FILE.read_text()).get("players",{})
+ for _name,_x in _inj.items():
+  _status=str(_x.get("status","") or "").upper()
+  _avail=float(_x.get("availability",1) or 0);_work=float(_x.get("workload",1) or 0)
+  _confirmed=any(z in _status for z in ["IR ","IR -","INJURED RESERVE","PUP","NFI","OUT ","INACTIVE","UNAVAILABLE"])
+  if _confirmed: _wf=0.0
+  elif "DOUBTFUL" in _status: _wf=min(.25,_avail*_work)
+  elif "QUESTIONABLE" in _status or "GAME-TIME" in _status: _wf=max(0.,min(1.,_avail*_work))
+  else: _wf=max(0.,min(1.,_avail*_work))
+  AUTO_AVAILABILITY[key(_name)]={"week_factor":_wf,"ros_missed_games":0,"status":str(_x.get("status","ACTIVE")),"source":"injury-adjustments.json"}
+except Exception as ex:
+ print(f"Automatic injury availability fallback: {ex}")
 stats=pd.read_csv(STATS,low_memory=False);stats=stats[stats.position.eq("WR")].copy();stats["k"]=stats.player_display_name.map(key)
 # nflverse season stats can refresh between runs. The preview must not silently
 # change historical inputs while we are tuning a fixed Week 3 model.
@@ -116,7 +134,7 @@ defmap={team(k):v for k,v in defmap.items()}
 defmap={team(k):v for k,v in defmap.items()}
 db=json.loads(Path("players.json").read_text())["half"];ranked={key(p["name"]):p for p in db if p["pos"]=="WR"};rows=[];projected=set()
 def emit(p,t,rec,ypr,td,source,op=None):
- avail=PROJECTION_AVAILABILITY.get(key(p["name"]),{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE"})
+ avail=AUTO_AVAILABILITY.get(key(p["name"]),{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy();avail.update(PROJECTION_AVAILABILITY.get(key(p["name"]),{}))
  pr=min(100,int(p["posRank"]));op=op or {}
  def safe_float(v,default=np.nan):
   try:
