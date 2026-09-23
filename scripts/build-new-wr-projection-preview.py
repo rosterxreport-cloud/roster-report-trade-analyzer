@@ -42,7 +42,9 @@ dg["def_bad"]=dg[[m+"_badpct" for m in metrics]].mean(axis=1);dg["matchup_mult"]
 # These are calculated from team targets and team air yards by nflfastR.
 oppmap={}
 for _,sr in stats.iterrows():
- oppmap[str(sr.get("player_id",""))]={
+ _pid=str(sr.get("player_id",""))
+ _so=scoreopp.get(_pid,{})
+ oppmap[_pid]={
   "target_share":sr.get("target_share",np.nan),
   "air_yard_share":sr.get("air_yards_share",sr.get("air_yard_share",np.nan)),
   "adot":(n(sr,"receiving_air_yards")/max(1.,n(sr,"targets"))) if n(sr,"receiving_air_yards") else np.nan,
@@ -50,6 +52,18 @@ for _,sr in stats.iterrows():
   "deep_targets":0,
   "pbp_targets":max(1.,n(sr,"targets"))
  }
+# Safe player scoring-opportunity layer. Missing PBP/player mappings never
+# abort the projection run; the existing role/TD expectation remains fallback.
+scoreopp={}
+try:
+ _t=pbp[pbp.receiver_player_id.notna()].copy()
+ _t["_rz"]=(pd.to_numeric(_t["yardline_100"],errors="coerce")<=20).astype(float)
+ _t["_ez"]=(pd.to_numeric(_t["yardline_100"],errors="coerce")<=10).astype(float)
+ _t["_deep"]=(pd.to_numeric(_t["air_yards"],errors="coerce").fillna(0)>=20).astype(float)
+ _so=_t.groupby("receiver_player_id").agg(rz_targets=("_rz","sum"),endzone_targets=("_ez","sum"),deep_targets=("_deep","sum"),pbp_targets=("receiver_player_id","count")).reset_index()
+ scoreopp={str(r.receiver_player_id):{"rz_targets":float(r.rz_targets),"endzone_targets":float(r.endzone_targets),"deep_targets":float(r.deep_targets),"pbp_targets":float(r.pbp_targets)} for _,r in _so.iterrows()}
+except Exception as e:
+ print(f"Scoring-opportunity layer fallback: {e}")
 # Upcoming opponent.
 sch=pd.read_csv(SCHED,low_memory=False)
 played = sch["result"].notna() if "result" in sch.columns else sch["home_score"].notna()
@@ -95,7 +109,7 @@ def emit(p,t,rec,ypr,td,source,op=None):
    if v is None or pd.isna(v): return default
    return float(v)
   except: return default
- target_share=safe_float(op.get("target_share",np.nan));air_share=safe_float(op.get("air_yard_share",np.nan));adot=safe_float(op.get("adot",np.nan));rz_t=safe_float(op.get("rz_targets",0),0.);deep_t=safe_float(op.get("deep_targets",0),0.);pbp_t=max(1.,safe_float(op.get("pbp_targets",0),0.))
+ target_share=safe_float(op.get("target_share",np.nan));air_share=safe_float(op.get("air_yard_share",np.nan));adot=safe_float(op.get("adot",np.nan));rz_t=safe_float(op.get("rz_targets",0),0.);ez_t=safe_float(op.get("endzone_targets",0),0.);deep_t=safe_float(op.get("deep_targets",0),0.);pbp_t=max(1.,safe_float(op.get("pbp_targets",0),0.))
  strength=max(.65,min(1.20,float(p["analyticsScore"])/75.));value=max(.72,min(1.16,float(p["value"])/80.));role_targets=max(2.,min(11.0,11.0-(pr-1)*.085))
  share_targets=role_targets if np.isnan(target_share) else max(2.,min(12.,target_share*34.))
  # Two games of raw volume are too noisy for established high-ranked WRs.
@@ -118,9 +132,9 @@ def emit(p,t,rec,ypr,td,source,op=None):
  # aDOT still informs the yardage conversion, but no longer dominates it.
  adj_ypr=.78*adj_ypr+.22*opp_adot
  air_bonus=1.0 if np.isnan(air_share) else max(.92,min(1.08,.94+.24*air_share));rey=rp*max(8.,min(17.,adj_ypr*(.90+.06*strength+.04*value)*air_bonus))
- role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;opp_td=max(.06,min(.65,.020*tp+.007*rey+.22*rz_rate+.08*deep_rate));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
+ role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;ez_rate=ez_t/pbp_t;opp_td=max(.06,min(.70,.020*tp+.007*rey+.16*rz_rate+.18*ez_rate+.06*deep_rate));tdp=max(.04,min(.78,.25*td+.45*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm*float(avail["week_factor"]);ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);miss=min(left,int(avail["ros_missed_games"]));active_mults=mults[miss:];ros=sum(base*m for m in active_mults);ppg=ros/left if left else 0
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"endzoneTargets":int(ez_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
 for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
