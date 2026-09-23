@@ -113,6 +113,10 @@ ranked={key(p["name"]):p for p in db if p["pos"]=="QB"}
 # the canonical GSIS key and player_display_name is the full name. This avoids
 # brittle matching against abbreviated PBP passer names.
 q=stats.copy()
+# Established QB rushing role priors. Early-season rushing TDs are too volatile to
+# extrapolate directly, so blend 2026 with stable career/role archetypes.
+RUSH_PRIOR={"jalenhurts":{"carries":9.0,"rush_td":0.65},"joshallen":{"carries":7.0,"rush_td":0.55},"lamarjackson":{"carries":8.5,"rush_td":0.30},"jayden daniels":{"carries":8.0,"rush_td":0.35},"calebwilliams":{"carries":5.5,"rush_td":0.20},"patrickmahomes":{"carries":4.0,"rush_td":0.15},"kyler murray":{"carries":6.0,"rush_td":0.25}}
+RUSH_PRIOR={key(k):v for k,v in RUSH_PRIOR.items()}
 for _col in ["attempts","completions","passing_yards","passing_tds","passing_interceptions","passing_air_yards","carries","rushing_yards","rushing_tds","games"]:
  if _col not in q.columns: q[_col]=0
 # Season stats are already aggregated; use normalized full display names to join
@@ -133,8 +137,14 @@ for _,r in q.iterrows():
  pyd=patt*pypa;pcompn=patt*pcomp;pair=patt*paypa
  td_rate=.40*(ptd/max(1.,att))+.60*.045;int_rate=.40*(ints/max(1.,att))+.60*.022
  pptd=patt*td_rate;pint=patt*int_rate
- role_car=max(1.5,min(7.5,5.8-(pr-1)*.08));pcar=.55*car+.45*role_car
- ypc=ry/max(1.,car) if car else 4.5;pry=pcar*max(3.0,min(7.0,.55*ypc+.45*4.8));prtd=.45*rtd+.55*.18
+ rp=RUSH_PRIOR.get(k);role_car=(rp["carries"] if rp else max(1.5,min(5.0,4.2-(pr-1)*.05)))
+ pcar=.45*car+.55*role_car
+ ypc=ry/max(1.,car) if car else 4.5;pry=pcar*max(3.0,min(7.0,.45*ypc+.55*4.8))
+ role_rtd=(rp["rush_td"] if rp else .10)
+ # Rushing TDs are especially noisy over two games: 20% current season, 80% role.
+ prtd=.20*rtd+.80*role_rtd
+ # Guard against two-game TD spikes even for elite rushing QBs.
+ prtd=min(prtd,.75)
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0))
  avail=AUTO_AVAILABILITY.get(k,{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy()
  base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
