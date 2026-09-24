@@ -13,7 +13,6 @@ def req(method,path,data=None,ctype="application/json"):
    b=x.read().decode();return json.loads(b) if b else {}
  except urllib.error.HTTPError as e: raise SystemExit(f"Datawrapper {method} {path} failed: {e.code} {e.read().decode()}")
 def q(v):
- if isinstance(v,float): v=f"{v:.1f}"
  return '"'+str(v if v is not None else "").replace('"','""')+'"'
 cfg=Path("data/datawrapper-charts.json")
 # Permanent chart identities used by Roster Report embeds. Never create replacements.
@@ -31,12 +30,20 @@ specs={
 for pos,s in specs.items():
  rows=json.loads(Path(s["file"]).read_text());rows=sorted(rows,key=lambda x:float(x.get(s["key"]) or -999),reverse=True)[:s["limit"]]
  header=["Rank"]+[x[0] for x in s["cols"]];lines=[",".join(header)]
- for i,x in enumerate(rows,1): lines.append(",".join([str(i)]+[q(x.get(k)) for _,k in s["cols"]]))
+ for i,x in enumerate(rows,1):
+  vals=[]
+  for label,k in s["cols"]:
+   v=x.get(k)
+   if label in ("Proj Pts","Proj PPR") and v is not None:
+    try: v=f"{float(v):.1f}"
+    except (TypeError,ValueError): pass
+   vals.append(q(v))
+  lines.append(",".join([str(i)]+vals))
  cid=conf.get(pos)
  if not cid:
   ch=req("POST","/charts",json.dumps({"title":s["title"],"type":"tables"}).encode());cid=ch["id"];conf[pos]=cid
  req("PUT",f"/charts/{cid}/data",("\n".join(lines)+"\n").encode(),"text/csv")
- meta={"describe":{"intro":"The Roster Report model projections. Updated automatically as injuries, roles and matchups change.","byline":"The Roster Report","source-name":"The Roster Report Projection Model","notes":"Weekly fantasy football projections. Scoring format is shown in the table title."},"visualize":{"dark-mode-invert":True,"header":{"style":{"bold":True}},"table":{"striped":True,"row-height":"compact","mobile-first":True},"columns":{"Rank":{"align":"center","width":"small"},"Player":{"align":"left","bold":True},"Team":{"align":"center","width":"small"},"Opp":{"align":"center","width":"small"},"Proj Pts":{"align":"right","bold":True,"heatmap":True},"Proj PPR":{"align":"right","bold":True,"heatmap":True}},"custom-colors":{"football-blue":"#1261A0","football-yellow":"#F2C94C"}}}
+ meta={"describe":{"intro":"The Roster Report model projections. Updated automatically as injuries, roles and matchups change.","byline":"The Roster Report","source-name":"The Roster Report Projection Model","notes":"Weekly fantasy football projections. Scoring format is shown in the table title."},"visualize":{"dark-mode-invert":True,"header":{"style":{"bold":True}},"table":{"striped":True,"row-height":"compact","mobile-first":True},"columns":{"Rank":{"align":"center","width":"small"},"Player":{"align":"left","bold":True},"Team":{"align":"center","width":"small"},"Opp":{"align":"center","width":"small"},"Proj Pts":{"align":"right","bold":True,"heatmap":True,"number-format":"0.0"},"Proj PPR":{"align":"right","bold":True,"heatmap":True,"number-format":"0.0"}},"custom-colors":{"football-blue":"#1261A0","football-yellow":"#F2C94C"}}}
  req("PATCH",f"/charts/{cid}",json.dumps({"title":s["title"],"metadata":meta}).encode())
  req("POST",f"/charts/{cid}/publish",b"{}")
  ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":pos.upper(),"chartId":cid,"publicUrl":ch.get("publicUrl")}))
