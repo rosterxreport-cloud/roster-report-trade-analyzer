@@ -105,3 +105,12 @@ req("PATCH",f"/charts/{cid}",json.dumps({"title":"Week 3 Fantasy Football Projec
 req("POST",f"/charts/{cid}/publish",b"{}")
 ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":"ALL","chartId":cid,"publicUrl":ch.get("publicUrl")}))
 cfg.write_text(json.dumps(conf,indent=2)+"\n")
+
+# Emit exact current Top 10 values for branded graphics
+for pos,s in specs.items():
+ rows=json.loads(Path(s["file"]).read_text())
+ if pos=="qb": key="weekly4PtPassTD"
+ elif pos=="te": key="fullPPR"
+ else: key="weeklyPPR"
+ top=sorted(rows,key=lambda x:float(x.get(key) or -999),reverse=True)[:10]
+ print("GRAPHIC_TOP10 "+json.dumps({"position":pos.upper(),"scoring":"4PT_PASS_TD" if pos=="qb" else "FULL_PPR","players":[{"player":x.get("player"),"points":x.get(key)} for x in top]}))
