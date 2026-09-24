@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install projection dependencies
-        run: pip install 'pandas==2.3.2' 'numpy==2.3.2'
+        run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'pyarrow==21.0.0'
       - name: Build current projection previews
         run: |
           python scripts/build-new-rb-projection-preview.py
