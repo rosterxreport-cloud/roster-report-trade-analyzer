@@ -30,4 +30,4 @@ jobs:
       - name: Update and publish permanent Datawrapper charts
         env:
           DATAWRAPPER_API_TOKEN: ${{ secrets.DATAWRAPPER_API_TOKEN }}
-        run: python scripts/publish-datawrapper-projections.py
+        run: |\n          python scripts/publish-datawrapper-projections.py\n          python scripts/publish-datawrapper-top250.py
