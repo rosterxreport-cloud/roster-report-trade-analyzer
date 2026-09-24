@@ -19,7 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Build current projection previews
+      - name: Install projection dependencies
+        run: pip install 'pandas==2.3.2' 'numpy==2.3.2'\n      - name: Build current projection previews
         run: |
           python scripts/build-new-rb-projection-preview.py
           python scripts/build-new-wr-projection-preview.py
