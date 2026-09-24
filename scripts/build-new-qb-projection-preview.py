@@ -130,6 +130,11 @@ WEEK_STARTER={
  "ATL":"Michael Penix Jr.","CAR":"Bryce Young","NO":"Tyler Shough","TB":"Baker Mayfield",
  "ARI":"Jacoby Brissett","LAR":"Matthew Stafford","SF":"Brock Purdy","SEA":"Drew Lock"
 }
+
+PROVISIONAL_STARTER={
+ "CHI":"QB decision pending: Caleb Williams hamstring / Tyson Bagent concussion; Case Keenum practicing",
+ "SEA":"QB decision pending: Sam Darnold limited with glute injury; Drew Lock starts if Darnold not cleared"
+}
 if set(WEEK_STARTER)!=set(EXPECTED_WEEK3):
  raise SystemExit(f"QB starter teams do not equal Week 3 schedule teams: missing={set(EXPECTED_WEEK3)-set(WEEK_STARTER)}, extra={set(WEEK_STARTER)-set(EXPECTED_WEEK3)}")
 _norm=[key(v) for v in WEEK_STARTER.values()]
@@ -192,7 +197,7 @@ for _,r in q.iterrows():
  avail=AUTO_AVAILABILITY.get(k,{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy();avail.update(PROJECTION_AVAILABILITY.get(k,{}))
  base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
  ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"2026 player stats + ranking role"})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"2026 player stats + ranking role","starterStatus":("PROVISIONAL" if pt in PROVISIONAL_STARTER else "CONFIRMED"),"starterNote":PROVISIONAL_STARTER.get(pt)})
 # Confirmed starters without a 2026 sample use a conservative prior pathway.
 # It uses current team pass volume, neutral NFL efficiency baselines, established
 # rushing archetype when known, and the same opponent/injury layers. It never
@@ -210,7 +215,7 @@ for k,p in ranked.items():
  avail=AUTO_AVAILABILITY.get(k,{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy();avail.update(PROJECTION_AVAILABILITY.get(k,{}))
  base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
  ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"no-2026-sample starter prior"})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"no-2026-sample starter prior","starterStatus":("PROVISIONAL" if pt in PROVISIONAL_STARTER else "CONFIRMED"),"starterNote":PROVISIONAL_STARTER.get(pt)})
 rows.sort(key=lambda x:(x.get("weeklyPoints") is not None,x.get("weeklyPoints") or -999),reverse=True)
 # Weekly output must be exactly one record per team. Fail loudly rather than
 # silently publish an incomplete/duplicated quarterback slate.
