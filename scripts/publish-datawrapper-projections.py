@@ -13,7 +13,13 @@ def req(method,path,data=None,ctype="application/json"):
    b=x.read().decode();return json.loads(b) if b else {}
  except urllib.error.HTTPError as e: raise SystemExit(f"Datawrapper {method} {path} failed: {e.code} {e.read().decode()}")
 def q(v): return '"'+str(v if v is not None else "").replace('"','""')+'"'
-cfg=Path("data/datawrapper-charts.json");conf=json.loads(cfg.read_text()) if cfg.exists() else {}
+cfg=Path("data/datawrapper-charts.json")
+# Permanent chart identities used by Roster Report embeds. Never create replacements.
+conf={"qb":"FIj6e","rb":"WTSqN","wr":"0bBvX","te":"m4UVe"}
+if cfg.exists():
+ saved=json.loads(cfg.read_text())
+ for pos,cid in conf.items(): saved[pos]=cid
+ conf=saved
 specs={
  "qb":{"file":"data/new-qb-projection-preview.json","key":"weeklyPoints","limit":32,"title":"Week 3 Fantasy Football QB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyPoints"),("Pass Yds","passYards"),("Pass TD","passTD"),("Rush Yds","rushYards")]},
  "rb":{"file":"data/new-rb-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football RB Rankings — Half PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyHalfPPR"),("Carries","carries"),("Targets","targets"),("Rush Yds","rushYds"),("Rec Yds","recYds"),("TD","TD")]},
