@@ -22,7 +22,7 @@ def availability(name):
  if "DOUBTFUL" in s:return min(.25,a*w),s
  return max(0.,min(1.,a*w)),s
 # Official Week 3 known TE overrides; automatic injury file remains primary.
-MANUAL={"oscardelp":(0.0,"OUT - HAMSTRING"),"charliekolar":(0.0,"OUT - FOREARM"),"davidnjoku":(0.0,"IR")}
+MANUAL={"georgekittle":(0.0,"OUT WEEK 3 - HAMSTRING (3-5 WEEK EXPECTED ABSENCE)"),"oscardelp":(0.0,"OUT - HAMSTRING"),"charliekolar":(0.0,"OUT - FOREARM"),"davidnjoku":(0.0,"IR")}
 cols=["game_id","season_type","posteam","defteam","pass_attempt","complete_pass","yardline_100","receiver_player_id","receiving_yards","air_yards"]
 pbp=pd.read_parquet(PBP,columns=cols);pbp=pbp[pbp.season_type.eq("REG")].copy()
 # Team passing volume
