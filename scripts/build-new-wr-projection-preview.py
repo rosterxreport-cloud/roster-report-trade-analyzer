@@ -181,7 +181,7 @@ def emit(p,t,rec,ypr,td,source,op=None):
  role_td=max(.08,min(.62,.62-(pr-1)*.006));rz_rate=rz_t/pbp_t;deep_rate=deep_t/pbp_t;ez_rate=ez_t/pbp_t;opp_td=max(.06,min(.62,.018*tp+.0055*rey+.14*rz_rate+.16*ez_rate+.05*deep_rate))
  tdp=max(.04,min(.68,.22*td+.48*role_td+.30*opp_td));base=rey/10+rp*.5+tdp*6
  pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0));weekly=base*mm*float(avail["week_factor"]);ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];left=len(ros_opps);miss=min(left,int(avail["ros_missed_games"]));active_mults=mults[miss:];ros=sum(base*m for m in active_mults);ppg=ros/left if left else 0
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"teamPassAttemptsPerGame":round(team_pass_baseline,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"endzoneTargets":int(ez_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"targets":round(tp,1),"receptions":round(rp,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyStandard":round((rey/10+tdp*6)*mm*float(avail["week_factor"]),1),"weeklyHalfPPR":round(weekly,1),"weeklyPPR":round((rey/10+rp+tdp*6)*mm*float(avail["week_factor"]),1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ppg,1),"ROSpoints":round(ros,1),"teamPassAttemptsPerGame":round(team_pass_baseline,1),"targetShare":None if np.isnan(target_share) else round(target_share,3),"airYardShare":None if np.isnan(air_share) else round(air_share,3),"aDOT":None if np.isnan(adot) else round(adot,1),"rzTargets":int(rz_t),"endzoneTargets":int(ez_t),"deepTargets":int(deep_t),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectedMissedROSGames":avail["ros_missed_games"],"projectionSource":source})
 for _,r in stats.iterrows():
  k=r["k"]
  if k not in ranked: continue
@@ -220,7 +220,7 @@ for tm,grp in by_team.items():
   td=min(.90,float(x["TD"])+add*.025)
   new_base=yd/10+rec*.5+td*6
   x["targets"]=round(new_t,1);x["receptions"]=round(rec,1);x["recYds"]=round(yd,1);x["TD"]=round(td,2)
-  x["weeklyHalfPPR"]=round(new_base*float(x["defenseMultiplier"]),1)
+  x["weeklyHalfPPR"]=round(new_base*float(x["defenseMultiplier"]),1);x["weeklyStandard"]=round((yd/10+td*6)*float(x["defenseMultiplier"]),1);x["weeklyPPR"]=round((yd/10+rec+td*6)*float(x["defenseMultiplier"]),1)
   x["redistributedTargets"]=round(add,1)
 rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
 Path("data/new-wr-projection-preview.json").write_text(json.dumps(rows,indent=2));print(json.dumps(rows[:25],indent=2))
