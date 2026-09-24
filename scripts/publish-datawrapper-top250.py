@@ -46,3 +46,5 @@ req("PATCH",f"/charts/{cid}",meta); pub=req("POST",f"/charts/{cid}/publish")
 print(json.dumps({"chartId":cid,"publicUrl":pub.get("url") or f"https://datawrapper.dwcdn.net/{cid}/"}))
 
 # rerun live-rank sync
+
+# trigger fresh chart publish
