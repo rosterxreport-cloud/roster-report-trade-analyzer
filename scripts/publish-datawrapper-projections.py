@@ -48,3 +48,35 @@ for pos,s in specs.items():
  req("POST",f"/charts/{cid}/publish",b"{}")
  ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":pos.upper(),"chartId":cid,"publicUrl":ch.get("publicUrl"),"metadata":ch.get("metadata"),"theme":ch.get("theme")}))
 cfg.write_text(json.dumps(conf,indent=2)+"\n")
+
+# Combined all-position projection table
+combined=[]
+for pos,s in specs.items():
+ rows=json.loads(Path(s["file"]).read_text())
+ rows=sorted(rows,key=lambda x:float(x.get(s["key"]) or -999),reverse=True)[:s["limit"]]
+ for i,x in enumerate(rows,1):
+  if pos=="qb":
+   std=half=ppr=""
+   four=x.get("weekly4PtPassTD",x.get("weeklyPoints",""));six=x.get("weekly6PtPassTD","")
+  elif pos=="te":
+   std=x.get("standard","");half=x.get("halfPPR","");ppr=x.get("fullPPR","");four=six=""
+  else:
+   std=x.get("weeklyStandard","");half=x.get("weeklyHalfPPR","");ppr=x.get("weeklyPPR","");four=six=""
+  combined.append([pos.upper(),i,x.get("player",""),x.get("team",""),x.get("opponent",""),std,half,ppr,four,six])
+header=["Pos","Pos Rank","Player","Team","Opp","Standard","Half-PPR","PPR","4-Pt Pass TD","6-Pt Pass TD"]
+lines=[",".join(header)]
+for row in combined:
+ vals=[]
+ for v in row:
+  if isinstance(v,float): v=f"{v:.1f}"
+  vals.append(q(v))
+ lines.append(",".join(vals))
+cid=conf.get("all")
+if not cid:
+ ch=req("POST","/charts",json.dumps({"title":"Week 3 Fantasy Football Projections — All Positions","type":"tables"}).encode());cid=ch["id"];conf["all"]=cid
+req("PUT",f"/charts/{cid}/data",("\n".join(lines)+"\n").encode(),"text/csv")
+meta={"describe":{"intro":"The Roster Report model projections for QB, RB, WR and TE. Sort the Position column to group players by position.","byline":"The Roster Report","source-name":"The Roster Report Projection Model","notes":"RB/WR/TE include Standard, Half-PPR and PPR. QB includes 4-point and 6-point passing TD scoring."},"visualize":{"header":{"style":{"bold":True}},"table":{"striped":True,"row-height":"compact","mobile-first":True},"perPage":50,"pagination":True,"searchable":True,"sortTable":True,"columns":{"Pos":{"align":"center","width":"small"},"Pos Rank":{"align":"center","width":"small"},"Player":{"align":"left","bold":True,"width":"large","wrap":False},"Team":{"align":"center","width":"small"},"Opp":{"align":"center","width":"small"}}}}
+req("PATCH",f"/charts/{cid}",json.dumps({"title":"Week 3 Fantasy Football Projections — All Positions","metadata":meta}).encode())
+req("POST",f"/charts/{cid}/publish",b"{}")
+ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":"ALL","chartId":cid,"publicUrl":ch.get("publicUrl")}))
+cfg.write_text(json.dumps(conf,indent=2)+"\n")
