@@ -49,6 +49,31 @@ for pos,s in specs.items():
  ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":pos.upper(),"chartId":cid,"publicUrl":ch.get("publicUrl"),"metadata":ch.get("metadata"),"theme":ch.get("theme")}))
 cfg.write_text(json.dumps(conf,indent=2)+"\n")
 
+# Tableau-ready combined projection export
+tableau_rows=[]
+for pos,s in specs.items():
+ rows=json.loads(Path(s["file"]).read_text())
+ rows=sorted(rows,key=lambda x:float(x.get(s["key"]) or -999),reverse=True)[:s["limit"]]
+ for i,x in enumerate(rows,1):
+  if pos=="qb":
+   std=half=ppr=""
+   four=x.get("weekly4PtPassTD",x.get("weeklyPoints","")); six=x.get("weekly6PtPassTD","")
+  elif pos=="te":
+   std=x.get("standard",""); half=x.get("halfPPR",""); ppr=x.get("fullPPR",""); four=six=""
+  else:
+   std=x.get("weeklyStandard",""); half=x.get("weeklyHalfPPR",""); ppr=x.get("weeklyPPR",""); four=six=""
+  tableau_rows.append({
+   "Week":3,"Position":pos.upper(),"PositionRank":i,"Player":x.get("player",""),"Team":x.get("team",""),"Opponent":x.get("opponent",""),
+   "Standard":std,"HalfPPR":half,"PPR":ppr,"QB4PtPassTD":four,"QB6PtPassTD":six,
+   "PassYards":x.get("passYards",""),"PassTD":x.get("passTD",""),"RushYards":x.get("rushYds",x.get("rushYards","")),
+   "Carries":x.get("carries",""),"Targets":x.get("targets",""),"Receptions":x.get("receptions",""),"ReceivingYards":x.get("recYds",""),"ProjectedTD":x.get("TD","")
+  })
+import csv
+out=Path("data/roster-report-projections-tableau.csv")
+with out.open("w",newline="") as fh:
+ w=csv.DictWriter(fh,fieldnames=list(tableau_rows[0].keys())); w.writeheader(); w.writerows(tableau_rows)
+print(json.dumps({"tableauExport":str(out),"rows":len(tableau_rows)}))
+
 # Combined all-position projection table
 combined=[]
 for pos,s in specs.items():
