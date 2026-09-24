@@ -16,11 +16,11 @@ def q(v):
  return '"'+str(v if v is not None else "").replace('"','""')+'"'
 cfg=Path("data/datawrapper-charts.json")
 # Permanent chart identities used by Roster Report embeds. Never create replacements.
-conf={"qb":"FIj6e"}
+conf={"qb":"FIj6e","rb":"brX2K","wr":"191in","te":"e7NFZ"}
 if cfg.exists():
  saved=json.loads(cfg.read_text())
- saved["qb"]="FIj6e"
- conf=saved
+ conf.update(saved)
+ conf.update({"qb":"FIj6e","rb":"brX2K","wr":"191in","te":"e7NFZ"})
 specs={
  "qb":{"file":"data/new-qb-projection-preview.json","key":"weeklyPoints","limit":32,"title":"Week 3 Fantasy Football QB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyPoints"),("Pass Yds","passYards"),("Pass TD","passTD"),("Rush Yds","rushYards")]},
  "rb":{"file":"data/new-rb-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football RB Rankings — Half PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyHalfPPR"),("Carries","carries"),("Targets","targets"),("Rush Yds","rushYds"),("Rec Yds","recYds"),("TD","TD")]},
@@ -35,7 +35,7 @@ for pos,s in specs.items():
   for label,k in s["cols"]:
    v=x.get(k)
    if label in ("Proj Pts","Proj PPR") and v is not None:
-    try: v=f"{float(v):.1f}" + "\u200b"
+    try: v=f"{float(v):.1f} pts"
     except (TypeError,ValueError): pass
    vals.append(q(v))
   lines.append(",".join([str(i)]+vals))
@@ -43,7 +43,7 @@ for pos,s in specs.items():
  if not cid:
   ch=req("POST","/charts",json.dumps({"title":s["title"],"type":"tables"}).encode());cid=ch["id"];conf[pos]=cid
  req("PUT",f"/charts/{cid}/data",("\n".join(lines)+"\n").encode(),"text/csv")
- meta={"describe":{"intro":"The Roster Report model projections. Updated automatically as injuries, roles and matchups change.","byline":"The Roster Report","source-name":"The Roster Report Projection Model","notes":"Weekly fantasy football projections. Scoring format is shown in the table title."},"visualize":{"dark-mode-invert":True,"header":{"style":{"bold":True}},"table":{"striped":True,"row-height":"compact","mobile-first":True},"columns":{"Rank":{"align":"center","width":"small"},"Player":{"align":"left","bold":True},"Team":{"align":"center","width":"small"},"Opp":{"align":"center","width":"small"},"Proj Pts":{"align":"right","bold":True,"heatmap":True,"number-format":"0.0","type":"text"},"Proj PPR":{"align":"right","bold":True,"heatmap":True,"number-format":"0.0"}},"custom-colors":{"football-blue":"#1261A0","football-yellow":"#F2C94C"}}}
+ meta={"describe":{"intro":"The Roster Report model projections. Updated automatically as injuries, roles and matchups change.","byline":"The Roster Report","source-name":"The Roster Report Projection Model","notes":"Weekly fantasy football projections. Scoring format is shown in the table title."},"visualize":{"dark-mode-invert":True,"header":{"style":{"bold":True}},"table":{"striped":True,"row-height":"compact","mobile-first":True},"columns":{"Rank":{"align":"center","width":"small"},"Player":{"align":"left","bold":True},"Team":{"align":"center","width":"small"},"Opp":{"align":"center","width":"small"},"Proj Pts":{"align":"right","bold":True,"heatmap":True,"number-format":"0.0","type":"text"},"Proj PPR":{"align":"right","bold":True,"heatmap":True,"number-format":"0.0","type":"text"}},"custom-colors":{"football-blue":"#1261A0","football-yellow":"#F2C94C"}}}
  req("PATCH",f"/charts/{cid}",json.dumps({"title":s["title"],"metadata":meta}).encode())
  req("POST",f"/charts/{cid}/publish",b"{}")
  ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":pos.upper(),"chartId":cid,"publicUrl":ch.get("publicUrl")}))
