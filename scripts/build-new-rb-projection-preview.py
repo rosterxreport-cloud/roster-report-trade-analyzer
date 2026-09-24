@@ -111,7 +111,7 @@ for _,r in stats.iterrows():
  ros_points=sum(base*m for m in ros_mults)
  left=len(remaining_opps)
  ros_ppg=(ros_points/left) if left else 0.0
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(ros_mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ros_ppg,1),"ROSpoints":round(ros_points,1)})
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyStandard":round((ry/10+rey/10+tdp*6)*mm,1),"weeklyHalfPPR":round(weekly,1),"weeklyPPR":round((ry/10+rey/10+rp+tdp*6)*mm,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(ros_mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ros_ppg,1),"ROSpoints":round(ros_points,1)})
 # Every ranked RB gets a projection. If current nflverse stats are unavailable,
 # use the locked ranking/role baseline rather than silently dropping the player.
 for k,p in ranked.items():
