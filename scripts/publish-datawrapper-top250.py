@@ -32,3 +32,5 @@ meta={"title":"The Roster Report's 2026 Fantasy Football Rankings","type":"table
 "Half-PPR":{"sortable":True,"align":"center","width":0.15},"Full-PPR":{"sortable":True,"align":"center","width":0.15},"Standard":{"sortable":True,"align":"center","width":0.15}}},"publish":{"embed-width":700,"embed-height":900}}}
 req("PATCH",f"/charts/{cid}",meta); pub=req("POST",f"/charts/{cid}/publish")
 print(json.dumps({"chartId":cid,"publicUrl":pub.get("url") or f"https://datawrapper.dwcdn.net/{cid}/"}))
+
+# rerun live-rank sync
