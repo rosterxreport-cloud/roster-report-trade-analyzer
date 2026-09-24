@@ -75,7 +75,7 @@ jobs:
         if: github.event_name == 'workflow_dispatch'
         env:
           DATAWRAPPER_API_TOKEN: ${{ secrets.DATAWRAPPER_API_TOKEN }}
-        run: python scripts/publish-datawrapper-te.py
+        run: python scripts/publish-datawrapper-projections.py
       - name: Fail-closed validation
         run: python scripts/validate-live-player-data.py && python tests/test-scoring-profiles.py
       - name: Verify My Team and Superflex
