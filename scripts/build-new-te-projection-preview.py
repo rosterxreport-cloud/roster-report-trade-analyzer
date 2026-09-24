@@ -28,6 +28,8 @@ pbp=pd.read_parquet(PBP,columns=cols);pbp=pbp[pbp.season_type.eq("REG")].copy()
 # Team passing volume
 pa=pbp[pbp.pass_attempt.fillna(0).eq(1)];games=pa.groupby("posteam").game_id.nunique();atts=pa.groupby("posteam").pass_attempt.sum();team_pa={team(t):float(atts[t])/max(1,float(games[t])) for t in atts.index}
 # TE-specific defense using receiver IDs mapped from player stats.
+# Build receiver-position map from 2025+2026 player stats so TE defense does not
+# miss players absent from the tiny current-season sample.
 idpos=dict(zip(stats.player_id.astype(str),stats.position));pbp["rpos"]=pbp.receiver_player_id.astype(str).map(idpos)
 te=pbp[pbp.rpos.eq("TE")].groupby("defteam").agg(yards=("receiving_yards","sum"),targets=("pass_attempt","sum")).reset_index();te["ypt"]=te.yards/te.targets.replace(0,np.nan)
 te["bad"]=te.ypt.rank(pct=True).fillna(.5);defmap={team(r.defteam):.90+.20*float(r.bad) for _,r in te.iterrows()}
@@ -46,19 +48,29 @@ for _,r in stats.iterrows():
  targets=float(r.get("targets",0) or 0)/g;rec=float(r.get("receptions",0) or 0)/g;yd=float(r.get("receiving_yards",0) or 0)/g;td=float(r.get("receiving_tds",0) or 0)/g
  share=float(r.get("target_share",np.nan));airshare=float(r.get("air_yards_share",np.nan));air=float(r.get("receiving_air_yards",0) or 0)/g
  adot=air/max(1.,targets);catch=rec/max(.1,targets);ypr=yd/max(.1,rec)
- pr=min(60,int(p["posRank"]));role_share=max(.08,min(.24,.235-(pr-1)*.003))
- share=role_share if pd.isna(share) else .45*share+.55*role_share
+ pr=min(60,int(p["posRank"]));role_share=max(.07,min(.235,.225-(pr-1)*.0028))
+ # Two-game target share is meaningful but noisy. Established TE role remains
+ # the larger component, while genuine 2026 usage changes can still move players.
+ share=role_share if pd.isna(share) else .40*share+.60*role_share
  tp=max(2.,min(10.,share*team_pa.get(tm,32.5)))
  cr=max(.52,min(.78,.45*catch+.55*.68));receptions=tp*cr
- role_ypr=max(8.5,min(12.5,11.8-(pr-1)*.045));pypr=.40*ypr+.60*role_ypr;yards=receptions*pypr
+ role_ypr=max(8.5,min(12.2,11.5-(pr-1)*.04));pypr=.35*ypr+.65*role_ypr;yards=receptions*pypr
  pid=str(r.get("player_id",""));rz=ez=0.
  if pid in o26.index: rz=float(o26.loc[pid,"rz"])/g;ez=float(o26.loc[pid,"ez"])/g
  if not o25.empty and pid in o25.index:
   g25=max(1.,float(o25.loc[pid,"n"])/max(1,float(o25.loc[pid,"n"])/16));rz=.65*(float(o25.loc[pid,"rz"])/16)+.35*rz;ez=.65*(float(o25.loc[pid,"ez"])/16)+.35*ez
- role_td=max(.06,min(.45,.38-(pr-1)*.006));ptd=max(.04,min(.55,.25*td+.45*role_td+.20*rz*.12+.10*ez*.18))
+ role_td=max(.05,min(.38,.34-(pr-1)*.0055))
+ # TE touchdowns are highly volatile through two games; current TD production
+ # gets only 15% weight and the final weekly expectation is capped at 0.45.
+ ptd=max(.03,min(.45,.15*td+.55*role_td+.20*rz*.12+.10*ez*.18))
  wf,status=MANUAL.get(k,availability(p["name"]));mm=float(defmap.get(op,1.0))
  std=(yards*.1+ptd*6)*mm*wf;half=std+receptions*.5*mm*wf;ppr=std+receptions*mm*wf
  rows.append({"player":p["name"],"team":p["team"],"opponent":op,"targets":round(tp,1),"receptions":round(receptions,1),"recYds":round(yards,1),"TD":round(ptd,2),"targetShare":round(share,3),"airYards":round(air,1),"airYardsShare":None if pd.isna(airshare) else round(float(airshare),3),"aDOT":round(adot,1),"rzTargets":round(rz,1),"endzoneTargets":round(ez,1),"defenseMultiplier":round(mm,3),"availabilityStatus":status,"weekAvailability":wf,"standard":round(std,1),"halfPPR":round(half,1),"fullPPR":round(ppr,1),"projectionSource":"2026 usage + 2025 scoring opportunity + role stabilization"})
+# Hard audit guards: unavailable TEs must score zero and no modeled TE may exceed
+# sane weekly opportunity limits during this early-season calibration.
+for x in rows:
+ if float(x["weekAvailability"])==0 and (x["standard"]!=0 or x["halfPPR"]!=0 or x["fullPPR"]!=0): raise SystemExit(f"Unavailable TE projected points: {x}")
+ if x["targets"]>10.0 or x["TD"]>.45: raise SystemExit(f"TE projection exceeds calibration guard: {x}")
 rows.sort(key=lambda x:x["halfPPR"],reverse=True)
 Path("data/new-te-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:30],indent=2))
