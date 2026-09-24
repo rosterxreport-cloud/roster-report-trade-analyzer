@@ -190,10 +190,24 @@ for _,r in q.iterrows():
  base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
  ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"2026 player stats + ranking role"})
+# Confirmed starters without a 2026 sample use a conservative prior pathway.
+# It uses current team pass volume, neutral NFL efficiency baselines, established
+# rushing archetype when known, and the same opponent/injury layers. It never
+# invents 2026 player production.
 for k,p in ranked.items():
  if k in seen or k not in STARTER_KEYS: continue
- # Do not fabricate a detailed stat line for unmatched QBs; expose them as fallback.
- rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opp.get(team(p["team"])),"projectionSource":"ranking-role fallback","weeklyPoints":None})
+ if team(p["team"]) != STARTER_TEAM[k]: continue
+ pt=team(p["team"]);opponent=opp.get(pt);mm=float(defmap.get(opponent,1.0))
+ patt=max(27.,min(39.,team_pass_pg.get(pt,32.5)))
+ pcomp=.635;pypa=7.0;paypa=8.0
+ pcompn=patt*pcomp;pyd=patt*pypa;pair=patt*paypa
+ pptd=patt*.042;pint=patt*.024
+ rp=RUSH_PRIOR.get(k);pcar=(rp["carries"] if rp else 2.5)
+ pry=pcar*4.5;prtd=(rp["rush_td"] if rp else .10)
+ avail=AUTO_AVAILABILITY.get(k,{"week_factor":1.0,"ros_missed_games":0,"status":"ACTIVE","source":"default-active"}).copy();avail.update(PROJECTION_AVAILABILITY.get(k,{}))
+ base=pyd*.04+pptd*4-pint*2+pry*.1+prtd*6;fp=base*mm*float(avail["week_factor"])
+ ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
+ rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"no-2026-sample starter prior"})
 rows.sort(key=lambda x:(x.get("weeklyPoints") is not None,x.get("weeklyPoints") or -999),reverse=True)
 Path("data/new-qb-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:25],indent=2))
