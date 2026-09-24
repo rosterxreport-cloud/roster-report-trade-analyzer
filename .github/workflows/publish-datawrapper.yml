@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/publish-datawrapper.yml'
       - 'scripts/publish-datawrapper-projections.py'
+      - 'scripts/publish-datawrapper-top250.py'
+      - 'players.json'
   workflow_dispatch:
 
 permissions:
@@ -30,4 +32,6 @@ jobs:
       - name: Update and publish permanent Datawrapper charts
         env:
           DATAWRAPPER_API_TOKEN: ${{ secrets.DATAWRAPPER_API_TOKEN }}
-        run: |\n          python scripts/publish-datawrapper-projections.py\n          python scripts/publish-datawrapper-top250.py
+        run: |
+          python scripts/publish-datawrapper-projections.py
+          python scripts/publish-datawrapper-top250.py
