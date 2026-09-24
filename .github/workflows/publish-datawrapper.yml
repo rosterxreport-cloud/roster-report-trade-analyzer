@@ -12,6 +12,8 @@ on:
 permissions:
   contents: read
 
+# Manual runs are supported from the Actions UI via workflow_dispatch.
+
 jobs:
   publish:
     runs-on: ubuntu-latest
