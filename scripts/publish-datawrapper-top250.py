@@ -35,7 +35,7 @@ cols=["Player","Team","Pos","Half-PPR","Full-PPR","Standard"]
 csv=",".join(cols)+"\n"+"\n".join(",".join(q(r.get(k,"")) for k in cols) for r in rows)
 cfg=Path("data/datawrapper-charts.json"); conf=json.loads(cfg.read_text()) if cfg.exists() else {}
 # lock this redesigned Top 250 to the current chart
-cid=conf.get("top250") or "cSE5i"; conf["top250"]=cid; cfg.write_text(json.dumps(conf,indent=2)+"\n")
+cid=req("POST","/charts",{"title":"2026 Fantasy Football Top 250 Rankings","type":"tables","theme":"datawrapper"})["id"]; conf["top250"]=cid; cfg.write_text(json.dumps(conf,indent=2)+"\\n")
 req("PUT",f"/charts/{cid}/data",csv.encode(),raw=True)
 meta={"title":"The Roster Report's 2026 Fantasy Football Rankings","type":"tables","theme":"datawrapper","metadata":{
 "describe":{"intro":"Search any player. Click Half-PPR, Full-PPR, or Standard to sort the Top 250 for that scoring format.","source-name":"The Roster Report Trade Analyzer","byline":"The Roster Report"},
