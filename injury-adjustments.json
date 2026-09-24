@@ -406,6 +406,15 @@
       "expectedReturn": "Active Week 2",
       "updatedAt": "2026-09-20T17:09:14Z"
     },
+    "Jayden Reed": {
+      "availability": 0.0,
+      "workload": 0.0,
+      "longTermRisk": 0.97,
+      "status": "OUT Week 3 - neck",
+      "note": "Ruled out for Week 3 vs Atlanta.",
+      "expectedReturn": "Week 4 or later",
+      "updatedAt": "2026-09-24T23:45:00Z"
+    },
     "Jayden Daniels": {
       "availability": 0.55,
       "workload": 0.7,
