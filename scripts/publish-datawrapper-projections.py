@@ -15,10 +15,10 @@ def req(method,path,data=None,ctype="application/json"):
 def q(v): return '"'+str(v if v is not None else "").replace('"','""')+'"'
 cfg=Path("data/datawrapper-charts.json")
 # Permanent chart identities used by Roster Report embeds. Never create replacements.
-conf={"qb":"FIj6e","rb":"WTSqN","wr":"0bBvX","te":"m4UVe"}
+conf={"qb":"FIj6e"}
 if cfg.exists():
  saved=json.loads(cfg.read_text())
- for pos,cid in conf.items(): saved[pos]=cid
+ saved["qb"]="FIj6e"
  conf=saved
 specs={
  "qb":{"file":"data/new-qb-projection-preview.json","key":"weeklyPoints","limit":32,"title":"Week 3 Fantasy Football QB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyPoints"),("Pass Yds","passYards"),("Pass TD","passTD"),("Rush Yds","rushYards")]},
