@@ -12,7 +12,9 @@ def req(method,path,data=None,ctype="application/json"):
   with urllib.request.urlopen(r,timeout=60) as x:
    b=x.read().decode();return json.loads(b) if b else {}
  except urllib.error.HTTPError as e: raise SystemExit(f"Datawrapper {method} {path} failed: {e.code} {e.read().decode()}")
-def q(v): return '"'+str(v if v is not None else "").replace('"','""')+'"'
+def q(v):
+ if isinstance(v,float): v=f"{v:.1f}"
+ return '"'+str(v if v is not None else "").replace('"','""')+'"'
 cfg=Path("data/datawrapper-charts.json")
 # Permanent chart identities used by Roster Report embeds. Never create replacements.
 conf={"qb":"FIj6e"}
