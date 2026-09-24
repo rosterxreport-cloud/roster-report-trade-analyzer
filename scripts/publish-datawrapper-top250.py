@@ -12,10 +12,22 @@ def req(method,path,data=None,raw=False):
 players=json.loads(Path("players.json").read_text())
 fmts=[("half","Half-PPR"),("ppr","Full-PPR"),("standard","Standard")]
 by={}
+def live_default_rankings(lst):
+ backs=sorted((p for p in lst if p["pos"]=="RB"),key=lambda p:(-p["value"],p["rank"]))
+ rb_rank={p["name"]:i+1 for i,p in enumerate(backs)}
+ adjusted=[]
+ for p in lst:
+  r=rb_rank.get(p["name"],999)
+  premium=.03 if p["pos"]=="RB" and r<=12 else (.015 if p["pos"]=="RB" and r<=24 else 0)
+  q=dict(p); q["_value"]=round(p["value"]*(1+premium),2); q["_baseRank"]=p["rank"]
+  adjusted.append(q)
+ adjusted.sort(key=lambda p:(-p["_value"],p["_baseRank"]))
+ return [(i,p) for i,p in enumerate(adjusted,1)]
+
 for key,label in fmts:
- for p in players[key]:
+ for live_rank,p in live_default_rankings(players[key]):
   n=p["name"]; d=by.setdefault(n,{"Player":n,"Team":p["team"],"Pos":p["pos"]})
-  d[label]=p["rank"]
+  d[label]=live_rank
 # one player per row; include union of ranked players, ordered by Half-PPR
 rows=sorted(by.values(),key=lambda x:(x.get("Half-PPR",9999),x["Player"]))[:250]
 def q(v):return '"'+str(v if v is not None else "").replace('"','""')+'"'
