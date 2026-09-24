@@ -114,3 +114,9 @@ for pos,s in specs.items():
  else: key="weeklyPPR"
  top=sorted(rows,key=lambda x:float(x.get(key) or -999),reverse=True)[:10]
  print("GRAPHIC_TOP10 "+json.dumps({"position":pos.upper(),"scoring":"4PT_PASS_TD" if pos=="qb" else "FULL_PPR","players":[{"player":x.get("player"),"points":x.get(key)} for x in top]}))
+
+# PRIMETIME_AUDIT: expose complete ATL/GB weekly rows for verification.
+for pos,s in specs.items():
+ rows=json.loads(Path(s["file"]).read_text())
+ game=[x for x in rows if str(x.get("team","")).upper() in {"ATL","GB"}]
+ print("PRIMETIME_AUDIT "+json.dumps({"position":pos.upper(),"rows":game}))
