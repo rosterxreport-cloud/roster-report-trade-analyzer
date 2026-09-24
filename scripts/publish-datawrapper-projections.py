@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+import json,os,urllib.request,urllib.error
+from pathlib import Path
+TOKEN=os.environ.get("DATAWRAPPER_API_TOKEN")
+if not TOKEN: raise SystemExit("DATAWRAPPER_API_TOKEN is not configured")
+API="https://api.datawrapper.de/v3"
+def req(method,path,data=None,ctype="application/json"):
+ h={"Authorization":f"Bearer {TOKEN}"}
+ if data is not None:h["Content-Type"]=ctype
+ r=urllib.request.Request(API+path,data=data,headers=h,method=method)
+ try:
+  with urllib.request.urlopen(r,timeout=60) as x:
+   b=x.read().decode();return json.loads(b) if b else {}
+ except urllib.error.HTTPError as e: raise SystemExit(f"Datawrapper {method} {path} failed: {e.code} {e.read().decode()}")
+def q(v): return '"'+str(v if v is not None else "").replace('"','""')+'"'
+cfg=Path("data/datawrapper-charts.json");conf=json.loads(cfg.read_text()) if cfg.exists() else {}
+specs={
+ "qb":{"file":"data/new-qb-projection-preview.json","key":"weeklyPoints","limit":32,"title":"Week 3 Fantasy Football QB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyPoints"),("Pass Yds","passYards"),("Pass TD","passTD"),("Rush Yds","rushYards")]},
+ "rb":{"file":"data/new-rb-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football RB Rankings — Half PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyHalfPPR"),("Carries","carries"),("Targets","targets"),("Rush Yds","rushYds"),("Rec Yds","recYds"),("TD","TD")]},
+ "wr":{"file":"data/new-wr-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football WR Rankings — Half PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyHalfPPR"),("Targets","targets"),("Rec","receptions"),("Yds","recYds"),("TD","TD")]},
+ "te":{"file":"data/new-te-projection-preview.json","key":"fullPPR","limit":25,"title":"Week 3 Fantasy Football TE Rankings — Full PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj PPR","fullPPR"),("Targets","targets"),("Rec","receptions"),("Yds","recYds"),("TD","TD")]}
+}
+for pos,s in specs.items():
+ rows=json.loads(Path(s["file"]).read_text());rows=sorted(rows,key=lambda x:float(x.get(s["key"]) or -999),reverse=True)[:s["limit"]]
+ header=["Rank"]+[x[0] for x in s["cols"]];lines=[",".join(header)]
+ for i,x in enumerate(rows,1): lines.append(",".join([str(i)]+[q(x.get(k)) for _,k in s["cols"]]))
+ cid=conf.get(pos)
+ if not cid:
+  ch=req("POST","/charts",json.dumps({"title":s["title"],"type":"tables"}).encode());cid=ch["id"];conf[pos]=cid
+ req("PUT",f"/charts/{cid}/data",("\n".join(lines)+"\n").encode(),"text/csv")
+ meta={"describe":{"intro":"The Roster Report model projections. Updated automatically as injuries, roles and matchups change.","byline":"The Roster Report","source-name":"The Roster Report Projection Model","notes":"Green + blue Roster Report football projection table."},"visualize":{"header":{"style":{"bold":True}}}}
+ req("PATCH",f"/charts/{cid}",json.dumps({"title":s["title"],"metadata":meta}).encode())
+ req("POST",f"/charts/{cid}/publish",b"{}")
+ ch=req("GET",f"/charts/{cid}");print(json.dumps({"position":pos.upper(),"chartId":cid,"publicUrl":ch.get("publicUrl")}))
+cfg.write_text(json.dumps(conf,indent=2)+"\n")
