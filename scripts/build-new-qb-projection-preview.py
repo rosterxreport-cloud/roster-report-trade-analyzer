@@ -122,15 +122,21 @@ defmap={team(k):v for k,v in defmap.items()}
 # Update this map from current depth charts/injury news before each weekly run.
 WEEK_STARTER={
  "BUF":"Josh Allen","MIA":"Malik Willis","NE":"Drake Maye","NYJ":"Geno Smith",
- "BAL":"Lamar Jackson","CIN":"Joe Burrow","CLE":"Bryce Young","PIT":"Kirk Cousins",
- "HOU":"C.J. Stroud","IND":"Daniel Jones","JAX":"Trevor Lawrence","TEN":"Fernando Mendoza",
- "DEN":"Bo Nix","KC":"Patrick Mahomes","LAC":"Justin Herbert","LV":"Baker Mayfield",
- "DAL":"Dak Prescott","NYG":"Cooper Rush","PHI":"Jalen Hurts","WAS":"Marcus Mariota",
- "CHI":"Tyson Bagent","DET":"Jared Goff","GB":"Jordan Love","MIN":"Carson Wentz",
- "ATL":"Michael Penix Jr.","CAR":"Tyler Shough","NO":"Tyler Shough","TB":"Baker Mayfield",
+ "BAL":"Lamar Jackson","CIN":"Joe Burrow","CLE":"Deshaun Watson","PIT":"Aaron Rodgers",
+ "HOU":"C.J. Stroud","IND":"Daniel Jones","JAX":"Trevor Lawrence","TEN":"Cam Ward",
+ "DEN":"Bo Nix","KC":"Patrick Mahomes","LAC":"Justin Herbert","LV":"Kirk Cousins",
+ "DAL":"Dak Prescott","NYG":"Jameis Winston","PHI":"Jalen Hurts","WAS":"Marcus Mariota",
+ "CHI":"Case Keenum","DET":"Jared Goff","GB":"Jordan Love","MIN":"Kyler Murray",
+ "ATL":"Michael Penix Jr.","CAR":"Bryce Young","NO":"Tyler Shough","TB":"Baker Mayfield",
  "ARI":"Jacoby Brissett","LAR":"Matthew Stafford","SF":"Brock Purdy","SEA":"Drew Lock"
 }
-STARTER_KEYS={key(v) for v in WEEK_STARTER.values()}
+if len(WEEK_STARTER)!=32: raise SystemExit(f"QB starter map must contain 32 teams, got {len(WEEK_STARTER)}")
+_norm=[key(v) for v in WEEK_STARTER.values()]
+if len(set(_norm))!=32:
+ from collections import Counter
+ raise SystemExit(f"Duplicate QB starter assignment: {[n for n,c in Counter(_norm).items() if c>1]}")
+STARTER_TEAM={key(v):t for t,v in WEEK_STARTER.items()}
+STARTER_KEYS=set(STARTER_TEAM)
 db=json.loads(Path("players.json").read_text())["half"]
 ranked={key(p["name"]):p for p in db if p["pos"]=="QB"}
 # QB-level 2026 production comes from nflverse player stats, whose player_id is
@@ -149,7 +155,9 @@ rows=[];seen=set()
 for _,r in q.iterrows():
  k=key(r.get("player_display_name",""))
  if k not in ranked or k not in STARTER_KEYS: continue
- p=ranked[k];seen.add(k);g=max(1.,float(r.get("games",0) or 0))
+ p=ranked[k]
+ if team(p["team"]) != STARTER_TEAM[k]: continue
+ seen.add(k);g=max(1.,float(r.get("games",0) or 0))
  att=float(r.get("attempts",0) or 0)/g;comp=float(r.get("completions",0) or 0)/g;py=float(r.get("passing_yards",0) or 0)/g;ptd=float(r.get("passing_tds",0) or 0)/g;ints=float(r.get("passing_interceptions",0) or 0)/g
  ay=float(r.get("passing_air_yards",0) or 0)/g;ypa=py/max(1.,att);aypa=ay/max(1.,att)
  car=float(r.get("carries",0) or 0)/g;ry=float(r.get("rushing_yards",0) or 0)/g;rtd=float(r.get("rushing_tds",0) or 0)/g
