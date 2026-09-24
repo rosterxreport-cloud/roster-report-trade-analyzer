@@ -22,10 +22,10 @@ if cfg.exists():
  conf.update(saved)
  conf.update({"qb":"FIj6e","rb":"brX2K","wr":"191in","te":"e7NFZ"})
 specs={
- "qb":{"file":"data/new-qb-projection-preview.json","key":"weeklyPoints","limit":32,"title":"Week 3 Fantasy Football QB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyPoints"),("Pass Yds","passYards"),("Pass TD","passTD"),("Rush Yds","rushYards")]},
- "rb":{"file":"data/new-rb-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football RB Rankings — Half PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyHalfPPR"),("Carries","carries"),("Targets","targets"),("Rush Yds","rushYds"),("Rec Yds","recYds"),("TD","TD")]},
- "wr":{"file":"data/new-wr-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football WR Rankings — Half PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj Pts","weeklyHalfPPR"),("Targets","targets"),("Rec","receptions"),("Yds","recYds"),("TD","TD")]},
- "te":{"file":"data/new-te-projection-preview.json","key":"fullPPR","limit":25,"title":"Week 3 Fantasy Football TE Rankings — Full PPR","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Proj PPR","fullPPR"),("Targets","targets"),("Rec","receptions"),("Yds","recYds"),("TD","TD")]}
+ "qb":{"file":"data/new-qb-projection-preview.json","key":"weeklyPoints","limit":32,"title":"Week 3 Fantasy Football QB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Standard","weeklyPoints"),("Half-PPR","weeklyPoints"),("PPR","weeklyPoints"),("Pass Yds","passYards"),("Pass TD","passTD"),("Rush Yds","rushYards")]},
+ "rb":{"file":"data/new-rb-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football RB Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Standard","weeklyStandard"),("Half-PPR","weeklyHalfPPR"),("PPR","weeklyPPR"),("Carries","carries"),("Targets","targets"),("Rush Yds","rushYds"),("Rec Yds","recYds"),("TD","TD")]},
+ "wr":{"file":"data/new-wr-projection-preview.json","key":"weeklyHalfPPR","limit":50,"title":"Week 3 Fantasy Football WR Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Standard","weeklyStandard"),("Half-PPR","weeklyHalfPPR"),("PPR","weeklyPPR"),("Targets","targets"),("Rec","receptions"),("Yds","recYds"),("TD","TD")]},
+ "te":{"file":"data/new-te-projection-preview.json","key":"halfPPR","limit":25,"title":"Week 3 Fantasy Football TE Rankings","cols":[("Player","player"),("Team","team"),("Opp","opponent"),("Standard","standard"),("Half-PPR","halfPPR"),("PPR","fullPPR"),("Targets","targets"),("Rec","receptions"),("Yds","recYds"),("TD","TD")]}
 }
 for pos,s in specs.items():
  rows=json.loads(Path(s["file"]).read_text());rows=sorted(rows,key=lambda x:float(x.get(s["key"]) or -999),reverse=True)[:s["limit"]]
@@ -34,7 +34,7 @@ for pos,s in specs.items():
   vals=[]
   for label,k in s["cols"]:
    v=x.get(k)
-   if label in ("Proj Pts","Proj PPR") and v is not None:
+   if label in ("Standard","Half-PPR","PPR","Proj Pts","Proj PPR") and v is not None:
     try: v=f"{float(v):.1f} pts"
     except (TypeError,ValueError): pass
    vals.append(q(v))
