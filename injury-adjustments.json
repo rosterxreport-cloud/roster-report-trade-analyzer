@@ -65,8 +65,8 @@
       "updatedAt": "2026-09-20T01:02:09Z"
     },
     "Michael Penix Jr.": {
-      "availability": 1.0,
-      "workload": 1.0,
+      "availability": 1,
+      "workload": 1,
       "longTermRisk": 0.97,
       "status": "ACTIVE Week 3 - full practice, no designation",
       "note": "Penix remains out for Week 2, but Sunday reporting says he is close to returning and could make his 2026 debut Thursday night in Week 3 against Green Bay. He practiced fully throughout Week 2 preparation, materially improving the near-term return outlook.",
@@ -128,13 +128,13 @@
       "updatedAt": "2026-09-17T17:37:01Z"
     },
     "Josh Jacobs": {
-      "availability": 0.55,
-      "workload": 1,
+      "availability": 0,
+      "workload": 0,
       "longTermRisk": 0.98,
-      "status": "Unavailable - Commissioner/Exempt status",
-      "note": "Currently unavailable to play because of an off-field league status with no established football return date. This adjustment reflects availability uncertainty, not injury performance risk.",
+      "status": "OUT Week 3 - Commissioner Exempt",
+      "note": "Remains on the NFL Commissioner's Exempt List and cannot practice or play. Zero weekly availability vs Atlanta.",
       "expectedReturn": "Unknown",
-      "updatedAt": "2026-09-10T13:58:00Z"
+      "updatedAt": "2026-09-24T23:55:00Z"
     },
     "Brock Bowers": {
       "availability": 0.68,
@@ -407,8 +407,8 @@
       "updatedAt": "2026-09-20T17:09:14Z"
     },
     "Jayden Reed": {
-      "availability": 0.0,
-      "workload": 0.0,
+      "availability": 0,
+      "workload": 0,
       "longTermRisk": 0.97,
       "status": "OUT Week 3 - neck",
       "note": "Ruled out for Week 3 vs Atlanta.",
