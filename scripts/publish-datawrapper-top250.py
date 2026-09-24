@@ -38,9 +38,9 @@ cfg=Path("data/datawrapper-charts.json"); conf=json.loads(cfg.read_text()) if cf
 cid=conf.get("top250") or "I2vHY"; conf["top250"]=cid; cfg.write_text(json.dumps(conf,indent=2)+"\\n")
 req("PUT",f"/charts/{cid}/data",csv.encode(),raw=True)
 meta={"title":"The Roster Report's 2026 Fantasy Football Rankings","type":"tables","theme":"datawrapper","metadata":{"autoDarkMode":False,"darkModeInvert":False,
-"describe":{"intro":"Search any player. Click Half-PPR, Full-PPR, or Standard to sort the Top 250 for that scoring format.","source-name":"The Roster Report Trade Analyzer","byline":"The Roster Report"},
+"describe":{"intro":"Search any player. Sort by position or click Half-PPR, Full-PPR, or Standard to reorder the Top 250.","source-name":"The Roster Report Trade Analyzer","byline":"The Roster Report"},
 "visualize":{"background":"#ffffff","perPage":25,"pagination":True,"searchable":True,"striped":False,"compact":True,"sortTable":True,"sortBy":"Half-PPR","sortDirection":"asc","columns":{
-"Player":{"sortable":True,"bold":True,"width":0.36},"Team":{"sortable":True,"width":0.10},"Pos":{"sortable":True,"bold":True,"width":0.09},
+"Player":{"sortable":True,"bold":True,"width":0.36},"Team":{"sortable":True,"width":0.10},"Pos":{"sortable":True,"bold":True,"width":0.09,"filterable":True},
 "Half-PPR":{"sortable":True,"align":"center","width":0.15},"Full-PPR":{"sortable":True,"align":"center","width":0.15},"Standard":{"sortable":True,"align":"center","width":0.15}}},"publish":{"embed-width":700,"embed-height":900}}}
 req("PATCH",f"/charts/{cid}",meta); pub=req("POST",f"/charts/{cid}/publish")
 print(json.dumps({"chartId":cid,"publicUrl":pub.get("url") or f"https://datawrapper.dwcdn.net/{cid}/"}))
