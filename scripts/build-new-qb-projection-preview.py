@@ -130,15 +130,18 @@ WEEK_STARTER={
  "ATL":"Michael Penix Jr.","CAR":"Bryce Young","NO":"Tyler Shough","TB":"Baker Mayfield",
  "ARI":"Jacoby Brissett","LAR":"Matthew Stafford","SF":"Brock Purdy","SEA":"Drew Lock"
 }
-if len(WEEK_STARTER)!=32: raise SystemExit(f"QB starter map must contain 32 teams, got {len(WEEK_STARTER)}")
+if set(WEEK_STARTER)!=set(EXPECTED_WEEK3):
+ raise SystemExit(f"QB starter teams do not equal Week 3 schedule teams: missing={set(EXPECTED_WEEK3)-set(WEEK_STARTER)}, extra={set(WEEK_STARTER)-set(EXPECTED_WEEK3)}")
 _norm=[key(v) for v in WEEK_STARTER.values()]
-if len(set(_norm))!=32:
- from collections import Counter
- raise SystemExit(f"Duplicate QB starter assignment: {[n for n,c in Counter(_norm).items() if c>1]}")
-STARTER_TEAM={key(v):t for t,v in WEEK_STARTER.items()}
-STARTER_KEYS=set(STARTER_TEAM)
+if len(WEEK_STARTER)!=32 or len(set(_norm))!=32: raise SystemExit("QB starter map must contain 32 unique teams/QBs")
+STARTER_TEAM={key(v):t for t,v in WEEK_STARTER.items()};STARTER_KEYS=set(STARTER_TEAM)
 db=json.loads(Path("players.json").read_text())["half"]
 ranked={key(p["name"]):p for p in db if p["pos"]=="QB"}
+# Starter profiles are independent of trade-rank inclusion. If a confirmed starter
+# is absent from players.json, create a neutral profile solely for weekly projection.
+for _t,_name in WEEK_STARTER.items():
+ _k=key(_name)
+ if _k not in ranked: ranked[_k]={"name":_name,"team":_t,"pos":"QB","posRank":32}
 # QB-level 2026 production comes from nflverse player stats, whose player_id is
 # the canonical GSIS key and player_display_name is the full name. This avoids
 # brittle matching against abbreviated PBP passer names.
@@ -209,5 +212,10 @@ for k,p in ranked.items():
  ros_opps=schedule_by_team.get(pt,[]);mults=[float(defmap.get(o,1.0)) for o in ros_opps];rosppg=base*(sum(mults)/len(mults) if mults else 1)
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"passAttempts":round(patt,1),"completions":round(pcompn,1),"passYards":round(pyd,1),"passTD":round(pptd,2),"INT":round(pint,2),"yardsPerAttempt":round(pypa,2),"airYards":round(pair,1),"airYardsPerAttempt":round(paypa,2),"carries":round(pcar,1),"rushYards":round(pry,1),"rushTD":round(prtd,2),"weeklyPoints":round(fp,1),"ROSpointsPerGame":round(rosppg,1),"availabilityStatus":avail["status"],"weekAvailability":avail["week_factor"],"projectionSource":"no-2026-sample starter prior"})
 rows.sort(key=lambda x:(x.get("weeklyPoints") is not None,x.get("weeklyPoints") or -999),reverse=True)
+# Weekly output must be exactly one record per team. Fail loudly rather than
+# silently publish an incomplete/duplicated quarterback slate.
+_outteams=[team(x["team"]) for x in rows]
+if len(rows)!=32 or len(set(_outteams))!=32 or set(_outteams)!=set(WEEK_STARTER):
+ raise SystemExit(f"QB projection integrity failure: rows={len(rows)} uniqueTeams={len(set(_outteams))} missing={set(WEEK_STARTER)-set(_outteams)}")
 Path("data/new-qb-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:25],indent=2))
