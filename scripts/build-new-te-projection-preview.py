@@ -22,7 +22,7 @@ def availability(name):
  if "DOUBTFUL" in s:return min(.25,a*w),s
  return max(0.,min(1.,a*w)),s
 # Official Week 3 known TE overrides; automatic injury file remains primary.
-MANUAL={"georgekittle":(0.0,"OUT WEEK 3 - HAMSTRING (3-5 WEEK EXPECTED ABSENCE)"),"oscardelp":(0.0,"OUT - HAMSTRING"),"charliekolar":(0.0,"OUT - FOREARM"),"davidnjoku":(0.0,"IR")}
+MANUAL={"georgekittle":(0.0,"OUT WEEK 3 - HAMSTRING (3-5 WEEK EXPECTED ABSENCE)"),"oscardelp":(0.0,"OUT - HAMSTRING"),"charliekolar":(0.0,"OUT WEEK 3 - FOREARM"),"davidnjoku":(0.0,"IR")}
 cols=["game_id","season_type","posteam","defteam","pass_attempt","complete_pass","yardline_100","receiver_player_id","receiving_yards","air_yards"]
 pbp=pd.read_parquet(PBP,columns=cols);pbp=pbp[pbp.season_type.eq("REG")].copy()
 # Team passing volume
@@ -71,6 +71,35 @@ for _,r in stats.iterrows():
 for x in rows:
  if float(x["weekAvailability"])==0 and (x["standard"]!=0 or x["halfPPR"]!=0 or x["fullPPR"]!=0): raise SystemExit(f"Unavailable TE projected points: {x}")
  if x["targets"]>10.0 or x["TD"]>.45: raise SystemExit(f"TE projection exceeds calibration guard: {x}")
+# Redistribute only a conservative portion of unavailable TE opportunity to
+# active same-team TEs. TE injuries also shift work to WR/RB/personnel changes,
+# so this is deliberately not a one-for-one target transfer.
+by_team={}
+for x in rows: by_team.setdefault(team(x["team"]),[]).append(x)
+for tm,grp in by_team.items():
+ unavailable=[x for x in grp if float(x["weekAvailability"])<1.0]
+ active=[x for x in grp if float(x["weekAvailability"])>=1.0]
+ if not unavailable or not active: continue
+ vacated=sum(float(x["targets"])*(1.0-float(x["weekAvailability"])) for x in unavailable)
+ pool=vacated*.40
+ denom=sum(max(1.,float(x["targets"])) for x in active)
+ for x in active:
+  add=min(2.0,pool*max(1.,float(x["targets"]))/denom)
+  old=max(.1,float(x["targets"]));scale=(old+add)/old
+  x["targets"]=round(old+add,1);x["receptions"]=round(float(x["receptions"])*scale,1);x["recYds"]=round(float(x["recYds"])*scale,1)
+  x["TD"]=round(min(.45,float(x["TD"])+add*.025),2)
+  mm=float(x["defenseMultiplier"]);wf=float(x["weekAvailability"]);std=(float(x["recYds"])*.1+float(x["TD"])*6)*mm*wf
+  x["standard"]=round(std,1);x["halfPPR"]=round(std+float(x["receptions"])*.5*mm*wf,1);x["fullPPR"]=round(std+float(x["receptions"])*mm*wf,1)
+  x["injuryOpportunityTargetsAdded"]=round(add,1)
+# If a current roster TE is absent from 2026 stats, add a conservative role
+# projection so injury-created starters such as Oronde Gadsden are not omitted.
+for k,p in ranked.items():
+ if any(key(x["player"])==k for x in rows): continue
+ tm=team(p["team"]);op=EXPECTED.get(tm)
+ if not op: continue
+ wf,status=MANUAL.get(k,availability(p["name"]));pr=min(60,int(p["posRank"]));share=max(.07,min(.20,.19-(pr-1)*.0025));tp=max(2.,min(8.,share*team_pa.get(tm,32.5)))
+ rec=tp*.64;yd=rec*max(8.5,11.0-(pr-1)*.04);td=max(.04,min(.30,.27-(pr-1)*.004));mm=float(defmap.get(op,1.0));std=(yd*.1+td*6)*mm*wf
+ rows.append({"player":p["name"],"team":p["team"],"opponent":op,"targets":round(tp,1),"receptions":round(rec,1),"recYds":round(yd,1),"TD":round(td,2),"targetShare":round(share,3),"airYards":None,"airYardsShare":None,"aDOT":None,"rzTargets":None,"endzoneTargets":None,"defenseMultiplier":round(mm,3),"availabilityStatus":status,"weekAvailability":wf,"standard":round(std,1),"halfPPR":round(std+rec*.5*mm*wf,1),"fullPPR":round(std+rec*mm*wf,1),"projectionSource":"current-roster TE role fallback"})
 rows.sort(key=lambda x:x["halfPPR"],reverse=True)
 Path("data/new-te-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:30],indent=2))
