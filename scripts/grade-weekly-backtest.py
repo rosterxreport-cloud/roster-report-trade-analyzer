@@ -78,6 +78,10 @@ if rows:
   for (pos,fmt),g in allm.melt(id_vars=[x for x in allm.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in allm],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["position_actual","fmt"]):
    e=pd.to_numeric(g.err,errors="coerce").dropna().abs()
    hitrows.append({"position":pos,"format":fmt,"n":len(e),"within_1_pct":100*(e<=1).mean(),"within_3_pct":100*(e<=3).mean(),"within_6_pct":100*(e<=6).mean(),"over_6_pct":100*(e>6).mean()})
+  # Add week-specific hit rates using the exact same thresholds.
+  for (wk,pos,fmt),g in allm.melt(id_vars=[x for x in allm.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in allm],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["backtest_week","position_actual","fmt"]):
+   e=pd.to_numeric(g.err,errors="coerce").dropna().abs()
+   hitrows.append({"week":wk,"position":pos,"format":fmt,"n":len(e),"within_1_pct":100*(e<=1).mean(),"within_3_pct":100*(e<=3).mean(),"within_6_pct":100*(e<=6).mean(),"over_6_pct":100*(e>6).mean()})
   hr=pd.DataFrame(hitrows);hr.to_csv(OUT/"fantasy_point_hit_rates.csv",index=False);print("\nFANTASY POINT HIT RATES +/-1 / +/-3 / +/-6\n",hr.to_string(index=False))
   if "ppr_abs_error" in rb:
    cols=[x for x in ["backtest_week","player_proj","team","role_bucket","ppr_projection","ppr_actual","ppr_error","ppr_abs_error","carries_proj","carries_actual","targets_proj","targets_actual"] if x in rb]
