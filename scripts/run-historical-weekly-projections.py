@@ -81,24 +81,43 @@ def defense_multipliers(week):
  except Exception as ex:
   print("Historical defense neutral fallback:",ex);return {}
 def constrain_rb_team(rows):
- # Preserve each RB's efficiency/TD assumptions; constrain only opportunity to a realistic team pool.
+ # V4: team-level RB opportunity budget + role-aware allocation.
  by={}
  for r in rows:
   if r["position"]=="RB":by.setdefault(r["team"],[]).append(r)
  for tm,rs in by.items():
-  # Current early-season structure: roughly 24 RB carries and 7 RB targets per team.
-  # Scale only downward; never manufacture opportunity.
-  c=sum(r.get("carries",0) for r in rs); t=sum(r.get("targets",0) for r in rs)
-  cm=min(1.,24.0/c) if c>0 else 1.; tmul=min(1.,7.0/t) if t>0 else 1.
+  # Preserve V3 team pools, but allocate by role instead of proportional scaling.
+  # Role score blends frozen player prior, pre-week usage and receiving involvement.
+  cpool=min(24.0,sum(max(0.,r.get("carries",0)) for r in rs))
+  tpool=min(7.0,sum(max(0.,r.get("targets",0)) for r in rs))
   for r in rs:
-   r["rb_carry_pool_multiplier"]=cm;r["rb_target_pool_multiplier"]=tmul
-   # Rebuild fantasy scoring from the already projected per-opportunity efficiencies.
+   prior=max(1.,float(r.get("_role_prior",50)))
+   livec=max(0.,float(r.get("_pre_carries",0)));livet=max(0.,float(r.get("_pre_targets",0)))
+   # Early season: frozen role remains important; actual usage gains influence immediately.
+   r["_carry_role_score"]=(prior**1.25)*(1+.12*livec)
+   r["_target_role_score"]=(prior**1.10)*(1+.22*livet)
+  cs=sum(r["_carry_role_score"] for r in rs);ts=sum(r["_target_role_score"] for r in rs)
+  for r in rs:
    oldc=r.get("carries",0);oldt=r.get("targets",0)
-   newc=oldc*cm;newt=oldt*tmul
-   ypc=r.get("rush_yards",0)/oldc if oldc else 0; rutdr=r.get("rush_tds",0)/oldc if oldc else 0
+   # Do not create more opportunity than the unconstrained player projection.
+   newc=min(oldc,cpool*r["_carry_role_score"]/cs) if cs else 0.
+   newt=min(oldt,tpool*r["_target_role_score"]/ts) if ts else 0.
+   # Redistribute unused pool once to backs with remaining modeled capacity.
+   r["_newc"]=newc;r["_newt"]=newt
+  for fld,pool,capfld,scorefld in [("_newc",cpool,"carries","_carry_role_score"),("_newt",tpool,"targets","_target_role_score")]:
+   left=pool-sum(r[fld] for r in rs); elig=[r for r in rs if r[fld]+1e-9<r.get(capfld,0)]
+   den=sum(r[scorefld] for r in elig)
+   if left>0 and den>0:
+    for r in elig:r[fld]+=min(r.get(capfld,0)-r[fld],left*r[scorefld]/den)
+  for r in rs:
+   newc,newt=r.pop("_newc"),r.pop("_newt")
+   oldc,oldt=r.get("carries",0),r.get("targets",0)
+   ypc=r.get("rush_yards",0)/oldc if oldc else 0;rutdr=r.get("rush_tds",0)/oldc if oldc else 0
    cr=r.get("receptions",0)/oldt if oldt else 0;ypt=r.get("rec_yards",0)/oldt if oldt else 0;rtdr=r.get("rec_tds",0)/oldt if oldt else 0
-   rec=newt*cr; std=newc*ypc*.1+newc*rutdr*6+newt*ypt*.1+newt*rtdr*6
+   rec=newt*cr;std=newc*ypc*.1+newc*rutdr*6+newt*ypt*.1+newt*rtdr*6
    r.update(carries=newc,rush_yards=newc*ypc,rush_tds=newc*rutdr,targets=newt,receptions=rec,rec_yards=newt*ypt,rec_tds=newt*rtdr,standard_projection=std,half_projection=std+.5*rec,ppr_projection=std+rec)
+   r["rb_role_allocation"]="V4_ROLE_AWARE"
+   for z in ["_carry_role_score","_target_role_score","_role_prior","_pre_carries","_pre_targets"]:r.pop(z,None)
  return rows
 def project_from_usage(pos,p,ud,td):
  # Historical replay of the current model's early-season opportunity + efficiency structure.
@@ -151,7 +170,8 @@ for week in (1,2):
   mm=float(def_mult.get(x["opponent"].get(team(p.get("team"))),1.0));standard*=mm;half*=mm;ppr*=mm
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V3_TEAM_CONSTRAINED_RB","availability_factor":round(af,3),"historical_status":status,**{z:round(v,3) for z,v in raw.items()}})
+  raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V4_ROLE_AWARE_RB","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} V2 projections")
