@@ -181,8 +181,8 @@ def apply_rb_fp_experiment(rows,week):
    em={z.k:z for _,z in ed.iterrows()}; ex=em.get(key(str(r["player"]).split()[-1]))
    if ex is not None:
     er=(float(ex.explosive15)+2*.08)/(float(ex.attempts)+2)
-    for wt in (.05,.10,.15,.20):
-     mult=max(.92,min(1.08,1+wt*(er/.08-1)))
+    for wt in (.10,.125,.15,.175,.20,.225,.25):
+     mult=max(.90,min(1.10,1+wt*(er/.08-1)))
      r[f"rb_fp_recxtd_hi16_expl_{int(wt*100)}"]=round((xtdbase*.84 if (xtdbase>=13 and opp>=16) else xtdbase)*mult,3)
   high=(xtdbase>=13.0 and opp>=16.0)
   for pct in (5,10,12,14,15,16,18,20):
