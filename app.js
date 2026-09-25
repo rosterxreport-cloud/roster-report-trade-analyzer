@@ -310,7 +310,7 @@ function initTeam(){
   catch{teamNotice='Saved team could not be loaded. You can still use My Team for this visit.';}
   if(team)format=team.scoring;
   const style=document.createElement('style');
-  style.textContent=`.team-section{margin-top:28px;padding:22px;border:1px solid var(--line);background:#081a2f}.team-section h2{margin:0 0 10px}.team-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin:18px 0}.team-settings label{display:grid;gap:6px;font-size:14px;color:#c6d8e9}.team-section select{width:100%;padding:12px;background:#04111f;border:2px solid #2a5276;color:white;font-size:16px}.team-action{padding:11px 14px;background:var(--yellow);border:0;color:var(--navy);font-weight:800;cursor:pointer}.team-action:focus-visible,.team-section select:focus-visible{outline:2px solid white;outline-offset:3px}.team-add{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.team-add input{flex:1;min-width:180px}.team-roster{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.team-chip{padding:9px;background:#0b2743;border:1px solid var(--line);color:var(--cream);cursor:pointer;font-size:14px}.team-note{font-size:14px;line-height:1.6;color:#b8cce0}.fit-table{width:100%;border-collapse:collapse;font-size:14px}.fit-table th,.fit-table td{padding:10px;text-align:left;border-bottom:1px solid var(--line)}.team-fit{margin-top:24px}.team-fit li{margin:8px 0}.team-fit h3{color:var(--yellow)}@media(max-width:500px){.team-section{padding:16px}.fit-table th,.fit-table td{padding:7px 4px;font-size:13px}}`;
+  style.textContent=`.team-section{margin-top:28px;padding:22px;border:1px solid var(--line);background:#081a2f}.team-section h2{margin:0 0 10px}.team-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin:18px 0}.team-settings label{display:grid;gap:6px;font-size:14px;color:#c6d8e9}.team-section select{width:100%;padding:12px;background:#04111f;border:2px solid #2a5276;color:white;font-size:16px}.team-action{padding:11px 14px;background:var(--yellow);border:0;color:var(--navy);font-weight:800;cursor:pointer}.team-action:focus-visible,.team-section select:focus-visible{outline:2px solid white;outline-offset:3px}.team-add{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.team-add input{flex:1;min-width:180px}.team-roster{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.team-chip{padding:9px;background:#0b2743;border:1px solid var(--line);color:var(--cream);cursor:pointer;font-size:14px}.team-note{font-size:14px;line-height:1.6;color:#b8cce0}.fit-table{width:100%;border-collapse:collapse;font-size:14px}.fit-table th,.fit-table td{padding:10px;text-align:left;border-bottom:1px solid var(--line)}.team-fit{margin-top:24px}.team-fit li{margin:8px 0}.team-fit h3{color:var(--yellow)}.sleeper-import{margin:18px 0;padding:16px;border:1px solid var(--line);background:#061525}.sleeper-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.sleeper-row input,.sleeper-row select{flex:1;min-width:210px}.sleeper-row[hidden]{display:none}.sleeper-import .kicker{margin-bottom:4px}.league-rosters{margin-top:18px}.league-roster-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-top:12px}.league-roster-card{padding:14px;border:1px solid var(--line);background:#07192b}.league-roster-card.mine{border-color:var(--yellow)}.league-roster-card h4{margin:0 0 8px;color:var(--yellow)}.league-roster-card p{margin:5px 0}.league-roster-players{font-size:13px;line-height:1.5;color:#c6d8e9}.league-roster-actions{display:flex;gap:8px;margin-top:12px}.league-roster-actions button{flex:1}.trade-finder-list{display:grid;gap:12px;margin-top:12px}.trade-idea{padding:14px;border:1px solid var(--line);background:#07192b}.trade-idea-head{display:flex;justify-content:space-between;gap:12px;align-items:start}.trade-idea h4{margin:0;color:var(--yellow)}.trade-idea-score{font-weight:900;color:var(--green)}.trade-idea-sides{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.trade-idea-side{padding:10px;background:#0b2743}.trade-idea-side b{display:block;margin-bottom:5px}.secondary-action{padding:9px;border:1px solid var(--line);background:#0b2743;color:var(--cream);font-weight:800;cursor:pointer}@media(max-width:500px){.team-section{padding:16px}.fit-table th,.fit-table td{padding:7px 4px;font-size:13px}}`;
   document.head.appendChild(style);
   const section=document.createElement('section');section.className='team-section';section.id='my-team';section.setAttribute('aria-labelledby','teamTitle');
   section.innerHTML=`<h2 id="teamTitle">My Team</h2><p class="team-note">Save your roster and league settings to see how trades affect your starting lineup and depth. Saved on this browser only; clearing browser data removes your team.</p>
@@ -318,6 +318,14 @@ function initTeam(){
     ${Object.entries(SLOT_DEFAULTS).map(([p,n])=>`<label>${p==='SF'?'Superflex (SF)':p}<input id="slot${p}" type="number" min="0" max="6" value="${n}" required></label>`).join('')}<label>Bench<input id="teamBench" type="number" min="0" max="20" value="6" required></label></div>
     <p class="team-note">FLEX accepts RB, WR or TE. Superflex (SF) accepts QB, RB, WR or TE only; kickers and D/ST are never Superflex eligible. Save with SF above zero to apply increased QB scarcity values throughout the analyzer and rankings. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 0 SF, 0 K, 0 D/ST, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
     <p id="scarcityStatus" class="team-note" role="status"></p>
+    <div class="sleeper-import">
+      <div class="kicker">IMPORT FROM SLEEPER</div>
+      <div class="sleeper-row"><input id="sleeperUsername" autocomplete="off" placeholder="Sleeper username" aria-label="Sleeper username"><button id="sleeperFind" class="team-action" type="button">Find leagues</button></div>
+      <div id="sleeperLeagueRow" class="sleeper-row" hidden><select id="sleeperLeague" aria-label="Choose Sleeper league"></select><button id="sleeperImport" class="team-action" type="button">Import roster</button></div>
+      <p id="sleeperStatus" class="team-note" role="status">Enter your Sleeper username to import your 2026 roster and league settings.</p>
+      <div id="leagueRosters" class="league-rosters"></div>
+      <div id="tradeFinder" class="league-rosters"></div>
+    </div>
     <form class="team-add" id="teamAdd"><input id="rosterSearch" list="rosterOptions" autocomplete="off" placeholder="Search a roster player…" aria-label="Player to add to My Team" required><datalist id="rosterOptions"></datalist><button class="team-action" type="submit">Add player</button></form>
     <p class="team-note">Players are limited to the current Top 250 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;
   document.querySelector('.trade-grid').before(section);
@@ -325,6 +333,7 @@ function initTeam(){
   const fit=document.createElement('section');fit.id='teamFit';fit.className='team-section team-fit';fit.setAttribute('aria-label','Roster fit analysis');$('resultPanel').after(fit);
   if(team){$('teamLeague').value=team.leagueSize;$('teamBench').value=team.bench;for(const p of Object.keys(SLOT_DEFAULTS))$('slot'+p).value=team.slots[p];}
   $('teamScoring').value=format;
+  bindSleeperImport();
   $('teamSettings').addEventListener('submit',e=>{e.preventDefault();if(!readTeamSettings())return;saveTeam();render();});
   $('teamAdd').addEventListener('submit',e=>{
     e.preventDefault();const name=$('rosterSearch').value.trim(),p=players().find(p=>p.name.toLowerCase()===name.toLowerCase());
@@ -336,6 +345,169 @@ function initTeam(){
   });
   $('teamRoster').addEventListener('click',e=>{const button=e.target.closest('button[data-player]');if(!button||!team)return;team.roster=team.roster.filter(n=>n!==button.dataset.player);saveTeam();render();});
 }
+
+let sleeperImportUser=null,sleeperImportLeagues=[],sleeperLeagueTeams=[];
+async function sleeperJson(url){
+  const r=await fetch(url);
+  if(!r.ok)throw new Error(r.status===404?'Not found':`Sleeper request failed (${r.status})`);
+  return r.json();
+}
+function sleeperScoringFormat(settings={}){
+  const rec=Number(settings.rec||0);
+  return rec>=.75?'ppr':rec>=.25?'half':'standard';
+}
+function sleeperSlots(positions=[]){
+  const slots={...SLOT_DEFAULTS};for(const k of Object.keys(slots))slots[k]=0;
+  let bench=0;
+  for(const raw of positions){
+    const p=String(raw).toUpperCase();
+    if(p==='BN')bench++;
+    else if(p==='SUPER_FLEX')slots.SF++;
+    else if(p==='FLEX')slots.FLEX++;
+    else if(p==='DEF')slots.DST++;
+    else if(Object.hasOwn(slots,p))slots[p]++;
+  }
+  return {slots,bench};
+}
+function applySleeperScoring(settings={}){
+  format=sleeperScoringFormat(settings);
+  scoringSettings=normalizeScoringSettings({
+    ...SCORING_DEFAULTS,
+    passTd:Number(settings.pass_td??SCORING_DEFAULTS.passTd),
+    passYard:Number(settings.pass_yd??SCORING_DEFAULTS.passYard),
+    rushTd:Number(settings.rush_td??SCORING_DEFAULTS.rushTd),
+    receiveTd:Number(settings.rec_td??SCORING_DEFAULTS.receiveTd),
+    rushFirstDown:Number(settings.rush_fd??SCORING_DEFAULTS.rushFirstDown),
+    receiveFirstDown:Number(settings.rec_fd??SCORING_DEFAULTS.receiveFirstDown)
+  });
+  writeScoringInputs();saveScoringSettings();
+}
+function sleeperPlayerName(id,nflPlayers,db){
+  if(/^[A-Z]{2,3}$/.test(String(id))){
+    const dst=db.find(p=>p.pos==='DST'&&p.team===id);if(dst)return dst.name;
+  }
+  const sp=nflPlayers[id],full=sp?[sp.first_name,sp.last_name].filter(Boolean).join(' ').trim():'';
+  return db.find(p=>p.name.toLowerCase()===full.toLowerCase())?.name||null;
+}
+function rosterPositionNeed(names,database){
+  const ps=names.map(n=>database.find(p=>p.name===n)).filter(Boolean);
+  const score={QB:0,RB:0,WR:0,TE:0};
+  const desired={QB:Math.max(1,team?.slots?.QB||1),RB:Math.max(2,team?.slots?.RB||2),WR:Math.max(2,team?.slots?.WR||2),TE:Math.max(1,team?.slots?.TE||1)};
+  for(const pos of Object.keys(score)){
+    const vals=ps.filter(p=>p.pos===pos).sort((a,b)=>b.value-a.value);
+    const starters=vals.slice(0,desired[pos]);
+    const avg=starters.length?starters.reduce((s,p)=>s+p.value,0)/starters.length:0;
+    score[pos]=(desired[pos]-Math.min(desired[pos],vals.length))*35+Math.max(0,80-avg);
+  }
+  return score;
+}
+function generateSleeperTradeIdeas(){
+  if(!team||!team.roster.length||!sleeperLeagueTeams.length)return [];
+  const db=players(),mine=team.roster.map(findPlayer).filter(Boolean);
+  const myNeeds=rosterPositionNeed(team.roster,db),ideas=[];
+  const givePool=[...mine].sort((a,b)=>b.value-a.value).slice(0,14);
+  for(const opp of sleeperLeagueTeams.filter(t=>!t.mine)){
+    const theirs=opp.players.map(findPlayer).filter(Boolean);
+    if(!theirs.length)continue;
+    const oppNeeds=rosterPositionNeed(opp.players,db);
+    const getPool=[...theirs].sort((a,b)=>b.value-a.value).slice(0,14);
+    for(const g of givePool)for(const x of getPool){
+      if(g.name===x.name)continue;
+      const a=sideValue([g]),b=sideValue([x]),edge=(b.adjusted-a.adjusted)/Math.max(a.adjusted,1)*100;
+      if(Math.abs(edge)>9)continue;
+      const fitGain=(myNeeds[x.pos]||0)-(myNeeds[g.pos]||0);
+      const partnerFit=(oppNeeds[g.pos]||0)-(oppNeeds[x.pos]||0);
+      const score=100-Math.abs(edge)*4+Math.max(-15,Math.min(15,fitGain*.2))+Math.max(-15,Math.min(15,partnerFit*.2));
+      ideas.push({opp,give:[g],get:[x],edge,score,fitGain,partnerFit});
+    }
+    // Add practical 2-for-1 consolidation ideas near equal adjusted value.
+    const smallGive=givePool.slice(3,12);
+    for(let i=0;i<smallGive.length;i++)for(let j=i+1;j<smallGive.length;j++)for(const x of getPool.slice(0,8)){
+      const gs=[smallGive[i],smallGive[j]],a=sideValue(gs),b=sideValue([x]),edge=(b.adjusted-a.adjusted)/Math.max(a.adjusted,1)*100;
+      if(Math.abs(edge)>8)continue;
+      const score=94-Math.abs(edge)*4+(myNeeds[x.pos]||0)*.12+(oppNeeds[gs[0].pos]||0)*.07+(oppNeeds[gs[1].pos]||0)*.07;
+      ideas.push({opp,give:gs,get:[x],edge,score});
+    }
+  }
+  const seen=new Set();
+  return ideas.sort((a,b)=>b.score-a.score).filter(i=>{const k=i.opp.rosterId+'|'+i.give.map(p=>p.name).sort().join('+')+'|'+i.get.map(p=>p.name).sort().join('+');if(seen.has(k))return false;seen.add(k);return true;}).slice(0,10);
+}
+function loadTradeIdea(i){
+  const ideas=generateSleeperTradeIdeas(),idea=ideas[i];if(!idea)return;
+  give=idea.give.map(p=>findPlayer(p.name)).filter(Boolean);get=idea.get.map(p=>findPlayer(p.name)).filter(Boolean);render();
+  document.querySelector('.trade-grid')?.scrollIntoView({behavior:'smooth',block:'center'});
+}
+window.loadTradeIdea=loadTradeIdea;
+function renderTradeFinder(){
+  const el=$('tradeFinder');if(!el)return;
+  if(!team?.roster?.length||!sleeperLeagueTeams.length){el.innerHTML='';return;}
+  const ideas=generateSleeperTradeIdeas();
+  el.innerHTML=`<div class="kicker">FIND ME A TRADE</div><h3>League-specific trade ideas</h3><p class="team-note">Uses your imported league, both rosters, lineup needs and the existing Roster Report trade values. These are starting points—not guarantees another manager will accept.</p>${ideas.length?`<div class="trade-finder-list">${ideas.map((x,i)=>`<article class="trade-idea"><div class="trade-idea-head"><h4>${escapeHtml(x.opp.name)}</h4><span class="trade-idea-score">${Math.abs(x.edge).toFixed(1)}% value gap</span></div><div class="trade-idea-sides"><div class="trade-idea-side"><b>You give</b>${x.give.map(p=>escapeHtml(p.name)).join(' + ')}</div><div class="trade-idea-side"><b>You get</b>${x.get.map(p=>escapeHtml(p.name)).join(' + ')}</div></div><button type="button" class="team-action" onclick="loadTradeIdea(${i})">Analyze this trade</button></article>`).join('')}</div>`:'<p class="team-note">No close-value trade ideas were found among the currently ranked players in this league.</p>'}`;
+}
+function renderSleeperLeagueTeams(){
+  const el=$('leagueRosters');if(!el)return;
+  if(!sleeperLeagueTeams.length){el.innerHTML='';return;}
+  el.innerHTML=`<div class="kicker">LEAGUE ROSTERS</div><p class="team-note">Every imported team in this league. Use a team to quickly load trade targets into the I GET side.</p><div class="league-roster-grid">${sleeperLeagueTeams.map(t=>`<article class="league-roster-card ${t.mine?'mine':''}"><h4>${escapeHtml(t.name)}${t.mine?' · YOUR TEAM':''}</h4><p class="team-note">${t.players.length} ranked players imported</p><div class="league-roster-players">${t.players.slice(0,8).map(escapeHtml).join(' · ')}${t.players.length>8?' · …':''}</div>${t.mine?'':`<div class="league-roster-actions"><button type="button" class="secondary-action" data-roster-target="${t.rosterId}">View trade targets</button></div>`}</article>`).join('')}</div>`;
+  el.querySelectorAll('[data-roster-target]').forEach(btn=>btn.addEventListener('click',()=>{
+    const target=sleeperLeagueTeams.find(t=>String(t.rosterId)===btn.dataset.rosterTarget);if(!target)return;
+    get=target.players.map(findPlayer).filter(Boolean).sort((a,b)=>b.value-a.value).slice(0,8);
+    render();document.querySelector('.get-card')?.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
+}
+async function importSleeperLeague(leagueId){
+  const status=$('sleeperStatus');status.textContent='Importing roster…';
+  const [league,rosters,nflPlayers,users]=await Promise.all([
+    sleeperJson(`https://api.sleeper.app/v1/league/${encodeURIComponent(leagueId)}`),
+    sleeperJson(`https://api.sleeper.app/v1/league/${encodeURIComponent(leagueId)}/rosters`),
+    sleeperJson('https://api.sleeper.app/v1/players/nfl?active=true'),
+    sleeperJson(`https://api.sleeper.app/v1/league/${encodeURIComponent(leagueId)}/users`)
+  ]);
+  const roster=rosters.find(r=>String(r.owner_id)===String(sleeperImportUser.user_id));
+  if(!roster)throw new Error('Your roster was not found in that league.');
+  applySleeperScoring(league.scoring_settings||{});
+  const layout=sleeperSlots(league.roster_positions||[]);
+  const db=players(),byName=new Map(db.map(p=>[p.name.toLowerCase(),p.name]));
+  const imported=[],unmatched=[];
+  for(const id of roster.players||[]){
+    const match=sleeperPlayerName(id,nflPlayers,db);
+    if(match)imported.push(match);else{const sp=nflPlayers[id],full=sp?[sp.first_name,sp.last_name].filter(Boolean).join(' ').trim():'';if(full)unmatched.push(full);}
+  }
+  const usersById=new Map(users.map(u=>[String(u.user_id),u]));
+  sleeperLeagueTeams=rosters.map(r=>{
+    const owner=usersById.get(String(r.owner_id));
+    const names=(r.players||[]).map(id=>sleeperPlayerName(id,nflPlayers,db)).filter(Boolean);
+    return {rosterId:r.roster_id,ownerId:r.owner_id,mine:String(r.owner_id)===String(sleeperImportUser.user_id),
+      name:owner?.metadata?.team_name||owner?.display_name||`Team ${r.roster_id}`,players:[...new Set(names)]};
+  }).sort((a,b)=>Number(b.mine)-Number(a.mine)||a.name.localeCompare(b.name));
+  team=normalizeTeam({version:1,leagueSize:Number(league.total_rosters)||12,bench:layout.bench,scoring:format,slots:layout.slots,roster:[...new Set(imported)]});
+  if(!team)throw new Error('The imported league settings could not be saved.');
+  saveTeam();
+  $('teamLeague').value=team.leagueSize;$('teamBench').value=team.bench;$('teamScoring').value=format;
+  for(const p of Object.keys(SLOT_DEFAULTS))$('slot'+p).value=team.slots[p];
+  refreshSelectedPlayers();render();renderSleeperLeagueTeams();renderTradeFinder();
+  status.textContent=`Imported ${team.roster.length} player${team.roster.length===1?'':'s'} from ${league.name||'Sleeper'}.${unmatched.length?` ${unmatched.length} player${unmatched.length===1?' is':'s are'} outside the current Top 250 database and were skipped.`:''}`;
+}
+function bindSleeperImport(){
+  const find=$('sleeperFind'),importBtn=$('sleeperImport'),username=$('sleeperUsername'),select=$('sleeperLeague'),row=$('sleeperLeagueRow'),status=$('sleeperStatus');
+  if(!find)return;
+  find.addEventListener('click',async()=>{
+    const name=username.value.trim();if(!name){status.textContent='Enter your Sleeper username first.';return;}
+    find.disabled=true;status.textContent='Finding your 2026 Sleeper leagues…';row.hidden=true;
+    try{
+      sleeperImportUser=await sleeperJson(`https://api.sleeper.app/v1/user/${encodeURIComponent(name)}`);
+      sleeperImportLeagues=await sleeperJson(`https://api.sleeper.app/v1/user/${encodeURIComponent(sleeperImportUser.user_id)}/leagues/nfl/2026`);
+      if(!sleeperImportLeagues.length){status.textContent='No 2026 NFL leagues were found for that Sleeper account.';return;}
+      select.innerHTML=sleeperImportLeagues.map(l=>`<option value="${escapeHtml(l.league_id)}">${escapeHtml(l.name||'Unnamed league')} · ${Number(l.total_rosters)||'?'} teams</option>`).join('');
+      row.hidden=false;status.textContent=`Found ${sleeperImportLeagues.length} league${sleeperImportLeagues.length===1?'':'s'}. Choose one to import.`;
+    }catch(e){status.textContent=e.message||'Unable to find Sleeper leagues.';}finally{find.disabled=false;}
+  });
+  importBtn.addEventListener('click',async()=>{
+    if(!select.value)return;importBtn.disabled=true;
+    try{await importSleeperLeague(select.value);}catch(e){status.textContent=e.message||'Unable to import that Sleeper roster.';}finally{importBtn.disabled=false;}
+  });
+  username.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();find.click();}});
+}
+
 function readTeamSettings(){
   if(!$('teamSettings').reportValidity())return false;
   const slots=Object.fromEntries(Object.keys(SLOT_DEFAULTS).map(p=>[p,Number($('slot'+p).value)]));
