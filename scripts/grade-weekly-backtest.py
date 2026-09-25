@@ -11,7 +11,7 @@ def key(v):
  t=unicodedata.normalize("NFKD",str(v or "")).encode("ascii","ignore").decode().lower()
  t=re.sub(r"\b(jr|sr|ii|iii|iv)\.?\b","",t)
  return re.sub(r"[^a-z0-9]","",t)
-rows=[]; summaries=[]
+rows=[]; summaries=[]; stat_summaries=[]
 for w in (1,2):
  pth=OUT/f"week{w}_projections.csv"
  if not pth.exists():
@@ -26,6 +26,14 @@ for w in (1,2):
   for pos,g in m.groupby("position_actual"):
    e=g[f"{fmt}_error"].dropna()
    if len(e): summaries.append({"week":w,"position":pos,"format":fmt,"n":len(e),"mae":e.abs().mean(),"rmse":np.sqrt((e**2).mean()),"bias":e.mean()})
+ # Grade raw stat components whenever the historical runner provides them.
+ pairs=[("pass_attempts","attempts"),("pass_yards","passing_yards"),("pass_tds","passing_tds"),("interceptions","passing_interceptions"),("carries","carries"),("rush_yards","rushing_yards"),("rush_tds","rushing_tds"),("targets","targets"),("receptions","receptions"),("rec_yards","receiving_yards"),("rec_tds","receiving_tds")]
+ for pc,ac in pairs:
+  if pc not in m.columns or ac not in m.columns: continue
+  e=pd.to_numeric(m[pc],errors="coerce")-pd.to_numeric(m[ac],errors="coerce")
+  for pos,idx in m.groupby("position_actual").groups.items():
+   z=e.loc[idx].dropna()
+   if len(z): stat_summaries.append({"week":w,"position":pos,"stat":pc,"n":len(z),"mae":z.abs().mean(),"rmse":np.sqrt((z**2).mean()),"bias":z.mean()})
  rows.append(m)
 if rows:
  allm=pd.concat(rows,ignore_index=True);allm.to_csv(OUT/"player_level_results.csv",index=False)
@@ -36,4 +44,10 @@ if rows:
    e=g[ec].dropna()
    if len(e): summaries.append({"week":"combined","position":pos,"format":fmt,"n":len(e),"mae":e.abs().mean(),"rmse":np.sqrt((e**2).mean()),"bias":e.mean()})
  s=pd.DataFrame(summaries);s.to_csv(OUT/"accuracy_summary.csv",index=False);print(s.to_string(index=False))
+ if stat_summaries:
+  ss=pd.DataFrame(stat_summaries)
+  # Combined stat diagnostics.
+  for (pos,stat),g in ss.groupby(["position","stat"]):
+   pass
+  ss.to_csv(OUT/"stat_accuracy_summary.csv",index=False);print("\nSTAT DIAGNOSTICS\n",ss.to_string(index=False))
 else: print("No historical projection CSVs available to grade.")
