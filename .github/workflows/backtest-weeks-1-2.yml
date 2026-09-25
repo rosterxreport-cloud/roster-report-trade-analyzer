@@ -135,3 +135,5 @@ jobs:
 # run after deterministic newline normalization
 
 # run clean xTD test without custom artifact block
+
+# run WR xTD75 plus YPT regression sweep
