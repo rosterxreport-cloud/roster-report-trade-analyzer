@@ -121,3 +121,5 @@ jobs:
 # run WR V2.1 Week 1 YPT regression sweep
 
 # run isolated WR 85/15 xTD blend sweep
+
+# rerun after xTD runner syntax fix
