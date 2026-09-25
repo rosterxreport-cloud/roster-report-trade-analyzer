@@ -160,7 +160,7 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
  p=OUT/"priors"/"fantasy_points_week1_wr_routes.csv"
  if not p.exists(): print("WR V2 route snapshot missing");return rows
  q=pd.read_csv(p);q["k"]=q["player"].map(key);qm={r.k:r for _,r in q.iterrows()}
- weights={"r100_t0":(1.,0.),"r90_t10":(.90,.10),"r85_t15":(.85,.15),"r80_t20":(.80,.20),"r75_t25":(.75,.25),"r70_t30":(.70,.30)}
+ weights={"r85_t15":(.85,.15)}
  for r in rows:
   if r["position"]!="WR":continue
   x=qm.get(key(r["player"]))
@@ -173,8 +173,14 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
    mult=max(.80,min(1.20,rw*rs+tw*ts))
    r["ppr_"+name]=round(base*mult,3)
   # Keep canonical output at original V2 50/50 for ordinary grader.
-  r["ppr_projection"]=r["ppr_r70_t30"]
+  r["ppr_projection"]=r["ppr_r85_t15"]
   r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr
+  # YPT sensitivity variants: regress one-game YPT heavily toward 8.0 baseline.
+  fp_tgt=float(x.fp_targets); fp_yards=float(x.fp_rec_yards) if "fp_rec_yards" in q.columns else 0.
+  week_ypt=(fp_yards/fp_tgt) if fp_tgt>0 else 8.0
+  for wt in [0.10,0.20,0.30]:
+   rypt=(1-wt)*8.0+wt*week_ypt; ym=max(.85,min(1.15,rypt/8.0)); r[f"ppr_ypt_{int(wt*100)}"]=round(r["ppr_projection"]*ym,3)
+  r["wr_week1_ypt"]=round(week_ypt,3)
  return rows
 
 def actual_usage_points(r):
@@ -201,7 +207,7 @@ for week in (1,2):
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_V2_ROUTE_HEAVY_WEIGHT_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_V21_YPT_REGRESSION_EXPERIMENT","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
