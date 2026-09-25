@@ -6,6 +6,7 @@ This first pass creates a reproducible no-leakage baseline for all QB/RB/WR/TE.
 import sys
 from pathlib import Path
 import pandas as pd, numpy as np
+import json
 PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 sys.path.insert(0,str(Path(__file__).parent))
 from backtest_point_in_time import load,key,team
@@ -45,6 +46,20 @@ def team_volume(stats):
  g=s.groupby("recent_team",as_index=False)[["attempts","carries"]].sum()
  games=s.groupby("recent_team")["week"].nunique().to_dict()
  return {team(r.recent_team):{"pass_att_pg":float(r.attempts)/max(1,games.get(r.recent_team,1)),"carries_pg":float(r.carries)/max(1,games.get(r.recent_team,1))} for _,r in g.iterrows()}
+def injury_factors(week):
+ p=OUT/"priors"/f"week{week}_injuries.json"
+ if not p.exists():return {}
+ try:d=json.loads(p.read_text()).get("players",{})
+ except:return {}
+ out={}
+ for name,x in d.items():
+  status=str(x.get("status","") or "").upper()
+  a=float(x.get("availability",1) or 0); w=float(x.get("workload",1) or 0)
+  if any(z in status for z in ["INJURED RESERVE","IR -","PUP","NFI","OUT ","INACTIVE","UNAVAILABLE"]): factor=0.0
+  elif "DOUBTFUL" in status: factor=min(.25,a*w)
+  else: factor=max(0.,min(1.,a*w))
+  out[key(name)]=(factor,status)
+ return out
 def defense_multipliers(week):
  # Only plays from weeks before the projected week are eligible. Week 1 is neutral.
  if week==1:return {}
@@ -92,7 +107,7 @@ def project_from_usage(pos,p,ud,td):
 def actual_usage_points(r):
  return float(r.get("fantasy_points_ppr",0) or 0)
 for week in (1,2):
- x=load(week); prior=x["prior"]["half"]; hist=x["stats"].copy(); usage_detail=preweek_usage(hist); team_detail=team_volume(hist); def_mult=defense_multipliers(week)
+ x=load(week); prior=x["prior"]["half"]; hist=x["stats"].copy(); usage_detail=preweek_usage(hist); team_detail=team_volume(hist); def_mult=defense_multipliers(week); injuries=injury_factors(week)
  if len(hist):
   hist["k"]=hist.player_display_name.map(key)
   usage=hist.groupby("k",as_index=False).agg(games=("week","nunique"),ppr=("fantasy_points_ppr","mean"))
@@ -110,6 +125,7 @@ for week in (1,2):
   td=team_detail.get(team(p.get("team")),{})
   standard,half,ppr=project_from_usage(pos,p,ud,td)
   mm=float(def_mult.get(x["opponent"].get(team(p.get("team"))),1.0));standard*=mm;half*=mm;ppr*=mm
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V1"})
+  af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V2","availability_factor":round(af,3),"historical_status":status})
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} baseline projections")
