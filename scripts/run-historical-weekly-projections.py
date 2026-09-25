@@ -177,8 +177,8 @@ def apply_rb_fp_experiment(rows,week):
   # nflverse Week-1 15+ explosive run rate; shrink small samples toward 8% prior.
   ep=OUT/"priors"/"nflverse_rb_week1_explosive15.csv"
   if ep.exists():
-   ed=pd.read_csv(ep); ed["k"]=ed.rusher_player_name.map(key)
-   em={z.k:z for _,z in ed.iterrows()}; ex=em.get(key(r["player"]))
+   ed=pd.read_csv(ep); ed["k"]=ed.rusher_player_name.astype(str).str.split(".").str[-1].map(key)
+   em={z.k:z for _,z in ed.iterrows()}; ex=em.get(key(str(r["player"]).split()[-1]))
    if ex is not None:
     er=(float(ex.explosive15)+2*.08)/(float(ex.attempts)+2)
     for wt in (.05,.10,.15,.20):
