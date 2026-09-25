@@ -172,6 +172,11 @@ def apply_rb_fp_experiment(rows,week):
   r["rb_fp_snap"]=round(base+(rushpts+recpts)*(snap-1),3);r["rb_fp_att"]=round(base+rushpts*(att-1),3);r["rb_fp_expyds"]=round(base+rushpts*(exp-1),3);r["rb_fp_i5"]=round(base+rushpts*(i5-1),3);r["rb_fp_route"]=round(base+recpts*(rte-1),3);r["rb_fp_tprr"]=round(base+recpts*(tprr-1),3)
   oldrt=float(r.get("rush_tds",0));oldct=float(r.get("rec_tds",0));rx=.55*val("RUSH_XTD",.31)+.45*.31;cx=.55*val("REC_XTD",.051)+.45*.051;comb=.55*val("COMBINED_XTD",.361)+.45*.361
   r["rb_fp_rushxtd"]=round(base+6*(rx-oldrt),3);r["rb_fp_recxtd"]=round(base+6*(cx-oldct),3);r["rb_fp_combxtd"]=round(base+6*(comb-oldrt-oldct),3)
+  # Receiving xTD winner held fixed; add only light TPRR influence to receiving opportunity.
+  xtdbase=r["rb_fp_recxtd"]
+  for wt in (.05,.10,.15,.20):
+   light=1+wt*(tprr-1)
+   r[f"rb_fp_recxtd_tprr_{int(wt*100)}"]=round(xtdbase+recpts*(light-1),3)
  return rows
 
 def apply_wr_route_tprr_experiment(rows,week,prestats):
