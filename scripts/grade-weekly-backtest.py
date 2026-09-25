@@ -112,3 +112,9 @@ try:
  for col in ["ppr_r85_t15","ppr_ypt_10","ppr_ypt_20","ppr_ypt_30"]:
   e=mm[col]-mm[pcol];ae=e.abs();print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
 except Exception as ex: print("WR YPT grading unavailable:",ex)
+
+try:
+ sw=pd.read_csv(OUT/"week2_wr_xtd_sweep.csv");act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);mm=sw.merge(act[["k",pcol]],on="k");print("\nWR 85/15 XTD BLEND SWEEP")
+ for col in ["ppr_xtd_0","ppr_xtd_25","ppr_xtd_50","ppr_xtd_75","ppr_xtd_100"]:
+  e=mm[col]-mm[pcol];ae=e.abs();print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
+except Exception as ex:print("WR xTD grading unavailable:",ex)
