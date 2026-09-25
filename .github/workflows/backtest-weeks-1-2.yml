@@ -119,3 +119,4 @@ jobs:
 # final WR route-heavy sweep: 75/25, 80/20, 85/15, 90/10, routes-only
 
 # run WR V2.1 Week 1 YPT regression sweep
+\n# run isolated WR 85/15 xTD blend sweep\n
