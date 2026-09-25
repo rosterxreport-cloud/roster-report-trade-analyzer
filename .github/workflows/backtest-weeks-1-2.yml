@@ -163,3 +163,5 @@ jobs:
 # run narrow RB compression sweep
 
 # test exact 15plus explosive run rate on RB leader
+
+# rerun explosive columns after verified extraction
