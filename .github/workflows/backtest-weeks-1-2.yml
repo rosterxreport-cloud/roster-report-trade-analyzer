@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install pandas numpy
+        run: pip install pandas numpy pyarrow
       - name: Fetch frozen Week 1 and Week 2 repository priors
         env:
           GH_TOKEN: ${{ github.token }}
@@ -101,3 +101,5 @@ jobs:
 # run WR V2 route participation + TPRR experiment
 
 # rerun corrected WR V2 route participation + TPRR experiment
+
+# rerun WR V2 with parquet support for nflverse route-field check
