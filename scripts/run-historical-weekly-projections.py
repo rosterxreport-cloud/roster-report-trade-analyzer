@@ -155,36 +155,25 @@ def project_from_usage(pos,p,ud,td):
   std+=car*ypc*.1+car*rutdr*6
  return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
 def apply_wr_route_tprr_experiment(rows,week,prestats):
- # WR V2 experiment: route participation + targets per route run (TPRR).
- # Week 1 remains frozen-prior only; Week 2 can use Week 1 PBP-derived routes.
- if week<=1 or prestats.empty:return rows
+ # WR V2: Week-1 Hashtag Football routes, paired only with pre-week targets.
+ # Frozen route snapshot is stored in-repo by the workflow to avoid future-page drift.
+ if week<=1:return rows
+ p=OUT/"priors"/"hashtag_week1_routes.csv"
+ if not p.exists():
+  print("WR route/TPRR experiment skipped: Hashtag Week 1 route snapshot missing");return rows
  try:
-  pbp=pd.read_parquet(PBP)
-  pbp=pbp[(pbp.season_type=="REG")&(pbp.week<week)&(pbp.play_type=="pass")].copy()
-  # Approximate routes from pass-play participation using receiver IDs present on targets.
-  # Prefer explicit route columns if nflverse exposes them; otherwise do not invent routes.
-  route_col=next((z for z in ["routes","routes_run","route"] if z in pbp.columns),None)
-  if route_col is None:
-   print("WR route/TPRR experiment skipped: no explicit route participation field in historical PBP")
-   return rows
-  namecol=next((z for z in ["receiver_player_name","receiver_name"] if z in pbp.columns),None)
-  if namecol is None:return rows
-  q=pbp.groupby(namecol,as_index=False).agg(routes=(route_col,"sum"),targets=("pass_attempt","sum"))
-  q["k"]=q[namecol].map(key); qm={r.k:r for _,r in q.iterrows()}
+  q=pd.read_csv(p);q["k"]=q["player"].map(key);qm={r.k:r for _,r in q.iterrows()}
   for r in rows:
    if r["position"]!="WR":continue
-   x=qm.get(key(r["player"]))
-   if x is None or float(x.routes)<=0:continue
-   routes=float(x.routes);tprr=float(x.targets)/routes
-   # Sustainable opportunity: reward demonstrated route volume and target earning,
-   # but keep the adjustment modest in a one-game sample.
+   x=qm.get(key(r["player"])); routes=float(x.routes) if x is not None else 0.
+   if routes<=0:continue
+   targets=float(r.get("_pre_targets",0));tprr=targets/routes
    route_signal=max(.70,min(1.20,routes/32.0));earn=max(.75,min(1.25,tprr/.20))
    mult=max(.80,min(1.20,.50+.25*route_signal+.25*earn))
    for z in ["targets","receptions","rec_yards","rec_tds"]:r[z]=float(r.get(z,0))*mult
    for fmt in ["standard_projection","half_projection","ppr_projection"]:r[fmt]*=mult
    r["wr_routes_preweek"]=round(routes,2);r["wr_tprr_preweek"]=round(tprr,3);r["wr_route_tprr_multiplier"]=round(mult,3)
- except Exception as ex:
-  print("WR route/TPRR experiment unavailable:",ex)
+ except Exception as ex: print("WR Hashtag route experiment unavailable:",ex)
  return rows
 
 def actual_usage_points(r):
