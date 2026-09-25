@@ -109,6 +109,13 @@ def constrain_rb_team(rows):
    den=sum(r[scorefld] for r in elig)
    if left>0 and den>0:
     for r in elig:r[fld]+=min(r.get(capfld,0)-r[fld],left*r[scorefld]/den)
+  # V5 RB2 role-certainty gate after V4 pool allocation.
+  ranked=sorted(rs,key=lambda r:r.get("_newc",0)+1.5*r.get("_newt",0),reverse=True)
+  if len(ranked)>1:
+   r2=ranked[1];livec=float(r2.get("_pre_carries",0));livet=float(r2.get("_pre_targets",0));prior=float(r2.get("_role_prior",50))
+   if livec+livet>0:certainty=max(.35,min(1.0,.35+.055*livec+.09*livet))
+   else:certainty=max(.30,min(.90,.30+.006*max(0.,prior-40)))
+   r2["_newc"]*=certainty;r2["_newt"]*=certainty;r2["rb2_role_certainty"]=certainty
   for r in rs:
    newc,newt=r.pop("_newc"),r.pop("_newt")
    oldc,oldt=r.get("carries",0),r.get("targets",0)
