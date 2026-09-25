@@ -28,6 +28,7 @@ jobs:
           mkdir -p data/backtests/priors
           curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/players.json?ref=fd87448dd9f9dc8fb50d40ae06bb9bb832b19100" -o data/backtests/priors/week1_players.json
           curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/players.json?ref=b73d8f29b5c6dd9cd7f2710a300cd02ba52d57ad" -o data/backtests/priors/week2_players.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/injury-adjustments.json?ref=4a9cde1ab0a7b9381a198fa4626b4cf5060dbab3" -o data/backtests/priors/week1_injuries.json
           python - <<'PY'
           import json
           for w in (1,2):
