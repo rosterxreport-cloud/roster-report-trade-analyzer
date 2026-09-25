@@ -102,6 +102,6 @@ try:
  namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns); act["k"]=act[namecol].map(key); sw["k"]=sw.player.map(key)
  pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns); mm=sw.merge(act[["k",pcol]],on="k")
  print("\nWR V2 ROUTE-vs-TPRR WEIGHT SWEEP")
- for col in ["ppr_r70_t30","ppr_r60_t40","ppr_r50_t50","ppr_r40_t60","ppr_r30_t70"]:
+ for col in ["ppr_r100_t0","ppr_r90_t10","ppr_r85_t15","ppr_r80_t20","ppr_r75_t25","ppr_r70_t30"]:
   e=mm[col]-mm[pcol]; ae=e.abs(); print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
 except Exception as ex: print("WR weight sweep grading unavailable:",ex)
