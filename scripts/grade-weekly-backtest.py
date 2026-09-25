@@ -153,6 +153,6 @@ except Exception as ex:print("RB segment audit unavailable:",ex)
 
 try:
  sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);mm=sw.merge(act[["k",pcol]],on="k");print("\nRB REC XTD HIGH-END COMPRESSION SWEEP")
- for col in ["rb_fp_recxtd","rb_fp_recxtd_hi_comp_5","rb_fp_recxtd_hi_comp_10","rb_fp_recxtd_hi_comp_15","rb_fp_recxtd_hi_comp_20"]:
+ for col in ["rb_fp_recxtd","rb_fp_recxtd_hi_comp_5","rb_fp_recxtd_hi_comp_10","rb_fp_recxtd_hi_comp_12","rb_fp_recxtd_hi_comp_14","rb_fp_recxtd_hi_comp_15","rb_fp_recxtd_hi_comp_16","rb_fp_recxtd_hi_comp_18","rb_fp_recxtd_hi_comp_20"]:
   e=mm[col]-mm[pcol];ae=e.abs();print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
 except Exception as ex:print("RB high-end compression grading unavailable:",ex)
