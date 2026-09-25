@@ -52,7 +52,10 @@ jobs:
           print('Cutoffs valid',m['rows'])
           PY
       - name: Run point-in-time historical projection baseline
-        run: python scripts/run-historical-weekly-projections.py
+        run: |
+          sed -i 's/\\\\n/\\n/g' scripts/run-historical-weekly-projections.py
+          python -m py_compile scripts/run-historical-weekly-projections.py
+          python scripts/run-historical-weekly-projections.py
       - name: Grade projections when historical runner output exists
         run: python scripts/grade-weekly-backtest.py
       - name: Upload backtest cuts
@@ -129,3 +132,5 @@ jobs:
 # clean WR xTD sweep rerun
 
 # rerun xTD using existing WR artifact path
+
+# run after deterministic newline normalization
