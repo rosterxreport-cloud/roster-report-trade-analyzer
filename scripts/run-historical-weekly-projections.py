@@ -165,7 +165,7 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
   if r["position"]!="WR":continue
   x=qm.get(key(r["player"]))
   if x is None or float(x.routes)<=0:continue
-  routes=float(x.routes);tprr=float(x.fp_tprr)
+  routes=float(x.routes);tprr=float(x.tprr)
   rs=max(.70,min(1.20,routes/32.0));ts=max(.75,min(1.25,tprr/.20))
   base=float(r["ppr_projection"])
   for name,(rw,tw) in weights.items():
@@ -176,7 +176,7 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
   r["ppr_projection"]=r["ppr_r85_t15"]
   r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr
   # YPT sensitivity variants: regress one-game YPT heavily toward 8.0 baseline.
-  fp_tgt=float(x.fp_targets); fp_yards=float(x.fp_rec_yards) if "fp_rec_yards" in q.columns else 0.
+  fp_tgt=float(x.targets); fp_yards=float(x.rec_yards)
   week_ypt=(fp_yards/fp_tgt) if fp_tgt>0 else 8.0
   for wt in [0.10,0.20,0.30]:
    rypt=(1-wt)*8.0+wt*week_ypt; ym=max(.85,min(1.15,rypt/8.0)); r[f"ppr_ypt_{int(wt*100)}"]=round(r["ppr_projection"]*ym,3)
