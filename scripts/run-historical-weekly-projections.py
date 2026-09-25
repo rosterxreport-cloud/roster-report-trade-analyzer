@@ -199,6 +199,5 @@ for week in (1,2):
   rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_85_15_XTD_BLEND_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
- pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)\n if week==2:\n  z=pd.DataFrame(rows); z=z[z.position=="WR"]\n  # Weight variants are persisted for dedicated grading after actuals merge.
-  z.to_csv(OUT/"week2_wr_weight_sweep.csv",index=False)
+ pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} V5 projections")
