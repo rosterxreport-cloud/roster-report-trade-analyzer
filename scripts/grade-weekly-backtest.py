@@ -136,3 +136,17 @@ try:
  for col in ["rb_fp_recxtd","rb_fp_recxtd_tprr_5","rb_fp_recxtd_tprr_10","rb_fp_recxtd_tprr_15","rb_fp_recxtd_tprr_20"]:
   e=mm[col]-mm[pcol];ae=e.abs();print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
 except Exception as ex:print("RB rec xTD TPRR grading unavailable:",ex)
+
+try:
+ sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);m=sw.merge(act[["k",pcol]],on="k");m["err"]=m.rb_fp_recxtd-m[pcol];m["ae"]=m.err.abs();m["opp"]=m.carries+m.targets;m["recshare"]=m.targets/(m.carries+m.targets).clip(lower=1)
+ print("\nRB REC XTD ERROR SEGMENTS")
+ cuts=[("projected_top",pd.qcut(m.rb_fp_recxtd,3,labels=["low","mid","high"],duplicates="drop")),("opportunity",pd.qcut(m.opp,3,labels=["low","mid","high"],duplicates="drop")),("receiving_share",pd.qcut(m.recshare,3,labels=["low","mid","high"],duplicates="drop"))]
+ for nm,grp in cuts:
+  m["_g"]=grp
+  for lab,d in m.groupby("_g",observed=True): print(nm,lab,"n",len(d),"MAE",round(d.ae.mean(),3),"BIAS",round(d.err.mean(),3),"ACT",round(d[pcol].mean(),2),"PROJ",round(d.rb_fp_recxtd.mean(),2))
+ # Team depth proxy from projected RB rank within team.
+ m["depth"]=m.groupby("team").rb_fp_recxtd.rank(method="first",ascending=False);m["depthgrp"]=m.depth.map(lambda z:"RB1" if z==1 else ("RB2" if z==2 else "RB3+"))
+ for lab,d in m.groupby("depthgrp"): print("depth",lab,"n",len(d),"MAE",round(d.ae.mean(),3),"BIAS",round(d.err.mean(),3),"ACT",round(d[pcol].mean(),2),"PROJ",round(d.rb_fp_recxtd.mean(),2))
+ print("\nBIGGEST RB OVERPROJECTIONS")
+ for _,r in m.sort_values("err",ascending=False).head(12).iterrows(): print(r.player,round(r.rb_fp_recxtd,2),round(r[pcol],2),round(r.err,2),r.team,round(r.carries,1),round(r.targets,1))
+except Exception as ex:print("RB segment audit unavailable:",ex)
