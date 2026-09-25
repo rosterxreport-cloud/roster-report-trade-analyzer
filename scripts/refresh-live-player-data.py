@@ -427,7 +427,14 @@ def main():
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250:raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         for p in rows:p.setdefault("rankingScore",round(float(p.get("value",0)),2))
-        if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
+        # The immutable baseline intentionally predates QBs restored from live 2026
+        # participation. Require every baseline player to remain present, while
+        # allowing those verified live additions to exist without a fabricated
+        # preseason baseline.
+        core_names={p["name"] for p in rows if p["pos"] in CORE}
+        baseline_names=set(baseline.get(scoring,{}))
+        missing=baseline_names-core_names
+        if missing:raise RuntimeError(f"Immutable core baseline players missing in {scoring}: {sorted(missing)}")
     kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey)
     p26["player_id"]=p26["player_id"].astype(str)
     p26=p26.merge(rbx,on="player_id",how="left");
