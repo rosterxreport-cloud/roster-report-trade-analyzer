@@ -310,7 +310,7 @@ function initTeam(){
   catch{teamNotice='Saved team could not be loaded. You can still use My Team for this visit.';}
   if(team)format=team.scoring;
   const style=document.createElement('style');
-  style.textContent=`.team-section{margin-top:28px;padding:22px;border:1px solid var(--line);background:#081a2f}.team-section h2{margin:0 0 10px}.team-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin:18px 0}.team-settings label{display:grid;gap:6px;font-size:14px;color:#c6d8e9}.team-section select{width:100%;padding:12px;background:#04111f;border:2px solid #2a5276;color:white;font-size:16px}.team-action{padding:11px 14px;background:var(--yellow);border:0;color:var(--navy);font-weight:800;cursor:pointer}.team-action:focus-visible,.team-section select:focus-visible{outline:2px solid white;outline-offset:3px}.team-add{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.team-add input{flex:1;min-width:180px}.team-roster{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.team-chip{padding:9px;background:#0b2743;border:1px solid var(--line);color:var(--cream);cursor:pointer;font-size:14px}.team-note{font-size:14px;line-height:1.6;color:#b8cce0}.fit-table{width:100%;border-collapse:collapse;font-size:14px}.fit-table th,.fit-table td{padding:10px;text-align:left;border-bottom:1px solid var(--line)}.team-fit{margin-top:24px}.team-fit li{margin:8px 0}.team-fit h3{color:var(--yellow)}@media(max-width:500px){.team-section{padding:16px}.fit-table th,.fit-table td{padding:7px 4px;font-size:13px}}`;
+  style.textContent=`.team-section{margin-top:28px;padding:22px;border:1px solid var(--line);background:#081a2f}.team-section h2{margin:0 0 10px}.team-settings{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;margin:18px 0}.team-settings label{display:grid;gap:6px;font-size:14px;color:#c6d8e9}.team-section select{width:100%;padding:12px;background:#04111f;border:2px solid #2a5276;color:white;font-size:16px}.team-action{padding:11px 14px;background:var(--yellow);border:0;color:var(--navy);font-weight:800;cursor:pointer}.team-action:focus-visible,.team-section select:focus-visible{outline:2px solid white;outline-offset:3px}.team-add{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}.team-add input{flex:1;min-width:180px}.team-roster{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.team-chip{padding:9px;background:#0b2743;border:1px solid var(--line);color:var(--cream);cursor:pointer;font-size:14px}.team-note{font-size:14px;line-height:1.6;color:#b8cce0}.fit-table{width:100%;border-collapse:collapse;font-size:14px}.fit-table th,.fit-table td{padding:10px;text-align:left;border-bottom:1px solid var(--line)}.team-fit{margin-top:24px}.team-fit li{margin:8px 0}.team-fit h3{color:var(--yellow)}.sleeper-import{margin:18px 0;padding:16px;border:1px solid var(--line);background:#061525}.sleeper-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.sleeper-row input,.sleeper-row select{flex:1;min-width:210px}.sleeper-row[hidden]{display:none}.sleeper-import .kicker{margin-bottom:4px}@media(max-width:500px){.team-section{padding:16px}.fit-table th,.fit-table td{padding:7px 4px;font-size:13px}}`;
   document.head.appendChild(style);
   const section=document.createElement('section');section.className='team-section';section.id='my-team';section.setAttribute('aria-labelledby','teamTitle');
   section.innerHTML=`<h2 id="teamTitle">My Team</h2><p class="team-note">Save your roster and league settings to see how trades affect your starting lineup and depth. Saved on this browser only; clearing browser data removes your team.</p>
@@ -318,6 +318,12 @@ function initTeam(){
     ${Object.entries(SLOT_DEFAULTS).map(([p,n])=>`<label>${p==='SF'?'Superflex (SF)':p}<input id="slot${p}" type="number" min="0" max="6" value="${n}" required></label>`).join('')}<label>Bench<input id="teamBench" type="number" min="0" max="20" value="6" required></label></div>
     <p class="team-note">FLEX accepts RB, WR or TE. Superflex (SF) accepts QB, RB, WR or TE only; kickers and D/ST are never Superflex eligible. Save with SF above zero to apply increased QB scarcity values throughout the analyzer and rankings. Defaults: 12 teams, 1 QB, 2 RB, 2 WR, 1 TE, 1 FLEX, 0 SF, 0 K, 0 D/ST, 6 bench.</p><button class="team-action" type="submit">Save settings</button></form>
     <p id="scarcityStatus" class="team-note" role="status"></p>
+    <div class="sleeper-import">
+      <div class="kicker">IMPORT FROM SLEEPER</div>
+      <div class="sleeper-row"><input id="sleeperUsername" autocomplete="off" placeholder="Sleeper username" aria-label="Sleeper username"><button id="sleeperFind" class="team-action" type="button">Find leagues</button></div>
+      <div id="sleeperLeagueRow" class="sleeper-row" hidden><select id="sleeperLeague" aria-label="Choose Sleeper league"></select><button id="sleeperImport" class="team-action" type="button">Import roster</button></div>
+      <p id="sleeperStatus" class="team-note" role="status">Enter your Sleeper username to import your 2026 roster and league settings.</p>
+    </div>
     <form class="team-add" id="teamAdd"><input id="rosterSearch" list="rosterOptions" autocomplete="off" placeholder="Search a roster player…" aria-label="Player to add to My Team" required><datalist id="rosterOptions"></datalist><button class="team-action" type="submit">Add player</button></form>
     <p class="team-note">Players are limited to the current Top 250 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;
   document.querySelector('.trade-grid').before(section);
@@ -325,6 +331,7 @@ function initTeam(){
   const fit=document.createElement('section');fit.id='teamFit';fit.className='team-section team-fit';fit.setAttribute('aria-label','Roster fit analysis');$('resultPanel').after(fit);
   if(team){$('teamLeague').value=team.leagueSize;$('teamBench').value=team.bench;for(const p of Object.keys(SLOT_DEFAULTS))$('slot'+p).value=team.slots[p];}
   $('teamScoring').value=format;
+  bindSleeperImport();
   $('teamSettings').addEventListener('submit',e=>{e.preventDefault();if(!readTeamSettings())return;saveTeam();render();});
   $('teamAdd').addEventListener('submit',e=>{
     e.preventDefault();const name=$('rosterSearch').value.trim(),p=players().find(p=>p.name.toLowerCase()===name.toLowerCase());
@@ -336,6 +343,94 @@ function initTeam(){
   });
   $('teamRoster').addEventListener('click',e=>{const button=e.target.closest('button[data-player]');if(!button||!team)return;team.roster=team.roster.filter(n=>n!==button.dataset.player);saveTeam();render();});
 }
+
+let sleeperImportUser=null,sleeperImportLeagues=[];
+async function sleeperJson(url){
+  const r=await fetch(url);
+  if(!r.ok)throw new Error(r.status===404?'Not found':`Sleeper request failed (${r.status})`);
+  return r.json();
+}
+function sleeperScoringFormat(settings={}){
+  const rec=Number(settings.rec||0);
+  return rec>=.75?'ppr':rec>=.25?'half':'standard';
+}
+function sleeperSlots(positions=[]){
+  const slots={...SLOT_DEFAULTS};for(const k of Object.keys(slots))slots[k]=0;
+  let bench=0;
+  for(const raw of positions){
+    const p=String(raw).toUpperCase();
+    if(p==='BN')bench++;
+    else if(p==='SUPER_FLEX')slots.SF++;
+    else if(p==='FLEX')slots.FLEX++;
+    else if(p==='DEF')slots.DST++;
+    else if(Object.hasOwn(slots,p))slots[p]++;
+  }
+  return {slots,bench};
+}
+function applySleeperScoring(settings={}){
+  format=sleeperScoringFormat(settings);
+  scoringSettings=normalizeScoringSettings({
+    ...SCORING_DEFAULTS,
+    passTd:Number(settings.pass_td??SCORING_DEFAULTS.passTd),
+    passYard:Number(settings.pass_yd??SCORING_DEFAULTS.passYard),
+    rushTd:Number(settings.rush_td??SCORING_DEFAULTS.rushTd),
+    receiveTd:Number(settings.rec_td??SCORING_DEFAULTS.receiveTd),
+    rushFirstDown:Number(settings.rush_fd??SCORING_DEFAULTS.rushFirstDown),
+    receiveFirstDown:Number(settings.rec_fd??SCORING_DEFAULTS.receiveFirstDown)
+  });
+  writeScoringInputs();saveScoringSettings();
+}
+async function importSleeperLeague(leagueId){
+  const status=$('sleeperStatus');status.textContent='Importing roster…';
+  const [league,rosters,nflPlayers]=await Promise.all([
+    sleeperJson(`https://api.sleeper.app/v1/league/${encodeURIComponent(leagueId)}`),
+    sleeperJson(`https://api.sleeper.app/v1/league/${encodeURIComponent(leagueId)}/rosters`),
+    sleeperJson('https://api.sleeper.app/v1/players/nfl?active=true')
+  ]);
+  const roster=rosters.find(r=>String(r.owner_id)===String(sleeperImportUser.user_id));
+  if(!roster)throw new Error('Your roster was not found in that league.');
+  applySleeperScoring(league.scoring_settings||{});
+  const layout=sleeperSlots(league.roster_positions||[]);
+  const db=players(),byName=new Map(db.map(p=>[p.name.toLowerCase(),p.name]));
+  const imported=[],unmatched=[];
+  for(const id of roster.players||[]){
+    if(/^[A-Z]{2,3}$/.test(String(id))){
+      const dst=db.find(p=>p.pos==='DST'&&p.team===id);if(dst){imported.push(dst.name);continue;}
+    }
+    const sp=nflPlayers[id];
+    const full=sp?[sp.first_name,sp.last_name].filter(Boolean).join(' ').trim():'';
+    const match=byName.get(full.toLowerCase());
+    if(match)imported.push(match);else if(full)unmatched.push(full);
+  }
+  team=normalizeTeam({version:1,leagueSize:Number(league.total_rosters)||12,bench:layout.bench,scoring:format,slots:layout.slots,roster:[...new Set(imported)]});
+  if(!team)throw new Error('The imported league settings could not be saved.');
+  saveTeam();
+  $('teamLeague').value=team.leagueSize;$('teamBench').value=team.bench;$('teamScoring').value=format;
+  for(const p of Object.keys(SLOT_DEFAULTS))$('slot'+p).value=team.slots[p];
+  refreshSelectedPlayers();render();
+  status.textContent=`Imported ${team.roster.length} player${team.roster.length===1?'':'s'} from ${league.name||'Sleeper'}.${unmatched.length?` ${unmatched.length} player${unmatched.length===1?' is':'s are'} outside the current Top 250 database and were skipped.`:''}`;
+}
+function bindSleeperImport(){
+  const find=$('sleeperFind'),importBtn=$('sleeperImport'),username=$('sleeperUsername'),select=$('sleeperLeague'),row=$('sleeperLeagueRow'),status=$('sleeperStatus');
+  if(!find)return;
+  find.addEventListener('click',async()=>{
+    const name=username.value.trim();if(!name){status.textContent='Enter your Sleeper username first.';return;}
+    find.disabled=true;status.textContent='Finding your 2026 Sleeper leagues…';row.hidden=true;
+    try{
+      sleeperImportUser=await sleeperJson(`https://api.sleeper.app/v1/user/${encodeURIComponent(name)}`);
+      sleeperImportLeagues=await sleeperJson(`https://api.sleeper.app/v1/user/${encodeURIComponent(sleeperImportUser.user_id)}/leagues/nfl/2026`);
+      if(!sleeperImportLeagues.length){status.textContent='No 2026 NFL leagues were found for that Sleeper account.';return;}
+      select.innerHTML=sleeperImportLeagues.map(l=>`<option value="${escapeHtml(l.league_id)}">${escapeHtml(l.name||'Unnamed league')} · ${Number(l.total_rosters)||'?'} teams</option>`).join('');
+      row.hidden=false;status.textContent=`Found ${sleeperImportLeagues.length} league${sleeperImportLeagues.length===1?'':'s'}. Choose one to import.`;
+    }catch(e){status.textContent=e.message||'Unable to find Sleeper leagues.';}finally{find.disabled=false;}
+  });
+  importBtn.addEventListener('click',async()=>{
+    if(!select.value)return;importBtn.disabled=true;
+    try{await importSleeperLeague(select.value);}catch(e){status.textContent=e.message||'Unable to import that Sleeper roster.';}finally{importBtn.disabled=false;}
+  });
+  username.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();find.click();}});
+}
+
 function readTeamSettings(){
   if(!$('teamSettings').reportValidity())return false;
   const slots=Object.fromEntries(Object.keys(SLOT_DEFAULTS).map(p=>[p,Number($('slot'+p).value)]));
