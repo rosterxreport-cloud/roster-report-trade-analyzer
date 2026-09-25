@@ -44,6 +44,34 @@ def team_volume(stats):
  g=s.groupby("recent_team",as_index=False)[["attempts","carries"]].sum()
  games=s.groupby("recent_team")["week"].nunique().to_dict()
  return {team(r.recent_team):{"pass_att_pg":float(r.attempts)/max(1,games.get(r.recent_team,1)),"carries_pg":float(r.carries)/max(1,games.get(r.recent_team,1))} for _,r in g.iterrows()}
+def project_from_usage(pos,p,ud,td):
+ # Historical replay of the current model's early-season opportunity + efficiency structure.
+ score=prior_strength(p)
+ if pos=="QB":
+  att0=max(27.,min(40.,td.get("pass_att_pg",32.5)))
+  att=.60*ud.get("attempts",att0)+.40*att0
+  ypa=regress(ud.get("passing_yards",att*NEUTRAL["passing_ypa"])/max(1.,ud.get("attempts",att)), "passing_ypa")
+  tdr=regress(ud.get("passing_tds",att*NEUTRAL["passing_td_rate"])/max(1.,ud.get("attempts",att)), "passing_td_rate")
+  intr=regress(ud.get("passing_interceptions",att*NEUTRAL["interception_rate"])/max(1.,ud.get("attempts",att)), "interception_rate")
+  car=.45*ud.get("carries",2.5)+.55*2.5; ry=car*4.5; rtd=car*NEUTRAL["rushing_td_rate"]
+  std=att*ypa*.04+att*tdr*4-att*intr*2+ry*.1+rtd*6
+  return std,std,std
+ if pos=="RB":
+  car0=max(4.,min(22.,6.+score*.14));car=.55*ud.get("carries",car0)+.45*car0
+  tgt0=max(1.,min(7.,1.+score*.045));tgt=.55*ud.get("targets",tgt0)+.45*tgt0
+ elif pos=="WR":
+  tgt0=max(2.,min(11.,2.+score*.085));tgt=.55*ud.get("targets",tgt0)+.45*tgt0;car=0
+ else:
+  tgt0=max(1.5,min(8.,1.5+score*.055));tgt=.55*ud.get("targets",tgt0)+.45*tgt0;car=0
+ cr=regress(ud.get("receptions",tgt*NEUTRAL["catch_rate"])/max(1.,ud.get("targets",tgt)),"catch_rate")
+ ypt=regress(ud.get("receiving_yards",tgt*NEUTRAL["yards_per_target"])/max(1.,ud.get("targets",tgt)),"yards_per_target")
+ rtdr=regress(ud.get("receiving_tds",tgt*NEUTRAL["receiving_td_per_target"])/max(1.,ud.get("targets",tgt)),"receiving_td_per_target")
+ rec=tgt*cr;std=tgt*ypt*.1+tgt*rtdr*6
+ if pos=="RB":
+  ypc=regress(ud.get("rushing_yards",car*NEUTRAL["yards_per_carry"])/max(1.,ud.get("carries",car)),"yards_per_carry")
+  rutdr=regress(ud.get("rushing_tds",car*NEUTRAL["rushing_td_rate"])/max(1.,ud.get("carries",car)),"rushing_td_rate")
+  std+=car*ypc*.1+car*rutdr*6
+ return std,std+.5*rec,std+rec
 def actual_usage_points(r):
  return float(r.get("fantasy_points_ppr",0) or 0)
 for week in (1,2):
@@ -61,13 +89,9 @@ for week in (1,2):
   score=prior_strength(p)
   # Convert frozen quality prior to a conservative weekly PPR baseline.
   base=POS_BASE[pos]*(0.70+0.006*min(100,max(0,score)))
-  # Week 2 may move modestly toward Week 1 usage; Week 1 cannot.
-  if q is not None: ppr=.70*base+.30*float(q.ppr)
-  else: ppr=base
-  # Scoring-format deltas are generated from a conservative expected reception
-  # component by position; raw-stat runners will replace this baseline next.
-  rec={"QB":0.0,"RB":3.0,"WR":4.5,"TE":3.5}[pos]
-  half=ppr-.5*rec; standard=ppr-rec
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"BASELINE_ONLY_NOT_CURRENT_MODEL"})
+  ud=usage_detail.get(k,{})
+  td=team_detail.get(team(p.get("team")),{})
+  standard,half,ppr=project_from_usage(pos,p,ud,td)
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V1"})
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} baseline projections")
