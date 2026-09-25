@@ -21,6 +21,21 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install pandas numpy
+      - name: Fetch frozen Week 1 and Week 2 repository priors
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p data/backtests/priors
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/players.json?ref=fd87448dd9f9dc8fb50d40ae06bb9bb832b19100" -o data/backtests/priors/week1_players.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/players.json?ref=b73d8f29b5c6dd9cd7f2710a300cd02ba52d57ad" -o data/backtests/priors/week2_players.json
+          python - <<'PY'
+          import json
+          for w in (1,2):
+              p=f'data/backtests/priors/week{w}_players.json'
+              d=json.load(open(p))
+              assert all(k in d for k in ('standard','half','ppr'))
+              print(w, {k:len(d[k]) for k in ('standard','half','ppr')})
+          PY
       - name: Build leakage-safe Week 1-2 cuts
         run: python scripts/build-weekly-backtest.py
       - name: Validate cutoff rules
