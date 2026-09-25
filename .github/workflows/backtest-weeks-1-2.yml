@@ -52,15 +52,7 @@ jobs:
           print('Cutoffs valid',m['rows'])
           PY
       - name: Run point-in-time historical projection baseline
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('scripts/run-historical-weekly-projections.py')
-          s=p.read_text()
-          s=s.replace('\\\\n if week==2:\\\\n  pd.DataFrame(rows).to_csv(OUT/\"week2_wr_xtd_sweep.csv\",index=False)', '\n if week==2:\n  pd.DataFrame(rows).to_csv(OUT/\"week2_wr_xtd_sweep.csv\",index=False)')
-          p.write_text(s)
-          PY
-          python scripts/run-historical-weekly-projections.py
+        run: python scripts/run-historical-weekly-projections.py
       - name: Grade projections when historical runner output exists
         run: python scripts/grade-weekly-backtest.py
       - name: Upload backtest cuts
@@ -133,3 +125,5 @@ jobs:
 # rerun after xTD runner syntax fix
 
 # rerun verified xTD newline repair
+
+# clean WR xTD sweep rerun
