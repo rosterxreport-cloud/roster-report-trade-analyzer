@@ -123,3 +123,5 @@ jobs:
 # run isolated WR 85/15 xTD blend sweep
 
 # rerun after xTD runner syntax fix
+
+# rerun verified xTD newline repair
