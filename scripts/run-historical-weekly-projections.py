@@ -32,7 +32,9 @@ def preweek_usage(stats):
  s=stats.copy();s["k"]=s.player_display_name.map(key)
  # Aggregate only games strictly before the projection week.
  sumcols=[z for z in ["games","attempts","passing_yards","passing_tds","passing_interceptions","carries","rushing_yards","rushing_tds","targets","receptions","receiving_yards","receiving_tds","fantasy_points_ppr"] if z in s]
- g=s.groupby(["k","position","recent_team"],as_index=False)[sumcols].sum()
+ teamcol="recent_team" if "recent_team" in s.columns else ("team" if "team" in s.columns else None)
+ if teamcol is None:return {}
+ g=s.groupby(["k","position",teamcol],as_index=False)[sumcols].sum()
  out={}
  for _,r in g.iterrows():
   games=max(1.,float(r.get("games",0) or 0))
@@ -43,9 +45,11 @@ def team_volume(stats):
  s=stats.copy()
  for z in ["attempts","carries"]:
   if z not in s:s[z]=0
- g=s.groupby("recent_team",as_index=False)[["attempts","carries"]].sum()
- games=s.groupby("recent_team")["week"].nunique().to_dict()
- return {team(r.recent_team):{"pass_att_pg":float(r.attempts)/max(1,games.get(r.recent_team,1)),"carries_pg":float(r.carries)/max(1,games.get(r.recent_team,1))} for _,r in g.iterrows()}
+ teamcol="recent_team" if "recent_team" in s.columns else ("team" if "team" in s.columns else None)
+ if teamcol is None:return {}
+ g=s.groupby(teamcol,as_index=False)[["attempts","carries"]].sum()
+ games=s.groupby(teamcol)["week"].nunique().to_dict()
+ return {team(r[teamcol]):{"pass_att_pg":float(r.attempts)/max(1,games.get(r[teamcol],1)),"carries_pg":float(r.carries)/max(1,games.get(r[teamcol],1))} for _,r in g.iterrows()}
 def injury_factors(week):
  p=OUT/"priors"/f"week{week}_injuries.json"
  if not p.exists():return {}
