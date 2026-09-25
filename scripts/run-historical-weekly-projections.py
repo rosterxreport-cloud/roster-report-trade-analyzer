@@ -158,9 +158,9 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
  # WR V2: Week-1 Hashtag Football routes, paired only with pre-week targets.
  # Frozen route snapshot is stored in-repo by the workflow to avoid future-page drift.
  if week<=1:return rows
- p=OUT/"priors"/"heatradar_week1_routes.csv"
+ p=OUT/"priors"/"fantasy_points_week1_wr_routes.csv"
  if not p.exists():
-  print("WR route/TPRR experiment skipped: HeatRadar Week 1 route snapshot missing");return rows
+  print("WR route/TPRR experiment skipped: Fantasy Points Week 1 route snapshot missing");return rows
  try:
   q=pd.read_csv(p);q["k"]=q["player"].map(key);qm={r.k:r for _,r in q.iterrows()}
   for r in rows:
@@ -173,7 +173,7 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
    for z in ["targets","receptions","rec_yards","rec_tds"]:r[z]=float(r.get(z,0))*mult
    for fmt in ["standard_projection","half_projection","ppr_projection"]:r[fmt]*=mult
    r["wr_routes_preweek"]=round(routes,2);r["wr_tprr_preweek"]=round(tprr,3);r["wr_route_tprr_multiplier"]=round(mult,3)
- except Exception as ex: print("WR HeatRadar route experiment unavailable:",ex)
+ except Exception as ex: print("WR Fantasy Points route experiment unavailable:",ex)
  return rows
 
 def actual_usage_points(r):
