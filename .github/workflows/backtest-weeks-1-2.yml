@@ -81,3 +81,5 @@ jobs:
 # rerun corrected V4 RB role residual diagnostics
 
 # run RB zero-workload historical availability audit
+
+# run V5 RB2 role-certainty A/B backtest
