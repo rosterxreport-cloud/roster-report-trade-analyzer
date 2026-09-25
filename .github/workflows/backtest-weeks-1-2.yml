@@ -61,3 +61,5 @@ jobs:
           name: roster-report-week1-week2-backtest
           path: data/backtests/
           retention-days: 30
+
+# rerun after historical runner schema fix
