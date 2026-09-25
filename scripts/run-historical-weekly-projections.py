@@ -175,7 +175,7 @@ def apply_rb_fp_experiment(rows,week):
   # Target only the overbiased high-opportunity/high-projection RB tail.
   xtdbase=r["rb_fp_recxtd"];opp=float(r.get("carries",0))+float(r.get("targets",0))
   high=(xtdbase>=13.0 and opp>=16.0)
-  for pct in (5,10,15,20):
+  for pct in (5,10,12,14,15,16,18,20):
    r[f"rb_fp_recxtd_hi_comp_{pct}"]=round(xtdbase*(1-pct/100.) if high else xtdbase,3)
   # Receiving xTD winner held fixed; add only light TPRR influence to receiving opportunity.
   xtdbase=r["rb_fp_recxtd"]
