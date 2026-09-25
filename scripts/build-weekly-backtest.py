@@ -21,6 +21,8 @@ for week in [1,2]:
  # Cutoff state: Week 1 has no 2026 game results; Week 2 may use Week 1 only.
  prior=df[df.week.lt(week)][keep].copy()
  prior.to_csv(OUT/f"week{week}_prior_2026.csv",index=False)
-manifest={"season":2026,"weeks":[1,2],"rules":{"week1":"No 2026 regular-season results permitted as inputs.","week2":"Only Week 1 2026 regular-season results permitted as current-season inputs.","frozen_model":"Use current weekly formulas/weights; do not refit on Weeks 1-2.","actual_scoring":"4-point pass TD; -2 INT; 0.04/pass yd; 0.1 rush/rec yd; 6 rush/rec TD; -2 lost fumble; reception premium 0/.5/1."},"rows":{f"week{w}":int((df.week==w).sum()) for w in [1,2]}}
+# Point-in-time repository priors used for historical replay.
+SNAPSHOTS={1:"fd87448dd9f9dc8fb50d40ae06bb9bb832b19100",2:"b73d8f29b5c6dd9cd7f2710a300cd02ba52d57ad"}
+manifest={"season":2026,"weeks":[1,2],"repository_prior_snapshots":SNAPSHOTS,"rules":{"week1":"No 2026 regular-season results permitted as inputs.","week2":"Only Week 1 2026 regular-season results permitted as current-season inputs.","frozen_model":"Use current weekly formulas/weights; do not refit on Weeks 1-2.","actual_scoring":"4-point pass TD; -2 INT; 0.04/pass yd; 0.1 rush/rec yd; 6 rush/rec TD; -2 lost fumble; reception premium 0/.5/1."},"rows":{f"week{w}":int((df.week==w).sum()) for w in [1,2]}}
 (OUT/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
 print(json.dumps(manifest,indent=2))
