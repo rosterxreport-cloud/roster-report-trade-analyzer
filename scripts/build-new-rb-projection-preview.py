@@ -123,6 +123,33 @@ for k,p in ranked.items():
  base=ry/10+rey/10+rp*.5+tdp*6;player_team=team(p["team"]);opponent=opp.get(player_team);mm=float(defmap.get(opponent,1.0));weekly=base*mm
  remaining_opps=schedule_by_team.get(player_team,[]);ros_mults=[float(defmap.get(o,1.0)) for o in remaining_opps];left=len(remaining_opps);ros_points=sum(base*m for m in ros_mults);ros_ppg=ros_points/left if left else 0.0
  rows.append({"rank":p["posRank"],"player":p["name"],"team":p["team"],"opponent":opponent,"defenseMultiplier":round(mm,3),"carries":round(cp,1),"targets":round(tp,1),"receptions":round(rp,1),"rushYds":round(ry,1),"recYds":round(rey,1),"TD":round(tdp,2),"baselineHalfPPR":round(base,1),"weeklyHalfPPR":round(weekly,1),"ROSgames":left,"ROSScheduleMultiplier":round(sum(ros_mults)/left,3) if left else 1.0,"ROSHalfPPRperGame":round(ros_ppg,1),"ROSpoints":round(ros_points,1),"projectionSource":"ranking-role fallback"})
+# V5 live RB workload architecture: team-constrained opportunity + role-aware allocation
+# + RB2 certainty. Efficiency/TD/matchup logic is preserved.
+def apply_v5_workload(rows):
+ by={}
+ for r in rows: by.setdefault(team(r["team"]),[]).append(r)
+ for tm,rs in by.items():
+  cpool=min(24.0,sum(max(0.,float(r["carries"])) for r in rs));tpool=min(7.0,sum(max(0.,float(r["targets"])) for r in rs))
+  for r in rs:
+   prior=max(1.,61-float(r.get("rank",60)));livec=float(r["carries"]);livet=float(r["targets"])
+   r["_cs"]=(prior**1.25)*(1+.12*livec);r["_ts"]=(prior**1.10)*(1+.22*livet)
+  cs=sum(r["_cs"] for r in rs);ts=sum(r["_ts"] for r in rs)
+  for r in rs:
+   r["_nc"]=min(float(r["carries"]),cpool*r["_cs"]/cs) if cs else 0.;r["_nt"]=min(float(r["targets"]),tpool*r["_ts"]/ts) if ts else 0.
+  ranked=sorted(rs,key=lambda r:r["_nc"]+1.5*r["_nt"],reverse=True)
+  if len(ranked)>1:
+   r2=ranked[1]; certainty=max(.35,min(1.,.35+.055*float(r2["carries"])+.09*float(r2["targets"])))
+   r2["_nc"]*=certainty;r2["_nt"]*=certainty;r2["rb2RoleCertainty"]=round(certainty,3)
+  for r in rs:
+   oc=max(.001,float(r["carries"]));ot=max(.001,float(r["targets"]));nc,nt=r.pop("_nc"),r.pop("_nt")
+   ypc=float(r["rushYds"])/oc;cr=float(r["receptions"])/ot;ypt=float(r["recYds"])/ot;tdpo=float(r["TD"])/(oc+ot)
+   rec=nt*cr;ry=nc*ypc;rey=nt*ypt;td=(nc+nt)*tdpo;mm=float(r["defenseMultiplier"])
+   base=ry/10+rey/10+rec*.5+td*6
+   r.update(carries=round(nc,1),targets=round(nt,1),receptions=round(rec,1),rushYds=round(ry,1),recYds=round(rey,1),TD=round(td,2),baselineHalfPPR=round(base,1),weeklyStandard=round((ry/10+rey/10+td*6)*mm,1),weeklyHalfPPR=round(base*mm,1),weeklyPPR=round((ry/10+rey/10+rec+td*6)*mm,1),rbWorkloadModel="V5")
+   r.pop("_cs",None);r.pop("_ts",None)
+ return rows
+
+rows=apply_v5_workload(rows)
 rows.sort(key=lambda x:x["weeklyHalfPPR"],reverse=True)
 Path("data/new-rb-projection-preview.json").write_text(json.dumps(rows,indent=2))
 print(json.dumps(rows[:25],indent=2))
