@@ -20,7 +20,7 @@ SNAP_URL="https://github.com/nflverse/nflverse-data/releases/download/snap_count
 PBP_URL="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_{season}.parquet"
 PFR_RUSH_URL="https://github.com/nflverse/nflverse-data/releases/download/pfr_advstats/advstats_week_rush_{season}.csv"
 SCHEDULE_URL="https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
-SCHEMA={"rank","name","team","pos","value","awRank","analytics","analyticsScore","posRank","scarcity","market","rookie"}
+SCHEMA={"rank","name","team","pos","value","awRank","analytics","analyticsScore","posRank","scarcity","market","rookie","rankingScore"}
 
 def team(v):
     v=str(v or "").strip().upper(); return ALIASES.get(v,v)
@@ -255,7 +255,7 @@ def role_reality_modifier(p, matches):
     return max(.75,1.0-penalty)
 
 def special(nm,tm,pos,d,rank):
-    return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False}
+    return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False,"rankingScore":round(d["score"],2)}
 
 def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries):
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring);out=[]
@@ -267,7 +267,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
         print("RB explosive scoring debug:",debug)
     for p in records:
         if p["pos"] in {"K","DST"}:continue
-        q=copy.deepcopy(p);base=baseline.get(scoring,{}).get(p["name"])
+        q=copy.deepcopy(p);q.setdefault("rankingScore",round(float(q.get("value",0)),2));base=baseline.get(scoring,{}).get(p["name"])
         if base:q.update(value=base["value"],analyticsScore=base["analyticsScore"],rank=base["rank"])
         if not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None:
             matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))].copy();sk=namekey(p["name"]);sr=snaps26.loc[snaps26.name_key.eq(sk)];
@@ -301,7 +301,11 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
                 injury_context=max(0.0,min(1.0,1.0-(a*.55+w*.45)))
                 role_mod=role_mod+(1.0-role_mod)*min(.80,injury_context*1.6)
             raw_value*=role_mod
-            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=round(max(0.0,min(100.0,raw_value)),2);q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
+            # Persist the finalized 2026 rankings signal BEFORE injury/availability
+            # deductions. Trade-value experiments can now weight the actual rankings
+            # model directly instead of inferring it from already-adjusted values.
+            q["rankingScore"]=round(max(0.0,min(100.0,raw_value)),2)
+            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=q["rankingScore"];q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
         out.append(q)
     # Restore any 2026 QB who is missing from the locked preseason pool but has
     # played a meaningful role. Forty offensive snaps is roughly a substantial
@@ -336,7 +340,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             tm=team(str(row.get("recent_team") or row.get("team") or ""))
             q={"rank":999,"name":nm,"team":tm,"pos":"QB","value":round(max(0,min(100,val)),2),
                "awRank":None,"analytics":round(live,3),"analyticsScore":round(season_w*live+(1-season_w)*prior,2),
-               "posRank":0,"scarcity":round(prior,2),"market":round(preseason,2),"rookie":False}
+               "posRank":0,"scarcity":round(prior,2),"market":round(preseason,2),"rookie":False,"rankingScore":round(max(0,min(100,val)),2)}
             out.append(q);existing.add(nk)
     next_rank=251
     for pos,source,names in (("K",kvals,kickers),("DST",dvals,{v:k for k,v in TEAMS.items()})):
@@ -421,7 +425,8 @@ def injury_deduction(adj):
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injury_path=a.players.parent/"injury-adjustments.json";injuries=(json.loads(injury_path.read_text()).get("players",{}) if injury_path.exists() else {})
     for scoring,rows in before.items():
-        if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250 or any(set(p)!=SCHEMA for p in rows):raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
+        if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250:raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
+        for p in rows:p.setdefault("rankingScore",round(float(p.get("value",0)),2))
         if set(baseline.get(scoring,{}))!={p["name"] for p in rows if p["pos"] in CORE}:raise RuntimeError(f"Immutable core baseline coverage invalid in {scoring}")
     kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey)
     p26["player_id"]=p26["player_id"].astype(str)
