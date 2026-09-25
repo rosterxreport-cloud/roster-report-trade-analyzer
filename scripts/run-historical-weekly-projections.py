@@ -169,7 +169,14 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
   xtd=float(x.XTD) if pd.notna(x.XTD) else 0.;xtd_reg=.55*xtd+.45*.171
   for pct in (25,50,75,100):
    td_blend=(1-pct/100.)*base_td+(pct/100.)*xtd_reg;r[f"ppr_xtd_{pct}"]=round(base_ppr+6*(td_blend-base_td),3)
-  r["ppr_projection"]=r["ppr_xtd_0"];r["rec_tds"]=base_td;r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr;r["wr_xtd_week1"]=xtd
+  # Hold the winning 75% xTD TD component fixed; test regressed Week-1 YPT only.
+  p75=r["ppr_xtd_75"];week_ypt=float(x.YPT) if pd.notna(x.YPT) else 8.0
+  for wt in (.10,.20,.30):
+   reg_ypt=(1-wt)*8.0+wt*week_ypt
+   # Apply YPT only to the receiving-yard fantasy-point component, not total projection.
+   yard_delta=(float(r.get("rec_yards",0))*(reg_ypt/8.0-1.0))/10.0
+   r[f"ppr_xtd75_ypt_{int(wt*100)}"]=round(p75+yard_delta,3)
+  r["ppr_projection"]=p75;r["rec_tds"]=base_td;r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr;r["wr_xtd_week1"]=xtd;r["wr_ypt_week1"]=week_ypt
  return rows
 
 def actual_usage_points(r):
@@ -196,7 +203,7 @@ for week in (1,2):
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_85_15_XTD_BLEND_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_85_15_XTD75_YPT_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
