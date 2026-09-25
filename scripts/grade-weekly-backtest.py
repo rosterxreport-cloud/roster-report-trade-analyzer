@@ -77,4 +77,11 @@ if rows:
    cols=[x for x in ["backtest_week","player_proj","team","role_bucket","ppr_projection","ppr_actual","ppr_error","ppr_abs_error","carries_proj","carries_actual","targets_proj","targets_actual"] if x in rb]
    worst=rb.sort_values("ppr_abs_error",ascending=False)[cols].head(20)
    worst.to_csv(OUT/"rb_largest_misses.csv",index=False);print("\nRB LARGEST PPR MISSES\n",worst.to_string(index=False))
+   # Zero/near-zero workload audit: distinguish historical availability misses from football variance.
+   z=rb[(pd.to_numeric(rb.get("carries_actual"),errors="coerce").fillna(0)+pd.to_numeric(rb.get("targets_actual"),errors="coerce").fillna(0)<=1)&(pd.to_numeric(rb.get("ppr_projection"),errors="coerce").fillna(0)>=5)].copy()
+   if len(z):
+    z["availability_flag"]=np.where(pd.to_numeric(z.get("availability_factor"),errors="coerce").fillna(1)<1,"ADJUSTED","FULL_AVAILABILITY")
+    zcols=[x for x in ["backtest_week","player_proj","team","role_bucket","ppr_projection","ppr_actual","carries_actual","targets_actual","availability_factor","historical_status","availability_flag"] if x in z]
+    z=z[zcols].sort_values("ppr_projection",ascending=False)
+    z.to_csv(OUT/"rb_zero_workload_audit.csv",index=False);print("\nRB ZERO/NEAR-ZERO WORKLOAD AUDIT\n",z.to_string(index=False))
 else: print("No historical projection CSVs available to grade.")
