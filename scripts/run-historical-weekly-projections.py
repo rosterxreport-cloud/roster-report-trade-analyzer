@@ -154,6 +154,26 @@ def project_from_usage(pos,p,ud,td):
   rutdr=regress(ud.get("rushing_tds",car*NEUTRAL["rushing_td_rate"])/max(1.,ud.get("carries",car)),"rushing_td_rate")
   std+=car*ypc*.1+car*rutdr*6
  return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
+def apply_rb_fp_experiment(rows,week):
+ if week<=1:return rows
+ ps=[OUT/"priors"/"fp_rb_week1_core.csv",OUT/"priors"/"fp_rb_week1_core_part2.csv",OUT/"priors"/"fp_rb_week1_core_part3.csv"]
+ q=pd.concat([pd.read_csv(p) for p in ps],ignore_index=True);q["k"]=q.Name.map(key);qm={x.k:x for _,x in q.iterrows()}
+ for r in rows:
+  if r["position"]!="RB":continue
+  x=qm.get(key(r["player"]))
+  if x is None:continue
+  base=float(r["ppr_projection"]);r["rb_fp_control"]=round(base,3)
+  def val(n,d=0.): return float(getattr(x,n)) if pd.notna(getattr(x,n)) else d
+  # Conservative one-week signal tests. Each column changes one underlying role/TD component only.
+  snap=max(.55,min(1.25,(val("SNAP",43.6)/43.6)**.35));att=max(.65,min(1.30,(val("ATT",9.8)/9.8)**.35))
+  rte=max(.65,min(1.30,(val("RTE_PCT",29.)/29.)**.35));tprr=max(.70,min(1.30,(val("TPRR",.20)/.20)**.30))
+  exp=max(.70,min(1.30,((val("EXP_YDS",16.6)+10)/(26.6))**.30));i5=max(.85,min(1.15,1+(val("I5",20.5)-20.5)/300.))
+  rushpts=float(r.get("rush_yards",0))*.1+float(r.get("rush_tds",0))*6;recpts=float(r.get("rec_yards",0))*.1+float(r.get("receptions",0))+float(r.get("rec_tds",0))*6
+  r["rb_fp_snap"]=round(base+(rushpts+recpts)*(snap-1),3);r["rb_fp_att"]=round(base+rushpts*(att-1),3);r["rb_fp_expyds"]=round(base+rushpts*(exp-1),3);r["rb_fp_i5"]=round(base+rushpts*(i5-1),3);r["rb_fp_route"]=round(base+recpts*(rte-1),3);r["rb_fp_tprr"]=round(base+recpts*(tprr-1),3)
+  oldrt=float(r.get("rush_tds",0));oldct=float(r.get("rec_tds",0));rx=.55*val("RUSH_XTD",.31)+.45*.31;cx=.55*val("REC_XTD",.051)+.45*.051;comb=.55*val("COMBINED_XTD",.361)+.45*.361
+  r["rb_fp_rushxtd"]=round(base+6*(rx-oldrt),3);r["rb_fp_recxtd"]=round(base+6*(cx-oldct),3);r["rb_fp_combxtd"]=round(base+6*(comb-oldrt-oldct),3)
+ return rows
+
 def apply_wr_route_tprr_experiment(rows,week,prestats):
  if week<=1:return rows
  ps=[OUT/"priors"/f"fp_wr_week1_part{i}.csv" for i in (1,2,3)]
@@ -205,6 +225,7 @@ for week in (1,2):
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
   rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_85_15_XTD75_YPT_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
+ rows=apply_rb_fp_experiment(rows,week)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} V5 projections")
