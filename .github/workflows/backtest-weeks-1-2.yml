@@ -137,3 +137,5 @@ jobs:
 # run clean xTD test without custom artifact block
 
 # run WR xTD75 plus YPT regression sweep
+
+# run RB FP underlying metric isolation sweep no xFP
