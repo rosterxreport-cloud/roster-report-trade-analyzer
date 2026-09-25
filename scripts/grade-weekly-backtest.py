@@ -73,6 +73,12 @@ if rows:
   for (bucket,fmt),g in [( (b,f),gg) for (b,f),gg in rb.melt(id_vars=[x for x in rb.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in rb],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["role_bucket","fmt"]) ]:
    e=pd.to_numeric(g.err,errors="coerce").dropna();resid.append({"role_bucket":bucket,"format":fmt,"n":len(e),"mae":e.abs().mean(),"rmse":np.sqrt((e**2).mean()),"bias":e.mean()})
   rr=pd.DataFrame(resid);rr.to_csv(OUT/"rb_role_residuals.csv",index=False);print("\nRB ROLE RESIDUALS\n",rr.to_string(index=False))
+  # Tight fantasy-point hit rates: cumulative thresholds by position/format.
+  hitrows=[]
+  for (pos,fmt),g in merged.melt(id_vars=[x for x in merged.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in merged],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["position","fmt"]):
+   e=pd.to_numeric(g.err,errors="coerce").dropna().abs()
+   hitrows.append({"position":pos,"format":fmt,"n":len(e),"within_1_pct":100*(e<=1).mean(),"within_3_pct":100*(e<=3).mean(),"within_6_pct":100*(e<=6).mean(),"over_6_pct":100*(e>6).mean()})
+  hr=pd.DataFrame(hitrows);hr.to_csv(OUT/"fantasy_point_hit_rates.csv",index=False);print("\nFANTASY POINT HIT RATES +/-1 / +/-3 / +/-6\n",hr.to_string(index=False))
   if "ppr_abs_error" in rb:
    cols=[x for x in ["backtest_week","player_proj","team","role_bucket","ppr_projection","ppr_actual","ppr_error","ppr_abs_error","carries_proj","carries_actual","targets_proj","targets_actual"] if x in rb]
    worst=rb.sort_values("ppr_abs_error",ascending=False)[cols].head(20)
