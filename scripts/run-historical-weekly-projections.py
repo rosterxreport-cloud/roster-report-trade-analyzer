@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Historical Week 1-2 fantasy projection runner.
+"""Historical Week 1-2 fantasy projection runner (baseline only).
 Uses frozen point-in-time player priors plus only pre-week 2026 usage.
 This first pass creates a reproducible no-leakage baseline for all QB/RB/WR/TE.
 """
@@ -40,6 +40,6 @@ for week in (1,2):
   # component by position; raw-stat runners will replace this baseline next.
   rec={"QB":0.0,"RB":3.0,"WR":4.5,"TE":3.5}[pos]
   half=ppr-.5*rec; standard=ppr-rec
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"point-in-time baseline"})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"BASELINE_ONLY_NOT_CURRENT_MODEL"})
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} baseline projections")
