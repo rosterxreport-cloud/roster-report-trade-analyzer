@@ -1,0 +1,42 @@
+name: Week 1-2 Projection Backtest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build-weekly-backtest.py'
+      - '.github/workflows/backtest-weeks-1-2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  backtest-cuts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install pandas numpy
+      - name: Build leakage-safe Week 1-2 cuts
+        run: python scripts/build-weekly-backtest.py
+      - name: Validate cutoff rules
+        run: |
+          python - <<'PY'
+          import pandas as pd, json
+          w1=pd.read_csv('data/backtests/week1_prior_2026.csv')
+          w2=pd.read_csv('data/backtests/week2_prior_2026.csv')
+          m=json.load(open('data/backtests/manifest.json'))
+          assert len(w1)==0, f'Week 1 leaked {len(w1)} 2026 rows'
+          assert set(w2.week.unique()) <= {1}, f'Week 2 leaked weeks {w2.week.unique()}'
+          print('Cutoffs valid',m['rows'])
+          PY
+      - name: Upload backtest cuts
+        uses: actions/upload-artifact@v4
+        with:
+          name: roster-report-week1-week2-backtest
+          path: data/backtests/
+          retention-days: 30
