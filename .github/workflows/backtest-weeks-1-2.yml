@@ -51,22 +51,6 @@ jobs:
           assert set(w2.week.unique()) <= {1}, f'Week 2 leaked weeks {w2.week.unique()}'
           print('Cutoffs valid',m['rows'])
           PY
-      - name: Fetch and freeze HeatRadar Week 1 route snapshot
-        run: |
-          python - <<'PY'
-          import pandas as pd
-          url='https://heatradar.app/nfl/routes?week=1&position=WR'
-          tabs=pd.read_html(url)
-          df=next(x for x in tabs if any(str(z).lower()=='player' for z in x.columns) and any(str(z).lower()=='routes' for z in x.columns))
-          df.columns=[str(z).lower().strip() for z in df.columns]
-          if 'pos' in df.columns: df=df[df['pos'].astype(str).eq('WR')]
-          df=df[['player','routes']].copy()
-          df['routes']=pd.to_numeric(df['routes'],errors='coerce')
-          df=df.dropna(subset=['routes'])
-          assert len(df)>=20, f'HeatRadar route snapshot unexpectedly small: {len(df)}'
-          df.to_csv('data/backtests/priors/heatradar_week1_routes.csv',index=False)
-          print('Frozen HeatRadar Week 1 WR routes:',len(df))
-          PY
       - name: Run point-in-time historical projection baseline
         run: python scripts/run-historical-weekly-projections.py
       - name: Grade projections when historical runner output exists
@@ -123,3 +107,5 @@ jobs:
 # run WR V2 with frozen HeatRadar Week 1 route data
 
 # run WR V2 with frozen HeatRadar Week 1 route data
+
+# run WR V2 using uploaded frozen Fantasy Points Week 1 routes/TPRR
