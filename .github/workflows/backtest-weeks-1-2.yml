@@ -117,3 +117,5 @@ jobs:
 # run WR V2 route-vs-TPRR weight sweep 70/30 through 30/70
 
 # final WR route-heavy sweep: 75/25, 80/20, 85/15, 90/10, routes-only
+
+# run WR V2.1 Week 1 YPT regression sweep
