@@ -127,3 +127,5 @@ jobs:
 # rerun verified xTD newline repair
 
 # clean WR xTD sweep rerun
+
+# rerun xTD using existing WR artifact path
