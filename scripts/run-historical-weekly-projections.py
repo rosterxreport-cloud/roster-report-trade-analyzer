@@ -181,15 +181,4 @@ for week in (1,2):
   rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V5_RB2_CERTAINTY","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
- print(f"Week {week}: wrote {len(rows)} V2 projections")  # V5 RB2 role-certainty gate. RB1 is untouched; RB3+ remains governed by pool allocation.
-  ranked=sorted(rs,key=lambda r:r.get("_newc",0)+1.5*r.get("_newt",0),reverse=True)
-  if len(ranked)>1:
-   r2=ranked[1]; livec=float(r2.get("_pre_carries",0));livet=float(r2.get("_pre_targets",0)); prior=float(r2.get("_role_prior",50))
-   if livec+livet>0:
-    # Once actual usage exists, certainty rises quickly with demonstrated opportunity.
-    certainty=max(.35,min(1.0,.35+.055*livec+.09*livet))
-   else:
-    # Week 1/preseason: weak secondary roles are discounted; strong frozen priors are preserved.
-    certainty=max(.30,min(.90,.30+.006*max(0.,prior-40)))
-   r2["_newc"]*=certainty;r2["_newt"]*=certainty;r2["rb2_role_certainty"]=certainty
-
+ print(f"Week {week}: wrote {len(rows)} V5 projections")
