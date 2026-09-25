@@ -183,6 +183,8 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
    for z in ["targets","receptions","rec_yards","rec_tds"]:r[z]=float(r.get(z,0))*mult
    for fmt in ["standard_projection","half_projection","ppr_projection"]:r[fmt]*=mult
    r["wr_routes_preweek"]=round(routes,2);r["wr_tprr_preweek"]=round(tprr,3);r["wr_route_tprr_multiplier"]=round(mult,3)
+ except Exception as ex:
+  print("WR route/TPRR experiment unavailable:",ex)
  return rows
 
 def actual_usage_points(r):
