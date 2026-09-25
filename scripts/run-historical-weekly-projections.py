@@ -80,6 +80,26 @@ def defense_multipliers(week):
   return {k:.88+.24*float(pct[k]) for k in pct.index}
  except Exception as ex:
   print("Historical defense neutral fallback:",ex);return {}
+def constrain_rb_team(rows):
+ # Preserve each RB's efficiency/TD assumptions; constrain only opportunity to a realistic team pool.
+ by={}
+ for r in rows:
+  if r["position"]=="RB":by.setdefault(r["team"],[]).append(r)
+ for tm,rs in by.items():
+  # Current early-season structure: roughly 24 RB carries and 7 RB targets per team.
+  # Scale only downward; never manufacture opportunity.
+  c=sum(r.get("carries",0) for r in rs); t=sum(r.get("targets",0) for r in rs)
+  cm=min(1.,24.0/c) if c>0 else 1.; tmul=min(1.,7.0/t) if t>0 else 1.
+  for r in rs:
+   r["rb_carry_pool_multiplier"]=cm;r["rb_target_pool_multiplier"]=tmul
+   # Rebuild fantasy scoring from the already projected per-opportunity efficiencies.
+   oldc=r.get("carries",0);oldt=r.get("targets",0)
+   newc=oldc*cm;newt=oldt*tmul
+   ypc=r.get("rush_yards",0)/oldc if oldc else 0; rutdr=r.get("rush_tds",0)/oldc if oldc else 0
+   cr=r.get("receptions",0)/oldt if oldt else 0;ypt=r.get("rec_yards",0)/oldt if oldt else 0;rtdr=r.get("rec_tds",0)/oldt if oldt else 0
+   rec=newt*cr; std=newc*ypc*.1+newc*rutdr*6+newt*ypt*.1+newt*rtdr*6
+   r.update(carries=newc,rush_yards=newc*ypc,rush_tds=newc*rutdr,targets=newt,receptions=rec,rec_yards=newt*ypt,rec_tds=newt*rtdr,standard_projection=std,half_projection=std+.5*rec,ppr_projection=std+rec)
+ return rows
 def project_from_usage(pos,p,ud,td):
  # Historical replay of the current model's early-season opportunity + efficiency structure.
  score=prior_strength(p)
@@ -131,6 +151,7 @@ for week in (1,2):
   mm=float(def_mult.get(x["opponent"].get(team(p.get("team"))),1.0));standard*=mm;half*=mm;ppr*=mm
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V2","availability_factor":round(af,3),"historical_status":status,**{z:round(v,3) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V3_TEAM_CONSTRAINED_RB","availability_factor":round(af,3),"historical_status":status,**{z:round(v,3) for z,v in raw.items()}})
+ rows=constrain_rb_team(rows)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} V2 projections")
