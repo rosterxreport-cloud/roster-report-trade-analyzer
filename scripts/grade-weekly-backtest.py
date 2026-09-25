@@ -75,7 +75,7 @@ if rows:
   rr=pd.DataFrame(resid);rr.to_csv(OUT/"rb_role_residuals.csv",index=False);print("\nRB ROLE RESIDUALS\n",rr.to_string(index=False))
   # Tight fantasy-point hit rates: cumulative thresholds by position/format.
   hitrows=[]
-  for (pos,fmt),g in merged.melt(id_vars=[x for x in merged.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in merged],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["position","fmt"]):
+  for (pos,fmt),g in allm.melt(id_vars=[x for x in allm.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in allm],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["position_actual","fmt"]):
    e=pd.to_numeric(g.err,errors="coerce").dropna().abs()
    hitrows.append({"position":pos,"format":fmt,"n":len(e),"within_1_pct":100*(e<=1).mean(),"within_3_pct":100*(e<=3).mean(),"within_6_pct":100*(e<=6).mean(),"over_6_pct":100*(e>6).mean()})
   hr=pd.DataFrame(hitrows);hr.to_csv(OUT/"fantasy_point_hit_rates.csv",index=False);print("\nFANTASY POINT HIT RATES +/-1 / +/-3 / +/-6\n",hr.to_string(index=False))
