@@ -51,6 +51,20 @@ jobs:
           assert set(w2.week.unique()) <= {1}, f'Week 2 leaked weeks {w2.week.unique()}'
           print('Cutoffs valid',m['rows'])
           PY
+      - name: Build Week 1 RB explosive-run rate from nflverse PBP
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          u='https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.csv.gz'
+          d=pd.read_csv(u,compression='gzip',low_memory=False)
+          x=d[(d.week==1)&(d.play_type=='run')&d.rusher_player_name.notna()].copy()
+          x['explosive15']=(x.rushing_yards>=15).astype(int)
+          o=x.groupby('rusher_player_name').agg(attempts=('rushing_yards','size'),explosive15=('explosive15','sum')).reset_index()
+          o['explosive15_rate']=o.explosive15/o.attempts
+          o.to_csv('data/backtests/priors/nflverse_rb_week1_explosive15.csv',index=False)
+          print(o.sort_values(['explosive15_rate','attempts'],ascending=False).head(30).to_string(index=False))
+          PY
+
       - name: Run point-in-time historical projection baseline
         run: |
           python -m py_compile scripts/run-historical-weekly-projections.py
