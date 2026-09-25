@@ -11,6 +11,15 @@ from backtest_point_in_time import load,key,team
 OUT=Path("data/backtests")
 # Stable position-level PPR baselines used only when a player has no prior-season weekly usage.
 POS_BASE={"QB":17.0,"RB":9.5,"WR":8.5,"TE":6.5}
+# Current-model efficiency regression weights, pinned for historical replay.
+REGRESSION_WEIGHTS={"catch_rate":0.30,"yards_per_target":0.35,"receiving_td_per_target":0.55,"yards_per_carry":0.35,"passing_ypa":0.30,"passing_td_rate":0.45,"interception_rate":0.40,"rushing_td_rate":0.35}
+NEUTRAL={"catch_rate":0.645,"yards_per_target":7.5,"receiving_td_per_target":0.045,"yards_per_carry":4.3,"passing_ypa":7.15,"passing_td_rate":0.045,"interception_rate":0.022,"rushing_td_rate":0.025}
+def regress(observed,metric):
+ w=REGRESSION_WEIGHTS[metric]
+ try:o=float(observed)
+ except:o=NEUTRAL[metric]
+ if not np.isfinite(o):o=NEUTRAL[metric]
+ return w*o+(1-w)*NEUTRAL[metric]
 def prior_strength(p):
  # Historical analyticsScore is the cleanest common numeric player-quality signal
  # present in both pinned repository snapshots.
