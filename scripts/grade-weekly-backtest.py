@@ -67,14 +67,14 @@ if rows:
   pd.DataFrame(diag).to_csv(OUT/"rb_volume_efficiency_diagnostic.csv",index=False);print("\nRB VOLUME/EFFICIENCY\n",pd.DataFrame(diag).to_string(index=False))
   # V4 residual analysis: rank RBs within each team by projected opportunity.
   rb["opp_score"]=pd.to_numeric(rb.get("carries_proj"),errors="coerce").fillna(0)+1.5*pd.to_numeric(rb.get("targets_proj"),errors="coerce").fillna(0)
-  rb["role_rank"]=rb.groupby(["backtest_week","team_proj"])["opp_score"].rank(method="first",ascending=False)
+  rb["role_rank"]=rb.groupby(["backtest_week","team"])["opp_score"].rank(method="first",ascending=False)
   rb["role_bucket"]=np.where(rb.role_rank==1,"RB1",np.where(rb.role_rank==2,"RB2","RB3+"))
   resid=[]
   for (bucket,fmt),g in [( (b,f),gg) for (b,f),gg in rb.melt(id_vars=[x for x in rb.columns if not x.endswith("_error")],value_vars=[x for x in ["standard_error","half_error","ppr_error"] if x in rb],var_name="efmt",value_name="err").assign(fmt=lambda x:x.efmt.str.replace("_error","")).groupby(["role_bucket","fmt"]) ]:
    e=pd.to_numeric(g.err,errors="coerce").dropna();resid.append({"role_bucket":bucket,"format":fmt,"n":len(e),"mae":e.abs().mean(),"rmse":np.sqrt((e**2).mean()),"bias":e.mean()})
   rr=pd.DataFrame(resid);rr.to_csv(OUT/"rb_role_residuals.csv",index=False);print("\nRB ROLE RESIDUALS\n",rr.to_string(index=False))
   if "ppr_abs_error" in rb:
-   cols=[x for x in ["backtest_week","player_proj","team_proj","role_bucket","ppr_projection","ppr_actual","ppr_error","ppr_abs_error","carries_proj","carries_actual","targets_proj","targets_actual"] if x in rb]
+   cols=[x for x in ["backtest_week","player_proj","team","role_bucket","ppr_projection","ppr_actual","ppr_error","ppr_abs_error","carries_proj","carries_actual","targets_proj","targets_actual"] if x in rb]
    worst=rb.sort_values("ppr_abs_error",ascending=False)[cols].head(20)
    worst.to_csv(OUT/"rb_largest_misses.csv",index=False);print("\nRB LARGEST PPR MISSES\n",worst.to_string(index=False))
 else: print("No historical projection CSVs available to grade.")
