@@ -174,6 +174,16 @@ def apply_rb_fp_experiment(rows,week):
   r["rb_fp_rushxtd"]=round(base+6*(rx-oldrt),3);r["rb_fp_recxtd"]=round(base+6*(cx-oldct),3);r["rb_fp_combxtd"]=round(base+6*(comb-oldrt-oldct),3)
   # Target only the overbiased high-opportunity/high-projection RB tail.
   xtdbase=r["rb_fp_recxtd"];opp=float(r.get("carries",0))+float(r.get("targets",0))
+  # nflverse Week-1 15+ explosive run rate; shrink small samples toward 8% prior.
+  ep=OUT/"priors"/"nflverse_rb_week1_explosive15.csv"
+  if ep.exists():
+   ed=pd.read_csv(ep); ed["k"]=ed.rusher_player_name.map(key)
+   em={z.k:z for _,z in ed.iterrows()}; ex=em.get(key(r["player"]))
+   if ex is not None:
+    er=(float(ex.explosive15)+2*.08)/(float(ex.attempts)+2)
+    for wt in (.05,.10,.15,.20):
+     mult=max(.92,min(1.08,1+wt*(er/.08-1)))
+     r[f"rb_fp_recxtd_hi16_expl_{int(wt*100)}"]=round((xtdbase*.84 if (xtdbase>=13 and opp>=16) else xtdbase)*mult,3)
   high=(xtdbase>=13.0 and opp>=16.0)
   for pct in (5,10,12,14,15,16,18,20):
    r[f"rb_fp_recxtd_hi_comp_{pct}"]=round(xtdbase*(1-pct/100.) if high else xtdbase,3)
