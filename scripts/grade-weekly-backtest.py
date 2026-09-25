@@ -130,3 +130,9 @@ try:
  for col in ["rb_fp_control","rb_fp_snap","rb_fp_att","rb_fp_expyds","rb_fp_i5","rb_fp_route","rb_fp_tprr","rb_fp_rushxtd","rb_fp_recxtd","rb_fp_combxtd"]:
   e=mm[col]-mm[pcol];ae=e.abs();print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
 except Exception as ex:print("RB FP grading unavailable:",ex)
+
+try:
+ sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);mm=sw.merge(act[["k",pcol]],on="k");print("\nRB REC XTD + LIGHT TPRR SWEEP")
+ for col in ["rb_fp_recxtd","rb_fp_recxtd_tprr_5","rb_fp_recxtd_tprr_10","rb_fp_recxtd_tprr_15","rb_fp_recxtd_tprr_20"]:
+  e=mm[col]-mm[pcol];ae=e.abs();print(col,"n",len(e),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
+except Exception as ex:print("RB rec xTD TPRR grading unavailable:",ex)
