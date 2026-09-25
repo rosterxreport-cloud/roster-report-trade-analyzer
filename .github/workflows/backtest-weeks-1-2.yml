@@ -49,6 +49,8 @@ jobs:
           assert set(w2.week.unique()) <= {1}, f'Week 2 leaked weeks {w2.week.unique()}'
           print('Cutoffs valid',m['rows'])
           PY
+      - name: Run point-in-time historical projection baseline
+        run: python scripts/run-historical-weekly-projections.py
       - name: Grade projections when historical runner output exists
         run: python scripts/grade-weekly-backtest.py
       - name: Upload backtest cuts
