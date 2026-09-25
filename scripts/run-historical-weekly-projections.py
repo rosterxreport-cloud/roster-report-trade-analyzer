@@ -155,24 +155,23 @@ def project_from_usage(pos,p,ud,td):
   std+=car*ypc*.1+car*rutdr*6
  return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
 def apply_wr_route_tprr_experiment(rows,week,prestats):
- # WR V3 experiment: Fantasy Points Route% + TPRR + first-read share.
+ # WR V4 experiment: V2 route volume + TPRR, plus YPRR efficiency.
  if week<=1:return rows
- p=OUT/"priors"/"fantasy_points_week1_wr_v3.csv"
- if not p.exists(): print("WR V3 snapshot missing");return rows
+ p=OUT/"priors"/"fantasy_points_week1_wr_v4.csv"
+ if not p.exists(): print("WR V4 snapshot missing");return rows
  try:
   q=pd.read_csv(p);q["k"]=q["Name"].map(key);qm={r.k:r for _,r in q.iterrows()}
   for r in rows:
    if r["position"]!="WR":continue
    x=qm.get(key(r["player"]))
-   if x is None:continue
-   route=float(x["RTE %"])/100.; tprr=float(x["TPRR"]); first=float(x["1READ %"])/100.
-   # Center each signal around practical WR baselines; modest cap for one-week sample.
-   rs=max(.75,min(1.20,route/.80)); ts=max(.75,min(1.25,tprr/.20)); fs=max(.75,min(1.25,first/.20))
-   mult=max(.80,min(1.20,.25+.30*rs+.30*ts+.15*fs))
+   if x is None or float(x["RTE"])<=0:continue
+   routes=float(x["RTE"]);tprr=float(x["TPRR"]);yprr=float(x["YPRR"])
+   rs=max(.70,min(1.20,routes/32.0));ts=max(.75,min(1.25,tprr/.20));ys=max(.80,min(1.20,yprr/1.57))
+   mult=max(.80,min(1.20,.40+.25*rs+.25*ts+.10*ys))
    for z in ["targets","receptions","rec_yards","rec_tds"]:r[z]=float(r.get(z,0))*mult
    for fmt in ["standard_projection","half_projection","ppr_projection"]:r[fmt]*=mult
-   r["wr_route_pct_preweek"]=round(route,3);r["wr_tprr_preweek"]=round(tprr,3);r["wr_first_read_pct_preweek"]=round(first,3);r["wr_v3_multiplier"]=round(mult,3)
- except Exception as ex: print("WR V3 unavailable:",ex)
+   r["wr_routes_preweek"]=round(routes,2);r["wr_tprr_preweek"]=round(tprr,3);r["wr_yprr_preweek"]=round(yprr,3);r["wr_v4_multiplier"]=round(mult,3)
+ except Exception as ex: print("WR V4 unavailable:",ex)
  return rows
 
 def actual_usage_points(r):
@@ -199,7 +198,7 @@ for week in (1,2):
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_V3_ROUTE_TPRR_FIRST_READ_EXPERIMENT","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_V4_ROUTE_TPRR_YPRR_EXPERIMENT","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
