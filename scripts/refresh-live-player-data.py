@@ -305,7 +305,15 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             # deductions. Trade-value experiments can now weight the actual rankings
             # model directly instead of inferring it from already-adjusted values.
             q["rankingScore"]=round(max(0.0,min(100.0,raw_value)),2)
-            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2);q["value"]=q["rankingScore"];q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
+            q["analyticsScore"]=round(max(0.0,min(100.0,new)),2)
+            # Trade value now gives the independent 2026 rankings model 60%
+            # weight. The remaining 40% preserves the existing analytics,
+            # scarcity and market stabilizers in their prior 35:10:10 ratio.
+            other=(.35*q["analyticsScore"]+.10*scarcity+.10*market)/.55
+            q["value"]=round(max(0.0,min(100.0,.60*q["rankingScore"]+.40*other)),2)
+            # Availability remains downstream so an unavailable player cannot
+            # regain value merely because the rankings signal is strong.
+            q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
         out.append(q)
     # Restore any 2026 QB who is missing from the locked preseason pool but has
     # played a meaningful role. Forty offensive snaps is roughly a substantial
