@@ -27,7 +27,7 @@ for w in (1,2):
    e=g[f"{fmt}_error"].dropna()
    if len(e): summaries.append({"week":w,"position":pos,"format":fmt,"n":len(e),"mae":e.abs().mean(),"rmse":np.sqrt((e**2).mean()),"bias":e.mean()})
  # Grade raw stat components whenever the historical runner provides them.
- pairs=[("pass_attempts","attempts"),("pass_yards","passing_yards"),("pass_tds","passing_tds"),("interceptions","passing_interceptions"),("carries","carries"),("rush_yards","rushing_yards"),("rush_tds","rushing_tds"),("targets","targets"),("receptions","receptions"),("rec_yards","receiving_yards"),("rec_tds","receiving_tds")]
+ pairs=[("pass_attempts","attempts"),("carries","carries"),("targets","targets"),("receptions","receptions"),("pass_yards","passing_yards"),("pass_tds","passing_tds"),("interceptions","passing_interceptions"),("carries","carries"),("rush_yards","rushing_yards"),("rush_tds","rushing_tds"),("targets","targets"),("receptions","receptions"),("rec_yards","receiving_yards"),("rec_tds","receiving_tds")]
  for pc,ac in pairs:
   if pc not in m.columns or ac not in m.columns: continue
   e=pd.to_numeric(m[pc],errors="coerce")-pd.to_numeric(m[ac],errors="coerce")
@@ -50,4 +50,19 @@ if rows:
   for (pos,stat),g in ss.groupby(["position","stat"]):
    pass
   ss.to_csv(OUT/"stat_accuracy_summary.csv",index=False);print("\nSTAT DIAGNOSTICS\n",ss.to_string(index=False))
+  # RB volume-vs-efficiency diagnostic from matched player rows.
+  rb=allm[allm.position_actual=="RB"].copy()
+  diag=[]
+  for w,g in rb.groupby("backtest_week"):
+   for pc,ac in [("carries","carries"),("targets","targets"),("receptions","receptions")]:
+    if pc in g and ac in g:
+     e=pd.to_numeric(g[pc],errors="coerce")-pd.to_numeric(g[ac],errors="coerce")
+     diag.append({"week":w,"metric":pc,"n":e.notna().sum(),"bias":e.mean(),"mae":e.abs().mean()})
+   if "carries" in g and "rush_yards" in g:
+    pc=pd.to_numeric(g.carries,errors="coerce"); py=pd.to_numeric(g.rush_yards,errors="coerce")
+    ac=pd.to_numeric(g["carries_actual"],errors="coerce") if "carries_actual" in g else pd.to_numeric(g["carries"],errors="coerce")
+    ay=pd.to_numeric(g["rushing_yards"],errors="coerce")
+    pypc=py/pc.replace(0,np.nan); aypc=ay/ac.replace(0,np.nan)
+    e=pypc-aypc;diag.append({"week":w,"metric":"yards_per_carry","n":e.notna().sum(),"bias":e.mean(),"mae":e.abs().mean()})
+  pd.DataFrame(diag).to_csv(OUT/"rb_volume_efficiency_diagnostic.csv",index=False);print("\nRB VOLUME/EFFICIENCY\n",pd.DataFrame(diag).to_string(index=False))
 else: print("No historical projection CSVs available to grade.")
