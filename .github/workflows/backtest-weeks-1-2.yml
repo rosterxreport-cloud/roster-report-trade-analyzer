@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install dependencies
-        run: pip install pandas numpy pyarrow
+        run: pip install pandas numpy pyarrow lxml
       - name: Fetch frozen Week 1 and Week 2 repository priors
         env:
           GH_TOKEN: ${{ github.token }}
@@ -50,6 +50,20 @@ jobs:
           assert len(w1)==0, f'Week 1 leaked {len(w1)} 2026 rows'
           assert set(w2.week.unique()) <= {1}, f'Week 2 leaked weeks {w2.week.unique()}'
           print('Cutoffs valid',m['rows'])
+          PY
+      - name: Fetch and freeze Hashtag Football Week 1 route snapshot
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          url='https://hashtagfootball.com/nfl-route-runs'
+          tabs=pd.read_html(url)
+          df=next(x for x in tabs if 'PLAYER' in x.columns and 'W1' in x.columns)
+          df=df[df['POS'].astype(str).eq('WR')][['PLAYER','W1']].copy()
+          df.columns=['player','routes']
+          df['routes']=pd.to_numeric(df['routes'],errors='coerce')
+          df=df.dropna(subset=['routes'])
+          df.to_csv('data/backtests/priors/hashtag_week1_routes.csv',index=False)
+          print('Frozen Hashtag Week 1 WR routes:',len(df))
           PY
       - name: Run point-in-time historical projection baseline
         run: python scripts/run-historical-weekly-projections.py
@@ -103,3 +117,5 @@ jobs:
 # rerun corrected WR V2 route participation + TPRR experiment
 
 # rerun WR V2 with parquet support for nflverse route-field check
+
+# run WR V2 with frozen Hashtag Football Week 1 route data
