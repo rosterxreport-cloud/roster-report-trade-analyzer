@@ -109,3 +109,5 @@ jobs:
 # run WR V2 with frozen HeatRadar Week 1 route data
 
 # run WR V2 using uploaded frozen Fantasy Points Week 1 routes/TPRR
+
+# run WR V3: Route% + TPRR + first-read share, no designed-target share
