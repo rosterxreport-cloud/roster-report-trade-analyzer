@@ -73,3 +73,5 @@ jobs:
 # rerun after RB diagnostic merged-column fix
 
 # run V3 team-constrained RB workload A/B backtest
+
+# run V4 role-aware RB allocation A/B backtest
