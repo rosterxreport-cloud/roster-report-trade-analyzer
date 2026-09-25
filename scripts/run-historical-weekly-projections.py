@@ -6,6 +6,7 @@ This first pass creates a reproducible no-leakage baseline for all QB/RB/WR/TE.
 import sys
 from pathlib import Path
 import pandas as pd, numpy as np
+PBP="https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet"
 sys.path.insert(0,str(Path(__file__).parent))
 from backtest_point_in_time import load,key,team
 OUT=Path("data/backtests")
@@ -44,6 +45,22 @@ def team_volume(stats):
  g=s.groupby("recent_team",as_index=False)[["attempts","carries"]].sum()
  games=s.groupby("recent_team")["week"].nunique().to_dict()
  return {team(r.recent_team):{"pass_att_pg":float(r.attempts)/max(1,games.get(r.recent_team,1)),"carries_pg":float(r.carries)/max(1,games.get(r.recent_team,1))} for _,r in g.iterrows()}
+def defense_multipliers(week):
+ # Only plays from weeks before the projected week are eligible. Week 1 is neutral.
+ if week==1:return {}
+ try:
+  pbp=pd.read_parquet(PBP)
+  if "week" in pbp: pbp=pbp[(pbp.season_type=="REG")&(pbp.week<week)].copy()
+  vals={}
+  for d,g in pbp.groupby("defteam"):
+   e=pd.to_numeric(g.get("epa"),errors="coerce").mean()
+   vals[team(d)]=e
+  if not vals:return {}
+  s=pd.Series(vals);pct=s.rank(pct=True)
+  # Same intentionally modest early-season opponent envelope: +/-12%.
+  return {k:.88+.24*float(pct[k]) for k in pct.index}
+ except Exception as ex:
+  print("Historical defense neutral fallback:",ex);return {}
 def project_from_usage(pos,p,ud,td):
  # Historical replay of the current model's early-season opportunity + efficiency structure.
  score=prior_strength(p)
@@ -75,7 +92,7 @@ def project_from_usage(pos,p,ud,td):
 def actual_usage_points(r):
  return float(r.get("fantasy_points_ppr",0) or 0)
 for week in (1,2):
- x=load(week); prior=x["prior"]["half"]; hist=x["stats"].copy(); usage_detail=preweek_usage(hist); team_detail=team_volume(hist)
+ x=load(week); prior=x["prior"]["half"]; hist=x["stats"].copy(); usage_detail=preweek_usage(hist); team_detail=team_volume(hist); def_mult=defense_multipliers(week)
  if len(hist):
   hist["k"]=hist.player_display_name.map(key)
   usage=hist.groupby("k",as_index=False).agg(games=("week","nunique"),ppr=("fantasy_points_ppr","mean"))
@@ -92,6 +109,7 @@ for week in (1,2):
   ud=usage_detail.get(k,{})
   td=team_detail.get(team(p.get("team")),{})
   standard,half,ppr=project_from_usage(pos,p,ud,td)
+  mm=float(def_mult.get(x["opponent"].get(team(p.get("team"))),1.0));standard*=mm;half*=mm;ppr*=mm
   rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V1"})
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} baseline projections")
