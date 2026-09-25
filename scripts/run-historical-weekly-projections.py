@@ -155,24 +155,21 @@ def project_from_usage(pos,p,ud,td):
   std+=car*ypc*.1+car*rutdr*6
  return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
 def apply_wr_route_tprr_experiment(rows,week,prestats):
- # WR 85/15 control. xTD sweep is isolated downstream in grader from frozen Week 1 data.
  if week<=1:return rows
- # Embedded fallback keeps experiment independent of connector CSV failures.
- p=OUT/"priors"/"fantasy_points_week1_wr_routes.csv"
- if not p.exists() or p.stat().st_size==0:
-  print("WR frozen snapshot unavailable; using projection artifact route fields where present")
-  return rows
- q=pd.read_csv(p); q["k"]=q["player"].map(key); qm={r.k:r for _,r in q.iterrows()}
+ ps=[OUT/"priors"/f"fp_wr_week1_part{i}.csv" for i in (1,2,3)]
+ q=pd.concat([pd.read_csv(p) for p in ps],ignore_index=True);q["k"]=q["Name"].map(key);qm={x.k:x for _,x in q.iterrows()}
  for r in rows:
   if r["position"]!="WR":continue
   x=qm.get(key(r["player"]))
   if x is None:continue
-  routes=float(x.routes); tprr=float(x.tprr)
-  rs=max(.70,min(1.20,routes/32.0)); ts=max(.75,min(1.25,tprr/.20))
-  mult=max(.80,min(1.20,.85*rs+.15*ts))
-  for z in ["targets","receptions","rec_yards","rec_tds"]:r[z]=float(r.get(z,0))*mult
-  for fmt in ["standard_projection","half_projection","ppr_projection"]:r[fmt]*=mult
-  r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr;r["wr_v21_multiplier"]=round(mult,3)
+  routes=float(x.RTE);tprr=float(x.TPRR);rs=max(.70,min(1.20,routes/32.));ts=max(.75,min(1.25,tprr/.20));mult=max(.80,min(1.20,.85*rs+.15*ts))
+  base_td=float(r.get("rec_tds",0))*mult
+  for z in ["targets","receptions","rec_yards"]:r[z]=float(r.get(z,0))*mult
+  base_ppr=float(r["ppr_projection"])*mult;r["ppr_xtd_0"]=round(base_ppr,3)
+  xtd=float(x.XTD) if pd.notna(x.XTD) else 0.;xtd_reg=.55*xtd+.45*.171
+  for pct in (25,50,75,100):
+   td_blend=(1-pct/100.)*base_td+(pct/100.)*xtd_reg;r[f"ppr_xtd_{pct}"]=round(base_ppr+6*(td_blend-base_td),3)
+  r["ppr_projection"]=r["ppr_xtd_0"];r["rec_tds"]=base_td;r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr;r["wr_xtd_week1"]=xtd
  return rows
 
 def actual_usage_points(r):
@@ -199,10 +196,10 @@ for week in (1,2):
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_85_15_XTD_ISOLATION","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_85_15_XTD_BLEND_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
- pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
+ pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)\n if week==2:\n  pd.DataFrame(rows).to_csv(OUT/"week2_wr_xtd_sweep.csv",index=False)
  if week==2:
   z=pd.DataFrame(rows); z=z[z.position=="WR"]
   # Weight variants are persisted for dedicated grading after actuals merge.
