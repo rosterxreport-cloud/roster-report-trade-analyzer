@@ -54,13 +54,13 @@ if rows:
   rb=allm[allm.position_actual=="RB"].copy()
   diag=[]
   for w,g in rb.groupby("backtest_week"):
-   for pc,ac in [("carries","carries"),("targets","targets"),("receptions","receptions")]:
-    if pc in g and ac in g:
+   for pc,ac in [("carries_proj","carries_actual"),("targets_proj","targets_actual"),("receptions_proj","receptions_actual")]:
+    if pc in g.columns and ac in g.columns:
      e=pd.to_numeric(g[pc],errors="coerce")-pd.to_numeric(g[ac],errors="coerce")
-     diag.append({"week":w,"metric":pc,"n":e.notna().sum(),"bias":e.mean(),"mae":e.abs().mean()})
-   if "carries" in g and "rush_yards" in g:
-    pc=pd.to_numeric(g.carries,errors="coerce"); py=pd.to_numeric(g.rush_yards,errors="coerce")
-    ac=pd.to_numeric(g["carries_actual"],errors="coerce") if "carries_actual" in g else pd.to_numeric(g["carries"],errors="coerce")
+     diag.append({"week":w,"metric":pc.replace("_proj",""),"n":e.notna().sum(),"bias":e.mean(),"mae":e.abs().mean()})
+   if "carries_proj" in g.columns and "rush_yards" in g.columns:
+    pc=pd.to_numeric(g["carries_proj"],errors="coerce"); py=pd.to_numeric(g.rush_yards,errors="coerce")
+    ac=pd.to_numeric(g["carries_actual"],errors="coerce")
     ay=pd.to_numeric(g["rushing_yards"],errors="coerce")
     pypc=py/pc.replace(0,np.nan); aypc=ay/ac.replace(0,np.nan)
     e=pypc-aypc;diag.append({"week":w,"metric":"yards_per_carry","n":e.notna().sum(),"bias":e.mean(),"mae":e.abs().mean()})
