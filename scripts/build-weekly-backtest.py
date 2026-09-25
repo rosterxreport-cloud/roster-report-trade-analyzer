@@ -5,7 +5,7 @@ Projection formulas are intentionally not refit here.
 """
 import pandas as pd, numpy as np, json
 from pathlib import Path
-URL="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv"
+URL="https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats.csv"
 OUT=Path("data/backtests"); OUT.mkdir(parents=True,exist_ok=True)
 df=pd.read_csv(URL,low_memory=False)
 df=df[(df.season_type=="REG") & (df.position.isin(["QB","RB","WR","TE"]))].copy()
