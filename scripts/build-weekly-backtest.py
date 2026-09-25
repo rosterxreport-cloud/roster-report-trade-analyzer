@@ -5,13 +5,13 @@ Projection formulas are intentionally not refit here.
 """
 import pandas as pd, numpy as np, json
 from pathlib import Path
-URL="https://github.com/nflverse/nflverse-data/releases/download/player_stats/player_stats.csv"
+URL="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv"
 OUT=Path("data/backtests"); OUT.mkdir(parents=True,exist_ok=True)
 df=pd.read_csv(URL,low_memory=False)
 df=df[(df.season_type=="REG") & (df.position.isin(["QB","RB","WR","TE"]))].copy()
 def num(c): return pd.to_numeric(df[c],errors="coerce").fillna(0) if c in df else 0
 # Actual fantasy scoring from raw box-score stats.
-df["std_actual"]=num("passing_yards")*.04+num("passing_tds")*4-num("interceptions")*2+num("rushing_yards")*.1+num("rushing_tds")*6+num("receiving_yards")*.1+num("receiving_tds")*6+num("fumbles_lost")*-2
+df["std_actual"]=num("passing_yards")*.04+num("passing_tds")*4-num("passing_interceptions")*2+num("rushing_yards")*.1+num("rushing_tds")*6+num("receiving_yards")*.1+num("receiving_tds")*6+num("fumbles_lost")*-2
 df["half_actual"]=df["std_actual"]+num("receptions")*.5
 df["ppr_actual"]=df["std_actual"]+num("receptions")
 keep=[c for c in ["season","week","player_id","player_display_name","position","recent_team","completions","attempts","passing_yards","passing_tds","interceptions","carries","rushing_yards","rushing_tds","targets","receptions","receiving_yards","receiving_tds","target_share","air_yards_share","receiving_air_yards","std_actual","half_actual","ppr_actual"] if c in df]
