@@ -113,3 +113,5 @@ jobs:
 # run WR V3: Route% + TPRR + first-read share, no designed-target share
 
 # run WR V4: V2 route+TPRR plus YPRR efficiency
+
+# run WR V2 route-vs-TPRR weight sweep 70/30 through 30/70
