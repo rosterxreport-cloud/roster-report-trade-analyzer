@@ -155,23 +155,26 @@ def project_from_usage(pos,p,ud,td):
   std+=car*ypc*.1+car*rutdr*6
  return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
 def apply_wr_route_tprr_experiment(rows,week,prestats):
- # WR V4 experiment: V2 route volume + TPRR, plus YPRR efficiency.
+ # WR V2 weight sweep: route volume vs TPRR. One projection column per weighting.
  if week<=1:return rows
- p=OUT/"priors"/"fantasy_points_week1_wr_v4.csv"
- if not p.exists(): print("WR V4 snapshot missing");return rows
- try:
-  q=pd.read_csv(p);q["k"]=q["Name"].map(key);qm={r.k:r for _,r in q.iterrows()}
-  for r in rows:
-   if r["position"]!="WR":continue
-   x=qm.get(key(r["player"]))
-   if x is None or float(x["RTE"])<=0:continue
-   routes=float(x["RTE"]);tprr=float(x["TPRR"]);yprr=float(x["YPRR"])
-   rs=max(.70,min(1.20,routes/32.0));ts=max(.75,min(1.25,tprr/.20));ys=max(.80,min(1.20,yprr/1.57))
-   mult=max(.80,min(1.20,.40+.25*rs+.25*ts+.10*ys))
-   for z in ["targets","receptions","rec_yards","rec_tds"]:r[z]=float(r.get(z,0))*mult
-   for fmt in ["standard_projection","half_projection","ppr_projection"]:r[fmt]*=mult
-   r["wr_routes_preweek"]=round(routes,2);r["wr_tprr_preweek"]=round(tprr,3);r["wr_yprr_preweek"]=round(yprr,3);r["wr_v4_multiplier"]=round(mult,3)
- except Exception as ex: print("WR V4 unavailable:",ex)
+ p=OUT/"priors"/"fantasy_points_week1_wr_routes.csv"
+ if not p.exists(): print("WR V2 route snapshot missing");return rows
+ q=pd.read_csv(p);q["k"]=q["player"].map(key);qm={r.k:r for _,r in q.iterrows()}
+ weights={"r70_t30":(.70,.30),"r60_t40":(.60,.40),"r50_t50":(.50,.50),"r40_t60":(.40,.60),"r30_t70":(.30,.70)}
+ for r in rows:
+  if r["position"]!="WR":continue
+  x=qm.get(key(r["player"]))
+  if x is None or float(x.routes)<=0:continue
+  routes=float(x.routes);tprr=float(x.fp_tprr)
+  rs=max(.70,min(1.20,routes/32.0));ts=max(.75,min(1.25,tprr/.20))
+  base=float(r["ppr_projection"])
+  for name,(rw,tw) in weights.items():
+   # normalized blend around 1.0; same conservative +/-20% cap as V2.
+   mult=max(.80,min(1.20,rw*rs+tw*ts))
+   r["ppr_"+name]=round(base*mult,3)
+  # Keep canonical output at original V2 50/50 for ordinary grader.
+  r["ppr_projection"]=r["ppr_r50_t50"]
+  r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr
  return rows
 
 def actual_usage_points(r):
@@ -198,8 +201,12 @@ for week in (1,2):
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_V4_ROUTE_TPRR_YPRR_EXPERIMENT","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"WR_V2_ROUTE_TPRR_WEIGHT_SWEEP","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
  rows=apply_wr_route_tprr_experiment(rows,week,hist)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
+ if week==2:
+  z=pd.DataFrame(rows); z=z[z.position=="WR"]
+  # Weight variants are persisted for dedicated grading after actuals merge.
+  z.to_csv(OUT/"week2_wr_weight_sweep.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} V5 projections")
