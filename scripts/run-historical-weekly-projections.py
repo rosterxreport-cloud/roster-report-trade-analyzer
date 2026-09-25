@@ -25,10 +25,29 @@ def prior_strength(p):
  # present in both pinned repository snapshots.
  try:return float(p.get("analyticsScore",50) or 50)
  except:return 50.
+def preweek_usage(stats):
+ if stats.empty:return {}
+ s=stats.copy();s["k"]=s.player_display_name.map(key)
+ # Aggregate only games strictly before the projection week.
+ sumcols=[z for z in ["games","attempts","passing_yards","passing_tds","passing_interceptions","carries","rushing_yards","rushing_tds","targets","receptions","receiving_yards","receiving_tds","fantasy_points_ppr"] if z in s]
+ g=s.groupby(["k","position","recent_team"],as_index=False)[sumcols].sum()
+ out={}
+ for _,r in g.iterrows():
+  games=max(1.,float(r.get("games",0) or 0))
+  out[r.k]={z:float(r.get(z,0) or 0)/games for z in sumcols if z!="games"}
+ return out
+def team_volume(stats):
+ if stats.empty:return {}
+ s=stats.copy()
+ for z in ["attempts","carries"]:
+  if z not in s:s[z]=0
+ g=s.groupby("recent_team",as_index=False)[["attempts","carries"]].sum()
+ games=s.groupby("recent_team")["week"].nunique().to_dict()
+ return {team(r.recent_team):{"pass_att_pg":float(r.attempts)/max(1,games.get(r.recent_team,1)),"carries_pg":float(r.carries)/max(1,games.get(r.recent_team,1))} for _,r in g.iterrows()}
 def actual_usage_points(r):
  return float(r.get("fantasy_points_ppr",0) or 0)
 for week in (1,2):
- x=load(week); prior=x["prior"]["half"]; hist=x["stats"].copy()
+ x=load(week); prior=x["prior"]["half"]; hist=x["stats"].copy(); usage_detail=preweek_usage(hist); team_detail=team_volume(hist)
  if len(hist):
   hist["k"]=hist.player_display_name.map(key)
   usage=hist.groupby("k",as_index=False).agg(games=("week","nunique"),ppr=("fantasy_points_ppr","mean"))
