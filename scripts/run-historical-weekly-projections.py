@@ -157,7 +157,7 @@ def project_from_usage(pos,p,ud,td):
 def apply_wr_route_tprr_experiment(rows,week,prestats):
  # WR V2 weight sweep: route volume vs TPRR. One projection column per weighting.
  if week<=1:return rows
- p=OUT/"priors"/"fantasy_points_week1_wr_routes.csv"
+ p=OUT/"priors"/"fantasy_points_week1_wr_v4.csv"
  if not p.exists(): print("WR V2 route snapshot missing");return rows
  q=pd.read_csv(p);q["k"]=q["player"].map(key);qm={r.k:r for _,r in q.iterrows()}
  weights={"r85_t15":(.85,.15)}
@@ -165,7 +165,7 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
   if r["position"]!="WR":continue
   x=qm.get(key(r["player"]))
   if x is None or float(x.routes)<=0:continue
-  routes=float(x.routes);tprr=float(x.tprr)
+  routes=float(x["RTE"]);tprr=float(x["TPRR"])
   rs=max(.70,min(1.20,routes/32.0));ts=max(.75,min(1.25,tprr/.20))
   base=float(r["ppr_projection"])
   for name,(rw,tw) in weights.items():
@@ -176,7 +176,7 @@ def apply_wr_route_tprr_experiment(rows,week,prestats):
   r["ppr_projection"]=r["ppr_r85_t15"]
   r["wr_routes_preweek"]=routes;r["wr_tprr_preweek"]=tprr
   # YPT sensitivity variants: regress one-game YPT heavily toward 8.0 baseline.
-  fp_tgt=float(x.targets); fp_yards=float(x.rec_yards)
+  fp_tgt=float(x["TGT"]); fp_yards=float(x["YDS"])
   week_ypt=(fp_yards/fp_tgt) if fp_tgt>0 else 8.0
   for wt in [0.10,0.20,0.30]:
    rypt=(1-wt)*8.0+wt*week_ypt; ym=max(.85,min(1.15,rypt/8.0)); r[f"ppr_ypt_{int(wt*100)}"]=round(r["ppr_projection"]*ym,3)
