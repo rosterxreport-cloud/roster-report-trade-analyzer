@@ -53,7 +53,6 @@ jobs:
           PY
       - name: Run point-in-time historical projection baseline
         run: |
-          sed -i 's/\\\\n/\\n/g' scripts/run-historical-weekly-projections.py
           python -m py_compile scripts/run-historical-weekly-projections.py
           python scripts/run-historical-weekly-projections.py
       - name: Grade projections when historical runner output exists
@@ -134,3 +133,5 @@ jobs:
 # rerun xTD using existing WR artifact path
 
 # run after deterministic newline normalization
+
+# run clean xTD test without custom artifact block
