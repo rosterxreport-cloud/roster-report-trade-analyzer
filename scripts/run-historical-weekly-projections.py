@@ -154,32 +154,6 @@ def project_from_usage(pos,p,ud,td):
   rutdr=regress(ud.get("rushing_tds",car*NEUTRAL["rushing_td_rate"])/max(1.,ud.get("carries",car)),"rushing_td_rate")
   std+=car*ypc*.1+car*rutdr*6
  return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
-def apply_role_confidence(rows,week):
- # V6 experiment: cross-position opportunity-confidence shrinkage.
- # High-certainty roles barely move; uncertain opportunity regresses toward positional priors.
- for r in rows:
-  pos=r["position"]; prior=float(r.get("_role_prior",50)); af=float(r.get("availability_factor",1))
-  if pos=="QB":
-   live=float(r.get("pass_attempts",0)); baseline=32.5; signal=min(1.,live/32.0) if week>1 else 0.
-   confidence=max(.45,min(.98,.45+.35*signal+.18*min(1.,prior/75.)+.10*(af>=.95)))
-   old=max(.001,float(r.get("pass_attempts",baseline))); target=confidence*old+(1-confidence)*baseline
-   mult=target/old
-   for z in ["pass_attempts","pass_yards","pass_tds","interceptions"]: r[z]=float(r.get(z,0))*mult
-   for fmt in ["standard_projection","half_projection","ppr_projection"]: r[fmt]*=mult
-  elif pos in ("WR","TE"):
-   old=max(.001,float(r.get("targets",0))); baseline=max(1.5,(2.+prior*.085) if pos=="WR" else (1.5+prior*.055))
-   live=float(r.get("_pre_targets",0)); signal=min(1.,live/6.) if week>1 else 0.
-   confidence=max(.35,min(.97,.35+.40*signal+.17*min(1.,prior/75.)+.08*(af>=.95)))
-   target=confidence*old+(1-confidence)*baseline; mult=target/old
-   for z in ["targets","receptions","rec_yards","rec_tds"]: r[z]=float(r.get(z,0))*mult
-   for fmt in ["standard_projection","half_projection","ppr_projection"]: r[fmt]*=mult
-  else:
-   # RB already has validated V5 team/role certainty; only annotate rather than double-shrink.
-   confidence=1.0
-  r["role_confidence_v6"]=round(confidence,3)
-  r["role_confidence_model"]="V6_EXPERIMENT"
- return rows
-
 def actual_usage_points(r):
  return float(r.get("fantasy_points_ppr",0) or 0)
 for week in (1,2):
@@ -204,8 +178,7 @@ for week in (1,2):
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
   raw={z:float(v)*mm*af for z,v in raw.items()}
   raw.update({"_role_prior":score,"_pre_carries":ud.get("carries",0),"_pre_targets":ud.get("targets",0)})
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"V6_ROLE_CONFIDENCE_EXPERIMENT","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V5_RB2_CERTAINTY","availability_factor":round(af,3),"historical_status":status,**{z:(round(v,3) if isinstance(v,(int,float)) else v) for z,v in raw.items()}})
  rows=constrain_rb_team(rows)
- rows=apply_role_confidence(rows,week)
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
  print(f"Week {week}: wrote {len(rows)} V5 projections")
