@@ -89,3 +89,5 @@ jobs:
 # rerun structurally corrected V5 RB2 certainty backtest
 
 # rerun V5 after removing stray duplicate certainty block
+
+# calculate cumulative +/-1 +/-3 +/-6 fantasy point hit rates
