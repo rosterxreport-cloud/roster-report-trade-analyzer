@@ -91,7 +91,7 @@ def project_from_usage(pos,p,ud,td):
   intr=regress(ud.get("passing_interceptions",att*NEUTRAL["interception_rate"])/max(1.,ud.get("attempts",att)), "interception_rate")
   car=.45*ud.get("carries",2.5)+.55*2.5; ry=car*4.5; rtd=car*NEUTRAL["rushing_td_rate"]
   std=att*ypa*.04+att*tdr*4-att*intr*2+ry*.1+rtd*6
-  return std,std,std
+  return std,std,std,{"pass_attempts":att,"pass_yards":att*ypa,"pass_tds":att*tdr,"interceptions":att*intr,"carries":car,"rush_yards":ry,"rush_tds":rtd}
  if pos=="RB":
   car0=max(4.,min(22.,6.+score*.14));car=.55*ud.get("carries",car0)+.45*car0
   tgt0=max(1.,min(7.,1.+score*.045));tgt=.55*ud.get("targets",tgt0)+.45*tgt0
@@ -107,7 +107,7 @@ def project_from_usage(pos,p,ud,td):
   ypc=regress(ud.get("rushing_yards",car*NEUTRAL["yards_per_carry"])/max(1.,ud.get("carries",car)),"yards_per_carry")
   rutdr=regress(ud.get("rushing_tds",car*NEUTRAL["rushing_td_rate"])/max(1.,ud.get("carries",car)),"rushing_td_rate")
   std+=car*ypc*.1+car*rutdr*6
- return std,std+.5*rec,std+rec
+ return std,std+.5*rec,std+rec,{"carries":car,"rush_yards":car*ypc if pos=="RB" else 0.,"rush_tds":car*rutdr if pos=="RB" else 0.,"targets":tgt,"receptions":rec,"rec_yards":tgt*ypt,"rec_tds":tgt*rtdr}
 def actual_usage_points(r):
  return float(r.get("fantasy_points_ppr",0) or 0)
 for week in (1,2):
@@ -127,9 +127,10 @@ for week in (1,2):
   base=POS_BASE[pos]*(0.70+0.006*min(100,max(0,score)))
   ud=usage_detail.get(k,{})
   td=team_detail.get(team(p.get("team")),{})
-  standard,half,ppr=project_from_usage(pos,p,ud,td)
+  standard,half,ppr,raw=project_from_usage(pos,p,ud,td)
   mm=float(def_mult.get(x["opponent"].get(team(p.get("team"))),1.0));standard*=mm;half*=mm;ppr*=mm
   af,status=injuries.get(k,(1.0,"NO HISTORICAL ADJUSTMENT"));standard*=af;half*=af;ppr*=af
-  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V2","availability_factor":round(af,3),"historical_status":status})
+  raw={z:float(v)*mm*af for z,v in raw.items()}
+  rows.append({"player":p["name"],"position":pos,"team":p.get("team"),"opponent":x["opponent"].get(team(p.get("team"))),"standard_projection":round(standard,3),"half_projection":round(half,3),"ppr_projection":round(ppr,3),"backtest_week":week,"runner_stage":"CURRENT_FORMULA_HISTORICAL_REPLAY_V2","availability_factor":round(af,3),"historical_status":status,**{z:round(v,3) for z,v in raw.items()}})
  pd.DataFrame(rows).to_csv(OUT/f"week{week}_projections.csv",index=False)
- print(f"Week {week}: wrote {len(rows)} baseline projections")
+ print(f"Week {week}: wrote {len(rows)} V2 projections")
