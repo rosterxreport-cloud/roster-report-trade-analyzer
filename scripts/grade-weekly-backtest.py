@@ -181,3 +181,15 @@ try:
     col=f"rb_fp_recxtd_hi16_expl_{wt}";z=d.dropna(subset=[col]);e=z[col]-z[pcol];out.append(f"{wt}% MAE {e.abs().mean():.3f} BIAS {e.mean():+.3f}")
    print(seg,lab,"n",len(d)," | ".join(out))
 except Exception as ex:print("RB plateau archetype audit unavailable:",ex)
+
+
+# Role-dependent explosive weighting, keeping flat 70% as anchor.
+try:
+ sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);m=sw.merge(act[["k",pcol]],on="k");m["depth"]=m.groupby("team").rb_fp_recxtd.rank(method="first",ascending=False);m["opp"]=m.carries+m.targets;cut=m["opp"].quantile(.667);print("\nRB ROLE-DEPENDENT EXPLOSIVE TEST — 70% ANCHOR")
+ tests=[("flat70",70,70,70,False),("RB1_75_RB2_55",75,55,70,False),("RB1_80_RB2_55",80,55,70,False),("RB1_85_RB2_55",85,55,70,False),("HIGHVOL80_RB2_55",80,55,70,True)]
+ for nm,r1w,r2w,otherw,hv in tests:
+  vals=[]
+  for _,r in m.iterrows():
+   wt=(80 if r["opp"]>=cut else (55 if r["depth"]==2 else 70)) if hv else (r1w if r["depth"]==1 else (r2w if r["depth"]==2 else otherw));col="rb_fp_recxtd_hi16_expl_"+str(int(wt));vals.append(r.get(col,np.nan))
+  v=pd.Series(vals,index=m.index);z=v.notna();e=v[z]-m.loc[z,pcol];ae=e.abs();print(nm,"n",z.sum(),"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
+except Exception as ex:print("RB role-dependent explosive grading unavailable:",ex)
