@@ -165,7 +165,19 @@ try:
 except Exception as ex:print("RB explosive15 grading unavailable:",ex)
 
 try:
- sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);m=sw.merge(act[["k",pcol]],on="k");base=m.rb_fp_recxtd.where(~((m.rb_fp_recxtd>=13)&((m.carries+m.targets)>=16)),m.rb_fp_recxtd*.84);m["rb_hi16_control"]=base;cols=["rb_hi16_control","rb_fp_recxtd_hi16_expl_10","rb_fp_recxtd_hi16_expl_12","rb_fp_recxtd_hi16_expl_15","rb_fp_recxtd_hi16_expl_17","rb_fp_recxtd_hi16_expl_20","rb_fp_recxtd_hi16_expl_22","rb_fp_recxtd_hi16_expl_25","rb_fp_recxtd_hi16_expl_27","rb_fp_recxtd_hi16_expl_30","rb_fp_recxtd_hi16_expl_35","rb_fp_recxtd_hi16_expl_40","rb_fp_recxtd_hi16_expl_45","rb_fp_recxtd_hi16_expl_50","rb_fp_recxtd_hi16_expl_60","rb_fp_recxtd_hi16_expl_70"];z=m.dropna(subset=cols).copy();print("\nRB EXPLOSIVE15 MATCHED-SAMPLE SWEEP","n",len(z))
+ sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);m=sw.merge(act[["k",pcol]],on="k");base=m.rb_fp_recxtd.where(~((m.rb_fp_recxtd>=13)&((m.carries+m.targets)>=16)),m.rb_fp_recxtd*.84);m["rb_hi16_control"]=base;cols=["rb_hi16_control","rb_fp_recxtd_hi16_expl_10","rb_fp_recxtd_hi16_expl_12","rb_fp_recxtd_hi16_expl_15","rb_fp_recxtd_hi16_expl_17","rb_fp_recxtd_hi16_expl_20","rb_fp_recxtd_hi16_expl_22","rb_fp_recxtd_hi16_expl_25","rb_fp_recxtd_hi16_expl_27","rb_fp_recxtd_hi16_expl_30","rb_fp_recxtd_hi16_expl_35","rb_fp_recxtd_hi16_expl_40","rb_fp_recxtd_hi16_expl_45","rb_fp_recxtd_hi16_expl_50","rb_fp_recxtd_hi16_expl_55","rb_fp_recxtd_hi16_expl_60","rb_fp_recxtd_hi16_expl_65","rb_fp_recxtd_hi16_expl_70","rb_fp_recxtd_hi16_expl_75","rb_fp_recxtd_hi16_expl_80"];z=m.dropna(subset=cols).copy();print("\nRB EXPLOSIVE15 MATCHED-SAMPLE SWEEP","n",len(z))
  for col in cols:
   e=z[col]-z[pcol];ae=e.abs();print(col,"MAE",round(ae.mean(),3),"BIAS",round(e.mean(),3),"+/-1",round(100*(ae<=1).mean(),2),"+/-3",round(100*(ae<=3).mean(),2),"+/-6",round(100*(ae<=6).mean(),2))
 except Exception as ex:print("RB matched explosive grading unavailable:",ex)
+
+
+# RB explosive-rate archetype audit at plateau candidates
+try:
+ sw=pd.read_csv(OUT/"week2_projections.csv");sw=sw[sw.position=="RB"].copy();act=pd.read_csv(OUT/"week2_actuals.csv");namecol=next(x for x in ["player","player_name","player_display_name"] if x in act.columns);act["k"]=act[namecol].map(key);sw["k"]=sw.player.map(key);pcol=next(x for x in ["ppr_actual","fantasy_points_ppr","ppr"] if x in act.columns);m=sw.merge(act[["k",pcol]],on="k");m["opp"]=m.carries+m.targets;m["recshare"]=m.targets/m.opp.clip(lower=1);m["volume_bucket"]=pd.qcut(m.opp,3,labels=["low","mid","high"],duplicates="drop");m["receiving_bucket"]=pd.qcut(m.recshare,3,labels=["low","mid","high"],duplicates="drop");m["depth"]=m.groupby("team").rb_fp_recxtd.rank(method="first",ascending=False);m["depth_bucket"]=m.depth.map(lambda z:"RB1" if z==1 else ("RB2" if z==2 else "RB3+"));print("\nRB EXPLOSIVE PLATEAU ARCHETYPE AUDIT")
+ for seg in ["volume_bucket","receiving_bucket","depth_bucket"]:
+  for lab,d in m.groupby(seg,observed=True):
+   out=[]
+   for wt in [55,60,65,70,75,80]:
+    col=f"rb_fp_recxtd_hi16_expl_{wt}";z=d.dropna(subset=[col]);e=z[col]-z[pcol];out.append(f"{wt}% MAE {e.abs().mean():.3f} BIAS {e.mean():+.3f}")
+   print(seg,lab,"n",len(d)," | ".join(out))
+except Exception as ex:print("RB plateau archetype audit unavailable:",ex)
