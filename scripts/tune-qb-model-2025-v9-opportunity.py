@@ -56,11 +56,12 @@ for wk in sorted(q.week.unique()):
  rz=(m.rz_passz+m.rz_rushz)/2
  for ow in [.05,.10,.15,.20,.25,.30]:
   for zw in [.00,.05,.10,.15]:
-    if ow+zw>0.40:continue
+   if ow+zw>0.40: continue
    core=1-ow-zw
    score=core*base+ow*opportunity+zw*rz
-    pred=hq.fp.mean()+score*hq.fp.std()*.45
-    for a,p in zip(m.fp,pred):rows.append((ow,zw,a,p))
+   pred=hq.fp.mean()+score*hq.fp.std()*.45
+   for a,p in zip(m.fp,pred):
+    rows.append((ow,zw,a,p))
 o=pd.DataFrame(rows,columns=["opportunity_w","redzone_w","actual","pred"])
 res=o.groupby(["opportunity_w","redzone_w"]).apply(lambda x:pd.Series({"n":len(x),"MAE":(x.pred-x.actual).abs().mean(),"RMSE":np.sqrt(((x.pred-x.actual)**2).mean()),"corr":x.pred.corr(x.actual),"bias":(x.pred-x.actual).mean()}),include_groups=False).reset_index().sort_values(["MAE","corr"],ascending=[True,False])
 Path("data").mkdir(exist_ok=True);res.to_csv("data/qb-2025-v9-opportunity-summary.csv",index=False);print(res.head(50).to_string(index=False))
