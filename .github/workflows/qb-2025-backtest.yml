@@ -1,0 +1,23 @@
+name: QB 2025 Backtest
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiment/new-rb-projections]
+    paths: ['scripts/backtest-qb-model-2025.py']
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install pandas numpy
+      - run: python scripts/backtest-qb-model-2025.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qb-2025-backtest
+          path: |
+            data/qb-2025-backtest-summary.csv
+            data/qb-2025-backtest-detail.csv
+
+# trigger full-season QB validation
