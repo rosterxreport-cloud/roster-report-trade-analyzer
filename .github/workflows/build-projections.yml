@@ -26,6 +26,8 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: pip install pandas numpy
+      - name: Build Week 1-2 leakage-safe backtest cuts
+        run: python scripts/build-weekly-backtest.py
       - name: Build 2023-2025 feature tables
         run: python scripts/build-nflverse-features.py
       - name: Fit next-season models
@@ -153,7 +155,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: roster-report-projection-build
-          path: data/projections/
+          path: |
+            data/projections/
+            data/backtests/
           retention-days: 30
 
 # Generated projection data does not alter live trade values until explicitly promoted.

@@ -1,0 +1,40 @@
+name: Publish Datawrapper Projection Tables
+
+on:
+  push:
+    paths:
+      - '.github/workflows/publish-datawrapper.yml'
+      - 'scripts/publish-datawrapper-projections.py'
+      - 'scripts/publish-datawrapper-top250.py'
+      - 'players.json'
+      - 'injury-adjustments.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Manual runs are supported from the Actions UI via workflow_dispatch.
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install projection dependencies
+        run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'pyarrow==21.0.0'
+      - name: Build current projection previews
+        run: |
+          python scripts/build-new-rb-projection-preview.py
+          python scripts/build-new-wr-projection-preview.py
+          python scripts/build-new-qb-projection-preview.py
+          python scripts/build-new-te-projection-preview.py
+      - name: Update and publish permanent Datawrapper charts
+        env:
+          DATAWRAPPER_API_TOKEN: ${{ secrets.DATAWRAPPER_API_TOKEN }}
+        run: |
+          python scripts/publish-datawrapper-projections.py
+          python scripts/publish-datawrapper-top250.py

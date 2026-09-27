@@ -1,0 +1,181 @@
+name: Week 1-2 Projection Backtest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build-weekly-backtest.py'
+      - '.github/workflows/backtest-weeks-1-2.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  backtest-cuts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install pandas numpy pyarrow lxml
+      - name: Fetch frozen Week 1 and Week 2 repository priors
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p data/backtests/priors
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/players.json?ref=fd87448dd9f9dc8fb50d40ae06bb9bb832b19100" -o data/backtests/priors/week1_players.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/players.json?ref=b73d8f29b5c6dd9cd7f2710a300cd02ba52d57ad" -o data/backtests/priors/week2_players.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/injury-adjustments.json?ref=4a9cde1ab0a7b9381a198fa4626b4cf5060dbab3" -o data/backtests/priors/week1_injuries.json
+          curl -fsSL -H "Authorization: Bearer $GH_TOKEN" -H "Accept: application/vnd.github.raw+json" "https://api.github.com/repos/${GITHUB_REPOSITORY}/contents/injury-adjustments.json?ref=cee5538d094d519a480ca26be1eb61f4a3c4bc01" -o data/backtests/priors/week2_injuries.json
+          python - <<'PY'
+          import json
+          for w in (1,2):
+              p=f'data/backtests/priors/week{w}_players.json'
+              d=json.load(open(p))
+              assert all(k in d for k in ('standard','half','ppr'))
+              print(w, {k:len(d[k]) for k in ('standard','half','ppr')})
+          PY
+      - name: Build leakage-safe Week 1-2 cuts
+        run: python scripts/build-weekly-backtest.py
+      - name: Validate cutoff rules
+        run: |
+          python - <<'PY'
+          import pandas as pd, json
+          w1=pd.read_csv('data/backtests/week1_prior_2026.csv')
+          w2=pd.read_csv('data/backtests/week2_prior_2026.csv')
+          m=json.load(open('data/backtests/manifest.json'))
+          assert len(w1)==0, f'Week 1 leaked {len(w1)} 2026 rows'
+          assert set(w2.week.unique()) <= {1}, f'Week 2 leaked weeks {w2.week.unique()}'
+          print('Cutoffs valid',m['rows'])
+          PY
+      - name: Build Week 1 RB explosive-run rate from nflverse PBP
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          u='https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.csv.gz'
+          d=pd.read_csv(u,compression='gzip',low_memory=False)
+          x=d[(d.week==1)&(d.play_type=='run')&d.rusher_player_name.notna()].copy()
+          x['explosive15']=(x.rushing_yards>=15).astype(int)
+          o=x.groupby('rusher_player_name').agg(attempts=('rushing_yards','size'),explosive15=('explosive15','sum')).reset_index()
+          o['explosive15_rate']=o.explosive15/o.attempts
+          o.to_csv('data/backtests/priors/nflverse_rb_week1_explosive15.csv',index=False)
+          print(o.sort_values(['explosive15_rate','attempts'],ascending=False).head(30).to_string(index=False))
+          PY
+
+      - name: Run point-in-time historical projection baseline
+        run: |
+          python -m py_compile scripts/run-historical-weekly-projections.py
+          python scripts/run-historical-weekly-projections.py
+      - name: Grade projections when historical runner output exists
+        run: python scripts/grade-weekly-backtest.py
+      - name: Upload backtest cuts
+        uses: actions/upload-artifact@v4
+        with:
+          name: roster-report-week1-week2-backtest
+          path: data/backtests/
+          retention-days: 30
+
+# rerun after historical runner schema fix
+
+# rerun after complete team-column compatibility fix
+
+# rerun for raw-stat diagnostics
+
+# rerun for RB volume-efficiency diagnostic
+
+# rerun after RB diagnostic merged-column fix
+
+# run V3 team-constrained RB workload A/B backtest
+
+# run V4 role-aware RB allocation A/B backtest
+
+# run V4 RB role residual diagnostics
+
+# rerun corrected V4 RB role residual diagnostics
+
+# run RB zero-workload historical availability audit
+
+# run V5 RB2 role-certainty A/B backtest
+
+# rerun corrected V5 RB2 role-certainty backtest
+
+# rerun structurally corrected V5 RB2 certainty backtest
+
+# rerun V5 after removing stray duplicate certainty block
+
+# calculate cumulative +/-1 +/-3 +/-6 fantasy point hit rates
+
+# rerun corrected tight fantasy point hit-rate report
+
+# run Week 1 vs Week 2 tight hit-rate splits
+
+# run V6 cross-position role confidence A/B backtest
+
+# run WR V2 route participation + TPRR experiment
+
+# rerun corrected WR V2 route participation + TPRR experiment
+
+# rerun WR V2 with parquet support for nflverse route-field check
+
+# run WR V2 with frozen HeatRadar Week 1 route data
+
+# run WR V2 with frozen HeatRadar Week 1 route data
+
+# run WR V2 using uploaded frozen Fantasy Points Week 1 routes/TPRR
+
+# run WR V3: Route% + TPRR + first-read share, no designed-target share
+
+# run WR V4: V2 route+TPRR plus YPRR efficiency
+
+# run WR V2 route-vs-TPRR weight sweep 70/30 through 30/70
+
+# final WR route-heavy sweep: 75/25, 80/20, 85/15, 90/10, routes-only
+
+# run WR V2.1 Week 1 YPT regression sweep
+
+# run isolated WR 85/15 xTD blend sweep
+
+# rerun after xTD runner syntax fix
+
+# rerun verified xTD newline repair
+
+# clean WR xTD sweep rerun
+
+# rerun xTD using existing WR artifact path
+
+# run after deterministic newline normalization
+
+# run clean xTD test without custom artifact block
+
+# run WR xTD75 plus YPT regression sweep
+
+# run RB FP underlying metric isolation sweep no xFP
+
+# run RB receiving xTD plus light TPRR sweep
+
+# audit RB residual bias segments
+
+# run targeted RB high-end compression sweep
+
+# run narrow RB compression sweep
+
+# test exact 15plus explosive run rate on RB leader
+
+# rerun explosive columns after verified extraction
+
+# run explosive15 with normalized surname crosswalk
+
+# run matched-sample explosive15 validation
+
+# run narrow matched RB explosive sweep 10-25
+
+# extend matched RB explosive sweep through 40pct
+
+# run matched RB explosive sweep through 70pct
+
+# run RB explosive plateau refinement and archetype audit
+
+# run role-dependent RB explosive test against flat 70pct
