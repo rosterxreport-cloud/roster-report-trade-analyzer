@@ -96,3 +96,17 @@ for vw,pw,rw,ew,hw in [
 aa=pd.DataFrame(arch).sort_values("corr",ascending=False)
 aa.to_csv("data/qb-architecture-v1.csv",index=False)
 print("\nQB ARCHITECTURE V1\n",aa.to_string(index=False))
+
+
+# QB v1 local refinement around 40/25/25/5/5.
+tune=[]
+for vw in [.35,.375,.40,.425,.45]:
+ for pw in [.20,.225,.25,.275,.30]:
+  rw=.25; ew=.05; hw=1-vw-pw-rw-ew
+  if hw < 0 or hw > .10: continue
+  score=vw*volume+pw*pressure+rw*rushopp+ew*eff+hw*hero
+  q=score.notna()&y.notna()
+  tune.append({"volume":vw,"pressure":pw,"rush":rw,"efficiency":ew,"hero":round(hw,3),"n":int(q.sum()),"corr":float(score[q].corr(y[q]))})
+tt=pd.DataFrame(tune).sort_values("corr",ascending=False)
+tt.to_csv("data/qb-v1-weight-refinement.csv",index=False)
+print("\nQB V1 WEIGHT REFINEMENT\n",tt.head(20).to_string(index=False))
