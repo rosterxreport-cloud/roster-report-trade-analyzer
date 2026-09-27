@@ -1,0 +1,22 @@
+name: QB Weekly Backtest
+on:
+  workflow_dispatch:
+  push:
+    branches: [experiment/new-rb-projections]
+    paths:
+      - 'scripts/build-qb-weekly-model.py'
+      - 'data/qb-passing-week*.csv'
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pandas numpy
+      - run: python scripts/build-qb-weekly-model.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qb-weekly-backtest
+          path: data/qb-week1-to-week2-backtest-input.csv
