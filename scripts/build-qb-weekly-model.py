@@ -137,3 +137,16 @@ for aw in [.10,.15,.20,.25,.30]:
 at=pd.DataFrame(advtests).sort_values("corr",ascending=False)
 at.to_csv("data/qb-advanced-passing-no-p2s-sweep.csv",index=False)
 print("\nQB ADVANCED PASSING — NO P2S%\n",at.to_string(index=False))
+
+
+# Extend no-P2S advanced passing sweep beyond 30% to locate peak.
+ext=[]
+for aw in [.30,.35,.40,.45,.50,.55,.60]:
+ remaining=1-aw
+ vw=remaining*(40/65);rw=remaining*(25/65)
+ score=vw*volume+rw*rushopp+aw*adv
+ q=score.notna()&y.notna()
+ ext.append({"advanced":aw,"volume":round(vw,4),"rush":round(rw,4),"P2S_weight":0,"n":int(q.sum()),"corr":float(score[q].corr(y[q]))})
+et=pd.DataFrame(ext).sort_values("corr",ascending=False)
+et.to_csv("data/qb-advanced-passing-no-p2s-extended.csv",index=False)
+print("\nQB ADVANCED PASSING EXTENDED — NO P2S%\n",et.to_string(index=False))
