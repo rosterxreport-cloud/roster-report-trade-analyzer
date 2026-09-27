@@ -8,7 +8,7 @@ from pathlib import Path
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2025.csv"
 SCHED="https://github.com/nflverse/nfldata/raw/master/data/games.csv"
 d=pd.read_csv(STATS,low_memory=False); d=d[(d.position=="QB")&(d.season_type=="REG")].copy()
-d["actual"]=d.passing_yards/25+4*d.passing_tds-2*d.passing_interceptions+d.rushing_yards/10+6*d.rushing_tds
+d["actual"]=d.passing_yards/25+4*d.passing_tds-2*d.passing_interceptions+d.rushing_yards/10+6*d.rushing_tds\nTEAMCOL="recent_team" if "recent_team" in d.columns else "team"
 d["ypa"]=d.passing_yards/d.attempts.replace(0,np.nan); d["tdr"]=d.passing_tds/d.attempts.replace(0,np.nan)
 # team/opponent QB aggregates from games strictly before target week
 def z(s):
@@ -20,11 +20,11 @@ for wk in sorted(d.week.unique()):
  # opponent allowance: QB production allowed by defense in PRIOR games
  opp=h.groupby("opponent_team").agg(opp_py=("passing_yards","mean"),opp_ptd=("passing_tds","mean"),opp_ypa=("ypa","mean"),opp_qbrush=("rushing_yards","mean"),opp_qbfp=("actual","mean")).reset_index().rename(columns={"opponent_team":"opponent"})
  # offense environment prior games
- team=h.groupby("recent_team").agg(team_att=("attempts","mean"),team_py=("passing_yards","mean"),team_ptd=("passing_tds","mean"),team_epa=("passing_epa","mean")).reset_index().rename(columns={"recent_team":"team"})
+ team=h.groupby(TEAMCOL).agg(team_att=("attempts","mean"),team_py=("passing_yards","mean"),team_ptd=("passing_tds","mean"),team_epa=("passing_epa","mean")).reset_index().rename(columns={TEAMCOL:"team"})
  for pid,g in h.groupby("player_id"):
   g=g.sort_values("week");l3=g.tail(3)
   fs.append({"player_id":pid,"att":g.attempts.mean(),"att3":l3.attempts.mean(),"py":g.passing_yards.mean(),"py3":l3.passing_yards.mean(),"epa":g.passing_epa.mean(),"epa3":l3.passing_epa.mean(),"tdr":g.tdr.mean(),"rush":g.carries.mean(),"rush3":l3.carries.mean(),"ry3":l3.rushing_yards.mean()})
- m=c.merge(pd.DataFrame(fs),on="player_id").merge(opp,left_on="opponent_team",right_on="opponent",how="left").merge(team,left_on="recent_team",right_on="team",how="left")
+ m=c.merge(pd.DataFrame(fs),on="player_id").merge(opp,left_on="opponent_team",right_on="opponent",how="left").merge(team,left_on=TEAMCOL,right_on="team",how="left")
  if len(m)<2:continue
  cols=["att","att3","py","py3","epa","epa3","tdr","rush","rush3","ry3","opp_py","opp_ptd","opp_ypa","opp_qbrush","opp_qbfp","team_att","team_py","team_ptd","team_epa"]
  for x in cols:m[x+"z"]=z(m[x])
