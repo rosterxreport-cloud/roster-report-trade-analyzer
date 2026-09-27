@@ -75,3 +75,24 @@ for name,v in cand.items():
  out.append({"model":name,"n":int(q.sum()),"corr":float(v[q].corr(y[q]))})
 pd.DataFrame(out).sort_values("corr",ascending=False).to_csv("data/qb-composite-screen.csv",index=False)
 print("\nQB COMPOSITE SCREEN\n",pd.DataFrame(out).sort_values("corr",ascending=False).to_string(index=False))
+
+
+# QB architecture v1: volume stability + pressure avoidance + rushing opportunity.
+# Efficiency/accuracy enter only as small modifiers until larger out-of-sample evidence supports more.
+arch=[]
+def Z(col):
+ return z(o[col]).fillna(0) if col in o else pd.Series(0.,index=o.index)
+volume=(Z("w1_DB")+Z("w1_ATT"))/2
+pressure=(-Z("w1_P2S %")-Z("w1_SACK %"))/2
+rushopp=Z("w1_rush_carries")
+eff=(Z("w1_EPA/DB")+Z("w1_ANY/A")+Z("w1_CPOE"))/3
+hero=Z("w1_HERO %")
+for vw,pw,rw,ew,hw in [
+ (.45,.25,.25,.05,0),(.40,.25,.30,.05,0),(.40,.30,.25,.05,0),
+ (.40,.25,.25,.05,.05),(.35,.30,.30,.05,0),(.45,.20,.30,.05,0)]:
+ score=vw*volume+pw*pressure+rw*rushopp+ew*eff+hw*hero
+ q=score.notna()&y.notna()
+ arch.append({"volume":vw,"pressure":pw,"rush":rw,"efficiency":ew,"hero":hw,"n":int(q.sum()),"corr":float(score[q].corr(y[q]))})
+aa=pd.DataFrame(arch).sort_values("corr",ascending=False)
+aa.to_csv("data/qb-architecture-v1.csv",index=False)
+print("\nQB ARCHITECTURE V1\n",aa.to_string(index=False))
