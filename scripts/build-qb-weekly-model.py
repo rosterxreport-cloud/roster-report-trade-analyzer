@@ -44,3 +44,34 @@ for col in [x for x in o.columns if x.startswith("w1_")]:
 s=pd.DataFrame(screen);s["abs_corr"]=s.corr_to_next_week_fp.abs();s=s.sort_values("abs_corr",ascending=False)
 s.to_csv("data/qb-week1-feature-screen.csv",index=False)
 print("Matched QBs:",len(o));print("Passing features:",features);print("XFP present:",any("XFP" in c.upper() for c in o.columns));print("\nTOP QB SIGNALS\n",s.head(20).to_string(index=False))
+
+
+# Candidate QB composite screen. Standardize Week 1 signals and test combinations
+# against Week 2 actual fantasy points; rushing is sourced only from nflverse.
+def z(s):
+ s=pd.to_numeric(s,errors="coerce"); sd=s.std()
+ return (s-s.mean())/(sd if sd and np.isfinite(sd) else 1)
+cand={}
+def add(name, parts):
+ vals=pd.Series(0.,index=o.index); used=0
+ for col,wt in parts:
+  if col in o:
+   vals=vals+z(o[col]).fillna(0)*wt;used+=1
+ if used:cand[name]=vals
+add("pressure_escape",[("w1_P2S %",-1),("w1_SACK %",-1),("w1_TTS",1)])
+add("pressure_plus_hero",[("w1_P2S %",-1),("w1_SACK %",-1),("w1_HERO %",.6)])
+add("accuracy_efficiency",[("w1_CPOE",1),("w1_ADJ CMP %",.7),("w1_EPA/DB",1),("w1_ANY/A",.7)])
+add("balanced_pass",[("w1_P2S %",-1),("w1_SACK %",-0.6),("w1_CPOE",.6),("w1_EPA/DB",.8),("w1_HERO %",.35)])
+# nflverse rushing fantasy contribution from Week 1
+rushfp=pd.Series(0.,index=o.index)
+if "w1_rush_rushing_yards" in o:rushfp += pd.to_numeric(o["w1_rush_rushing_yards"],errors="coerce").fillna(0)/10
+if "w1_rush_rushing_tds" in o:rushfp += pd.to_numeric(o["w1_rush_rushing_tds"],errors="coerce").fillna(0)*6
+cand["rushing_only"]=z(rushfp)
+if "balanced_pass" in cand:cand["balanced_plus_rush"]=cand["balanced_pass"]+.65*z(rushfp)
+y=pd.to_numeric(o["w2_actual_fp"],errors="coerce")
+out=[]
+for name,v in cand.items():
+ q=v.notna()&y.notna()
+ out.append({"model":name,"n":int(q.sum()),"corr":float(v[q].corr(y[q]))})
+pd.DataFrame(out).sort_values("corr",ascending=False).to_csv("data/qb-composite-screen.csv",index=False)
+print("\nQB COMPOSITE SCREEN\n",pd.DataFrame(out).sort_values("corr",ascending=False).to_string(index=False))
