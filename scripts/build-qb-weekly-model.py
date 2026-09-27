@@ -34,4 +34,13 @@ for _,b in w1.iterrows():
  rows.append(out)
 o=pd.DataFrame(rows)
 Path("data").mkdir(exist_ok=True);o.to_csv("data/qb-week1-to-week2-backtest-input.csv",index=False)
-print("Matched QBs:",len(o));print("Passing features:",features);print("XFP present:",any("XFP" in c.upper() for c in o.columns))
+# Simple one-variable screening against Week 2 actual FP. This is diagnostic, not final fitting.
+# Rank by absolute correlation and report sample coverage; small Week 1->2 sample means we avoid overfitting.
+screen=[]
+for col in [x for x in o.columns if x.startswith("w1_")]:
+ x=pd.to_numeric(o[col],errors="coerce");y=pd.to_numeric(o["w2_actual_fp"],errors="coerce");z=x.notna()&y.notna()
+ if z.sum()>=10:
+  screen.append({"feature":col,"n":int(z.sum()),"corr_to_next_week_fp":round(float(x[z].corr(y[z])),4)})
+s=pd.DataFrame(screen);s["abs_corr"]=s.corr_to_next_week_fp.abs();s=s.sort_values("abs_corr",ascending=False)
+s.to_csv("data/qb-week1-feature-screen.csv",index=False)
+print("Matched QBs:",len(o));print("Passing features:",features);print("XFP present:",any("XFP" in c.upper() for c in o.columns));print("\nTOP QB SIGNALS\n",s.head(20).to_string(index=False))
