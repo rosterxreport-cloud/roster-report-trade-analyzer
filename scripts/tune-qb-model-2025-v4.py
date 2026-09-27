@@ -21,13 +21,13 @@ for wk in sorted(d.week.unique()):
   def a3(x): return l3[x].mean()
   feats.append(dict(player_id=pid,
    att=avg("attempts"),att3=a3("attempts"),rush=avg("carries"),rush3=a3("carries"),
-   ypa=avg("ypa"),cpoe=avg("passing_cpoe"),epa=avg("passing_epa"),cr=avg("comp_rate"),
+   hist_ypa=avg("ypa"),cpoe=avg("passing_cpoe"),epa=avg("passing_epa"),cr=avg("comp_rate"),
    tdr=avg("td_rate"),intr=avg("int_rate"),py3=a3("passing_yards"),ptd3=a3("passing_tds"),
    fp3=a3("actual")))
  m=c.merge(pd.DataFrame(feats),on="player_id",how="inner")
  if len(m)<2:continue
- for x in ["att","att3","rush","rush3","ypa","cpoe","epa","cr","tdr","intr","py3","ptd3","fp3"]:m[x+"z"]=z(m[x])
- m["pass_eff"]=(m.ypaz+m.cpoez+m.epaz+m.crz)/4
+ for x in ["att","att3","rush","rush3","hist_ypa","cpoe","epa","cr","tdr","intr","py3","ptd3","fp3"]:m[x+"z"]=z(m[x])
+ m["pass_eff"]=(m.hist_ypaz+m.cpoez+m.epaz+m.crz)/4
  m["pass_prod"]=(m.py3z+m.ptd3z-m.intrz)/3
  for recent in [.25,.5,.75]:
   V=(1-recent)*m.attz+recent*m.att3z;R=(1-recent)*m.rushz+recent*m.rush3z
