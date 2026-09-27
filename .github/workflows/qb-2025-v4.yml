@@ -1,0 +1,19 @@
+name: QB 2025 V4 Passing Forward
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/tune-qb-model-2025-v4.py']
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install pandas numpy
+      - run: python scripts/tune-qb-model-2025-v4.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qb-2025-v4
+          path: data/qb-2025-v4-summary.csv
