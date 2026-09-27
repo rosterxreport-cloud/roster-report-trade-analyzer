@@ -8,7 +8,8 @@ from pathlib import Path
 STATS="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2025.csv"
 SCHED="https://github.com/nflverse/nfldata/raw/master/data/games.csv"
 d=pd.read_csv(STATS,low_memory=False); d=d[(d.position=="QB")&(d.season_type=="REG")].copy()
-d["actual"]=d.passing_yards/25+4*d.passing_tds-2*d.passing_interceptions+d.rushing_yards/10+6*d.rushing_tds\nTEAMCOL="recent_team" if "recent_team" in d.columns else "team"
+d["actual"]=d.passing_yards/25+4*d.passing_tds-2*d.passing_interceptions+d.rushing_yards/10+6*d.rushing_tds
+TEAMCOL="recent_team" if "recent_team" in d.columns else "team"
 d["ypa"]=d.passing_yards/d.attempts.replace(0,np.nan); d["tdr"]=d.passing_tds/d.attempts.replace(0,np.nan)
 # team/opponent QB aggregates from games strictly before target week
 def z(s):
