@@ -110,3 +110,30 @@ for vw in [.35,.375,.40,.425,.45]:
 tt=pd.DataFrame(tune).sort_values("corr",ascending=False)
 tt.to_csv("data/qb-v1-weight-refinement.csv",index=False)
 print("\nQB V1 WEIGHT REFINEMENT\n",tt.head(20).to_string(index=False))
+
+
+# Advanced Passing Score sweep — explicitly excludes pressure-to-sack rate (P2S%).
+# Components: accuracy, efficiency, high-end throws, turnover risk, depth/aggression,
+# pressure environment, and timing/style.
+adv_parts=[
+ ("w1_CPOE",1.0),("w1_ADJ CMP %",.75),("w1_EPA/DB",1.0),("w1_ANY/A",.75),
+ ("w1_HERO %",.60),("w1_TWT %",-0.60),("w1_DEEP %",.45),("w1_ADOT",.35),
+ ("w1_ACC %",.75),("w1_PRESS %",-0.25),("w1_TTT",-0.20),("w1_TTS",.25)
+]
+adv=pd.Series(0.,index=o.index);den=0.
+for col,wt in adv_parts:
+ if col in o:
+  adv += wt*Z(col);den += abs(wt)
+adv=adv/(den or 1)
+# Keep core volume/rushing; test advanced layer at 10-30%.
+advtests=[]
+for aw in [.10,.15,.20,.25,.30]:
+ remaining=1-aw
+ # Preserve 40:25 volume:rushing relationship in non-advanced share.
+ vw=remaining*(40/65);rw=remaining*(25/65)
+ score=vw*volume+rw*rushopp+aw*adv
+ q=score.notna()&y.notna()
+ advtests.append({"advanced":aw,"volume":round(vw,4),"rush":round(rw,4),"P2S_weight":0,"n":int(q.sum()),"corr":float(score[q].corr(y[q]))})
+at=pd.DataFrame(advtests).sort_values("corr",ascending=False)
+at.to_csv("data/qb-advanced-passing-no-p2s-sweep.csv",index=False)
+print("\nQB ADVANCED PASSING — NO P2S%\n",at.to_string(index=False))
