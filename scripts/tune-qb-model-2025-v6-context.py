@@ -24,14 +24,14 @@ for wk in sorted(d.week.unique()):
  team=h.groupby(TEAMCOL).agg(team_att=("attempts","mean"),team_py=("passing_yards","mean"),team_ptd=("passing_tds","mean"),team_epa=("passing_epa","mean")).reset_index().rename(columns={TEAMCOL:"team"})
  for pid,g in h.groupby("player_id"):
   g=g.sort_values("week");l3=g.tail(3)
-  fs.append({"player_id":pid,"att":g.attempts.mean(),"att3":l3.attempts.mean(),"py":g.passing_yards.mean(),"py3":l3.passing_yards.mean(),"epa":g.passing_epa.mean(),"epa3":l3.passing_epa.mean(),"tdr":g.tdr.mean(),"rush":g.carries.mean(),"rush3":l3.carries.mean(),"ry3":l3.rushing_yards.mean()})
+  fs.append({"player_id":pid,"att":g.attempts.mean(),"att3":l3.attempts.mean(),"py":g.passing_yards.mean(),"py3":l3.passing_yards.mean(),"epa":g.passing_epa.mean(),"epa3":l3.passing_epa.mean(),"hist_tdr":g.tdr.mean(),"rush":g.carries.mean(),"rush3":l3.carries.mean(),"ry3":l3.rushing_yards.mean()})
  m=c.merge(pd.DataFrame(fs),on="player_id").merge(opp,left_on="opponent_team",right_on="opponent",how="left").merge(team,left_on=TEAMCOL,right_on="team",how="left")
  if len(m)<2:continue
- cols=["att","att3","py","py3","epa","epa3","tdr","rush","rush3","ry3","opp_py","opp_ptd","opp_ypa","opp_qbrush","opp_qbfp","team_att","team_py","team_ptd","team_epa"]
+ cols=["att","att3","py","py3","epa","epa3","hist_tdr","rush","rush3","ry3","opp_py","opp_ptd","opp_ypa","opp_qbrush","opp_qbfp","team_att","team_py","team_ptd","team_epa"]
  for x in cols:m[x+"z"]=z(m[x])
  opportunity=(m.att3z+m.team_attz)/2
  passprod=(m.py3z+m.pyz)/2
- efficiency=(m.epa3z+m.epaz+m.tdrz)/3
+ efficiency=(m.epa3z+m.epaz+m.hist_tdrz)/3
  matchup=(m.opp_pyz+m.opp_ptdz+m.opp_ypaz+m.opp_qbfpz)/4
  rushing=(m.rush3z+m.rushz+m.ry3z+m.opp_qbrushz)/4
  offense=(m.team_pyz+m.team_ptdz+m.team_epaz)/3
