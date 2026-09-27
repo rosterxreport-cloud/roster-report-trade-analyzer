@@ -177,3 +177,28 @@ for aw in [.45,.50,.55,.60]:
 dt=pd.DataFrame(detail).sort_values("corr",ascending=False)
 dt.to_csv("data/qb-advanced-component-optimization.csv",index=False)
 print("\nQB ADVANCED COMPONENT OPTIMIZATION — NO P2S%\n",dt.head(30).to_string(index=False))
+
+
+# Verified-sample QB rebuild: avoid relying on unstable one-week efficiency correlation.
+# Screen stable architecture families with advanced passing subgroups separated.
+groups={
+ "accuracy":[("w1_ADJ CMP %",1),("w1_ACC %",1)],
+ "efficiency":[("w1_EPA/DB",1),("w1_ANY/A",1)],
+ "aggression":[("w1_HERO %",1),("w1_DEEP %",.7),("w1_ADOT",.5)],
+ "risk":[("w1_TWT %",-1),("w1_DROP %",-0.5)],
+ "timing":[("w1_TTT",-1),("w1_TTS",.5)],
+}
+gs={k:advscore(v) for k,v in groups.items()}
+stable=[]
+for vw in [.40,.50,.60]:
+ for rw in [.15,.20,.25]:
+  for aw in [.15,.20,.25,.30]:
+   if vw+rw+aw>1:continue
+   # advanced score favors verified positive hero/aggression but keeps broad skill coverage
+   av=.15*gs["accuracy"]+.20*gs["efficiency"]+.40*gs["aggression"]+.15*gs["risk"]+.10*gs["timing"]
+   sc=vw*volume+rw*rushopp+aw*av
+   q=sc.notna()&y.notna()
+   stable.append({"volume":vw,"rush":rw,"advanced":aw,"unused":round(1-vw-rw-aw,2),"n":int(q.sum()),"corr":float(sc[q].corr(y[q]))})
+st=pd.DataFrame(stable).sort_values("corr",ascending=False)
+st.to_csv("data/qb-verified-architecture-rebuild.csv",index=False)
+print("\nQB VERIFIED ARCHITECTURE REBUILD\n",st.head(25).to_string(index=False))
