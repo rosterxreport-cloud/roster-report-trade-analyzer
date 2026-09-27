@@ -11,7 +11,7 @@ d["pass_td_rate"]=d.passing_tds/d.attempts.replace(0,np.nan)
 d["int_rate"]=d.passing_interceptions/d.attempts.replace(0,np.nan)
 d["ypa"]=d.passing_yards/d.attempts.replace(0,np.nan)
 d["rush_ypc"]=d.rushing_yards/d.carries.replace(0,np.nan)
-features=["att","dropbacks","carries","passing_epa","passing_cpoe","pass_td_rate","int_rate","ypa","rush_ypc","actual"]
+features=["attempts","dropbacks","carries","passing_epa","passing_cpoe","pass_td_rate","int_rate","ypa","rush_ypc","actual"]
 rows=[]
 for wk in sorted(d.week.unique()):
  if wk<5:continue
