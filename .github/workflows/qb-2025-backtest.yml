@@ -2,7 +2,7 @@ name: QB 2025 Backtest
 on:
   workflow_dispatch:
   push:
-    branches: [experiment/new-rb-projections]
+    branches: [main, experiment/new-rb-projections]
     paths: ['scripts/backtest-qb-model-2025.py']
 jobs:
   run:
