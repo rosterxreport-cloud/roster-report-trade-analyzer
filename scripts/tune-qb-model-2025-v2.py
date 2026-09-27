@@ -6,7 +6,7 @@ from sklearn.linear_model import Ridge
 URL="https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2025.csv"
 d=pd.read_csv(URL,low_memory=False);d=d[(d.position=="QB")&(d.season_type=="REG")].copy()
 d["actual"]=d.passing_yards/25+4*d.passing_tds-2*d.passing_interceptions+d.rushing_yards/10+6*d.rushing_tds
-d["dropbacks"]=d.attempts+d.sacks
+d["dropbacks"]=d.attempts + (d["sacks_suffered"] if "sacks_suffered" in d.columns else (d["sacks"] if "sacks" in d.columns else 0))
 d["pass_td_rate"]=d.passing_tds/d.attempts.replace(0,np.nan)
 d["int_rate"]=d.passing_interceptions/d.attempts.replace(0,np.nan)
 d["ypa"]=d.passing_yards/d.attempts.replace(0,np.nan)
