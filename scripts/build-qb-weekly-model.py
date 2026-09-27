@@ -150,3 +150,30 @@ for aw in [.30,.35,.40,.45,.50,.55,.60]:
 et=pd.DataFrame(ext).sort_values("corr",ascending=False)
 et.to_csv("data/qb-advanced-passing-no-p2s-extended.csv",index=False)
 print("\nQB ADVANCED PASSING EXTENDED — NO P2S%\n",et.to_string(index=False))
+
+
+# Optimize individual advanced passing components around the 45-60% layer.
+# P2S% remains excluded. Leave-one-out + emphasis/de-emphasis tests identify
+# which metrics deserve weight without brute-force fitting the tiny sample.
+baseparts=[
+ ("w1_CPOE",1.0),("w1_ADJ CMP %",.75),("w1_EPA/DB",1.0),("w1_ANY/A",.75),
+ ("w1_HERO %",.60),("w1_TWT %",-0.60),("w1_DEEP %",.45),("w1_ADOT",.35),
+ ("w1_ACC %",.75),("w1_PRESS %",-0.25),("w1_TTT",-0.20),("w1_TTS",.25)]
+def advscore(parts):
+ s=pd.Series(0.,index=o.index);d=0.
+ for col,wt in parts:
+  if col in o:s+=wt*Z(col);d+=abs(wt)
+ return s/(d or 1)
+detail=[]
+for aw in [.45,.50,.55,.60]:
+ rem=1-aw;vw=rem*(40/65);rw=rem*(25/65)
+ tests=[("base",baseparts)]
+ for col,wt in baseparts:
+  tests.append(("drop_"+col.replace("w1_",""),[(a,b) for a,b in baseparts if a!=col]))
+  tests.append(("double_"+col.replace("w1_",""),[(a,(b*2 if a==col else b)) for a,b in baseparts]))
+ for nm,parts in tests:
+  sc=vw*volume+rw*rushopp+aw*advscore(parts);q=sc.notna()&y.notna()
+  detail.append({"advanced":aw,"test":nm,"n":int(q.sum()),"corr":float(sc[q].corr(y[q]))})
+dt=pd.DataFrame(detail).sort_values("corr",ascending=False)
+dt.to_csv("data/qb-advanced-component-optimization.csv",index=False)
+print("\nQB ADVANCED COMPONENT OPTIMIZATION — NO P2S%\n",dt.head(30).to_string(index=False))
