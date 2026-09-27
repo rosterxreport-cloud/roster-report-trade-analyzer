@@ -47,10 +47,10 @@ for wk in sorted(q.week.unique()):
     rz_pass=rz_pass,rz_rush=rz_rush))
  m=cq.merge(pd.DataFrame(fs),on="player_id",how="inner")
  if len(m)<2: continue
- cols=["att","att3","py","py3","epa","epa3","fp3","rush","rush3","ry3","team_pass_rate","team_pass_rate3","proe","proe3","plays","plays3","rz_pass","rz_rush"]
+ cols=["att","att3","py","py3","epa","epa3","fp3","team_pass_rate","team_pass_rate3","proe","proe3","plays","plays3","rz_pass","rz_rush"]
  for x in cols:m[x+"z"]=z(m[x])
  # v5-ish direct foundation: passing-yard signal + recent form + rushing + small EPA
- base=.35*m.py3z+.25*m.fp3z+.25*((m.rush3z+m.ry3z)/2)+.05*m.epa3z+.10*m.att3z
+ base=.35*m.py3z+.25*m.fp3z+.05*m.epa3z+.10*m.att3z
  opportunity=(m.team_pass_rate3z+m.proe3z+m.plays3z+m.att3z)/4
  qb_rush=(m.rush3z+m.ry3z+m.rz_rushz)/3
  rz=(m.rz_passz+m.rz_rushz)/2
