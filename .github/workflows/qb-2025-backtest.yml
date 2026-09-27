@@ -19,3 +19,5 @@ jobs:
           path: |
             data/qb-2025-backtest-summary.csv
             data/qb-2025-backtest-detail.csv
+
+# trigger full-season QB validation
