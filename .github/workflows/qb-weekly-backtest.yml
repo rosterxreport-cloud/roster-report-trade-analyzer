@@ -22,3 +22,5 @@ jobs:
           path: |
             data/qb-week1-to-week2-backtest-input.csv
             data/qb-week1-feature-screen.csv
+
+# trigger QB signal screen
