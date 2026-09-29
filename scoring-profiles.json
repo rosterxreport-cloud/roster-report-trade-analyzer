@@ -395,6 +395,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Case Keenum": {
+    "passingYards": 4199.0,
+    "passingTds": 34.0,
+    "rushingTds": 17.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 17.0,
+    "receivingFirstDowns": 0.0,
+    "receptions": 0.0,
+    "baselinePoints": 416.16,
+    "longTds40": 17.0,
+    "longTds50": null
+  },
   "CeeDee Lamb": {
     "passingYards": 0.0,
     "passingTds": 0.0,
