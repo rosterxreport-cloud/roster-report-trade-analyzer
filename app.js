@@ -11,7 +11,7 @@ const $ = (id) => document.getElementById(id);
 const escapeHtml = (s) => String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
 async function init(){
-  const [source,profiles] = await Promise.all([fetch("players.json").then(r=>r.json()),fetch("scoring-profiles.json").then(r=>r.ok?r.json():{}).catch(()=>({}))]);
+  const [source,profiles] = await Promise.all([fetch("players.json",{cache:"no-store"}).then(r=>r.json()),fetch("scoring-profiles.json",{cache:"no-store"}).then(r=>r.ok?r.json():{}).catch(()=>({}))]);
   scoringProfiles=profiles;
   DB = Object.fromEntries(Object.entries(source).map(([scoring, list])=>[scoring, applyRbPremium(list)]));
   initScoringSettings();
