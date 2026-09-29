@@ -274,6 +274,12 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             if not matches.empty and not sr.empty:
                 matches.loc[:,"offense_snaps"]=float(sr.iloc[0].offense_snaps);matches.loc[:,"offense_pct"]=float(sr.iloc[0].offense_pct)
             games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.45 if games>=2 else .30 if games==1 else 0.0;pre_w=.40 if games>=2 else .50 if games==1 else .65
+            # Locked methodology: injury DNPs are not zero-production games. The nflverse season
+            # summary's games field counts games actually played, so all 2026 per-game metrics and
+            # sample weights below use appearances only. Availability/injury risk remains downstream
+            # in the dedicated injury layer; do not replace this with team-games elapsed.
+            # This preserves preseason priors for injured returnees (e.g. Brock Bowers) without a
+            # player-specific ranking override.
             # TE-specific early-season acceleration: opportunity stabilizes faster
             # than TD production, so after 2+ games give current role/production
             # modestly more influence while retaining a meaningful preseason prior.
