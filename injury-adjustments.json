@@ -407,13 +407,22 @@
       "updatedAt": "2026-09-20T17:09:14Z"
     },
     "Jayden Daniels": {
-      "availability": 0.55,
-      "workload": 0.7,
-      "longTermRisk": 0.88,
-      "status": "Out Week 3 - left elbow dislocation",
-      "note": "Daniels dislocated his left elbow in Week 2. Washington has named Marcus Mariota the Week 3 starter while Daniels receives additional specialist evaluation. No firm return timetable has been announced.",
-      "expectedReturn": "Week 3 ruled out; return timetable TBD",
-      "updatedAt": "2026-09-22T23:59:00Z"
+      "availability": 0.45,
+      "workload": 0.68,
+      "longTermRisk": 0.84,
+      "status": "Out Week 4 - left elbow dislocation",
+      "note": "Daniels practiced on a limited basis all week but Washington ruled him out for Week 4. He is not on IR and remains week-to-week, with a potential return after another full practice week.",
+      "expectedReturn": "Week 5 or later; week-to-week",
+      "updatedAt": "2026-10-03T18:30:00Z"
+    },
+    "De'Von Achane": {
+      "availability": 0,
+      "workload": 0,
+      "longTermRisk": 0.25,
+      "status": "Injured Reserve - torn ACL; out for 2026 season",
+      "note": "Miami placed Achane on injured reserve after a torn ACL suffered in Week 3. He is out for the remainder of the 2026 season. ROS trade value receives the model's severe long-term injury treatment.",
+      "expectedReturn": "2027",
+      "updatedAt": "2026-10-03T18:30:00Z"
     }
   }
 }
