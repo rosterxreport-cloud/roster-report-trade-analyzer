@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-03T23:10:00Z",
+  "updatedAt": "2026-10-03T23:56:00Z",
   "players": {
     "TreVeyon Henderson": {
       "availability": 1,
@@ -410,10 +410,10 @@
       "availability": 0.45,
       "workload": 0.68,
       "longTermRisk": 0.84,
-      "status": "Out Week 4 - left elbow dislocation",
-      "note": "Daniels practiced on a limited basis all week but Washington ruled him out for Week 4. He is not on IR and remains week-to-week, with a potential return after another full practice week.",
-      "expectedReturn": "Week 5 or later; week-to-week",
-      "updatedAt": "2026-10-03T18:30:00Z"
+      "status": "Out Week 4 - elbow",
+      "note": "Current Week 4 availability audit.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-10-03T23:56:00Z"
     },
     "De'Von Achane": {
       "availability": 0,
@@ -432,6 +432,51 @@
       "note": "Current injury audit.",
       "expectedReturn": "2027",
       "updatedAt": "2026-10-03T23:55:00Z"
+    },
+    "Travis Etienne Jr.": {
+      "availability": 0.35,
+      "workload": 0.45,
+      "longTermRisk": 0.82,
+      "status": "Injured reserve - hamstring",
+      "note": "Current Week 4 availability audit.",
+      "expectedReturn": "After minimum four-game absence",
+      "updatedAt": "2026-10-03T23:56:00Z"
+    },
+    "Keenan Allen": {
+      "availability": 0.55,
+      "workload": 0.72,
+      "longTermRisk": 0.9,
+      "status": "Out Week 4 - groin",
+      "note": "Current Week 4 availability audit.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-10-03T23:56:00Z"
+    },
+    "Caleb Williams": {
+      "availability": 0.55,
+      "workload": 0.72,
+      "longTermRisk": 0.88,
+      "status": "Out Week 4 - hamstring",
+      "note": "Current Week 4 availability audit.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-10-03T23:56:00Z"
+    },
+    "Rachaad White": {
+      "availability": 0.55,
+      "workload": 0.72,
+      "longTermRisk": 0.9,
+      "status": "Out Week 4 - shoulder",
+      "note": "Current Week 4 availability audit.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-10-03T23:56:00Z"
+    },
+    "Rico Dowdle": {
+      "availability": 0.55,
+      "workload": 0.72,
+      "longTermRisk": 0.9,
+      "status": "Out Week 4 - toe",
+      "note": "Current Week 4 availability audit.",
+      "expectedReturn": "Week 5 or later",
+      "updatedAt": "2026-10-03T23:56:00Z"
     }
   }
 }
