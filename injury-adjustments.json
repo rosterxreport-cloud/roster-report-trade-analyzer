@@ -137,13 +137,13 @@
       "updatedAt": "2026-09-10T13:58:00Z"
     },
     "Brock Bowers": {
-      "availability": 0.68,
-      "workload": 0.86,
-      "longTermRisk": 0.95,
-      "status": "Returned to practice Friday - meniscus trim; doubtful Week 2",
-      "note": "Bowers practiced Friday for the first time since his meniscus procedure but is officially doubtful for Sunday and would need substantial progress in pregame testing to play. The return to practice is encouraging for the medium-term outlook, while the doubtful designation keeps a significant Week 2 availability penalty. Las Vegas is optimistic about Week 3.",
-      "expectedReturn": "Week 2 unlikely; Week 3 increasingly likely",
-      "updatedAt": "2026-09-18T22:50:27Z"
+      "availability": 1,
+      "workload": 1,
+      "longTermRisk": 1,
+      "status": "Active - returned from meniscus injury",
+      "note": "Returned to game action and no longer receives a downstream injury discount in the trade analyzer. Current performance and ROS outlook are represented in the refreshed rankings/value model.",
+      "expectedReturn": "Active",
+      "updatedAt": "2026-10-03T00:00:00Z"
     },
     "Malik Nabers": {
       "availability": 1,
