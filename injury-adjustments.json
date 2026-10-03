@@ -423,6 +423,15 @@
       "note": "Miami placed Achane on injured reserve after a torn ACL suffered in Week 3. He is out for the remainder of the 2026 season. ROS trade value receives the model's severe long-term injury treatment.",
       "expectedReturn": "2027",
       "updatedAt": "2026-10-03T18:30:00Z"
+    },
+    "Jaxson Dart": {
+      "availability": 0,
+      "workload": 0,
+      "longTermRisk": 0.25,
+      "status": "Unavailable ROS",
+      "note": "Current injury audit.",
+      "expectedReturn": "2027",
+      "updatedAt": "2026-10-03T23:55:00Z"
     }
   }
 }
