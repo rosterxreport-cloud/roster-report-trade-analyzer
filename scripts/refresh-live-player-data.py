@@ -430,9 +430,13 @@ def injury_deduction(adj):
     a=max(0,min(1,float(adj.get("availability",1))))
     w=max(0,min(1,float(adj.get("workload",1))))
     r=max(0,min(1,float(adj.get("longTermRisk",1))))
+    # Confirmed season-ending injuries are fundamentally different from ordinary
+    # week-to-week availability. In a redraft ROS trade model they must carry
+    # essentially no current-season trade value.
+    if a<=.05 and w<=.05 and r<=.35:
+        return 95.0
     severity=1.0-(a*.50+w*.30+r*.20)
-    # Soft ROS penalty: ordinary injuries are capped at six value points.
-    # Only clearly severe/long-term profiles can extend toward 12.
+    # Soft ROS penalty for recoverable injuries.
     cap=12.0 if (a<=.35 or r<=.45) else 6.0
     return min(cap,max(0.0,severity*25.0))
 
