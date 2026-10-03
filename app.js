@@ -33,10 +33,11 @@ function applyLeagueScarcity(list,profile){
   const starterPremium=Math.min(.40,.20*profile.leagueSize*sf/12);
   const qbs=[...list].filter(p=>p.pos==='QB').sort((a,b)=>b.value-a.value||a.rank-b.rank);
   const ranks=new Map(qbs.map((p,i)=>[p.name,i+1]));
+  // Superflex changes QB trade value, but must not overwrite the published model rank.
   return list.map(p=>{
     const sfPremium=p.pos==='QB'?starterPremium*Math.min(1,demand/ranks.get(p.name)):0;
     return {...p,sfPremium,value:p.pos==='QB'?Math.round(p.value*(1+sfPremium)*100)/100:p.value};
-  }).sort((a,b)=>b.value-a.value||a.rank-b.rank).map((p,i)=>({...p,rank:i+1}));
+  });
 }
 
 function bind(){
@@ -250,6 +251,7 @@ function renderRankings(){
   if(rankingsQuery)rows=rows.filter(p=>`${p.name} ${p.team} ${p.pos}`.toLowerCase().includes(rankingsQuery));
   if(rankingsSort==="value")rows.sort((a,b)=>b.value-a.value||a.rank-b.rank);
   else if(rankingsSort==="position")rows.sort((a,b)=>(posRanks.get(a.name)||999)-(posRanks.get(b.name)||999)||a.rank-b.rank);
+  else if(rankingsSort==="base")rows.sort((a,b)=>(a.scoringBaseRank??a.rank)-(b.scoringBaseRank??b.rank));
   else rows.sort((a,b)=>a.rank-b.rank);
   $("rankingsCaption").textContent=`${label} • ${rankingsPosition==="ALL"?"Top 250":rankingsPosition+" rankings"}${custom?' • Custom Scoring Active':''}${rankingsQuery?` • Search: ${rankingsQuery}`:''}`;
   $("rankingsRows").innerHTML=rows.length?rows.map(p=>`<tr>
