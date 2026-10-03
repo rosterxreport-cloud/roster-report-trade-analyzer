@@ -34,8 +34,9 @@
     // For ordinary injury situations, cap the value reduction at 8%. Allow a
     // larger penalty only for players whose availability signal reflects a
     // genuine multi-game/IR/PUP-level absence (availability < 0.90).
-    const floor = availability < 0.90 ? 0.84 : 0.92;
-    const combinedMultiplier = clamp(weightedMultiplier, floor, 1);
+    const seasonEnding = availability <= 0.05 && workload <= 0.05 && longTermRisk <= 0.35;
+    const floor = seasonEnding ? 0.05 : availability < 0.90 ? 0.84 : 0.92;
+    const combinedMultiplier = seasonEnding ? 0.05 : clamp(weightedMultiplier, floor, 1);
     const baseValue = Number(player.value ?? 0);
 
     return {
