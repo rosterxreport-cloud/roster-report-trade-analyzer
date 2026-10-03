@@ -26,6 +26,10 @@ function applyCustomScoring(list,profiles,settings){
     if(s.longTdBonus) add(s.longTdThreshold===50?'longTds50':'longTds40',s.longTdBonus);
     const baseline=finite(profile,'baselinePoints');
     const impact=used&&baseline>0?Math.max(-.10,Math.min(.10,(delta/baseline)*.45)):0;
-    return {...player,scoringBaseRank:player.rank,scoringBaseValue:player.value,customScoringImpact:impact,value:Math.round(player.value*(1+impact)*100)/100};
+    // Custom scoring is an optional league-context modifier. Never allow it to
+    // reduce the refreshed model's published trade value; the base value already
+    // incorporates the current rankings/statistical update.
+    const adjusted=Math.round(player.value*(1+impact)*100)/100;
+    return {...player,scoringBaseRank:player.rank,scoringBaseValue:player.value,customScoringImpact:impact,value:Math.max(player.value,adjusted)};
   }).sort((a,b)=>b.value-a.value||(a.scoringBaseRank??a.rank)-(b.scoringBaseRank??b.rank)).map((p,i)=>({...p,rank:i+1}));
 }
