@@ -212,8 +212,9 @@ function render(){
 }
 
 function applyRbPremium(list){
-  // Use the unadjusted model order, not the source AW positional rank.
-  // Retain base values so reapplying this transformation never compounds it.
+  // Trade-value premiums must not overwrite the model's published rankings.
+  // players.json already contains the blended Top 250 rank for each scoring format.
+  // Adjust RB trade value only; preserve rank so a data refresh is reflected verbatim.
   const baseValue=p=>p.baseValue ?? p.value;
   const baseRank=p=>p.baseRank ?? p.rank;
   const backs=[...list].filter(p=>p.pos==="RB")
@@ -223,9 +224,9 @@ function applyRbPremium(list){
     const rbRank=rbRanks.get(p.name);
     const rbPremium=p.pos==="RB" ? (rbRank<=12 ? .03 : rbRank<=24 ? .015 : 0) : 0;
     return {...p, baseValue:baseValue(p), baseRank:baseRank(p), rbPremium,
-      value:Math.round(baseValue(p)*(1+rbPremium)*100)/100};
-  }).sort((a,b)=>b.value-a.value || a.baseRank-b.baseRank)
-    .map((p,i)=>({...p,rank:i+1}));
+      value:Math.round(baseValue(p)*(1+rbPremium)*100)/100,
+      rank:baseRank(p)};
+  });
 }
 
 function bindRankingsControls(){
