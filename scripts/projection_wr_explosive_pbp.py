@@ -189,3 +189,5 @@ if __name__=="__main__": main()
 # trigger receptions on 30pct yards winner
 
 # trigger actual PBP explosive sweep
+
+# trigger extended explosive sweep
