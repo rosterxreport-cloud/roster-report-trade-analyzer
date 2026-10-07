@@ -70,7 +70,9 @@ def project(r):
   tsh=(1-shrink)*prior_t+shrink*raw_t; csh=(1-shrink)*prior_c+shrink*raw_c
   tar=pp*clip(tsh,0,.42); car=rc*clip(csh,0,.82)
   catch=(r.pre_receptions/max(r.pre_targets,1)) if pd.notna(r.pre_targets) else .68
-  ypt=(r.pre_receiving_yards/max(r.pre_targets,1)) if pd.notna(r.pre_targets) else {"RB":6.2,"WR":8.0,"TE":7.2}.get(pos,7)\n  # Lean v5: regress volatile efficiency harder; opportunity drives projection.\n  ypt=.55*{"RB":6.2,"WR":8.0,"TE":7.2}.get(pos,7)+.45*ypt
+  ypt=(r.pre_receiving_yards/max(r.pre_targets,1)) if pd.notna(r.pre_targets) else {"RB":6.2,"WR":8.0,"TE":7.2}.get(pos,7)
+  # Lean v5: regress volatile efficiency harder; opportunity drives projection.
+  ypt=.55*{"RB":6.2,"WR":8.0,"TE":7.2}.get(pos,7)+.45*ypt
   rtd=(r.pre_receiving_tds/max(r.pre_targets,1)) if pd.notna(r.pre_targets) else .045
   ypc=(r.pre_rushing_yards/max(r.pre_carries,1)) if pd.notna(r.pre_carries) and r.pre_carries>0 else 4.2
   rutd=(r.pre_rushing_tds/max(r.pre_carries,1)) if pd.notna(r.pre_carries) and r.pre_carries>0 else .035
