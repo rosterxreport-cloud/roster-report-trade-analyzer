@@ -1,0 +1,18 @@
+name: WR Receptions On Winning Yards
+on:
+  push:
+    paths: ['scripts/projection_wr_yds_rec_sweep.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        recweight: ['0.00','0.05','0.10','0.15','0.20','0.25','0.30']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_yds_rec_sweep.py --stat ydspg --weight 0.30 --rec-weight ${{ matrix.recweight }} --out data/backtests/wr_yds30_rec/${{ matrix.recweight }}
