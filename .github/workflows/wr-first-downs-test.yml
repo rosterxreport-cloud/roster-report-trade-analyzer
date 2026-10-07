@@ -1,5 +1,7 @@
 name: WR First Downs Test
 on:
+  push:
+    paths: ['scripts/projection_wr_first_downs.py']
   workflow_dispatch:
 permissions: {contents: read}
 jobs:
