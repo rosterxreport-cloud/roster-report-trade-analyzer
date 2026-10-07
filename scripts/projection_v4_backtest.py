@@ -32,7 +32,9 @@ def build_features(w):
        "carries","rushing_yards","rushing_tds","targets","receptions",
        "receiving_yards","receiving_tds"]
  for c in cols:
-  if c not in w.columns: w[c]=0.0\n  w[c]=pd.to_numeric(w[c],errors="coerce").fillna(0)
+  if c not in w.columns:
+   w[c]=0.0
+  w[c]=pd.to_numeric(w[c],errors="coerce").fillna(0)
   w["pre_"+c]=w.groupby("player_id")[c].transform(lambda s:s.shift().ewm(alpha=.45,adjust=False).mean())
  # Team totals and prior-only team environment.
  team=w.groupby(["recent_team","week"],as_index=False).agg(
