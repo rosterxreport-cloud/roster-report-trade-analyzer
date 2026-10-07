@@ -1,0 +1,21 @@
+name: Projection V5 Lean Backtest
+on:
+  push:
+    paths: ['scripts/projection_v5_lean_backtest.py']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_v5_lean_backtest.py
+      - run: |
+          git config user.name "roster-report-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/backtests/v5_lean
+          git diff --cached --quiet || git commit -m "Run projection v4 blind backtest"
+          git push
