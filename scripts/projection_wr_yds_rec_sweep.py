@@ -172,3 +172,5 @@ if __name__=="__main__": main()
 # trigger direct-stat tests
 
 # trigger yards/receptions sweep
+
+# trigger receptions on 30pct yards winner
