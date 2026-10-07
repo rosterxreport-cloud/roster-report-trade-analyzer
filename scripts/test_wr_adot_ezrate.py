@@ -34,3 +34,5 @@ for beta in [0.025,0.05,0.075,0.10,0.15,0.20]:
  mae=(pred-m.actual_ppr).abs().mean()
  print('EZRATE',beta,mae)
 print('EZ_CENTER',center)
+
+# trigger
