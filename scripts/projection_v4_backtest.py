@@ -103,3 +103,5 @@ def main():
  s.to_csv(out/"weekly_summary.csv",index=False);overall.to_csv(out/"overall_summary.csv",index=False)
  print("\nWEEKLY\n",s.to_string(index=False));print("\nOVERALL\n",overall.to_string(index=False))
 if __name__=="__main__": main()
+
+# workflow trigger
