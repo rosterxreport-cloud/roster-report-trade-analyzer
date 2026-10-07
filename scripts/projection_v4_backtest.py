@@ -84,7 +84,11 @@ def main():
  ap=argparse.ArgumentParser();ap.add_argument("--out",default="data/backtests/v4")
  a=ap.parse_args();out=Path(a.out);out.mkdir(parents=True,exist_ok=True)
  w=pd.read_parquet(URL)
- w=w[(w.season_type=="REG") & w.position.isin(["QB","RB","WR","TE"])].copy()\n if "recent_team" not in w.columns and "team" in w.columns: w["recent_team"]=w["team"]\n if "recent_team" not in w.columns: raise KeyError(f"Team column missing; available={list(w.columns)}")
+ w=w[(w.season_type=="REG") & w.position.isin(["QB","RB","WR","TE"])].copy()
+ if "recent_team" not in w.columns and "team" in w.columns:
+  w["recent_team"]=w["team"]
+ if "recent_team" not in w.columns:
+  raise KeyError(f"Team column missing; available={list(w.columns)}")
  w=build_features(w)
  pred=w.apply(project,axis=1);w=pd.concat([w,pred],axis=1)
  w["v4_ppr"]=w.apply(score,axis=1)
