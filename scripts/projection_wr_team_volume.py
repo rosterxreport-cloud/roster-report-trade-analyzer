@@ -202,3 +202,5 @@ if __name__=="__main__": main()
 # trigger extended explosive sweep
 
 # trigger isolated targets sweep
+
+# trigger team-volume sweep
