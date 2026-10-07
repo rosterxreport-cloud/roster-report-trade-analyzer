@@ -140,7 +140,13 @@ def main():
  for col in ["team_pass","team_carries"]:
   team["pre_"+col]=team.groupby("recent_team")[col].transform(lambda s:s.shift().ewm(alpha=a.alpha,adjust=False).mean())
  w=w.merge(team,on=["recent_team","week"],how="left")
- w["_rec_weight"]=a.rec_weight\n w["_exp_weight"]=a.exp_weight\n # actual explosive receiving plays: receiving yards >=20 cannot be reconstructed from box score, so use prior EXP field only when present\n expcol=next((x for x in ["receiving_epa","explosive_receptions","receiving_20_plus"] if x in w.columns),None)\n if expcol and expcol!="receiving_epa": w["pre_explosive"]=w.groupby("player_id")[expcol].transform(lambda s:pd.to_numeric(s,errors="coerce").shift().ewm(alpha=a.alpha,adjust=False).mean())\n else: w["pre_explosive"]=np.nan
+ w["_rec_weight"]=a.rec_weight
+ w["_exp_weight"]=a.exp_weight
+ expcol=next((x for x in ["explosive_receptions","receiving_20_plus"] if x in w.columns),None)
+ if expcol:
+  w["pre_explosive"]=w.groupby("player_id")[expcol].transform(lambda s:pd.to_numeric(s,errors="coerce").shift().ewm(alpha=a.alpha,adjust=False).mean())
+ else:
+  w["pre_explosive"]=np.nan
  pred=w.apply(project,axis=1);w=pd.concat([w,pred],axis=1)
  w["v4_ppr"]=w.apply(score,axis=1)
  w["actual_ppr"]=w["fantasy_points_ppr"]
