@@ -1,0 +1,23 @@
+name: WR Recency Sweep
+on:
+  push:
+    paths: ['scripts/projection_wr_recency_sweep.py']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        alpha: ['0.35','0.45','0.50','0.55','0.60','0.65']
+        weight: ['0.65','0.72','0.78','0.85']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_recency_sweep.py --alpha ${{ matrix.alpha }} --week5_weight ${{ matrix.weight }} --out data/backtests/wr_sweep/a${{ matrix.alpha }}_w${{ matrix.weight }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wr-${{ matrix.alpha }}-${{ matrix.weight }}
+          path: data/backtests/wr_sweep/a${{ matrix.alpha }}_w${{ matrix.weight }}/overall_summary.csv
