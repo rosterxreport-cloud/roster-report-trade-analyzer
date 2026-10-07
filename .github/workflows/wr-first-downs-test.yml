@@ -1,0 +1,16 @@
+name: WR First Downs Test
+on:
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        fdweight: ['0.00','0.05','0.10','0.15','0.20','0.30','0.40','0.50']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_first_downs.py --stat ydspg --weight 0.30 --rec-weight 0 --fd-weight ${{ matrix.fdweight }} --out data/backtests/wr_fd/${{ matrix.fdweight }}
