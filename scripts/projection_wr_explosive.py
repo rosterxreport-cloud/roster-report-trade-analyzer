@@ -184,3 +184,5 @@ if __name__=="__main__": main()
 # trigger explosive test
 
 # rerun corrected explosive sweep
+
+# trigger after full block replacement
