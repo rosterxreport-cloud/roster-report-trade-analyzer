@@ -1,0 +1,19 @@
+name: WR Direct Production Tests
+on:
+  push:
+    paths: ['scripts/projection_wr_direct_stats.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        stat: ['ydspg','recpg','yacpg']
+        weight: ['0.05','0.10','0.15','0.20','0.30']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_direct_stats.py --stat ${{ matrix.stat }} --weight ${{ matrix.weight }} --out data/backtests/wr_direct/${{ matrix.stat }}_${{ matrix.weight }}
