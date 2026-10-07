@@ -170,3 +170,5 @@ if __name__=="__main__": main()
 # trigger baseline save
 
 # trigger direct-stat tests
+
+# trigger yards/receptions sweep
