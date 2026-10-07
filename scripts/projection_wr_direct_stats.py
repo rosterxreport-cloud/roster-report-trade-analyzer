@@ -165,3 +165,5 @@ if __name__=="__main__": main()
 # trigger lower alpha sweep
 
 # trigger baseline save
+
+# trigger direct-stat tests
