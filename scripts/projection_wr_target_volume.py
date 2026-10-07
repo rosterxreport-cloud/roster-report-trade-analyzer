@@ -195,3 +195,5 @@ if __name__=="__main__": main()
 # trigger actual PBP explosive sweep
 
 # trigger extended explosive sweep
+
+# trigger isolated targets sweep
