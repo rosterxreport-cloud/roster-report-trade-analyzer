@@ -29,25 +29,26 @@ last=last.sort_values("prior_opp",ascending=False)
 # Baker is confirmed OUT; Jalon Daniels starts. Exclude injured starter.
 last=last[last.player_display_name!="Baker Mayfield"].copy()
 if not (last.player_display_name=="Jalon Daniels").any():raise RuntimeError("Jalon Daniels missing from Week 1-4 data")
-# Empirical-only player projection. No positional defaults or fixed scoring rates.
-# Four-week EWM observations form every rate and workload estimate.
-def empirical(r):
- def value(c):return max(0.,float(r["pre_"+c]))
- att=value("attempts") if r.position=="QB" else 0.
- car=value("carries")
- tar=value("targets") if r.position!="QB" else 0.
- return pd.Series({
-  "pred_att":att,"pred_comp":value("completions") if att else 0.,
-  "pred_pass_yds":value("passing_yards") if att else 0.,
-  "pred_pass_td":value("passing_tds") if att else 0.,
-  "pred_int":value("interceptions") if att else 0.,
-  "pred_carries":car,"pred_rush_yds":value("rushing_yards"),
-  "pred_rush_td":value("rushing_tds"),
-  "pred_targets":tar,"pred_rec":value("receptions") if tar else 0.,
-  "pred_rec_yds":value("receiving_yards") if tar else 0.,
-  "pred_rec_td":value("receiving_tds") if tar else 0.})
-pred=last.apply(empirical,axis=1)
+# Structural v4 baseline, with player-specific observed usage.
+pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
+# Preserve the established QB starter adjustment from the previous model.
+qb=last.player_display_name.eq("Jalon Daniels")
+if qb.any():
+ attempts=.65*27+.35*30
+ last.loc[qb,"pred_att"]=attempts
+ last.loc[qb,"pred_comp"]=attempts*(.65*(19/27)+.35*.63)
+ last.loc[qb,"pred_pass_yds"]=attempts*(.55*(148/27)+.45*7.0)
+ last.loc[qb,"pred_pass_td"]=attempts*.040
+ last.loc[qb,"pred_int"]=attempts*.026
+ last.loc[qb,"pred_carries"]=7.
+ last.loc[qb,"pred_rush_yds"]=.60*55+.40*(7*4.7)
+ last.loc[qb,"pred_rush_td"]=7*.035
+# Reduce small-sample touchdown spikes for secondary backs.
+rb=(last.position=="RB")&last.player_display_name.ne("Javonte Williams")
+carries=last.loc[rb,"pred_carries"].clip(lower=0)
+raw=last.loc[rb,"pred_rush_td"]/carries.clip(lower=1)
+last.loc[rb,"pred_rush_td"]=carries*(.75*.025+.25*raw).clip(upper=.06)
 # Week 5 opponent defensive adjustment, using opponent-adjusted Weeks 1-4
 # ranks (Sharp Football, Oct 6). Rank-based multipliers are deliberately
 # regressed: 60% toward neutral and capped at +/- 10%.
@@ -73,8 +74,18 @@ for team, pass_rank, rush_rank in [("TB",32,24),("DAL",18,2)]:
 # Source: https://www.sharpfootballanalysis.com/stats-nfl/nfl-matchups/
 # Exclude confirmed long-term IR players.
 last=last[~last.player_display_name.isin(["Jalen McMillan","Emari Demercado","David Sills V"])].copy()
-# Empirical workloads remain uncapped; team conservation below adjusts
-# all players proportionally rather than applying subjective role thresholds.
+# Restrict fringe-player roles before redistributing to regular contributors.
+caps={"Jonathan Mingo":0.6,"KaVontae Turpin":2.0,"Luke Schoonmaker":1.5,"Brevyn Spann-Ford":1.0,"Hunter Luepke":1.2,"Tyler Goodson":1.0}
+for name,cap in caps.items():
+ m=last.player_display_name.eq(name)
+ if m.any():
+  factor=(cap/last.loc[m,"pred_targets"].clip(lower=.001)).clip(upper=1)
+  for field in ["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]:last.loc[m,field]*=factor
+for name,cap in {"Tyler Goodson":3.,"Hunter Luepke":1.}.items():
+ m=last.player_display_name.eq(name)
+ if m.any():
+  factor=(cap/last.loc[m,"pred_carries"].clip(lower=.001)).clip(upper=1)
+  for field in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[m,field]*=factor
 # Allocate team volume from projected QB attempts and historical team rush volume.
 for team in ["DAL","TB"]:
  mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
@@ -88,9 +99,15 @@ for team in ["DAL","TB"]:
   ("pred_carries",rush_budget,["pred_carries","pred_rush_yds","pred_rush_td"])
  ]:
   total=float(last.loc[mask,volume].sum())
-  if total>0 and budget>=0:
-   scale=budget/total
-   for field in fields:last.loc[mask,field]*=scale
+  if total>budget and total>0:
+   factor=budget/total
+   for field in fields:last.loc[mask,field]*=factor
+  elif total<budget:
+   eligible=mask&((last.pred_targets>=2.5) if volume=="pred_targets" else ((last.position=="RB")&(last.pred_carries>=5)))
+   weight=float(last.loc[eligible,volume].sum())
+   if weight>0:
+    factor=1+(budget-total)/weight
+    for field in fields:last.loc[eligible,field]*=factor
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
