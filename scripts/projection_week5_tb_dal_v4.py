@@ -46,12 +46,15 @@ if qb.any():
  last.loc[qb,"pred_carries"]=7.0
  last.loc[qb,"pred_rush_yds"]=.60*55+.40*(7*4.7)
  last.loc[qb,"pred_rush_td"]=7*.035
-# RB rushing TDs: blend unstable individual scoring rate with league base
-# and cap by plausible team goal-line opportunity. This affects Tucker,
-# not the user-approved Javonte projection.
-tucker=last.player_display_name.eq("Sean Tucker")
-if tucker.any():
- last.loc[tucker,"pred_rush_td"]=last.loc[tucker,"pred_carries"]*.025
+# RB touchdown regression: low-carry backs cannot inherit a 1-TD/3-carry rate.
+# Shrink the observed per-carry TD rate toward a 2.5% prior and cap at 6%.
+# Explicitly preserve the user-approved Javonte Williams forecast.
+rb=(last.position=="RB") & (last.player_display_name!="Javonte Williams")
+if rb.any():
+ carries=last.loc[rb,"pred_carries"].clip(lower=0)
+ raw_rate=last.loc[rb,"pred_rush_td"] / carries.clip(lower=1)
+ regressed_rate=(.75*.025+.25*raw_rate).clip(upper=.06)
+ last.loc[rb,"pred_rush_td"]=carries*regressed_rate
 # Exclude confirmed long-term IR players.
 last=last[~last.player_display_name.isin(["Jalen McMillan"])].copy()
 last["PPR"]=last.apply(score,axis=1)
