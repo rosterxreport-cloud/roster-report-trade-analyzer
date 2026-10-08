@@ -92,28 +92,28 @@ for name,cap in {"Tyler Goodson":3.0,"Hunter Luepke":1.0}.items():
  if m.any():
   k=(cap/last.loc[m,"pred_carries"].clip(lower=.001)).clip(upper=1)
   for col in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[m,col]*=k
-# Keep team-level opportunities within plausible weekly budgets.
-for team, target_budget, rush_budget in [("DAL",39.0,25.0),("TB",27.0,25.0)]:
+# Allocate team volume from projected QB attempts and historical team rush volume.
+for team in ["DAL","TB"]:
  mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
- target_sum=last.loc[mask,"pred_targets"].sum()
- if target_sum>target_budget:
-  factor=target_budget/target_sum
-  last.loc[mask,["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]]*=factor
- rush_sum=last.loc[mask,"pred_carries"].sum()
- if rush_sum>rush_budget:
-  factor=rush_budget/rush_sum
-  last.loc[mask,["pred_carries","pred_rush_yds","pred_rush_td"]]*=factor
-# Redistribute remaining opportunities proportionally to established roles.
-for team, pass_budget, rush_budget in [("DAL",40.03,25.0),("TB",28.05,25.0)]:
- team_mask=last.recent_team.eq(team)&last.position.isin(["RB","WR","TE"])
- for col,budget,fields in [("pred_targets",pass_budget,["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]),("pred_carries",rush_budget,["pred_carries","pred_rush_yds","pred_rush_td"])]:
-  total=last.loc[team_mask,col].sum()
-  gap=max(0.,budget-total)
-  primary=team_mask & ((last.pred_targets>=2.5) if col=="pred_targets" else ((last.position=="RB")&(last.pred_carries>=5)))
-  weight=last.loc[primary,col].sum()
-  if gap>0 and weight>0:
-   factors=1+gap/weight
-   for field in fields:last.loc[primary,field]*=factors
+ qb=(last.recent_team==team)&(last.position=="QB")
+ attempts=float(last.loc[qb,"pred_att"].sum())
+ qb_rush=float(last.loc[qb,"pred_carries"].sum())
+ history=last.loc[mask,"pre_team_carries"].dropna()
+ rush_budget=max(0.,float(history.iloc[0])-qb_rush) if len(history) else float(last.loc[mask,"pred_carries"].sum())
+ for volume,budget,fields in [
+  ("pred_targets",attempts*.94,["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]),
+  ("pred_carries",rush_budget,["pred_carries","pred_rush_yds","pred_rush_td"])
+ ]:
+  total=float(last.loc[mask,volume].sum())
+  if total>budget and total>0:
+   scale=budget/total
+   for field in fields:last.loc[mask,field]*=scale
+  elif total<budget:
+   eligible=mask & ((last.pred_targets>=2.5) if volume=="pred_targets" else ((last.position=="RB")&(last.pred_carries>=5)))
+   weight=float(last.loc[eligible,volume].sum())
+   if weight>0:
+    scale=1+(budget-total)/weight
+    for field in fields:last.loc[eligible,field]*=scale
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
