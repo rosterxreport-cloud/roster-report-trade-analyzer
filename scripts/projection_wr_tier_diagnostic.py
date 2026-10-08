@@ -279,3 +279,5 @@ if __name__=="__main__": main()
 # trigger opponent allowed sweep
 
 # trigger overprojection sweep
+
+# trigger tier diagnostic
