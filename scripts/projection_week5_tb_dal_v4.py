@@ -31,6 +31,29 @@ last=last[last.player_display_name!="Baker Mayfield"].copy()
 if not (last.player_display_name=="Jalon Daniels").any():raise RuntimeError("Jalon Daniels missing from Week 1-4 data")
 pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
+# Role-aware corrections to known small-sample failure modes.
+# Rookie QB: do not treat a partial first-month player sample as a full game.
+# Daniels played all 63 Week 4 offensive snaps and completed 19/27 for 148,
+# rushing for 55. Blend his start's attempts with a 30-attempt starter prior.
+qb=last.Player_display_name.eq("Jalon Daniels") if "Player_display_name" in last else last.player_display_name.eq("Jalon Daniels")
+if qb.any():
+ attempts=.65*27+.35*30
+ last.loc[qb,"pred_att"]=attempts
+ last.loc[qb,"pred_comp"]=attempts*(.65*(19/27)+.35*.63)
+ last.loc[qb,"pred_pass_yds"]=attempts*(.55*(148/27)+.45*7.0)
+ last.loc[qb,"pred_pass_td"]=attempts*.040
+ last.loc[qb,"pred_int"]=attempts*.026
+ last.loc[qb,"pred_carries"]=7.0
+ last.loc[qb,"pred_rush_yds"]=.60*55+.40*(7*4.7)
+ last.loc[qb,"pred_rush_td"]=7*.035
+# RB rushing TDs: blend unstable individual scoring rate with league base
+# and cap by plausible team goal-line opportunity. This affects Tucker,
+# not the user-approved Javonte projection.
+tucker=last.player_display_name.eq("Sean Tucker")
+if tucker.any():
+ last.loc[tucker,"pred_rush_td"]=last.loc[tucker,"pred_carries"]*.025
+# Exclude confirmed long-term IR players.
+last=last[~last.player_display_name.isin(["Jalen McMillan"])].copy()
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
