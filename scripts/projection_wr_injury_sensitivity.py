@@ -330,3 +330,5 @@ if __name__=="__main__": main()
 # launch corrected trend analysis
 
 # trigger overprojection diagnostic
+
+# run injury sensitivity
