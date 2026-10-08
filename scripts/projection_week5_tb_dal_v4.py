@@ -44,3 +44,5 @@ out=last[["Player","Team","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush
 Path("data/projections").mkdir(parents=True,exist_ok=True)
 out.to_csv("data/projections/2026_week5_tb_dal_v4.csv",index=False)
 print(out.to_string(index=False))
+
+# trigger Week 5 TNF four-week model run
