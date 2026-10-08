@@ -289,3 +289,5 @@ if __name__=="__main__": main()
 # trigger overprojection sweep
 
 # Run targeted WR test matrix.
+
+# initiate severe-miss diagnostic
