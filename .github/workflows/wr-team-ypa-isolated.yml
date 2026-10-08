@@ -1,0 +1,18 @@
+name: WR Receiving Yards Per Team Attempt
+on:
+  push:
+    paths: ['scripts/projection_wr_team_yards_per_attempt.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ypaweight: ['0.00','0.10','0.20','0.30','0.40','0.50','0.75','1.00']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_team_yards_per_attempt.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --team-ypa-weight ${{ matrix.ypaweight }} --out data/backtests/wr_team_ypa/${{ matrix.ypaweight }}
