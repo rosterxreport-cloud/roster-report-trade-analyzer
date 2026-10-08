@@ -318,3 +318,5 @@ if __name__=="__main__": main()
 # initiate lagged trend sweep
 
 # launch corrected trend analysis
+
+# trigger overprojection diagnostic
