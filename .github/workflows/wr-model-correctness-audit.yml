@@ -1,0 +1,28 @@
+name: WR Model Correctness Audit
+on:
+  push:
+    paths: ['scripts/projection_wr_ablation_audit.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        variant: ['baseline','explosive_fix','snap_fix','td_shrink','all_fixes']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - name: Run audit
+        shell: bash
+        run: |
+          ARGS=""
+          case "${{ matrix.variant }}" in
+            explosive_fix) ARGS="--fix-explosive 1";;
+            snap_fix) ARGS="--snap-order 1";;
+            td_shrink) ARGS="--td-mode 1";;
+            all_fixes) ARGS="--fix-explosive 1 --snap-order 1 --td-mode 1";;
+          esac
+          python scripts/projection_wr_ablation_audit.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight 0.20 $ARGS --out data/backtests/wr_audit/${{ matrix.variant }}
