@@ -108,6 +108,27 @@ for team in ["DAL","TB"]:
    if weight>0:
     factor=1+(budget-total)/weight
     for field in fields:last.loc[eligible,field]*=factor
+# Reallocate backfield carries using actual Weeks 2-4 RB carry shares.
+# Apply AFTER team-volume normalization so lead-back usage is not erased.
+for team in ["DAL","TB"]:
+ backs=(last.recent_team==team)&last.position.eq("RB")
+ recent=w[(w.recent_team==team)&w.week.between(2,4)&w.position.eq("RB")]
+ observed=recent.groupby("player_id").carries.sum()
+ denom=float(observed.sum())
+ total=float(last.loc[backs,"pred_carries"].sum())
+ if denom<=0 or total<=0:continue
+ weights=last.loc[backs,"player_id"].map(observed).fillna(0).astype(float)
+ if float(weights.sum())<=0:continue
+ for idx,weight in weights.items():
+  old=float(last.at[idx,"pred_carries"])
+  new=total*float(weight)/float(weights.sum())
+  if old>0:
+   factor=new/old
+   for field in ["pred_carries","pred_rush_yds","pred_rush_td"]:
+    last.at[idx,field]*=factor
+  else:
+   last.at[idx,"pred_carries"]=new
+   # Zero historical carries means efficiency is unknown; avoid inventing it.
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
