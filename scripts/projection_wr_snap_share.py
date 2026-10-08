@@ -212,3 +212,5 @@ if __name__=="__main__": main()
 # trigger isolated targets sweep
 
 # trigger team-volume sweep
+
+# trigger snap schema probe
