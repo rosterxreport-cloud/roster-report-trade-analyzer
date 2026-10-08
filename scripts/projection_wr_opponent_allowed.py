@@ -252,3 +252,5 @@ if __name__=="__main__": main()
 # trigger snap schema probe
 
 # run snap-share sweep
+
+# trigger opponent allowed sweep
