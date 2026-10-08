@@ -87,6 +87,11 @@ for name,cap in caps.items():
  if m.any():
   k=(cap/last.loc[m,"pred_targets"].clip(lower=.001)).clip(upper=1)
   for col in ["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]:last.loc[m,col]*=k
+for name,cap in {"Tyler Goodson":3.0,"Hunter Luepke":1.0}.items():
+ m=last.player_display_name.eq(name)
+ if m.any():
+  k=(cap/last.loc[m,"pred_carries"].clip(lower=.001)).clip(upper=1)
+  for col in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[m,col]*=k
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
