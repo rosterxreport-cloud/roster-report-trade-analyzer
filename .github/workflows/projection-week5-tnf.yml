@@ -1,0 +1,21 @@
+name: Week 5 TNF four-week projections
+on:
+  push:
+    paths: ['scripts/projection_week5_tb_dal_v4.py']
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  projections:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas numpy pyarrow
+      - run: python scripts/projection_week5_tb_dal_v4.py
+      - run: |
+          git config user.name "roster-report-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/projections/2026_week5_tb_dal_v4.csv
+          git diff --cached --quiet || git commit -m "Generate Week 5 TNF four-week model projections"
+          git push
