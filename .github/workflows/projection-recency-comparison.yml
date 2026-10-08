@@ -1,0 +1,28 @@
+name: Projection recency comparison
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - scripts/projection_recency_comparison.py
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pandas numpy pyarrow
+      - run: python scripts/projection_recency_comparison.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: recency-comparison
+          path: data/backtests/recency_comparison/
+      - name: Commit comparison
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@users.noreply.github.com
+          git add data/backtests/recency_comparison/
+          git diff --cached --quiet || (git commit -m "Save projection recency comparison" && git push)
