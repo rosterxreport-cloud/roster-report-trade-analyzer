@@ -1,0 +1,23 @@
+name: WR Combined Role Decline
+on:
+  push:
+    paths:
+      - scripts/projection_wr_combined_decline.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        decline: ['0.00','0.05','0.10','0.15','0.20']
+        threshold: ['0.03','0.05']
+        snap_threshold: ['0.05','0.10']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_combined_decline.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight 0.20 --over-weight 0.20 --mid-weight 0.20 --trend-weight 0.20 --trend-threshold 0.03 --decline-weight ${{ matrix.decline }} --decline-threshold ${{ matrix.threshold }} --snap-decline-threshold ${{ matrix.snap_threshold }} --out data/backtests/wr_combined/${{ matrix.threshold }}/${{ matrix.snap_threshold }}/${{ matrix.decline }}
