@@ -1,0 +1,18 @@
+name: WR Elite Matchup Experiment
+on:
+  push:
+    paths: ['scripts/projection_wr_elite_matchup.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        eliteweight: ['0.00','0.25','0.50','0.75','1.00']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_elite_matchup.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight 0.20 --elite-weight ${{ matrix.eliteweight }} --out data/backtests/wr_elite_matchup/${{ matrix.eliteweight }}
