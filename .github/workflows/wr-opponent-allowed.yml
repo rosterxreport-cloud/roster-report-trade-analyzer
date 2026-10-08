@@ -1,0 +1,18 @@
+name: WR Opponent Allowed Test
+on:
+  push:
+    paths: ['scripts/projection_wr_opponent_allowed.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        defweight: ['0.00','0.10','0.20','0.30','0.40','0.50','0.75','1.00']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_opponent_allowed.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight ${{ matrix.defweight }} --out data/backtests/wr_opponent_allowed/${{ matrix.defweight }}
