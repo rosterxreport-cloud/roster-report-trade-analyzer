@@ -340,3 +340,5 @@ if __name__=="__main__": main()
 # trigger overprojection diagnostic
 
 # run injury sensitivity
+
+# execute decline sensitivity matrix
