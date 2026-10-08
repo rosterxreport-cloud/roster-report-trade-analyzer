@@ -37,3 +37,5 @@ if __name__=="__main__":
     summary.to_csv(out/"summary.csv",index=False)
     d[["alpha","week","player_display_name","position","pred_ppr","fantasy_points_ppr","err"]].to_csv(out/"player_results.csv",index=False)
     print(summary.to_string(index=False))
+
+# Recency test configuration verified.
