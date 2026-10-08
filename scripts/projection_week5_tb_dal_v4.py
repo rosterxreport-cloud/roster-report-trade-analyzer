@@ -79,7 +79,14 @@ for team, pass_rank, rush_rank in [("TB",32,24),("DAL",18,2)]:
         last.loc[rush,col]=last.loc[rush,col]*rm
 # Source: https://www.sharpfootballanalysis.com/stats-nfl/nfl-matchups/
 # Exclude confirmed long-term IR players.
-last=last[~last.player_display_name.isin(["Jalen McMillan"])].copy()
+last=last[~last.player_display_name.isin(["Jalen McMillan","Emari Demercado","David Sills V"])].copy()
+# Constrain fringe depth-chart roles before scoring.
+caps={"Jonathan Mingo":0.6,"KaVontae Turpin":2.0,"Luke Schoonmaker":1.5,"Brevyn Spann-Ford":1.0,"Hunter Luepke":1.2,"Tyler Goodson":1.0}
+for name,cap in caps.items():
+ m=last.player_display_name.eq(name)
+ if m.any():
+  k=(cap/last.loc[m,"pred_targets"].clip(lower=.001)).clip(upper=1)
+  for col in ["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]:last.loc[m,col]*=k
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
