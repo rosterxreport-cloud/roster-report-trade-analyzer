@@ -55,6 +55,29 @@ if rb.any():
  raw_rate=last.loc[rb,"pred_rush_td"] / carries.clip(lower=1)
  regressed_rate=(.75*.025+.25*raw_rate).clip(upper=.06)
  last.loc[rb,"pred_rush_td"]=carries*regressed_rate
+# Week 5 opponent defensive adjustment, using opponent-adjusted Weeks 1-4
+# ranks (Sharp Football, Oct 6). Rank-based multipliers are deliberately
+# regressed: 60% toward neutral and capped at +/- 10%.
+# Ranks: DAL pass 32, rush 24; TB pass 18, rush 2.
+def defense_multiplier(rank, max_swing=.10):
+    strength=(float(rank)-16.5)/15.5
+    return 1.0+max_swing*.60*strength
+for team, pass_rank, rush_rank in [("TB",32,24),("DAL",18,2)]:
+    t=last.recent_team.eq(team)
+    pm=defense_multiplier(pass_rank)
+    rm=defense_multiplier(rush_rank)
+    q=t & last.position.eq("QB")
+    skill=t & last.position.isin(["RB","WR","TE"])
+    # Efficiency rather than a blanket points multiplier; retain opportunity.
+    for col in ["pred_pass_yds","pred_pass_td"]:
+        last.loc[q,col]=last.loc[q,col]*pm
+    for col in ["pred_rec_yds","pred_rec_td"]:
+        last.loc[skill,col]=last.loc[skill,col]*pm
+    # Ground efficiency and scoring; do not modify approved Javonte baseline.
+    rush=t & last.player_display_name.ne("Javonte Williams")
+    for col in ["pred_rush_yds","pred_rush_td"]:
+        last.loc[rush,col]=last.loc[rush,col]*rm
+# Source: https://www.sharpfootballanalysis.com/stats-nfl/nfl-matchups/
 # Exclude confirmed long-term IR players.
 last=last[~last.player_display_name.isin(["Jalen McMillan"])].copy()
 last["PPR"]=last.apply(score,axis=1)
