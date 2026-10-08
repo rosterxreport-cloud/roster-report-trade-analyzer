@@ -1,0 +1,18 @@
+name: WR Projection Tier Diagnostic
+on:
+  push:
+    paths: ['scripts/projection_wr_tier_diagnostic.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        over: ['0.00','0.20']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_tier_diagnostic.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight 0.20 --over-weight ${{ matrix.over }} --out data/backtests/wr_tier_diagnostic/${{ matrix.over }}
