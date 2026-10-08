@@ -92,6 +92,17 @@ for name,cap in {"Tyler Goodson":3.0,"Hunter Luepke":1.0}.items():
  if m.any():
   k=(cap/last.loc[m,"pred_carries"].clip(lower=.001)).clip(upper=1)
   for col in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[m,col]*=k
+# Keep team-level opportunities within plausible weekly budgets.
+for team, target_budget, rush_budget in [("DAL",39.0,25.0),("TB",27.0,25.0)]:
+ mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
+ target_sum=last.loc[mask,"pred_targets"].sum()
+ if target_sum>target_budget:
+  factor=target_budget/target_sum
+  last.loc[mask,["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]]*=factor
+ rush_sum=last.loc[mask,"pred_carries"].sum()
+ if rush_sum>rush_budget:
+  factor=rush_budget/rush_sum
+  last.loc[mask,["pred_carries","pred_rush_yds","pred_rush_td"]]*=factor
 last["PPR"]=last.apply(score,axis=1)
 last["Half_PPR"]=last.PPR-.5*last.pred_rec
 last["Standard"]=last.PPR-last.pred_rec
