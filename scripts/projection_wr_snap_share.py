@@ -161,7 +161,18 @@ def main():
  snap=pd.read_parquet("https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet")
  print("SNAP SCHEMA",list(snap.columns),flush=True)
  print("SNAP SAMPLE",snap.head(2).to_string(index=False),flush=True)
- w["pre_snap_share"]=np.nan
+ snap=snap[(snap.game_type=="REG") & (snap.position=="WR")].copy()
+ snap["join_name"]=snap.player.map(norm)
+ snap["join_team"]=snap.team.astype(str)
+ snap["offense_pct"]=pd.to_numeric(snap.offense_pct,errors="coerce")
+ if snap.offense_pct.max()>1.5: snap["offense_pct"]=snap.offense_pct/100.0
+ snap=snap.groupby(["join_name","join_team","week"],as_index=False)["offense_pct"].mean()
+ snap=snap.sort_values(["join_name","join_team","week"])
+ snap["pre_snap_share"]=snap.groupby(["join_name","join_team"])["offense_pct"].transform(lambda s:s.shift().ewm(alpha=a.alpha,adjust=False).mean())
+ w["join_name"]=(w.player_display_name if "player_display_name" in w.columns else w.player_name).map(norm)
+ w["join_team"]=w.recent_team.astype(str)
+ w=w.merge(snap[["join_name","join_team","week","pre_snap_share"]],on=["join_name","join_team","week"],how="left")
+ print("SNAP MATCHES",w[(w.position=="WR")&w.week.isin([2,3,4])].pre_snap_share.notna().sum(),flush=True)
  # Derive actual 20+ yard receptions from 2026 nflverse play-by-play, prior weeks only.
  try:
   pbp=pd.read_parquet("https://github.com/nflverse/nflverse-data/releases/download/pbp/play_by_play_2026.parquet",columns=["week","complete_pass","receiving_yards","receiver_player_id"])
