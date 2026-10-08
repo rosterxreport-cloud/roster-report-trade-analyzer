@@ -1,0 +1,22 @@
+name: WR Target Trend Fixed
+on:
+  push:
+    paths:
+      - scripts/projection_wr_sharetrend_fixed.py
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        trend: ['0.00','0.05','0.10','0.15','0.20']
+        threshold: ['0.03','0.05']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_sharetrend_fixed.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight 0.20 --over-weight 0.20 --mid-weight 0.20 --trend-weight ${{ matrix.trend }} --trend-threshold ${{ matrix.threshold }} --out data/backtests/wr_sharetrend_fixed/${{ matrix.threshold }}/${{ matrix.trend }}
