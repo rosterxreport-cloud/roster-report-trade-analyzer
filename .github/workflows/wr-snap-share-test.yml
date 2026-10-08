@@ -7,9 +7,12 @@ permissions: {contents: read}
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        snapweight: ['0.00','0.10','0.20','0.30','0.40','0.50','0.75','1.00']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: '3.12'}
       - run: pip install pandas pyarrow numpy
-      - run: python scripts/projection_wr_snap_share.py --snap-weight 0.10 --exp-weight 1.00 --out data/backtests/wr_snap_probe
+      - run: python scripts/projection_wr_snap_share.py --snap-weight ${{ matrix.snapweight }} --exp-weight 1.00 --out data/backtests/wr_snap_share/${{ matrix.snapweight }}
