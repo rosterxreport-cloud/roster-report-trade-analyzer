@@ -92,6 +92,31 @@ for name,cap in {"Tyler Goodson":3.0,"Hunter Luepke":1.0}.items():
  if m.any():
   k=(cap/last.loc[m,"pred_carries"].clip(lower=.001)).clip(upper=1)
   for col in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[m,col]*=k
+# Lead-back workload: use recent actual share of team RB carries rather than
+# the generic positional rushing prior. Other backs share the remainder.
+for team,lead in [("DAL","Javonte Williams"),("TB","Bucky Irving")]:
+ lead_mask=(last.recent_team==team)&last.player_display_name.eq(lead)
+ backs=(last.recent_team==team)&last.position.eq("RB")
+ if not lead_mask.any():continue
+ recent=w[(w.recent_team==team)&w.week.between(2,4)&w.position.eq("RB")]
+ lead_carries=float(recent.loc[recent.player_display_name.eq(lead),"carries"].sum())
+ team_carries=float(recent.carries.sum())
+ if team_carries<=0:continue
+ share=lead_carries/team_carries
+ # Keep the observed lead-back share; allow some uncertainty.
+ share=float(np.clip(.85*share+.15*.65,.45,.90))
+ total=float(last.loc[backs,"pred_carries"].sum())
+ if total<=0:continue
+ desired=total*share
+ old=float(last.loc[lead_mask,"pred_carries"].iloc[0])
+ if old>0:
+  factor=desired/old
+  for field in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[lead_mask,field]*=factor
+ others=backs&~lead_mask
+ other_total=float(last.loc[others,"pred_carries"].sum())
+ if other_total>0:
+  factor=max(0.,total-desired)/other_total
+  for field in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[others,field]*=factor
 # Allocate team volume from projected QB attempts and historical team rush volume.
 for team in ["DAL","TB"]:
  mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
