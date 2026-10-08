@@ -1,0 +1,15 @@
+name: WR Final Accuracy Thresholds
+on:
+  push:
+    paths: ['scripts/projection_wr_final_accuracy.py']
+  workflow_dispatch:
+permissions: {contents: read}
+jobs:
+  accuracy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/projection_wr_final_accuracy.py --stat ydspg --weight 0.30 --exp-weight 1.00 --snap-weight 0.30 --def-weight 0.20 --out data/backtests/wr_final_accuracy
