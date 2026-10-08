@@ -225,3 +225,5 @@ if __name__=="__main__": main()
 # trigger team-volume sweep
 
 # trigger snap schema probe
+
+# run snap-share sweep
