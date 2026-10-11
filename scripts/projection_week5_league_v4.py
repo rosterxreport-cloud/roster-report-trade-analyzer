@@ -29,6 +29,10 @@ opponents={a:b for a,b in games};opponents.update({b:a for a,b in games})
 last=last[last.recent_team.isin(opponents)].copy()
 last=last[last.prior_opp>=1].copy()
 last=last.sort_values("prior_opp",ascending=False)
+# Keep the primary Week 4 quarterback for each team.
+q4=w[(w.position=="QB") & (w.week==4)].sort_values("attempts",ascending=False)
+starter_ids=set(q4.drop_duplicates("recent_team").player_id)
+last=last[(last.position!="QB") | last.player_id.isin(starter_ids)].copy()
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
