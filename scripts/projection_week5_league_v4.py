@@ -46,6 +46,8 @@ starter_ids=set(q4.drop_duplicates("recent_team").player_id)
 for name in ("Tyson Bagent","Tyler Huntley","Jayden Daniels"):
  ids=set(w.loc[w.player_display_name.eq(name),"player_id"])
  starter_ids.update(ids)
+# Exclude secondary quarterbacks after accounting for replacement starters.
+starter_ids.discard(next(iter(set(w.loc[w.player_display_name.eq("Athan Kaliakmanis"),"player_id"])),None))
 last=last[(last.position!="QB") | last.player_id.isin(starter_ids)].copy()
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
