@@ -36,6 +36,14 @@ last=last[(last.position!="QB") | last.player_id.isin(starter_ids)].copy()
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
+# Smooth QB rushing touchdowns using observed 2026 QB touchdown frequency.
+qh=w[w.position=="QB"]
+qr=float(qh.rushing_tds.sum())/max(float(qh.carries.sum()),1.)
+for i in last.index[last.position=="QB"]:
+ h=qh[qh.player_id==last.at[i,"player_id"]]
+ n=float(h.carries.sum())
+ rate=(float(h.rushing_tds.sum())+20*qr)/(n+20)
+ last.at[i,"pred_rush_td"]=min(float(last.at[i,"pred_carries"])*rate,0.75)
 # Reduce small-sample touchdown spikes for secondary backs.
 rb=(last.position=="RB")&last.player_display_name.ne("Javonte Williams")
 carries=last.loc[rb,"pred_carries"].clip(lower=0)
