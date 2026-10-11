@@ -132,4 +132,8 @@ last=last.rename(columns={"player_display_name":"Player","recent_team":"Team","p
 out=last[["Player","Team","Opponent","Position","Rush_TD","Rec_TD","Total_xTD"]].sort_values("Total_xTD",ascending=False).round(3)
 Path("data/projections").mkdir(parents=True,exist_ok=True)
 out.to_csv("data/projections/2026_week5_league_v4_touchdowns.csv",index=False)
+full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR"]].copy()
+full=full.sort_values(["Position","PPR"],ascending=[True,False]).round(2)
+full.to_csv("data/projections/2026_week5_league_v4_full.csv",index=False)
+print("Full projections:",len(full),"players")
 print(out.head(30).to_string(index=False))
