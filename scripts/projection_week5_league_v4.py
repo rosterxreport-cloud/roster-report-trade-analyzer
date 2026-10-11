@@ -79,6 +79,8 @@ last=last[~tiny].copy()
 # Do not let unmapped players quietly receive a high-volume projection.
 last["Snap_Share_3W"]=last.avg_snap_share
 last["Snap_Games"]=last.snap_games
+# Explicitly mark unmatched snap records for auditing; do not treat as zero snaps.
+last["Snap_Data_Status"]=np.where(last.avg_snap_share.notna(),"matched","unmatched")
 print("Snap-share coverage:",int(last.avg_snap_share.notna().sum()),"/",len(last))
 
 # NFL official October 11 Week 5 inactives: filter prior to team volume allocation.
@@ -207,7 +209,7 @@ last=last.rename(columns={"player_display_name":"Player","recent_team":"Team","p
 out=last[["Player","Team","Opponent","Position","Rush_TD","Rec_TD","Total_xTD"]].sort_values("Total_xTD",ascending=False).round(3)
 Path("data/projections").mkdir(parents=True,exist_ok=True)
 out.to_csv("data/projections/2026_week5_league_v4_touchdowns.csv",index=False)
-full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR","Snap_Share_3W","Snap_Games"]].copy()
+full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR","Snap_Share_3W","Snap_Games","Snap_Data_Status"]].copy()
 full=full.sort_values(["Position","PPR"],ascending=[True,False]).round(2)
 full.to_csv("data/projections/2026_week5_league_v4_full.csv",index=False)
 print("Full projections:",len(full),"players")
