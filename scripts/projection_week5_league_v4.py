@@ -42,6 +42,10 @@ last=last.sort_values("prior_opp",ascending=False)
 # Keep the primary Week 4 quarterback for each team.
 q4=w[(w.position=="QB") & (w.week==4)].sort_values("attempts",ascending=False)
 starter_ids=set(q4.drop_duplicates("recent_team").player_id)
+# Confirmed Week 5 replacement starters from NFL team reports.
+for name in ("Tyson Bagent","Tyler Huntley","Jayden Daniels"):
+ ids=set(w.loc[w.player_display_name.eq(name),"player_id"])
+ starter_ids.update(ids)
 last=last[(last.position!="QB") | last.player_id.isin(starter_ids)].copy()
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
