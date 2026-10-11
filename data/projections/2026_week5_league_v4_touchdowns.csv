@@ -1,5 +1,4 @@
 Player,Team,Opponent,Position,Rush_TD,Rec_TD,Total_xTD
-D'Andre Swift,CHI,GB,RB,0.985,0.008,0.993
 Jahmyr Gibbs,DET,ARI,RB,0.639,0.285,0.924
 Derrick Henry,BAL,ATL,RB,0.868,0.005,0.874
 Bijan Robinson,ATL,BAL,RB,0.74,0.118,0.858
@@ -8,6 +7,7 @@ Jonathan Taylor,IND,PIT,RB,0.756,0.015,0.771
 Josh Allen,BUF,LA,QB,0.75,0.0,0.75
 Amon-Ra St. Brown,DET,ARI,WR,0.003,0.689,0.692
 Darius Cooper,PHI,JAX,WR,0.004,0.658,0.662
+D'Andre Swift,CHI,GB,RB,0.654,0.008,0.661
 Harold Fannin Jr.,CLE,NYJ,TE,0.0,0.642,0.642
 Emanuel Wilson,SEA,SF,RB,0.421,0.214,0.635
 Roman Wilson,PIT,IND,WR,0.003,0.62,0.623
@@ -257,8 +257,8 @@ Odell Beckham Jr.,NYG,WAS,WR,0.003,0.012,0.015
 Erick All,CIN,MIA,TE,0.0,0.015,0.015
 Brandin Cooks,SF,SEA,WR,0.003,0.012,0.015
 Tai Felton,MIN,NO,WR,0.002,0.012,0.015
-Sterling Shepard,NYJ,CLE,WR,0.003,0.011,0.015
 Omar Cooper Jr.,NYJ,CLE,WR,0.003,0.011,0.015
+Sterling Shepard,NYJ,CLE,WR,0.003,0.011,0.015
 Kyle Williams,NE,LV,WR,0.002,0.012,0.015
 Greg Dulcich,MIA,CIN,TE,0.0,0.015,0.015
 Lil'Jordan Humphrey,DEN,LAC,WR,0.002,0.012,0.014
@@ -300,9 +300,9 @@ Josh Oliver,MIN,NO,TE,0.0,0.009,0.009
 Charlie Kolar,LAC,DEN,TE,0.0,0.009,0.009
 Jelani Woods,NYJ,CLE,TE,0.0,0.009,0.009
 Ronnie Rivers,LA,BUF,RB,0.0,0.009,0.009
-Marlin Klein,HOU,TEN,TE,0.0,0.009,0.009
-Brevin Jordan,HOU,TEN,TE,0.0,0.009,0.009
 Cade Stover,HOU,TEN,TE,0.0,0.009,0.009
+Brevin Jordan,HOU,TEN,TE,0.0,0.009,0.009
+Marlin Klein,HOU,TEN,TE,0.0,0.009,0.009
 Gavin Bartholomew,MIN,NO,TE,0.0,0.008,0.008
 Charlie Woerner,ATL,BAL,TE,0.0,0.008,0.008
 Patrick Ricard,NYG,WAS,RB,0.0,0.008,0.008
