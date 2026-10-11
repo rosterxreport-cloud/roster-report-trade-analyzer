@@ -16,6 +16,6 @@ jobs:
       - run: |
           git config user.name "roster-report-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add data/projections/2026_week5_league_v4_touchdowns.csv
+          git add data/projections/2026_week5_league_v4_touchdowns.csv data/projections/2026_week5_league_v4_full.csv
           git diff --cached --quiet || git commit -m "Generate league-wide Week 5 v4 touchdown projections"
           git push
