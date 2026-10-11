@@ -28,6 +28,26 @@ games=[("PHI","JAX"),("CIN","MIA"),("LV","NE"),("MIN","NO"),("CLE","NYJ"),("IND"
 opponents={a:b for a,b in games};opponents.update({b:a for a,b in games})
 last=last[last.recent_team.isin(opponents)].copy()
 last=last[last.prior_opp>=1].copy()
+# Consistent low-usage role gate. Weekly player stats do not include snap shares;
+# use observed opportunities, never label this as a measured snap percentage.
+recent_usage=w[w.week.between(2,4)].copy()
+recent_usage["opportunities"]=recent_usage.carries+recent_usage.targets+recent_usage.attempts
+role=recent_usage.groupby("player_id").agg(
+ role_games=("week","nunique"),
+ role_opportunities=("opportunities","sum"),
+ role_active_weeks=("opportunities",lambda x:int((x>=3).sum())),
+ role_targets=("targets","sum"),
+ role_carries=("carries","sum")
+).reset_index()
+last=last.merge(role,on="player_id",how="left")
+# Players with a consistently tiny role should not accumulate substantial
+# projections simply from team volume scaling. Preserve newly elevated roles
+# only when at least one recent week shows meaningful opportunity.
+fringe=(last.position.ne("QB") & last.role_games.ge(2)
+        & last.role_opportunities.le(6)
+        & last.role_active_weeks.eq(0))
+last=last[~fringe].copy()
+
 # NFL official October 11 Week 5 inactives: filter prior to team volume allocation.
 inactive_players = (
  "Saquon Barkley", "DeVonta Smith", "Marquise Brown", "Colbie Young",
