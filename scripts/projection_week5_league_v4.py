@@ -133,6 +133,13 @@ for team in opponents:
   else:
    last.at[idx,"pred_carries"]=new
    # Zero historical carries means efficiency is unknown; avoid inventing it.
+# Bound implausible individual RB volume after team-share reallocation.
+for idx in last.index[last.position.eq("RB")]:
+ volume=float(last.at[idx,"pred_carries"])
+ if volume>25:
+  factor=25/volume
+  for field in ("pred_carries","pred_rush_yds","pred_rush_td"):
+   last.at[idx,field]*=factor
 last["Opponent"]=last.recent_team.map(opponents)
 last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
 last["PPR"]=last.apply(score,axis=1)
