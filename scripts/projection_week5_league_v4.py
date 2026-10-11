@@ -27,6 +27,7 @@ last["prior_opp"]=last.pre_attempts.fillna(0)+last.pre_carries.fillna(0)+last.pr
 games=[("PHI","JAX"),("CIN","MIA"),("LV","NE"),("MIN","NO"),("CLE","NYJ"),("IND","PIT"),("HOU","TEN"),("NYG","WAS"),("CHI","GB"),("DEN","LAC"),("DET","ARI"),("SF","SEA"),("BAL","ATL"),("BUF","LA")]
 opponents={a:b for a,b in games};opponents.update({b:a for a,b in games})
 last=last[last.recent_team.isin(opponents)].copy()
+last=last[last.prior_opp>=1].copy()
 last=last.sort_values("prior_opp",ascending=False)
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
@@ -72,7 +73,7 @@ for team in opponents:
     for field in fields:last.loc[eligible,field]*=factor
 # Reallocate backfield carries using actual Weeks 2-4 RB carry shares.
 # Apply AFTER team-volume normalization so lead-back usage is not erased.
-for team in ["DAL","TB"]:
+for team in opponents:
  backs=(last.recent_team==team)&last.position.eq("RB")
  recent=w[(w.recent_team==team)&w.week.between(2,4)&w.position.eq("RB")]
  observed=recent.groupby("player_id").carries.sum()
