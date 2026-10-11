@@ -99,6 +99,19 @@ for team in opponents:
    if weight>0:
     factor=1+(budget-total)/weight
     for field in fields:last.loc[eligible,field]*=factor
+# Constrain projected team RB workload to historical team carries.
+# Avoid allocating all missing quarterback carries to one running back.
+for t in opponents:
+ m=(last.recent_team==t)&last.position.eq("RB")
+ if not m.any():continue
+ hist=last.loc[m,"pre_team_carries"].dropna()
+ if hist.empty:continue
+ budget=float(hist.iloc[0])
+ total=float(last.loc[m,"pred_carries"].sum())
+ if total>budget and total>0:
+  ratio=budget/total
+  for f in ("pred_carries","pred_rush_yds","pred_rush_td"):
+   last.loc[m,f]*=ratio
 # Reallocate backfield carries using actual Weeks 2-4 RB carry shares.
 # Apply AFTER team-volume normalization so lead-back usage is not erased.
 for team in opponents:
