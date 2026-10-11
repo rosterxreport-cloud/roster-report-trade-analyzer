@@ -63,6 +63,24 @@ snaps["offense_snaps"]=pd.to_numeric(snaps.offense_snaps,errors="coerce")
 if snaps.offense_pct.dropna().median()>1:snaps["offense_pct"]/=100
 snaps["snap_name"]=snaps.player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 last["snap_name"]=last.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+# Resolve common source naming differences before matching.
+# Prefer team-constrained exact matches; never match on surname alone.
+aliases={
+ "ajbrown":"ajbrown","brianthomasjr":"brianthomas",
+ "deebosamuelsr":"deebosamuel","michaelpenixjr":"michaelpenix",
+ "haroldfanninjr":"haroldfannin","brianrobinson":"brianrobinsonjr",
+ "olliegordonii":"olliegordon","chrisrodriguezjr":"chrisrodriguez",
+ "marvinmimsjr":"marvinmims","michaelpittman":"michaelpittmanjr",
+ "jord mason":"jordanmason"
+}
+# Only apply an alias when the corresponding team/player actually exists
+# in the snap dataset; otherwise leave the record visibly unmatched.
+snap_keys=set(zip(snaps.team,snaps.snap_name))
+for idx in last.index:
+ key=last.at[idx,"snap_name"];team_code=last.at[idx,"recent_team"]
+ candidate=aliases.get(key)
+ if candidate and (team_code,candidate) in snap_keys:
+  last.at[idx,"snap_name"]=candidate
 snaps=snaps[snaps.offense_pct.between(0,1)]
 snap_role=snaps.groupby(["team","snap_name"]).agg(
  snap_games=("week","nunique"),
