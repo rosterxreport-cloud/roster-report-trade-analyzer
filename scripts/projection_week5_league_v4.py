@@ -48,6 +48,39 @@ fringe=(last.position.ne("QB") & last.role_games.ge(2)
         & last.role_active_weeks.eq(0))
 last=last[~fringe].copy()
 
+# Actual PFR offensive snap share, Weeks 2-4 (nflverse).
+# Fail closed if the dataset/schema is unavailable rather than silently reverting
+# to opportunities-only and mislabeling the output as snap-validated.
+snap_url="https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet"
+snaps=pd.read_parquet(snap_url)
+required={"season","week","team","player","offense_pct","offense_snaps"}
+missing=required-set(snaps.columns)
+if missing:raise RuntimeError(f"Snap data missing required columns: {sorted(missing)}")
+snaps=snaps[(snaps.season==2026)&snaps.week.between(2,4)].copy()
+snaps["offense_pct"]=pd.to_numeric(snaps.offense_pct,errors="coerce")
+snaps["offense_snaps"]=pd.to_numeric(snaps.offense_snaps,errors="coerce")
+# PFR uses percentage units 0-100; convert only if needed.
+if snaps.offense_pct.dropna().median()>1:snaps["offense_pct"]/=100
+snaps["snap_name"]=snaps.player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+last["snap_name"]=last.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+snaps=snaps[snaps.offense_pct.between(0,1)]
+snap_role=snaps.groupby(["team","snap_name"]).agg(
+ snap_games=("week","nunique"),
+ avg_snap_share=("offense_pct","mean"),
+ recent_snap_share=("offense_pct","last"),
+ snap_max=("offense_pct","max")
+).reset_index().rename(columns={"team":"recent_team"})
+last=last.merge(snap_role,on=["recent_team","snap_name"],how="left",validate="many_to_one")
+# Only filter genuinely consistent low participation, not new breakout roles.
+# Require 2+ observed games and no recent game above 20% snaps.
+tiny=(last.position.ne("QB") & last.snap_games.ge(2) &
+      last.avg_snap_share.lt(.15) & last.snap_max.lt(.20))
+last=last[~tiny].copy()
+# Do not let unmapped players quietly receive a high-volume projection.
+last["Snap_Share_3W"]=last.avg_snap_share
+last["Snap_Games"]=last.snap_games
+print("Snap-share coverage:",int(last.avg_snap_share.notna().sum()),"/",len(last))
+
 # NFL official October 11 Week 5 inactives: filter prior to team volume allocation.
 inactive_players = (
  "Saquon Barkley", "DeVonta Smith", "Marquise Brown", "Colbie Young",
@@ -174,7 +207,7 @@ last=last.rename(columns={"player_display_name":"Player","recent_team":"Team","p
 out=last[["Player","Team","Opponent","Position","Rush_TD","Rec_TD","Total_xTD"]].sort_values("Total_xTD",ascending=False).round(3)
 Path("data/projections").mkdir(parents=True,exist_ok=True)
 out.to_csv("data/projections/2026_week5_league_v4_touchdowns.csv",index=False)
-full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR"]].copy()
+full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR","Snap_Share_3W","Snap_Games"]].copy()
 full=full.sort_values(["Position","PPR"],ascending=[True,False]).round(2)
 full.to_csv("data/projections/2026_week5_league_v4_full.csv",index=False)
 print("Full projections:",len(full),"players")
