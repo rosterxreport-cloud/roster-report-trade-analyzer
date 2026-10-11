@@ -28,6 +28,16 @@ games=[("PHI","JAX"),("CIN","MIA"),("LV","NE"),("MIN","NO"),("CLE","NYJ"),("IND"
 opponents={a:b for a,b in games};opponents.update({b:a for a,b in games})
 last=last[last.recent_team.isin(opponents)].copy()
 last=last[last.prior_opp>=1].copy()
+# NFL official October 11 Week 5 inactives: filter prior to team volume allocation.
+inactive_players = (
+ "Saquon Barkley", "DeVonta Smith", "Marquise Brown", "Colbie Young",
+ "Caleb Douglas", "Kaytron Allen", "Jalen Nailor", "Jordan Addison",
+ "Breece Hall", "Adonai Mitchell", "Ashton Dulin", "Darius Slayton",
+ "Rico Dowdle", "Devin Singletary", "Stefon Diggs", "Kyle Monangai",
+ "Caleb Williams", "Lamar Jackson", "Nick Singleton"
+)
+last=last[~last.player_display_name.isin(inactive_players)].copy()
+
 last=last.sort_values("prior_opp",ascending=False)
 # Keep the primary Week 4 quarterback for each team.
 q4=w[(w.position=="QB") & (w.week==4)].sort_values("attempts",ascending=False)
