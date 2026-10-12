@@ -15,9 +15,33 @@ pred=pred[pred.Team.isin(teams)].copy()
 team_col="recent_team" if "recent_team" in actual.columns else "team"
 if team_col not in actual.columns: raise RuntimeError("Weekly stats have no team column")
 actual["join_name"]=actual.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+# Match common suffix variants only if the team's name is unambiguous.
+def strip_suffix(name):
+ for suffix in ("iii","ii","jr","sr"):
+  if name.endswith(suffix): return name[:-len(suffix)]
+ return name
+actual["name_base"]=actual.join_name.map(strip_suffix)
+
 pred["join_name"]=pred.Player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 actual=actual.sort_values("player_id").drop_duplicates([team_col,"join_name"])
 df=pred.merge(actual,how="left",left_on=["Team","join_name"],right_on=[team_col,"join_name"],indicator=True,suffixes=("","_actual"))
+# Recover suffix-only name discrepancies, requiring exactly one candidate on team.
+unmatched=df[df._merge=="left_only"].copy()
+if len(unmatched):
+ unmatched["name_base"]=unmatched.join_name.map(strip_suffix)
+ candidates=actual.groupby([team_col,"name_base"]).filter(lambda x:len(x)==1)
+ aliases=unmatched[["Team","join_name","name_base"]].merge(
+  candidates,how="inner",left_on=["Team","name_base"],right_on=[team_col,"name_base"],suffixes=("","_candidate"))
+ aliases=aliases[aliases.join_name!=aliases.join_name_candidate]
+ if len(aliases):
+  print("SUFFIX_ALIASES",aliases[["Team","join_name","join_name_candidate"]].to_string(index=False))
+  # Replace only actual-stat columns for safely resolved names.
+  for _,row in aliases.iterrows():
+   idx=df.index[(df.Team==row.Team)&(df.join_name==row.join_name)&(df._merge=="left_only")]
+   if len(idx)==1:
+    for col in actual.columns:
+     if col in df.columns:df.loc[idx[0],col]=row[col]
+    df.loc[idx[0],"_merge"]="both"
 stats={"Pass_Yds":"passing_yards","Pass_TD":"passing_tds","INT":"passing_interceptions","Rush_Yds":"rushing_yards","Rush_TD":"rushing_tds","Rec_Yds":"receiving_yards","Rec_TD":"receiving_tds","Receptions":"receptions"}
 for key,source in stats.items():
  if source not in df.columns: raise RuntimeError(f"Missing actual stats column {source}; available: {list(df.columns)}")
@@ -28,6 +52,8 @@ df["Error"]=df.PPR-df.Actual_PPR
 # Players absent from weekly data can have zero stats, but only if team played.
 df["absent_from_stats"]=df._merge.ne("both")
 rows=[]
+print("UNMATCHED_PLAYER_RECORDS",int(df.absent_from_stats.sum()))
+print(df.loc[df.absent_from_stats,["Player","Team","Position"]].to_string(index=False))
 for pos,g in df.groupby("Position"):
  err=g.Error.abs()
  rows.append({"Position":pos,"Players":len(g),"MAE":round(err.mean(),3),"Within_1":int((err<=1).sum()),"Within_3":int((err<=3).sum()),"Within_5":int((err<=5).sum()),"Pct_Within_1":round(100*(err<=1).mean(),1),"Pct_Within_3":round(100*(err<=3).mean(),1),"Pct_Within_5":round(100*(err<=5).mean(),1),"Missing_Stats":int(g.absent_from_stats.sum())})
