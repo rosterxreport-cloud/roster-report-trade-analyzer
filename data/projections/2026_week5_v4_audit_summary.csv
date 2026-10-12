@@ -1,0 +1,5 @@
+Position,Players,MAE,Within_1,Within_3,Within_5,Pct_Within_1,Pct_Within_3,Pct_Within_5,Missing_Stats
+QB,26,7.462,2,5,12,7.7,19.2,46.2,0
+RB,65,4.967,9,22,36,13.8,33.8,55.4,12
+TE,52,5.151,4,19,29,7.7,36.5,55.8,7
+WR,101,5.895,9,28,51,8.9,27.7,50.5,23
