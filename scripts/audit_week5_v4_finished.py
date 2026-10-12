@@ -52,14 +52,39 @@ df["Actual_PPR"]=df.actual_Pass_Yds*.04+df.actual_Pass_TD*4-df.actual_INT*2+df.a
 df["Error"]=df.PPR-df.Actual_PPR
 # Players absent from weekly data can have zero stats, but only if team played.
 df["absent_from_stats"]=df._merge.ne("both")
-rows=[]
-print("UNMATCHED_PLAYER_RECORDS",int(df.absent_from_stats.sum()))
-print(df.loc[df.absent_from_stats,["Player","Team","Position"]].to_string(index=False))
-for pos,g in df.groupby("Position"):
- err=g.Error.abs()
- rows.append({"Position":pos,"Players":len(g),"MAE":round(err.mean(),3),"Within_1":int((err<=1).sum()),"Within_3":int((err<=3).sum()),"Within_5":int((err<=5).sum()),"Pct_Within_1":round(100*(err<=1).mean(),1),"Pct_Within_3":round(100*(err<=3).mean(),1),"Pct_Within_5":round(100*(err<=5).mean(),1),"Missing_Stats":int(g.absent_from_stats.sum())})
+# A missing weekly stats row is not evidence of zero fantasy points.
+# Check whether the name appears for another team, or whether the team has
+# any same-surname candidates; never silently count such rows as zero.
+actual["surname"]=actual.player_display_name.fillna("").astype(str).str.split().str[-1].str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+df["surname"]=df.Player.fillna("").astype(str).str.split().str[-1].str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+by_name=actual.groupby("join_name").agg(other_teams=(team_col,lambda x:",".join(sorted(set(x.astype(str))))),name_candidates=("player_display_name",lambda x:",".join(sorted(set(x.astype(str)))))).reset_index()
+by_surname=actual.groupby([team_col,"surname"]).agg(surname_candidates=("player_display_name",lambda x:",".join(sorted(set(x.astype(str)))))).reset_index()
+df=df.merge(by_name,on="join_name",how="left").merge(by_surname,left_on=["Team","surname"],right_on=[team_col,"surname"],how="left",suffixes=("","_surname"))
+df["audit_status"]="verified_stats"
+df.loc[df.absent_from_stats,"audit_status"]="unresolved_no_stats_row"
+df.loc[df.absent_from_stats & df.other_teams.notna(),"audit_status"]="name_found_other_team"
+df.loc[df.absent_from_stats & df.surname_candidates.notna(),"audit_status"]="same_surname_team_candidate"
+# Keep the previous all-projections audit for continuity, but separate
+# defensible matched-stat metrics and exclude unresolved records.
+def summarize(frame):
+ rows=[]
+ for pos,g in frame.groupby("Position"):
+  err=g.Error.abs()
+  rows.append({"Position":pos,"Players":len(g),"MAE":round(err.mean(),3),"Within_1":int((err<=1).sum()),"Within_3":int((err<=3).sum()),"Within_5":int((err<=5).sum()),"Pct_Within_1":round(100*(err<=1).mean(),1),"Pct_Within_3":round(100*(err<=3).mean(),1),"Pct_Within_5":round(100*(err<=5).mean(),1),"Missing_Stats":int(g.absent_from_stats.sum())})
+ return pd.DataFrame(rows).sort_values("Position")
 out=Path("data/projections");out.mkdir(parents=True,exist_ok=True)
-pd.DataFrame(rows).sort_values("Position").to_csv(out/"2026_week5_v4_audit_summary.csv",index=False)
-df[["Player","Team","Position","PPR","Actual_PPR","Error","absent_from_stats"]].to_csv(out/"2026_week5_v4_audit_players.csv",index=False)
+all_summary=summarize(df)
+all_summary.to_csv(out/"2026_week5_v4_audit_summary.csv",index=False)
+verified=df[~df.absent_from_stats].copy()
+summarize(verified).to_csv(out/"2026_week5_v4_audit_verified_summary.csv",index=False)
+df[["Player","Team","Position","PPR","Actual_PPR","Error","absent_from_stats","audit_status"]].to_csv(out/"2026_week5_v4_audit_players.csv",index=False)
+df.loc[df.absent_from_stats,["Player","Team","Position","PPR","audit_status","other_teams","name_candidates","surname_candidates"]].to_csv(out/"2026_week5_v4_audit_unresolved.csv",index=False)
+print("UNRESOLVED_STATUS_COUNTS")
+print(df[df.absent_from_stats].audit_status.value_counts().to_string())
+print("UNRESOLVED_RECORDS")
+print(df.loc[df.absent_from_stats,["Player","Team","Position","audit_status","other_teams","surname_candidates"]].to_string(index=False))
+print("VERIFIED_ONLY_SUMMARY")
+print(summarize(verified).to_string(index=False))
+
 print("FINISHED_GAMES",len(done),"PROJECTED_PLAYERS",len(df))
-print(pd.DataFrame(rows).to_string(index=False))
+print(all_summary.to_string(index=False))
