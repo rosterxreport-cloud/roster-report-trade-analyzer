@@ -17,7 +17,7 @@ if team_col not in actual.columns: raise RuntimeError("Weekly stats have no team
 actual["join_name"]=actual.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 pred["join_name"]=pred.Player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 actual=actual.sort_values("player_id").drop_duplicates([team_col,"join_name"])
-df=pred.merge(actual,how="left",left_on=["Team","join_name"],right_on=["recent_team","join_name"],indicator=True,suffixes=("","_actual"))
+df=pred.merge(actual,how="left",left_on=["Team","join_name"],right_on=[team_col,"join_name"],indicator=True,suffixes=("","_actual"))
 stats={"Pass_Yds":"passing_yards","Pass_TD":"passing_tds","INT":"interceptions","Rush_Yds":"rushing_yards","Rush_TD":"rushing_tds","Rec_Yds":"receiving_yards","Rec_TD":"receiving_tds","Receptions":"receptions"}
 for key,source in stats.items():df["actual_"+key]=pd.to_numeric(df[source],errors="coerce").fillna(0)
 # Apply standard 4-point passing TD fantasy rules.
