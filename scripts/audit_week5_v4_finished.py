@@ -7,9 +7,10 @@ url="https://github.com/nflverse/nflverse-data/releases/download/stats_player/st
 actual=pd.read_parquet(url)
 actual=actual[(actual.week==5)&(actual.season_type=="REG")].copy()
 # Finished games only; derive from official nflverse schedules.
-schedule=pd.read_csv("https://github.com/nflverse/nfldata/raw/refs/heads/master/data/games.csv")
+schedule=pd.read_csv("https://github.com/nflverse/nfldata/raw/master/data/games.csv")
 done=schedule[(schedule.season==2026)&(schedule.week==5)&schedule.home_score.notna()&schedule.away_score.notna()]
 teams=set(done.home_team)|set(done.away_team)
+if not teams: raise RuntimeError("No finished Week 5 games available from schedule; refusing empty audit")
 pred=pred[pred.Team.isin(teams)].copy()
 actual["join_name"]=actual.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 pred["join_name"]=pred.Player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
