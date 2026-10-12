@@ -1,0 +1,25 @@
+name: Audit Week 5 finished games
+on:
+  push:
+    paths:
+      - scripts/audit_week5_v4_finished.py
+      - .github/workflows/audit-week5-finished.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas pyarrow numpy
+      - run: python scripts/audit_week5_v4_finished.py
+      - run: |
+          git config user.name "roster-report-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/projections/2026_week5_v4_audit_summary.csv data/projections/2026_week5_v4_audit_players.csv
+          git diff --cached --quiet || git commit -m "Save Week 5 finished-game model audit"
+          git push
