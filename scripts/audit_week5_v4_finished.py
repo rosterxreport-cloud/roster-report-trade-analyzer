@@ -7,7 +7,7 @@ url="https://github.com/nflverse/nflverse-data/releases/download/stats_player/st
 actual=pd.read_parquet(url)
 actual=actual[(actual.week==5)&(actual.season_type=="REG")].copy()
 # Finished games only; derive from official nflverse schedules.
-schedule=pd.read_parquet("https://github.com/nflverse/nflverse-data/releases/download/schedules/games.parquet")
+schedule=pd.read_csv("https://github.com/nflverse/nfldata/raw/refs/heads/master/data/games.csv")
 done=schedule[(schedule.season==2026)&(schedule.week==5)&schedule.home_score.notna()&schedule.away_score.notna()]
 teams=set(done.home_team)|set(done.away_team)
 pred=pred[pred.Team.isin(teams)].copy()
