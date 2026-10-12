@@ -12,9 +12,11 @@ done=schedule[(schedule.season==2026)&(schedule.week==5)&schedule.home_score.not
 teams=set(done.home_team)|set(done.away_team)
 if not teams: raise RuntimeError("No finished Week 5 games available from schedule; refusing empty audit")
 pred=pred[pred.Team.isin(teams)].copy()
+team_col="recent_team" if "recent_team" in actual.columns else "team"
+if team_col not in actual.columns: raise RuntimeError("Weekly stats have no team column")
 actual["join_name"]=actual.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 pred["join_name"]=pred.Player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
-actual=actual.sort_values("player_id").drop_duplicates(["recent_team","join_name"])
+actual=actual.sort_values("player_id").drop_duplicates([team_col,"join_name"])
 df=pred.merge(actual,how="left",left_on=["Team","join_name"],right_on=["recent_team","join_name"],indicator=True,suffixes=("","_actual"))
 stats={"Pass_Yds":"passing_yards","Pass_TD":"passing_tds","INT":"interceptions","Rush_Yds":"rushing_yards","Rush_TD":"rushing_tds","Rec_Yds":"receiving_yards","Rec_TD":"receiving_tds","Receptions":"receptions"}
 for key,source in stats.items():df["actual_"+key]=pd.to_numeric(df[source],errors="coerce").fillna(0)
