@@ -17,6 +17,7 @@ if team_col not in actual.columns: raise RuntimeError("Weekly stats have no team
 actual["join_name"]=actual.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 # Match common suffix variants only if the team's name is unambiguous.
 def strip_suffix(name):
+ if not isinstance(name,str): return ""
  for suffix in ("iii","ii","jr","sr"):
   if name.endswith(suffix): return name[:-len(suffix)]
  return name
