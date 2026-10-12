@@ -1,0 +1,43 @@
+Player,Team,Position,PPR,audit_status,other_teams,name_candidates,surname_candidates
+Travis Etienne,NO,RB,8.23,unresolved_no_stats_row,,,
+Tank Bigsby,PHI,RB,8.16,unresolved_no_stats_row,,,
+De'Von Achane,MIA,RB,5.72,unresolved_no_stats_row,,,
+Jonah Coleman,DEN,RB,4.67,unresolved_no_stats_row,,,
+Jadarian Price,SEA,RB,4.47,unresolved_no_stats_row,,,
+Chris Brooks,GB,RB,4.06,same_surname_team_candidate,,,Karl Brooks
+Lan Larison,NE,RB,2.41,unresolved_no_stats_row,,,
+DJ Herman,MIA,RB,1.57,unresolved_no_stats_row,,,
+Reggie Gilliam,NE,RB,1.45,unresolved_no_stats_row,,,
+Patrick Ricard,NYG,RB,1.34,unresolved_no_stats_row,,,
+Craig Reynolds,WAS,RB,0.98,unresolved_no_stats_row,,,
+Jordan Mason,MIN,RB,0.96,unresolved_no_stats_row,,,
+Jeremy Ruckert,NYJ,TE,7.91,unresolved_no_stats_row,,,
+Mark Redman,GB,TE,5.86,unresolved_no_stats_row,,,
+David Njoku,LAC,TE,5.49,unresolved_no_stats_row,,,
+Austin Hooper,ATL,TE,5.39,unresolved_no_stats_row,,,
+Jonnu Smith,GB,TE,5.33,unresolved_no_stats_row,,,
+Nate Adkins,DEN,TE,5.32,unresolved_no_stats_row,,,
+Adam Trautman,DEN,TE,2.11,unresolved_no_stats_row,,,
+Jack Bech,LV,WR,13.04,unresolved_no_stats_row,,,
+Demarcus Robinson,SF,WR,11.5,unresolved_no_stats_row,,,
+Pat Bryant,DEN,WR,9.35,unresolved_no_stats_row,,,
+Marvin Harrison Jr.,ARI,WR,8.55,same_surname_team_candidate,,,Wydett Williams Jr.
+Alec Pierce,IND,WR,8.04,unresolved_no_stats_row,,,
+Tory Horton,SEA,WR,7.54,unresolved_no_stats_row,,,
+Jordan Watkins,SF,WR,7.45,unresolved_no_stats_row,,,
+Mack Hollins,NE,WR,7.39,unresolved_no_stats_row,,,
+Michael Pittman,PIT,WR,7.19,unresolved_no_stats_row,,,
+Ladd McConkey,LAC,WR,6.74,unresolved_no_stats_row,,,
+Mitchell Tinsley,CIN,WR,6.56,unresolved_no_stats_row,,,
+Omar Cooper Jr.,NYJ,WR,6.41,same_surname_team_candidate,,,"Darrell Jackson Jr.,Jarvis Brownlee Jr."
+Ryan Miller,MIA,WR,6.34,unresolved_no_stats_row,,,
+Kevin Austin Jr.,NO,WR,5.82,same_surname_team_candidate,,,Lorenzo Styles Jr.
+A.J. Brown,NE,WR,5.05,same_surname_team_candidate,,,"Ben Brown,Mike Brown"
+Chris Moore,BAL,WR,4.98,same_surname_team_candidate,,,Nick Moore
+Quentin Johnston,LAC,WR,4.97,unresolved_no_stats_row,,,
+Andrei Iosivas,CIN,WR,4.47,unresolved_no_stats_row,,,
+Jayden Reed,GB,WR,3.48,unresolved_no_stats_row,,,
+Brenen Thompson,LAC,WR,2.98,unresolved_no_stats_row,,,
+Elijah Sarratt,BAL,WR,2.45,unresolved_no_stats_row,,,
+Ja'Kobi Lane,BAL,WR,1.95,unresolved_no_stats_row,,,
+Lewis Bond,HOU,WR,1.81,unresolved_no_stats_row,,,
