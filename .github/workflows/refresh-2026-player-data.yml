@@ -11,6 +11,7 @@ on:
     paths:
       - '.github/workflows/refresh-2026-player-data.yml'
       - 'scripts/refresh-live-player-data.py'
+      - 'scripts/refresh-injury-adjustments.py'
       - 'scripts/validate-live-player-data.py'
       - 'scripts/create-refresh-baseline.py'
       - 'scripts/build-scoring-profiles.py'
@@ -39,6 +40,8 @@ jobs:
           python-version: '3.12'
       - name: Install pinned refresh dependencies
         run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'beautifulsoup4==4.13.5' 'pyarrow==21.0.0'
+      - name: Refresh and validate injury data
+        run: python scripts/refresh-injury-adjustments.py
       - name: Refresh model and special teams
         shell: bash
         run: |
