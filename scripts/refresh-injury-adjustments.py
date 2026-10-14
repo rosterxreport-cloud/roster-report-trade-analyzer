@@ -20,7 +20,7 @@ POSITIONS = {"QB", "RB", "WR", "TE"}
 RESERVE = {"RES", "RSV", "IR", "PUP", "NFI"}
 def key(name):
     s = unicodedata.normalize("NFKD", str(name)).encode("ascii", "ignore").decode().lower()
-    s = re.sub(r"\\b(jr|sr|ii|iii|iv)\\.?\\b", "", s)
+    s = re.sub(r"\b(jr|sr|ii|iii|iv)\.?\b", "", s)
     return re.sub(r"[^a-z0-9]", "", s)
 
 def download(path):
