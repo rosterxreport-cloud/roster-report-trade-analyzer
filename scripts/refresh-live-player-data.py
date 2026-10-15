@@ -285,6 +285,10 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             # modestly more influence while retaining a meaningful preseason prior.
             if p["pos"]=="TE" and games>=2:
                 season_w=.65 if games>=4 else .55;pre_w=.20 if games>=4 else .30
+            # WR 2026-season emphasis once a four-game sample is established.
+            # Preserve the smaller-sample injury/returnee weighting unchanged.
+            if p["pos"]=="WR" and games>=4:
+                season_w=.75;pre_w=.15
             ctx_w=1-season_w-pre_w;sample_reliability=100.0;ctx_adj=context;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
             # Early-season downside guardrail: through two games, performance alone
             # cannot erase more than 12 value points from the preseason prior.
