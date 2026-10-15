@@ -12,6 +12,7 @@ on:
       - '.github/workflows/refresh-2026-player-data.yml'
       - 'scripts/refresh-live-player-data.py'
       - 'scripts/refresh-injury-adjustments.py'
+      - 'scripts/refresh-live-player-data.py'
       - 'scripts/validate-live-player-data.py'
       - 'scripts/create-refresh-baseline.py'
       - 'scripts/build-scoring-profiles.py'
