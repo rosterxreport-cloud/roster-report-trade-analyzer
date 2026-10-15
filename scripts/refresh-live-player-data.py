@@ -257,7 +257,7 @@ def role_reality_modifier(p, matches):
 def special(nm,tm,pos,d,rank):
     return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False,"rankingScore":round(d["score"],2)}
 
-def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries):
+def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries,current_week):
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring);out=[]
     if not special_only and scoring=="half":
         debug=[]
@@ -289,7 +289,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             # Early-season downside guardrail: through two games, performance alone
             # cannot erase more than 12 value points from the preseason prior.
             # Missing games affect only the amount of live-season evidence; injury/availability is handled once by the explicit injury layer.
-            if games>=2:
+            if current_week<=2 and games>=2:
                 downside=16.0 if p["pos"]=="TE" else 12.0
                 raw_value=max(raw_value,preseason-downside)
             # Role Reality is applied after the blend/guardrail but before the
@@ -370,12 +370,12 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
         candidates=[x for x in out if x["rank"]<=250]
         ordered=sorted(candidates,key=lambda x:(-x["value"],x["rank"]))
         provisional={p["name"]:i for i,p in enumerate(ordered,1)}
-        max_drop=15  # Weeks 1-2; loosen to 20-25 for Week 3, remove Week 4+
+        max_drop=15 if current_week<=2 else 25  # No elite protection after Week 3
         protected={}
         for p in ordered:
             b=baseline.get(scoring,{}).get(p["name"],{})
             pre_rank=int(b.get("rank",999))
-            if pre_rank>15: continue
+            if current_week>=4 or pre_rank>15: continue
             adj=injuries.get(p["name"])
             status=str((adj or {}).get("status","")).lower()
             on_ir=("injured reserve" in status or "reserve/injured" in status or status.startswith("ir ") or status.startswith("ir -") or " pup" in (" "+status))
@@ -462,5 +462,7 @@ def main():
     if matched<20: raise RuntimeError(f"Explosive-run merge coverage too low: {matched} RBs")
     print(f"Explosive-run metric attached to {matched} RB rows")
     t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
-    after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
+    current_week=int(json.loads(injury_path.read_text()).get("sourceWeek",0)) if injury_path.exists() else 0
+    if current_week<1: raise RuntimeError("Missing current NFL week for preseason protection expiry")
+    after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries,current_week) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
 if __name__=="__main__":main()
