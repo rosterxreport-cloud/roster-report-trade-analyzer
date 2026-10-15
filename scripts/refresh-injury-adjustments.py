@@ -57,12 +57,24 @@ def main():
     reports = reports.dropna(subset=["week"])
     if reports.empty:
         raise RuntimeError("No 2026 injury reports")
-    week = int(reports.week.max())
-    reports = reports[reports.week.eq(week)].copy()
-    reports["match"] = reports.full_name.map(key)
-    reports = reports.drop_duplicates(["match"], keep=False)
-    if len(reports) < 10:
-        raise RuntimeError(f"Too few injury reports for week {week}: {len(reports)}")
+    # Early-week injury feeds can contain only a handful of preliminary entries.
+    # Use the most recent adequately populated report week, rather than aborting
+    # the entire ranking refresh when the next week first appears.
+    latest_week = int(reports.week.max())
+    chosen = None
+    for candidate_week in sorted(reports.week.unique(), reverse=True):
+        candidate = reports[reports.week.eq(candidate_week)].copy()
+        candidate["match"] = candidate.full_name.map(key)
+        candidate = candidate.drop_duplicates(["match"], keep=False)
+        if len(candidate) >= 10:
+            week = int(candidate_week)
+            chosen = candidate
+            break
+    if chosen is None or latest_week - week > 1:
+        raise RuntimeError(f"No sufficiently complete current injury report (latest week {latest_week})")
+    reports = chosen
+    if week != latest_week:
+        print(f"Week {latest_week} report is preliminary; using latest complete report week {week}")
     prior = json.loads(TARGET.read_text())
     prior_players = prior.get("players", {})
     previous = {key(n): (n, adj) for n, adj in prior_players.items()}
