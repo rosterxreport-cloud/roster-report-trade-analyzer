@@ -126,30 +126,75 @@ if last.player_display_name.eq("Caleb Williams").any():
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
-# The structural v4 shrinks WR/TE target shares toward positional priors,
-# systematically suppressing established alpha receivers and featured TEs.
-# Restore player-observed recent target shares with modest prior regularization.
-recent_targets=w[w.week.between(3,5)].groupby("player_id").agg(
- recent_targets=("targets","sum"),recent_games=("week","nunique")).reset_index()
-team_recent=w[w.week.between(3,5)].groupby(["recent_team","week"]).attempts.sum().groupby("recent_team").sum()
-last=last.merge(recent_targets,on="player_id",how="left",validate="one_to_one")
-for idx in last.index[last.position.isin(["WR","TE"])]:
- team=last.at[idx,"recent_team"]
- attempts=float(team_recent.get(team,0))
- targets=float(last.at[idx,"recent_targets"]) if pd.notna(last.at[idx,"recent_targets"]) else 0
- games=int(last.at[idx,"recent_games"]) if pd.notna(last.at[idx,"recent_games"]) else 0
- if attempts<30 or games<2: continue
- empirical_share=targets/attempts
- baseline=float(last.at[idx,"pred_targets"])
- team_pass=float(last.at[idx,"pre_team_pass"]) if pd.notna(last.at[idx,"pre_team_pass"]) else 34.
- revised=team_pass*(.80*empirical_share+.20*baseline/max(team_pass,1))
- revised=float(np.clip(revised,0,team_pass*.42))
- if baseline>0:
-  factor=revised/baseline
-  for field in ("pred_targets","pred_rec","pred_rec_yds","pred_rec_td"):
-   last.at[idx,field]*=factor
-# Remaining team volume is reconciled below; this is a share correction,
-# not a blanket fantasy-point inflation.
+# Reallocate receiving targets for EVERY scheduled team from observed usage.
+# Team targets are counted from receiver targets, NOT QB attempts; the former
+# excludes sacks, spikes, throwaways and other passes without a target.
+# Shrink player shares toward the v4 baseline and use recent game exposure.
+# Never redistribute unavailable players' targets to arbitrary fringe receivers.
+recent=w[w.week.between(3,5)].copy()
+recent_team_targets=recent.groupby(["recent_team","week"]).targets.sum().rename("team_targets").reset_index()
+recent=recent.merge(recent_team_targets,on=["recent_team","week"],how="left",validate="many_to_one")
+recent=recent[recent.team_targets.gt(0)].copy()
+recent["weekly_share"]=recent.targets/recent.team_targets
+# Team pass attempts set the forecast ceiling, with an empirically observed
+# targeted-pass rate; avoid treating all pass attempts as actual targets.
+team_target_rate=(recent_team_targets.groupby("recent_team").team_targets.sum()/
+                  w[w.week.between(3,5)].groupby("recent_team").attempts.sum().replace(0,np.nan)).clip(0,1)
+for team in opponents:
+ mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
+ if not mask.any():continue
+ qb=(last.recent_team==team)&last.position.eq("QB")
+ pass_attempts=float(last.loc[qb,"pred_att"].max()) if qb.any() else float(last.loc[mask,"pre_team_pass"].median())
+ if not np.isfinite(pass_attempts):continue
+ rate=float(team_target_rate.get(team,np.nan))
+ if not np.isfinite(rate):rate=0.90
+ budget=max(0.,pass_attempts*rate)
+ eligible=last.index[mask]
+ base=last.loc[eligible,"pred_targets"].clip(lower=0).astype(float)
+ # Player targets / team targets in their observed games; use all weeks
+ # rather than dividing by the number of games the player happened to play.
+ hist=recent[recent.recent_team==team]
+ observed=hist.groupby("player_id").targets.sum()
+ observed_team=hist.groupby("player_id").team_targets.sum()
+ # Team targets must be deduplicated by player and week, so a player's
+ # denominator is the sum of team targets for weeks they actually appeared.
+ obs_share=(observed/observed_team.replace(0,np.nan)).clip(0,1)
+ hist_games=hist.groupby("player_id").week.nunique()
+ shares=[]
+ for idx in eligible:
+  pid=last.at[idx,"player_id"]
+  prior=float(base.at[idx])/max(float(base.sum()),1.)
+  empirical=float(obs_share.get(pid,np.nan))
+  n=int(hist_games.get(pid,0))
+  # Empirical 75%, structural prior 25% at three observed games.
+  reliability=min(0.75,0.25*n)
+  if not np.isfinite(empirical):reliability=0.;empirical=0.
+  shares.append(max(0.,reliability*empirical+(1-reliability)*prior))
+ shares=pd.Series(shares,index=eligible,dtype=float)
+ if shares.sum()<=0:continue
+ shares/=shares.sum()
+ # Role safeguard: projected volume for fringe players without at least
+ # two targets in Weeks 3-5 cannot exceed the structural prior allocation.
+ fringe_ids=[idx for idx in eligible if float(observed.get(last.at[idx,"player_id"],0))<2]
+ for idx in fringe_ids:shares.at[idx]=min(shares.at[idx],float(base.at[idx])/max(float(base.sum()),1.))
+ # Redistribute freed share only to players with meaningful recent targets.
+ remainder=max(0.,1.-float(shares.sum()))
+ established=[idx for idx in eligible if idx not in fringe_ids]
+ if established and remainder>0:
+  weights=shares.loc[established].clip(lower=0)
+  if weights.sum()>0:shares.loc[established]+=remainder*weights/weights.sum()
+ if shares.sum()>1:shares/=shares.sum()
+ for idx in eligible:
+  old=float(last.at[idx,"pred_targets"])
+  new=budget*float(shares.at[idx])
+  if old>0:
+   factor=new/old
+   for field in ("pred_targets","pred_rec","pred_rec_yds","pred_rec_td"):
+    last.at[idx,field]*=factor
+  else:
+   # No observed or structural receiving efficiency; do not invent it.
+   last.at[idx,"pred_targets"]=0.
+# No second target redistribution: the team target budget is already allocated.
 
 # Smooth QB rushing touchdowns using observed 2026 QB touchdown frequency.
 qh=w[w.position=="QB"]
@@ -185,7 +230,7 @@ for team in opponents:
  history=last.loc[mask,"pre_team_carries"].dropna()
  rush_budget=max(0.,float(history.iloc[0])-qb_rush) if len(history) else float(last.loc[mask,"pred_carries"].sum())
  for volume,budget,fields in [
-  ("pred_targets",attempts,["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]),
+  ("pred_targets",float(last.loc[mask,"pred_targets"].sum()),["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]),
   ("pred_carries",rush_budget,["pred_carries","pred_rush_yds","pred_rush_td"])
  ]:
   total=float(last.loc[mask,volume].sum())
