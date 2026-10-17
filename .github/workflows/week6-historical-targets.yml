@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '.github/workflows/week6-historical-targets.yml'
+      - 'scripts/build_week6_historical_targets.py'
+      - 'scripts/rebuild_week6_2026_target_shares.py'
 permissions:
   contents: write
 jobs:
