@@ -17,6 +17,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install pandas numpy pyarrow requests
+      # Rebuild requested after returning-starter allocation fix.
       - name: Generate and audit projections
         run: |
           set -o pipefail
