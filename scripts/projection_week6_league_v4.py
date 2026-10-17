@@ -104,7 +104,7 @@ print("Snap-share coverage:",int(last.avg_snap_share.notna().sum()),"/",len(last
 
 # Week 6 confirmed outs as of Oct 17; questionable players retained.
 # Sunday inactive lists will require a final pre-kickoff update.
-inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai")
+inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson")
 last=last[~last.player_display_name.isin(inactive_players)].copy()
 
 last=last.sort_values("prior_opp",ascending=False)
