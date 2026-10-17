@@ -52,6 +52,21 @@ for i,row in p.iterrows():
     ratio=new_targets/row.Targets
     for col in ("Targets","Receptions","Rec_Yds","Rec_TD"):
         p.at[i,col]=row[col]*ratio
+# Reconcile only over-allocated teams downward. Never inflate player targets
+# to consume all QB attempts; unmodeled receivers retain residual opportunity.
+p["Team_Pass_Volume_Status"]="within_projected_attempts"
+for team, subset in p[p.Position.isin(["WR","TE","RB"])].groupby("Team"):
+    qb_attempts=qbs.get(team,0)
+    indices=subset.index
+    if qb_attempts<=0:
+        p.loc[indices,"Team_Pass_Volume_Status"]="missing_projected_qb"
+        continue
+    total=subset.Targets.sum()
+    if total>qb_attempts:
+        scale=qb_attempts/total
+        for col in ("Targets","Receptions","Rec_Yds","Rec_TD"):
+            p.loc[indices,col]=p.loc[indices,col]*scale
+        p.loc[indices,"Team_Pass_Volume_Status"]="scaled_down_to_qb_attempts"
 # Recalculate receiving contribution, preserving original rushing and passing scoring adjustments.
 for i,row in p.iterrows():
     if row.Position not in ("WR","TE","RB"): continue
