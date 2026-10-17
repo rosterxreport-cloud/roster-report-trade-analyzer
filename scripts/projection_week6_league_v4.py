@@ -109,10 +109,10 @@ last=last[~last.player_display_name.isin(inactive_players)].copy()
 
 last=last.sort_values("prior_opp",ascending=False)
 # Keep the primary Week 5 quarterback for each team.
-q5=w[(w.position=="QB") & (w.week==5)].sort_values("attempts",ascending=False)
+q5=w[w.position=="QB"].sort_values(["week","attempts"],ascending=[False,False])
 starter_ids=set(q5.drop_duplicates("recent_team").player_id)
 # Confirmed Week 6 replacement starters from NFL team reports.
-for name in ("Tyler Huntley",):
+for name in ("Tyler Huntley","Caleb Williams"):
  ids=set(w.loc[w.player_display_name.eq(name),"player_id"])
  starter_ids.update(ids)
 starter_ids.difference_update(set(w.loc[w.player_display_name.eq("Lamar Jackson"),"player_id"]))
