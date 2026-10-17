@@ -104,7 +104,7 @@ print("Snap-share coverage:",int(last.avg_snap_share.notna().sum()),"/",len(last
 
 # Week 6 confirmed outs as of Oct 17; questionable players retained.
 # Sunday inactive lists will require a final pre-kickoff update.
-inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson")
+inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson","Dillon Gabriel","Dylan Sampson","Adonai Mitchell","Ashton Dulin","David Sills","Jeremiyah Love","Tre Harris","Dont'e Thornton Jr.","Roman Wilson","Ben Skowronek","Skyy Moore","Stefon Diggs","Marcus Mariota")
 last=last[~last.player_display_name.isin(inactive_players)].copy()
 
 last=last.sort_values("prior_opp",ascending=False)
@@ -126,6 +126,31 @@ if last.player_display_name.eq("Caleb Williams").any():
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
+# The structural v4 shrinks WR/TE target shares toward positional priors,
+# systematically suppressing established alpha receivers and featured TEs.
+# Restore player-observed recent target shares with modest prior regularization.
+recent_targets=w[w.week.between(3,5)].groupby("player_id").agg(
+ recent_targets=("targets","sum"),recent_games=("week","nunique")).reset_index()
+team_recent=w[w.week.between(3,5)].groupby(["recent_team","week"]).attempts.sum().groupby("recent_team").sum()
+last=last.merge(recent_targets,on="player_id",how="left",validate="one_to_one")
+for idx in last.index[last.position.isin(["WR","TE"])]:
+ team=last.at[idx,"recent_team"]
+ attempts=float(team_recent.get(team,0))
+ targets=float(last.at[idx,"recent_targets"]) if pd.notna(last.at[idx,"recent_targets"]) else 0
+ games=int(last.at[idx,"recent_games"]) if pd.notna(last.at[idx,"recent_games"]) else 0
+ if attempts<30 or games<2: continue
+ empirical_share=targets/attempts
+ baseline=float(last.at[idx,"pred_targets"])
+ team_pass=float(last.at[idx,"pre_team_pass"]) if pd.notna(last.at[idx,"pre_team_pass"]) else 34.
+ revised=team_pass*(.80*empirical_share+.20*baseline/max(team_pass,1))
+ revised=float(np.clip(revised,0,team_pass*.42))
+ if baseline>0:
+  factor=revised/baseline
+  for field in ("pred_targets","pred_rec","pred_rec_yds","pred_rec_td"):
+   last.at[idx,field]*=factor
+# Remaining team volume is reconciled below; this is a share correction,
+# not a blanket fantasy-point inflation.
+
 # Smooth QB rushing touchdowns using observed 2026 QB touchdown frequency.
 qh=w[w.position=="QB"]
 qr=float(qh.rushing_tds.sum())/max(float(qh.carries.sum()),1.)
@@ -233,6 +258,7 @@ full=full.sort_values(["Position","PPR"],ascending=[True,False]).round(2)
 full.to_csv("data/projections/2026_week6_league_v4_full.csv",index=False)
 assert len(full)>=150, f"Unusually low Week 6 coverage: {len(full)}"
 assert not full.PPR.isna().any(), "Missing projected points"
+assert not full.Player.isin(inactive_players).any(), "Unavailable player survived injury filter"
 assert not full.Team.isin(["SEA","DEN"]).any(), "Completed Thursday teams must not be published"
 print("Full projections:",len(full),"players")
 print(out.head(30).to_string(index=False))
