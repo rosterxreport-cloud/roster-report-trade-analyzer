@@ -4,17 +4,17 @@ Parker Washington,JAX,HOU,WR,0.001,1.71,1.711
 Kenneth Walker III,KC,LAC,RB,0.738,0.879,1.617
 Christian Watson,GB,DAL,WR,0.002,1.439,1.441
 Javonte Williams,DAL,GB,RB,1.413,0.015,1.427
-Davante Adams,LA,ARI,WR,0.002,1.203,1.206
+Tetairoa McMillan,CAR,PHI,WR,0.009,1.238,1.247
+Brock Bowers,LV,BUF,TE,0.0,1.24,1.24
 Garrett Wilson,NYJ,NE,WR,0.003,1.173,1.177
-Brock Bowers,LV,BUF,TE,0.0,1.085,1.085
-Tetairoa McMillan,CAR,PHI,WR,0.009,1.075,1.084
-Nico Collins,HOU,JAX,WR,0.001,1.031,1.033
+Davante Adams,LA,ARI,WR,0.002,1.121,1.123
+Nico Collins,HOU,JAX,WR,0.001,1.103,1.104
 Jaylen Warren,PIT,TB,RB,0.499,0.511,1.01
 Pat Freiermuth,PIT,TB,TE,0.002,0.981,0.982
 Malik Nabers,NYG,NO,WR,0.003,0.963,0.966
+Jalen Coker,CAR,PHI,WR,0.009,0.941,0.95
 Chuba Hubbard,CAR,PHI,RB,0.859,0.046,0.905
 Trey McBride,ARI,LA,TE,0.0,0.882,0.882
-Jalen Coker,CAR,PHI,WR,0.009,0.818,0.827
 DeMario Douglas,NE,NYJ,WR,0.002,0.816,0.819
 CeeDee Lamb,DAL,GB,WR,0.001,0.781,0.782
 Travis Kelce,KC,LAC,TE,0.0,0.778,0.778
@@ -27,8 +27,8 @@ Derrick Henry,BAL,CLE,RB,0.68,0.028,0.708
 Denzel Boston,CLE,BAL,WR,0.003,0.692,0.695
 D'Andre Swift,CHI,ATL,RB,0.672,0.002,0.674
 Caleb Williams,CHI,ATL,QB,0.67,0.0,0.67
+Kyren Williams,LA,ARI,RB,0.595,0.071,0.666
 Harold Fannin Jr.,CLE,BAL,TE,0.0,0.662,0.662
-Kyren Williams,LA,ARI,RB,0.595,0.067,0.662
 Bijan Robinson,ATL,CHI,RB,0.554,0.104,0.658
 George Pickens,DAL,GB,WR,0.002,0.65,0.652
 Romeo Doubs,NE,NYJ,WR,0.002,0.642,0.644
@@ -40,58 +40,56 @@ Hunter Henry,NE,NYJ,TE,0.0,0.581,0.581
 Tyler Allgeier,ARI,LA,RB,0.571,0.002,0.572
 Deebo Samuel Sr.,SF,WAS,WR,0.007,0.563,0.569
 Jonathan Taylor,IND,TEN,RB,0.541,0.003,0.544
+Puka Nacua,LA,ARI,WR,0.097,0.446,0.543
 Jayden Daniels,WAS,SF,QB,0.538,0.0,0.538
-Dallas Goedert,PHI,CAR,TE,0.0,0.525,0.525
-Puka Nacua,LA,ARI,WR,0.097,0.421,0.518
 Woody Marks,HOU,JAX,RB,0.516,0.002,0.517
 Juwan Johnson,NO,NYG,TE,0.0,0.514,0.514
-Ashton Jeanty,LV,BUF,RB,0.292,0.209,0.501
+Dallas Goedert,PHI,CAR,TE,0.0,0.513,0.513
 Devaughn Vele,NO,NYG,WR,0.002,0.488,0.491
 Matthew Golden,GB,DAL,WR,0.001,0.489,0.49
 Kyle Pitts,ATL,CHI,TE,0.0,0.478,0.478
-John Metchie III,CAR,PHI,WR,0.009,0.431,0.44
+Ashton Jeanty,LV,BUF,RB,0.292,0.163,0.455
+Terry McLaurin,WAS,SF,WR,0.002,0.44,0.443
 Dameon Pierce,PHI,CAR,RB,0.409,0.02,0.429
 Jakobi Meyers,JAX,HOU,WR,0.001,0.426,0.427
 MarShawn Lloyd,GB,DAL,RB,0.395,0.012,0.407
 Bhayshul Tuten,JAX,HOU,RB,0.397,0.002,0.398
 Jacory Croskey-Merritt,WAS,SF,RB,0.388,0.001,0.389
+Darren Waller,CAR,PHI,TE,0.0,0.386,0.386
 Brian Robinson,ATL,CHI,RB,0.384,0.001,0.385
-Terry McLaurin,WAS,SF,WR,0.002,0.378,0.381
 Quinshon Judkins,CLE,BAL,RB,0.352,0.024,0.377
 Rhamondre Stevenson,NE,NYJ,RB,0.369,0.003,0.372
 Cam Skattebo,NYG,NO,RB,0.362,0.002,0.364
 Tony Pollard,TEN,IND,RB,0.361,0.002,0.363
-Darren Waller,CAR,PHI,TE,0.0,0.335,0.335
-Zay Flowers,BAL,CLE,WR,0.002,0.332,0.334
+Zay Flowers,BAL,CLE,WR,0.002,0.346,0.348
 Tyler Huntley,BAL,CLE,QB,0.331,0.0,0.331
 Omarion Hampton,LAC,KC,RB,0.33,0.001,0.331
+Keenan Allen,IND,TEN,WR,0.003,0.325,0.328
 Jahan Dotson,ATL,CHI,WR,0.004,0.318,0.322
 Keaton Mitchell,LAC,KC,RB,0.157,0.158,0.316
-Keenan Allen,IND,TEN,WR,0.003,0.311,0.315
 Tucker Kraft,GB,DAL,TE,0.001,0.312,0.313
 Alvin Kamara,NO,NYG,RB,0.302,0.003,0.305
 Kendre Miller,NO,NYG,RB,0.301,0.001,0.302
 Kenyon Sadiq,NYJ,NE,TE,0.005,0.294,0.3
+Tyler Warren,IND,TEN,TE,0.063,0.225,0.289
+DeVonta Smith,PHI,CAR,WR,0.003,0.279,0.282
 Xavier Worthy,KC,LAC,WR,0.009,0.271,0.28
-Tyler Warren,IND,TEN,TE,0.063,0.216,0.279
-DeVonta Smith,PHI,CAR,WR,0.003,0.276,0.279
 Drake Maye,NE,NYJ,QB,0.268,0.0,0.268
 Brock Purdy,SF,WAS,QB,0.256,0.0,0.256
-Terrance Ferguson,LA,ARI,TE,0.0,0.241,0.241
 Kimani Vidal,LAC,KC,RB,0.19,0.045,0.235
 C.J. Stroud,HOU,JAX,QB,0.224,0.0,0.224
 Ted Hurst III,TB,PIT,WR,0.004,0.22,0.224
+Terrance Ferguson,LA,ARI,TE,0.0,0.224,0.224
 Chris Rodriguez Jr.,JAX,HOU,RB,0.219,0.0,0.219
+Mark Andrews,BAL,CLE,TE,0.0,0.213,0.213
 Blake Corum,LA,ARI,RB,0.21,0.002,0.211
 Michael Wilson,ARI,LA,WR,0.003,0.203,0.206
 TreVeyon Henderson,NE,NYJ,RB,0.205,0.001,0.206
-Mark Andrews,BAL,CLE,TE,0.0,0.205,0.205
 Ladd McConkey,LAC,KC,WR,0.003,0.198,0.202
 Cam Ward,TEN,IND,QB,0.199,0.0,0.199
 Daniel Jones,IND,TEN,QB,0.183,0.0,0.183
 DJ Moore,BUF,LV,WR,0.002,0.175,0.177
 DK Metcalf,PIT,TB,WR,0.002,0.17,0.171
-Michael Mayer,LV,BUF,TE,0.0,0.17,0.17
 Jacoby Brissett,ARI,LA,QB,0.167,0.0,0.167
 Patrick Mahomes,KC,LAC,QB,0.164,0.0,0.164
 Najee Harris,NYG,NO,RB,0.161,0.0,0.162
@@ -99,26 +97,27 @@ Kalif Raymond,CHI,ATL,WR,0.002,0.159,0.161
 Luther Burden III,CHI,ATL,WR,0.008,0.152,0.16
 Kaleb Johnson,GB,DAL,RB,0.157,0.0,0.157
 Jalon Daniels,TB,PIT,QB,0.155,0.0,0.155
-Tyler Higbee,LA,ARI,TE,0.0,0.142,0.142
 Bryce Young,CAR,PHI,QB,0.142,0.0,0.142
 AJ Dillon,CAR,PHI,RB,0.14,0.0,0.141
 Brenton Strange,JAX,HOU,TE,0.0,0.14,0.14
 Rachaad White,WAS,SF,RB,0.1,0.034,0.134
 Mike Washington Jr.,LV,BUF,RB,0.133,0.001,0.134
 Emeka Egbuka,TB,PIT,WR,0.072,0.062,0.133
-Antonio Williams,WAS,SF,WR,0.002,0.128,0.13
+Michael Mayer,LV,BUF,TE,0.0,0.133,0.133
+Tyler Higbee,LA,ARI,TE,0.0,0.132,0.132
+John Metchie III,CAR,PHI,WR,0.009,0.12,0.129
 Justin Herbert,LAC,KC,QB,0.126,0.0,0.126
 Deshaun Watson,CLE,BAL,QB,0.126,0.0,0.126
 Kaelon Black,SF,WAS,RB,0.113,0.0,0.113
 Chris Olave,NO,NYG,WR,0.002,0.11,0.113
+Tre Tucker,LV,BUF,WR,0.003,0.102,0.105
 Kenny Gainwell,TB,PIT,RB,0.08,0.024,0.104
 Jameis Winston,NYG,NO,QB,0.101,0.0,0.101
 Dalton Kincaid,BUF,LV,TE,0.0,0.099,0.099
 Tyler Shough,NO,NYG,QB,0.094,0.0,0.094
 Seth McGowan,IND,TEN,RB,0.093,0.001,0.094
+Dontayvion Wicks,PHI,CAR,WR,0.003,0.091,0.094
 Geno Smith,NYJ,NE,QB,0.093,0.0,0.093
-Dontayvion Wicks,PHI,CAR,WR,0.003,0.09,0.093
-Tre Tucker,LV,BUF,WR,0.003,0.089,0.092
 Trevor Lawrence,JAX,HOU,QB,0.09,0.0,0.09
 Roschon Johnson,CHI,ATL,RB,0.085,0.002,0.087
 Darius Cooper,PHI,CAR,WR,0.003,0.083,0.086
@@ -126,24 +125,25 @@ Carnell Tate,TEN,IND,WR,0.002,0.081,0.084
 Corey Kiner,NE,NYJ,RB,0.081,0.0,0.081
 Michael Penix Jr.,ATL,CHI,QB,0.079,0.0,0.079
 Dylan Laube,LV,BUF,RB,0.078,0.001,0.079
+Antonio Williams,WAS,SF,WR,0.002,0.073,0.076
 Jack Bech,LV,BUF,WR,0.003,0.072,0.075
 Marvin Harrison Jr.,ARI,LA,WR,0.003,0.067,0.07
 Justice Hill,BAL,CLE,RB,0.066,0.001,0.068
 Pierre Strong,GB,DAL,RB,0.041,0.025,0.067
 Emmett Johnson,KC,LAC,RB,0.065,0.001,0.066
 Jaylin Noel,HOU,JAX,WR,0.003,0.062,0.065
-Rashod Bateman,BAL,CLE,WR,0.004,0.061,0.065
 CJ Donaldson,NO,NYG,RB,0.064,0.001,0.064
 Josh Palmer,BUF,LV,WR,0.003,0.061,0.064
 Devin Singletary,NYG,NO,RB,0.0,0.063,0.063
 Jordan Love,GB,DAL,QB,0.063,0.0,0.063
 Noah Fant,NO,NYG,TE,0.0,0.062,0.062
 Kyle Williams,NE,NYJ,WR,0.002,0.059,0.062
+Rashod Bateman,BAL,CLE,WR,0.004,0.05,0.054
 Malachi Fields,NYG,NO,WR,0.003,0.051,0.054
 Tyler Goodson,DAL,GB,RB,0.053,0.001,0.053
 Jeremy Ruckert,NYJ,NE,TE,0.0,0.053,0.053
 Drake London,ATL,CHI,WR,0.001,0.051,0.052
-Josh Downs,IND,TEN,WR,0.003,0.046,0.05
+Josh Downs,IND,TEN,WR,0.003,0.048,0.052
 Matthew Stafford,LA,ARI,QB,0.05,0.0,0.05
 Tyjae Spears,TEN,IND,RB,0.047,0.003,0.049
 Treylon Burks,WAS,SF,WR,0.002,0.047,0.049
@@ -153,9 +153,10 @@ Brian Thomas Jr.,JAX,HOU,WR,0.004,0.043,0.047
 Isaiah Williams,NYJ,NE,WR,0.002,0.044,0.047
 Aaron Rodgers,PIT,TB,QB,0.044,0.0,0.044
 Ryan Flournoy,DAL,GB,WR,0.002,0.042,0.044
+Xavier Hutchinson,HOU,JAX,WR,0.001,0.042,0.044
+Chig Okonkwo,WAS,SF,TE,0.0,0.042,0.042
 Kendrick Bourne,ARI,LA,WR,0.003,0.039,0.041
 Jake Ferguson,DAL,GB,TE,0.0,0.041,0.041
-Xavier Hutchinson,HOU,JAX,WR,0.001,0.039,0.041
 Elijah Higgins,ARI,LA,TE,0.0,0.041,0.041
 Konata Mumpfield,LA,ARI,WR,0.002,0.038,0.04
 Raheim Sanders,CLE,BAL,RB,0.038,0.002,0.039
@@ -166,7 +167,6 @@ Kirk Cousins,LV,BUF,QB,0.037,0.0,0.037
 Chris Moore,BAL,CLE,WR,0.004,0.032,0.036
 Austin Hooper,ATL,CHI,TE,0.0,0.036,0.036
 Darnell Washington,PIT,TB,TE,0.0,0.036,0.036
-Chig Okonkwo,WAS,SF,TE,0.0,0.036,0.036
 Josh Cameron,JAX,HOU,WR,0.004,0.031,0.035
 Mack Hollins,NE,NYJ,WR,0.002,0.032,0.034
 Germie Bernard,PIT,TB,WR,0.002,0.032,0.034
@@ -174,10 +174,8 @@ KC Concepcion,CLE,BAL,WR,0.001,0.033,0.034
 Chris Brooks,GB,DAL,RB,0.033,0.001,0.034
 Efton Chism III,NE,NYJ,WR,0.001,0.033,0.034
 Devontez Walker,BAL,CLE,WR,0.004,0.027,0.031
-Laquon Treadwell,IND,TEN,WR,0.003,0.028,0.031
+Kayshon Boutte,HOU,JAX,WR,0.003,0.028,0.031
 Khalil Shakir,BUF,LV,WR,0.003,0.028,0.03
-Dalton Schultz,HOU,JAX,TE,0.0,0.03,0.03
-Kayshon Boutte,HOU,JAX,WR,0.003,0.026,0.029
 Jerry Jeudy,CLE,BAL,WR,0.003,0.025,0.028
 Michael Pittman,PIT,TB,WR,0.002,0.025,0.028
 Ty Johnson,BUF,LV,RB,0.007,0.02,0.027
@@ -185,15 +183,17 @@ Colston Loveland,CHI,ATL,TE,0.0,0.027,0.027
 Quentin Johnston,LAC,KC,WR,0.002,0.025,0.027
 A.J. Brown,NE,NYJ,WR,0.002,0.024,0.026
 Charlie Kolar,LAC,KC,TE,0.0,0.025,0.025
+Laquon Treadwell,IND,TEN,WR,0.003,0.021,0.025
 KaVontae Turpin,DAL,GB,WR,0.023,0.001,0.024
-Makai Lemon,PHI,CAR,WR,0.001,0.023,0.024
+Makai Lemon,PHI,CAR,WR,0.001,0.023,0.023
 David Njoku,LAC,KC,TE,0.0,0.023,0.023
 Cade Otton,TB,PIT,TE,0.0,0.023,0.023
 Eli Raridon,NE,NYJ,TE,0.0,0.023,0.023
+Dalton Schultz,HOU,JAX,TE,0.0,0.022,0.022
 Chris Godwin Jr.,TB,PIT,WR,0.003,0.019,0.022
 Foster Moreau,HOU,JAX,TE,0.0,0.021,0.021
 Elic Ayomanor,TEN,IND,WR,0.002,0.017,0.019
-Ja'Kobi Lane,BAL,CLE,WR,0.004,0.014,0.018
+Ja'Kobi Lane,BAL,CLE,WR,0.004,0.014,0.019
 Craig Reynolds,WAS,SF,RB,0.013,0.0,0.013
 Brycen Tremayne,CAR,PHI,WR,0.009,0.003,0.012
 Oronde Gadsden II,LAC,KC,TE,0.001,0.011,0.011
