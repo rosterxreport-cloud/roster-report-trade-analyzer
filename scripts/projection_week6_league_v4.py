@@ -202,17 +202,44 @@ for team in opponents:
    # New/returning players have no eligible observed share: keep a
    # conservative prior rather than misclassifying injury absences as 0%.
    shares.at[idx]=min(.04,structural*.50)
- # Injury-replacement role correction: Metchie's Weeks 3-4 volume came
- # while Coker was limited/out. With Coker returning, Metchie is rotational.
- # Preserve team target budget and allocate freed share to established earners.
- if team=="CAR":
-  coker_active=last.loc[eligible,"player_display_name"].eq("Jalen Coker").any()
-  if coker_active:
-   metchie=last.loc[eligible,"player_display_name"].eq("John Metchie III")
-   for idx in last.loc[eligible].index[metchie]:
-    shares.at[idx]=min(float(shares.at[idx]),.045)
-    if idx in high:high.remove(idx)
-    if idx not in low:low.append(idx)
+ # League-wide injury-replacement regression. Compare a role player's
+ # target share with and without an established high-share teammate.
+ # Never treat an absent player's missed game as a zero-target appearance.
+ # Apply only if both samples exist, the starter is projected to return,
+ # and the role player's elevated opportunity is actually measurable.
+ active_ids=set(last.loc[eligible,"player_id"])
+ established=[]
+ for starter_id,starter_hist in hist.groupby("player_id"):
+  if starter_id not in active_ids:continue
+  if int(starter_hist.week.nunique())<2:continue
+  starter_share=float(obs_share.get(starter_id,0.))
+  if starter_share<.20:continue
+  missed=set(hist.week.unique())-set(starter_hist.week)
+  if missed:established.append((starter_id,missed))
+ for idx in list(high):
+  pid=last.at[idx,"player_id"]
+  player_hist=hist[hist.player_id==pid]
+  if player_hist.empty:continue
+  observed_weeks=set(player_hist.week)
+  healthy=[];replacement=[]
+  for starter_id,missed in established:
+   if starter_id==pid:continue
+   overlap=observed_weeks & missed
+   together=observed_weeks-missed
+   if len(overlap)<1 or len(together)<1:continue
+   replacement.extend(player_hist[player_hist.week.isin(overlap)].weekly_share.tolist())
+   healthy.extend(player_hist[player_hist.week.isin(together)].weekly_share.tolist())
+  if not replacement or not healthy:continue
+  elevated=float(np.mean(replacement))
+  normal=float(np.mean(healthy))
+  if elevated<normal+.05:continue
+  # Use the role with the starter present, but retain a modest
+  # uncertainty allowance; never raise a player's share in this step.
+  corrected=min(float(shares.at[idx]),normal+.25*(elevated-normal))
+  shares.at[idx]=max(0.,corrected)
+  print("RETURNING_STARTER_AUDIT",team,last.at[idx,"player_display_name"],
+        "replacement_share",round(elevated,3),"healthy_share",round(normal,3),
+        "corrected_share",round(corrected,3))
  # Apply fringe caps BEFORE redistributing the remaining target budget.
  # Higher observed shares earn proportionally larger allocations.
  fixed=float(shares.loc[low+unknown].sum())
