@@ -1,0 +1,25 @@
+name: Week 6 v4 fantasy projections
+on:
+  push:
+    paths:
+      - 'scripts/projection_week6_league_v4.py'
+      - '.github/workflows/projection-week6-league-v4.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  projections:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas numpy pyarrow
+      - run: python scripts/projection_week6_league_v4.py
+      - run: |
+          git config user.name "roster-report-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/projections/2026_week6_league_v4_touchdowns.csv data/projections/2026_week6_league_v4_full.csv
+          git diff --cached --quiet || git commit -m "Publish Week 6 v4 projection CSVs"
+          git push
