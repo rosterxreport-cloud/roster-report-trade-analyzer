@@ -9,6 +9,7 @@ w=pd.read_parquet(URL)
 w=w[(w.season_type=="REG")&w.week.between(1,5)&w.position.isin(["QB","RB","WR","TE"])].copy()
 if "recent_team" not in w:w["recent_team"]=w["team"]
 cols=["attempts","completions","passing_yards","passing_tds","passing_interceptions","carries","rushing_yards","rushing_tds","targets","receptions","receiving_yards","receiving_tds"]
+if "interceptions" not in w and "passing_interceptions" in w: w["interceptions"]=w["passing_interceptions"]
 for c in cols:
  if c not in w:w[c]=0
  w[c]=pd.to_numeric(w[c],errors="coerce").fillna(0)
