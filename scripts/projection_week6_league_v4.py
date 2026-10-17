@@ -329,6 +329,62 @@ for team in opponents:
        "leaders",[(str(x.Player if "Player" in receiving else x.player_display_name),round(float(x.pred_targets),2))
                   for _,x in receiving.nlargest(5,"pred_targets").iterrows()])
 
+# Matchup adjustment: 2026 Weeks 1-5 opponent defensive efficiency.
+# nflverse schedule identifies the defense for each observed offensive game.
+# Opponent strength affects efficiency and TD expectations, NOT earned targets.
+schedule=pd.read_csv("https://github.com/nflverse/nfldata/raw/master/data/games.csv")
+needed={"season","week","home_team","away_team"}
+if not needed.issubset(schedule.columns):
+ raise RuntimeError(f"Schedule missing columns: {sorted(needed-set(schedule.columns))}")
+schedule=schedule[(schedule.season==2026)&schedule.week.between(1,5)].copy()
+home=schedule[["week","home_team","away_team"]].rename(columns={"home_team":"recent_team","away_team":"defense"})
+away=schedule[["week","home_team","away_team"]].rename(columns={"away_team":"recent_team","home_team":"defense"})
+matchups=pd.concat([home,away],ignore_index=True).drop_duplicates(["week","recent_team"])
+if matchups.duplicated(["week","recent_team"]).any():raise RuntimeError("Duplicate schedule mapping")
+def_hist=w.merge(matchups,on=["week","recent_team"],how="left",validate="many_to_one")
+if def_hist.defense.isna().any():raise RuntimeError("Incomplete Weeks 1-5 opponent mapping")
+def_hist["rec_opp"]=def_hist.targets.clip(lower=0)
+def_hist["rush_opp"]=def_hist.carries.clip(lower=0)
+def_hist["pass_opp"]=def_hist.attempts.clip(lower=0)
+def_hist["rec_yds_allowed"]=def_hist.receiving_yards.clip(lower=0)
+def_hist["rush_yds_allowed"]=def_hist.rushing_yards.clip(lower=0)
+def_hist["pass_yds_allowed"]=def_hist.passing_yards.clip(lower=0)
+# Aggregate by defense/week/position to prevent repeated team-game denominators.
+def_week=def_hist.groupby(["defense","week","position"],as_index=False).agg(
+ rec_opp=("rec_opp","sum"),rush_opp=("rush_opp","sum"),pass_opp=("pass_opp","sum"),
+ rec_yds_allowed=("rec_yds_allowed","sum"),rush_yds_allowed=("rush_yds_allowed","sum"),
+ pass_yds_allowed=("pass_yds_allowed","sum"))
+def_week["weight"]=def_week.week.map({1:.10,2:.15,3:.20,4:.25,5:.30})
+# Weighted defensive allowed rates with a three-game league-average prior.
+rates={}
+for pos,opp_col,yd_col in [("QB","pass_opp","pass_yds_allowed"),
+                           ("RB","rush_opp","rush_yds_allowed"),
+                           ("WR","rec_opp","rec_yds_allowed"),
+                           ("TE","rec_opp","rec_yds_allowed")]:
+ p=def_week[def_week.position.eq(pos)].copy()
+ total_opp=float(p[opp_col].sum())
+ if total_opp<=0:raise RuntimeError(f"No defensive matchup sample for {pos}")
+ league_rate=float(p[yd_col].sum())/total_opp
+ league_games=max(int(p[["defense","week"]].drop_duplicates().shape[0]),1)
+ prior_opp=3*total_opp/league_games
+ for defense,g in p.groupby("defense"):
+  observed=float((g[yd_col]*g.weight).sum())
+  volume=float((g[opp_col]*g.weight).sum())
+  effective_weight=float(g.weight.sum())
+  prior=prior_opp*effective_weight
+  rate=(observed+prior*league_rate)/max(volume+prior,1e-9)
+  rates[(defense,pos)]=float(np.clip(rate/max(league_rate,1e-9),.5,1.5))
+for idx in last.index:
+ defense=opponents.get(last.at[idx,"recent_team"])
+ pos=last.at[idx,"position"]
+ ratio=rates.get((defense,pos),1.)
+ # 15% opponent influence; bounded at +/-7.5% for this small sample.
+ factor=float(np.clip(1+.15*(ratio-1),.925,1.075))
+ if pos=="QB":fields=("pred_pass_yds","pred_pass_td")
+ elif pos=="RB":fields=("pred_rush_yds","pred_rush_td")
+ else:fields=("pred_rec_yds","pred_rec_td")
+ for field in fields:last.at[idx,field]*=factor
+ print("DEFENSE_AUDIT",last.at[idx,"player_display_name"],defense,pos,round(factor,4))
 last["Opponent"]=last.recent_team.map(opponents)
 last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
 last["PPR"]=last.apply(score,axis=1)
