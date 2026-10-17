@@ -153,7 +153,6 @@ Kenyon Sadiq,NYJ,NE,TE,0.004,0.091,0.095
 Tyler Shough,NO,NYG,QB,0.094,0.0,0.094
 Geno Smith,NYJ,NE,QB,0.093,0.0,0.093
 Trevor Lawrence,JAX,HOU,QB,0.09,0.0,0.09
-Tyson Bagent,CHI,ATL,QB,0.089,0.0,0.089
 Dameon Pierce,PHI,CAR,RB,0.073,0.015,0.088
 Corey Kiner,NE,NYJ,RB,0.081,0.005,0.086
 Dylan Laube,LV,BUF,RB,0.078,0.008,0.086
@@ -190,9 +189,9 @@ Josh Downs,IND,TEN,WR,0.003,0.03,0.033
 Laquon Treadwell,IND,TEN,WR,0.003,0.028,0.031
 Germie Bernard,PIT,TB,WR,0.002,0.027,0.029
 Jimmy Horn Jr.,CAR,PHI,WR,0.009,0.02,0.029
-Ja'Seem Reed,CAR,PHI,WR,0.009,0.02,0.029
-Xavier Legette,CAR,PHI,WR,0.009,0.02,0.029
 Brycen Tremayne,CAR,PHI,WR,0.009,0.02,0.029
+Xavier Legette,CAR,PHI,WR,0.009,0.02,0.029
+Ja'Seem Reed,CAR,PHI,WR,0.009,0.02,0.029
 Kendrick Bourne,ARI,LA,WR,0.002,0.026,0.028
 Jerry Jeudy,CLE,BAL,WR,0.003,0.024,0.027
 Alec Pierce,IND,TEN,WR,0.003,0.023,0.026
@@ -242,8 +241,8 @@ Deven Thompkins,LV,BUF,WR,0.003,0.012,0.014
 Elijah Sarratt,BAL,CLE,WR,0.004,0.01,0.014
 Marquez Valdes-Scantling,LAC,KC,WR,0.003,0.011,0.014
 Gunnar Helm,TEN,IND,TE,0.0,0.014,0.014
-Tommy Tremble,CAR,PHI,TE,0.0,0.014,0.014
 Mitchell Evans,CAR,PHI,TE,0.0,0.014,0.014
+Tommy Tremble,CAR,PHI,TE,0.0,0.014,0.014
 Cade Otton,TB,PIT,TE,0.0,0.014,0.014
 David Njoku,LAC,KC,TE,0.0,0.013,0.013
 Kalel Mullings,TEN,IND,RB,0.007,0.006,0.013
