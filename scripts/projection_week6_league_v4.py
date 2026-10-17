@@ -172,7 +172,7 @@ for team in opponents:
  # rather than dividing by the number of games the player happened to play.
  hist=recent[recent.recent_team==team]
  observed=hist.groupby("player_id").targets.sum()
-  # Team targets must be deduplicated by player and week, so a player's
+ # Team targets must be deduplicated by player and week, so a player's
  # denominator is the sum of team targets for weeks they actually appeared.
  obs_share=hist.groupby("player_id").apply(lambda g: np.average(g.weekly_share,weights=g.recency_weight),include_groups=False).clip(0,1)
  hist_games=hist.groupby("player_id").week.nunique()
