@@ -1,5 +1,5 @@
 Player,Position,Team,Opponent,Targets,Receptions,Rec_Yds,Standard,Half_PPR,PPR
-Drake Maye,QB,NE,NYJ,0.0,0.0,0.0,25.33,25.33,25.33
+Drake Maye,QB,NE,NYJ,0.0,0.0,0.0,24.48,24.48,24.48
 Josh Allen,QB,BUF,LV,0.0,0.0,0.0,23.0,23.0,23.0
 Bryce Young,QB,CAR,PHI,0.0,0.0,0.0,21.41,21.41,21.41
 Caleb Williams,QB,CHI,ATL,0.0,0.0,0.0,21.32,21.32,21.32
@@ -48,12 +48,12 @@ Jacory Croskey-Merritt,RB,WAS,SF,0.16,0.1,1.13,8.28,8.32,8.37
 Tony Pollard,RB,TEN,IND,0.38,0.21,1.15,8.14,8.24,8.35
 Keaton Mitchell,RB,LAC,KC,3.3,2.69,12.68,5.66,7.0,8.34
 Ty Johnson,RB,BUF,LV,3.39,3.05,47.52,4.98,6.51,8.04
-Rhamondre Stevenson,RB,NE,NYJ,0.54,0.45,3.31,7.28,7.5,7.72
+Rhamondre Stevenson,RB,NE,NYJ,0.65,0.53,3.94,7.34,7.61,7.87
 Omarion Hampton,RB,LAC,KC,0.19,0.17,0.94,6.22,6.31,6.39
 Brian Robinson,RB,ATL,CHI,0.12,0.05,0.36,5.8,5.82,5.85
 MarShawn Lloyd,RB,GB,DAL,0.44,0.33,2.05,5.07,5.24,5.41
 Pierre Strong,RB,GB,DAL,3.95,2.96,11.84,2.07,3.55,5.03
-TreVeyon Henderson,RB,NE,NYJ,0.16,0.08,1.15,4.86,4.9,4.94
+TreVeyon Henderson,RB,NE,NYJ,0.18,0.1,1.37,4.88,4.93,4.98
 Alvin Kamara,RB,NO,NYG,0.56,0.46,1.67,4.4,4.63,4.86
 Kimani Vidal,RB,LAC,KC,0.37,0.2,1.12,4.53,4.63,4.73
 Kendre Miller,RB,NO,NYG,0.19,0.13,0.57,4.11,4.17,4.24
@@ -61,7 +61,7 @@ Kaleb Johnson,RB,GB,DAL,0.07,0.03,0.2,4.13,4.15,4.16
 Blake Corum,RB,LA,ARI,0.35,0.23,3.18,3.88,4.0,4.12
 Chris Rodriguez Jr.,RB,JAX,HOU,0.04,0.02,0.11,3.64,3.65,3.66
 Najee Harris,RB,NYG,NO,0.04,0.02,0.11,3.46,3.47,3.48
-Corey Kiner,RB,NE,NYJ,0.08,0.04,0.33,3.1,3.12,3.14
+Corey Kiner,RB,NE,NYJ,0.09,0.05,0.39,3.11,3.13,3.16
 Mike Washington Jr.,RB,LV,BUF,0.12,0.08,0.36,3.0,3.04,3.08
 Rachaad White,RB,WAS,SF,0.26,0.23,1.2,2.73,2.85,2.96
 Justice Hill,RB,BAL,CLE,0.22,0.13,0.77,2.81,2.87,2.94
@@ -80,7 +80,7 @@ Chris Brooks,RB,GB,DAL,0.18,0.13,0.85,1.22,1.29,1.36
 Dylan Laube,RB,LV,BUF,0.17,0.15,0.89,0.89,0.97,1.04
 Devin Singletary,RB,NYG,NO,0.42,0.35,1.93,0.57,0.75,0.93
 Jonathon Brooks,RB,CAR,PHI,0.24,0.15,3.34,0.34,0.42,0.49
-Lan Larison,RB,NE,NYJ,0.3,0.27,1.34,0.14,0.28,0.41
+Lan Larison,RB,NE,NYJ,0.35,0.32,1.6,0.17,0.33,0.49
 Rico Dowdle,RB,PIT,TB,0.43,0.24,1.56,0.17,0.29,0.4
 Ronnie Rivers,RB,LA,ARI,0.24,0.22,1.21,0.13,0.24,0.34
 Craig Reynolds,RB,WAS,SF,0.0,0.0,0.0,0.25,0.25,0.25
@@ -92,13 +92,13 @@ Brock Bowers,TE,LV,BUF,9.39,6.82,89.84,14.08,17.49,20.9
 Trey McBride,TE,ARI,LA,11.58,8.95,61.77,10.03,14.5,18.98
 Tyler Warren,TE,IND,TEN,7.67,6.37,57.48,7.22,10.4,13.59
 George Kittle,TE,SF,WAS,5.94,4.57,47.14,8.34,10.63,12.92
+Hunter Henry,TE,NE,NYJ,4.79,3.9,49.5,8.19,10.14,12.09
 Pat Freiermuth,TE,PIT,TB,5.35,3.74,32.12,8.11,9.98,11.85
 Brenton Strange,TE,JAX,HOU,6.4,5.38,58.85,6.41,9.1,11.79
 Tyler Higbee,TE,LA,ARI,5.75,4.69,62.5,7.04,9.39,11.74
 Tucker Kraft,TE,GB,DAL,5.68,4.57,48.53,6.38,8.66,10.95
 Juwan Johnson,TE,NO,NYG,6.13,4.85,37.8,5.9,8.33,10.75
 Travis Kelce,TE,KC,LAC,4.65,3.14,47.45,7.07,8.64,10.21
-Hunter Henry,TE,NE,NYJ,4.02,3.28,41.59,6.88,8.52,10.16
 Dallas Goedert,TE,PHI,CAR,5.19,3.56,35.12,6.59,8.37,10.15
 Harold Fannin Jr.,TE,CLE,BAL,5.5,2.98,23.61,5.8,7.29,8.78
 Darren Waller,TE,CAR,PHI,4.91,3.02,34.55,4.94,6.45,7.96
@@ -114,8 +114,8 @@ Kenyon Sadiq,TE,NYJ,NE,4.38,2.54,21.09,3.07,4.34,5.61
 Terrance Ferguson,TE,LA,ARI,3.06,1.72,15.76,2.92,3.78,4.64
 Cade Otton,TE,TB,PIT,3.36,2.28,22.43,2.34,3.48,4.63
 Colston Loveland,TE,CHI,ATL,4.07,2.25,20.22,2.14,3.27,4.4
+Eli Raridon,TE,NE,NYJ,0.5,0.45,5.38,0.7,0.93,1.15
 Elijah Higgins,TE,ARI,LA,0.38,0.34,5.17,0.76,0.93,1.1
-Eli Raridon,TE,NE,NYJ,0.42,0.38,4.52,0.59,0.78,0.97
 Noah Fant,TE,NO,NYG,0.42,0.32,2.52,0.63,0.78,0.94
 Jake Ferguson,TE,DAL,GB,0.7,0.43,2.6,0.51,0.72,0.94
 Darnell Washington,TE,PIT,TB,0.51,0.34,3.4,0.56,0.72,0.89
@@ -161,8 +161,9 @@ Jalen Coker,WR,CAR,PHI,6.74,5.3,66.14,10.41,13.05,15.7
 Michael Wilson,WR,ARI,LA,10.73,6.15,60.36,6.98,10.05,13.12
 Zay Flowers,WR,BAL,CLE,5.53,4.7,59.45,7.94,10.29,12.64
 Denzel Boston,WR,CLE,BAL,6.11,3.06,59.11,9.56,11.09,12.62
+DeMario Douglas,WR,NE,NYJ,5.09,3.38,46.17,9.23,10.91,12.6
+Romeo Doubs,WR,NE,NYJ,5.69,3.11,42.74,7.9,9.46,11.01
 Devaughn Vele,WR,NO,NYG,7.04,4.68,41.08,6.16,8.5,10.84
-DeMario Douglas,WR,NE,NYJ,4.27,2.84,38.79,7.76,9.18,10.6
 Wan'Dale Robinson,WR,TEN,IND,6.05,4.58,37.62,5.95,8.25,10.54
 Carnell Tate,WR,TEN,IND,8.1,4.49,57.12,6.0,8.24,10.48
 Keenan Allen,WR,IND,TEN,7.62,4.66,40.37,5.53,7.86,10.2
@@ -174,18 +175,17 @@ Terry McLaurin,WR,WAS,SF,5.21,3.42,49.18,6.26,7.97,9.68
 Jakobi Meyers,WR,JAX,HOU,4.29,3.32,45.73,6.21,7.87,9.52
 Xavier Hutchinson,WR,HOU,JAX,5.74,3.58,55.71,5.82,7.61,9.4
 Josh Downs,WR,IND,TEN,7.08,3.96,50.78,5.35,7.33,9.31
-Romeo Doubs,WR,NE,NYJ,4.78,2.61,35.91,6.65,7.96,9.26
+Kyle Williams,WR,NE,NYJ,3.15,2.04,43.9,7.26,8.28,9.3
 DK Metcalf,WR,PIT,TB,6.41,3.73,44.5,5.45,7.31,9.17
 Luther Burden III,WR,CHI,ATL,5.52,3.66,43.89,5.5,7.33,9.16
 Dontayvion Wicks,WR,PHI,CAR,6.08,3.67,47.37,5.32,7.15,8.98
 Kendrick Bourne,WR,ARI,LA,5.62,4.02,46.89,4.91,6.92,8.93
 Xavier Worthy,WR,KC,LAC,5.56,3.45,42.55,5.23,6.96,8.68
 A.J. Brown,WR,NE,NYJ,6.0,4.5,38.87,4.11,6.36,8.61
+Efton Chism III,WR,NE,NYJ,4.33,3.2,37.5,5.37,6.97,8.57
 Tre Tucker,WR,LV,BUF,5.29,3.64,43.37,4.91,6.72,8.54
 Germie Bernard,WR,PIT,TB,5.31,3.53,40.95,4.34,6.11,7.87
-Kyle Williams,WR,NE,NYJ,2.64,1.72,36.89,6.11,6.96,7.82
 Jahan Dotson,WR,ATL,CHI,3.46,1.74,41.4,5.69,6.55,7.42
-Efton Chism III,WR,NE,NYJ,3.64,2.69,31.5,4.53,5.87,7.21
 KC Concepcion,WR,CLE,BAL,5.63,3.42,31.44,3.39,5.1,6.81
 DJ Moore,WR,BUF,LV,4.08,2.4,33.36,4.31,5.51,6.71
 Rome Odunze,WR,CHI,ATL,4.99,2.54,38.31,4.06,5.33,6.6
