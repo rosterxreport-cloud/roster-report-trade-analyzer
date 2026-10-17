@@ -1,0 +1,49 @@
+name: Rebuild Week 6 projections
+on:
+  push:
+    paths:
+      - '.github/workflows/rebuild-week6-projections.yml'
+      - 'scripts/projection_week6_league_v4.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install pandas numpy pyarrow requests
+      - name: Generate and audit projections
+        run: python scripts/projection_week6_league_v4.py | tee /tmp/week6_audit.log
+      - name: Refresh Substack exports
+        run: |
+          python - <<'PY'
+          import pandas as pd
+          from pathlib import Path
+          root=Path('data/projections')
+          df=pd.read_csv(root/'2026_week6_league_v4_full.csv')
+          assert df.Player.nunique()==len(df)
+          assert not df.Player.isin(['Demarcus Robinson','Tank Bigsby','Travis Etienne','Xavier Legette']).any()
+          columns={
+            'QB':['Player','Pass_Att','Pass_Yds','Pass_TD','INT','Rush_Att','Rush_Yds','Rush_TD','Standard','Half_PPR','PPR'],
+            'RB':['Player','Rush_Att','Rush_Yds','Rush_TD','Targets','Receptions','Rec_Yds','Rec_TD','Standard','Half_PPR','PPR'],
+            'WR':['Player','Targets','Receptions','Rec_Yds','Rec_TD','Rush_Att','Rush_Yds','Rush_TD','Standard','Half_PPR','PPR'],
+            'TE':['Player','Targets','Receptions','Rec_Yds','Rec_TD','Standard','Half_PPR','PPR']
+          }
+          for pos,cols in columns.items():
+            part=df[df.Position.eq(pos)].sort_values('PPR',ascending=False)
+            assert not part.empty,pos
+            part[cols].to_csv(root/f'2026_week6_{pos.lower()}_substack.csv',index=False)
+          df[['Player','Position','Team','Opponent','Targets','Receptions','Rec_Yds','Standard','Half_PPR','PPR']].to_csv(root/'2026_week6_all_substack.csv',index=False)
+          print('REFRESHED',len(df),'players',df.Position.value_counts().to_dict())
+          PY
+      - name: Commit rebuilt outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/projections/2026_week6_*.csv
+          git diff --cached --quiet || (git commit -m "Rebuild audited Week 6 projections and Substack exports" && git push)
