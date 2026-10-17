@@ -176,30 +176,45 @@ for team in opponents:
  # denominator is the sum of team targets for weeks they actually appeared.
  obs_share=hist.groupby("player_id").apply(lambda g: np.average(g.weekly_share,weights=g.recency_weight),include_groups=False).clip(0,1)
  hist_games=hist.groupby("player_id").week.nunique()
- shares=[]
+ # Reward target earners in proportion to their weighted Weeks 1-5 share.
+ # Only observed player appearances enter each average; absences are not zeros.
+ shares=pd.Series(0.,index=eligible,dtype=float)
+ low=[]
+ high=[]
+ unknown=[]
  for idx in eligible:
   pid=last.at[idx,"player_id"]
-  prior=float(base.at[idx])/max(float(base.sum()),1.)
   empirical=float(obs_share.get(pid,np.nan))
   n=int(hist_games.get(pid,0))
-  # Empirical 80%, structural prior 20% at five observed games.
-  reliability=min(0.80,0.16*n)
-  if not np.isfinite(empirical):reliability=0.;empirical=0.
-  shares.append(max(0.,reliability*empirical+(1-reliability)*prior))
- shares=pd.Series(shares,index=eligible,dtype=float)
- if shares.sum()<=0:continue
- shares/=shares.sum()
- # Role safeguard: projected volume for fringe players without at least
- # two targets in Weeks 1-5 cannot exceed the structural prior allocation.
- fringe_ids=[idx for idx in eligible if float(observed.get(last.at[idx,"player_id"],0))<2]
- for idx in fringe_ids:shares.at[idx]=min(shares.at[idx],float(base.at[idx])/max(float(base.sum()),1.))
- # Redistribute freed share only to players with meaningful recent targets.
- remainder=max(0.,1.-float(shares.sum()))
- established=[idx for idx in eligible if idx not in fringe_ids]
- if established and remainder>0:
-  weights=shares.loc[established].clip(lower=0)
-  if weights.sum()>0:shares.loc[established]+=remainder*weights/weights.sum()
- if shares.sum()>1:shares/=shares.sum()
+  structural=float(base.at[idx])/max(float(base.sum()),1.)
+  if n and np.isfinite(empirical):
+   if empirical<=.12:
+    low.append(idx)
+    # At or below 12% actual target share: at most 2% projected share.
+    shares.at[idx]=min(.02,empirical*.15)
+   else:
+    high.append(idx)
+    # Actual target share dominates; modest shrinkage for small samples.
+    reliability=min(.95,.65+.06*n)
+    shares.at[idx]=max(0.,reliability*empirical+(1-reliability)*structural)
+  else:
+   unknown.append(idx)
+   # New/returning players have no eligible observed share: keep a
+   # conservative prior rather than misclassifying injury absences as 0%.
+   shares.at[idx]=min(.04,structural*.50)
+ # Apply fringe caps BEFORE redistributing the remaining target budget.
+ # Higher observed shares earn proportionally larger allocations.
+ fixed=float(shares.loc[low+unknown].sum())
+ if high:
+  available=max(0.,1.-fixed)
+  weights=shares.loc[high].clip(lower=0)
+  if weights.sum()>0:shares.loc[high]=available*weights/weights.sum()
+ elif shares.sum()>0:
+  # Without established target earners, avoid inventing allocations.
+  shares/=max(1.,float(shares.sum()))
+ # Never allow low-share or unobserved players to expand in normalization.
+ assert all(shares.at[idx]<=.0200001 for idx in low)
+ assert all(shares.at[idx]<=.0400001 for idx in unknown)
  for idx in eligible:
   old=float(last.at[idx,"pred_targets"])
   new=budget*float(shares.at[idx])
