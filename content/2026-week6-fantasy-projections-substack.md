@@ -1,12 +1,10 @@
-# The Roster Report: Week 6 Fantasy Football Projections (2026)
+# 2026 Week 6 Fantasy Football Projections — The Roster Report
 
-*Updated October 17, 2026 · Model v4 · Weeks 1–5 input · Sunday and Monday games only*
+*Updated October 17, 2026 · v4 injury-adjusted · 254 player projections · full PPR, half PPR and standard*
 
-The Roster Report's Week 6 model projections are here. Below are the top 25 at quarterback, running back, wide receiver and tight end, with standard, half-PPR and full-PPR scoring. This is a statistical forecast, not a guarantee of production.
+These are the Week 6 projections for games remaining after Thursday, generated from 2026 Weeks 1–5 and recent player opportunity and snap data. This version removes confirmed unavailable players, including Jalen Hurts, Saquon Barkley, Tyquan Thornton, Lamar Jackson, Breece Hall, David Montgomery, Baker Mayfield and Rashee Rice. Questionable players remain conditional on their playing. The receiving model was corrected to use recent observed target shares more strongly rather than shrinking featured receivers and tight ends toward generic positional averages.
 
-**Important lineup notes:** Thursday's Seattle–Denver game is already complete and excluded. Baltimore QB Lamar Jackson is ruled out; Tyler Huntley is projected. David Montgomery, Tank Dell and Kyle Monangai are ruled out. Caleb Williams is questionable, and his projection assumes he starts. Sunday inactive announcements may change projections. Source: NFL Week 6 injury report (updated October 16).
-
-**Model notes:** Rolling recent opportunities and actual offensive snap-share data inform player usage; player roles and team offensive budgets are reconciled. The model does not claim all questionable players are confirmed active. The complete CSV has 268 player rows; the tables below are selected top 25s.
+**Publication caveat:** Tanner McKee is expected to start for Philadelphia, but the current 2026-stat-based model has no reliable McKee projection; no replacement QB number is fabricated. Check final inactive lists on Sunday. Some players have unmatched snap-share data, marked in the full CSV.
 
 ## QB — Top 25 (Full PPR)
 
@@ -29,111 +27,111 @@ The Roster Report's Week 6 model projections are here. Below are the top 25 at q
 | 15 | Kirk Cousins | LV | BUF | 17.54 | 17.54 | 17.54 |
 | 16 | Dak Prescott | DAL | GB | 16.31 | 16.31 | 16.31 |
 | 17 | Deshaun Watson | CLE | BAL | 16.08 | 16.08 | 16.08 |
-| 18 | Jalen Hurts | PHI | CAR | 14.61 | 14.61 | 14.61 |
-| 19 | Michael Penix Jr. | ATL | CHI | 13.89 | 13.89 | 13.89 |
-| 20 | Geno Smith | NYJ | NE | 13.42 | 13.42 | 13.42 |
-| 21 | Justin Herbert | LAC | KC | 12.66 | 12.66 | 12.66 |
-| 22 | Tyler Huntley | BAL | CLE | 12.18 | 12.18 | 12.18 |
-| 23 | Tyler Shough | NO | NYG | 11.75 | 11.75 | 11.75 |
-| 24 | Daniel Jones | IND | TEN | 11.64 | 11.64 | 11.64 |
-| 25 | Cam Ward | TEN | IND | 9.86 | 9.86 | 9.86 |
+| 18 | Michael Penix Jr. | ATL | CHI | 13.89 | 13.89 | 13.89 |
+| 19 | Geno Smith | NYJ | NE | 13.42 | 13.42 | 13.42 |
+| 20 | Justin Herbert | LAC | KC | 12.66 | 12.66 | 12.66 |
+| 21 | Tyler Huntley | BAL | CLE | 12.18 | 12.18 | 12.18 |
+| 22 | Tyler Shough | NO | NYG | 11.75 | 11.75 | 11.75 |
+| 23 | Daniel Jones | IND | TEN | 11.64 | 11.64 | 11.64 |
+| 24 | Cam Ward | TEN | IND | 9.86 | 9.86 | 9.86 |
+| 25 | Jalon Daniels | TB | PIT | 9.66 | 9.66 | 9.66 |
 
 ## RB — Top 25 (Full PPR)
 
 | Rank | Player | Team | Opponent | PPR | Half PPR | Standard |
 |---:|---|---|---|---:|---:|---:|
-| 1 | Jaylen Warren | PIT | TB | 24.46 | 22.81 | 21.16 |
-| 2 | Kenneth Walker III | KC | LAC | 23.91 | 22.94 | 21.98 |
-| 3 | Chuba Hubbard | CAR | PHI | 22.75 | 21.94 | 21.13 |
-| 4 | Bijan Robinson | ATL | CHI | 21.6 | 19.88 | 18.16 |
-| 5 | Javonte Williams | DAL | GB | 19.96 | 18.24 | 16.52 |
-| 6 | Bucky Irving | TB | PIT | 19.35 | 18.73 | 18.12 |
-| 7 | D'Andre Swift | CHI | ATL | 18.04 | 16.72 | 15.41 |
-| 8 | Kyren Williams | LA | ARI | 17.95 | 15.8 | 13.64 |
-| 9 | James Cook | BUF | LV | 17.33 | 16.73 | 16.14 |
-| 10 | Derrick Henry | BAL | CLE | 16.87 | 16.38 | 15.89 |
-| 11 | Christian McCaffrey | SF | WAS | 15.46 | 14.0 | 12.54 |
-| 12 | Jonathan Taylor | IND | TEN | 14.24 | 13.18 | 12.11 |
-| 13 | Bhayshul Tuten | JAX | HOU | 14.14 | 13.02 | 11.89 |
-| 14 | Woody Marks | HOU | JAX | 13.53 | 12.51 | 11.49 |
-| 15 | Ashton Jeanty | LV | BUF | 12.32 | 11.15 | 9.98 |
-| 16 | Cam Skattebo | NYG | NO | 12.28 | 11.35 | 10.41 |
-| 17 | Braelon Allen | NYJ | NE | 11.88 | 11.4 | 10.93 |
-| 18 | Quinshon Judkins | CLE | BAL | 11.51 | 10.03 | 8.55 |
-| 19 | Rhamondre Stevenson | NE | NYJ | 10.27 | 9.33 | 8.39 |
-| 20 | Tony Pollard | TEN | IND | 10.17 | 9.5 | 8.82 |
-| 21 | Jacory Croskey-Merritt | WAS | SF | 9.96 | 9.56 | 9.16 |
-| 22 | Jeremiyah Love | ARI | LA | 9.57 | 8.85 | 8.14 |
-| 23 | Blake Corum | LA | ARI | 8.21 | 7.24 | 6.27 |
-| 24 | Emmett Johnson | KC | LAC | 7.95 | 6.69 | 5.43 |
-| 25 | Omarion Hampton | LAC | KC | 7.84 | 7.32 | 6.79 |
+| 1 | Kenneth Walker III | KC | LAC | 27.9 | 26.19 | 24.48 |
+| 2 | Jaylen Warren | PIT | TB | 27.25 | 25.14 | 23.02 |
+| 3 | Chuba Hubbard | CAR | PHI | 23.25 | 22.34 | 21.44 |
+| 4 | Bijan Robinson | ATL | CHI | 21.27 | 19.64 | 18.0 |
+| 5 | Javonte Williams | DAL | GB | 19.88 | 18.19 | 16.49 |
+| 6 | Bucky Irving | TB | PIT | 19.67 | 19.0 | 18.32 |
+| 7 | Kyren Williams | LA | ARI | 18.69 | 16.32 | 13.95 |
+| 8 | D'Andre Swift | CHI | ATL | 17.96 | 16.67 | 15.38 |
+| 9 | James Cook | BUF | LV | 17.5 | 16.85 | 16.2 |
+| 10 | Derrick Henry | BAL | CLE | 16.78 | 16.3 | 15.82 |
+| 11 | Christian McCaffrey | SF | WAS | 15.4 | 13.96 | 12.52 |
+| 12 | Braelon Allen | NYJ | NE | 15.38 | 14.78 | 14.19 |
+| 13 | Jonathan Taylor | IND | TEN | 14.98 | 13.74 | 12.5 |
+| 14 | Bhayshul Tuten | JAX | HOU | 14.48 | 13.27 | 12.06 |
+| 15 | Woody Marks | HOU | JAX | 14.11 | 12.91 | 11.7 |
+| 16 | Emmett Johnson | KC | LAC | 13.0 | 10.76 | 8.51 |
+| 17 | Tyler Allgeier | ARI | LA | 12.92 | 11.76 | 10.59 |
+| 18 | Ashton Jeanty | LV | BUF | 12.66 | 11.42 | 10.18 |
+| 19 | Cam Skattebo | NYG | NO | 12.51 | 11.51 | 10.51 |
+| 20 | Quinshon Judkins | CLE | BAL | 11.84 | 10.25 | 8.66 |
+| 21 | Jacory Croskey-Merritt | WAS | SF | 10.79 | 10.21 | 9.62 |
+| 22 | Rhamondre Stevenson | NE | NYJ | 10.71 | 9.65 | 8.58 |
+| 23 | Tony Pollard | TEN | IND | 10.34 | 9.61 | 8.88 |
+| 24 | Blake Corum | LA | ARI | 8.68 | 7.61 | 6.55 |
+| 25 | Omarion Hampton | LAC | KC | 8.38 | 7.69 | 7.0 |
 
 ## WR — Top 25 (Full PPR)
 
 | Rank | Player | Team | Opponent | PPR | Half PPR | Standard |
 |---:|---|---|---|---:|---:|---:|
-| 1 | Drake London | ATL | CHI | 19.16 | 15.8 | 12.44 |
-| 2 | George Pickens | DAL | GB | 18.83 | 15.64 | 12.44 |
-| 3 | Parker Washington | JAX | HOU | 18.66 | 16.47 | 14.27 |
-| 4 | CeeDee Lamb | DAL | GB | 18.31 | 14.74 | 11.18 |
-| 5 | Puka Nacua | LA | ARI | 17.99 | 14.18 | 10.36 |
-| 6 | Tyquan Thornton | KC | LAC | 16.91 | 14.98 | 13.06 |
-| 7 | Mike Evans | SF | WAS | 15.72 | 13.29 | 10.85 |
-| 8 | Davante Adams | LA | ARI | 15.15 | 13.02 | 10.9 |
-| 9 | Christian Watson | GB | DAL | 14.91 | 13.13 | 11.35 |
-| 10 | Malik Nabers | NYG | NO | 14.89 | 12.17 | 9.45 |
-| 11 | Nico Collins | HOU | JAX | 13.62 | 11.4 | 9.18 |
-| 12 | Demarcus Robinson | SF | WAS | 12.43 | 10.81 | 9.19 |
-| 13 | Rashee Rice | KC | LAC | 12.19 | 10.02 | 7.85 |
-| 14 | Ryan Flournoy | DAL | GB | 12.01 | 9.89 | 7.78 |
-| 15 | Denzel Boston | CLE | BAL | 11.73 | 10.3 | 8.87 |
-| 16 | Deebo Samuel Sr. | SF | WAS | 11.67 | 9.96 | 8.25 |
-| 17 | Chris Olave | NO | NYG | 11.61 | 9.2 | 6.79 |
-| 18 | Jahan Dotson | ATL | CHI | 11.59 | 10.22 | 8.84 |
-| 19 | Jaylin Noel | HOU | JAX | 11.34 | 9.61 | 7.89 |
-| 20 | Wan'Dale Robinson | TEN | IND | 10.9 | 8.53 | 6.16 |
-| 21 | Jakobi Meyers | JAX | HOU | 10.85 | 8.96 | 7.07 |
-| 22 | Garrett Wilson | NYJ | NE | 10.53 | 8.74 | 6.95 |
-| 23 | Matthew Golden | GB | DAL | 10.49 | 8.87 | 7.24 |
-| 24 | Luther Burden III | CHI | ATL | 9.87 | 7.89 | 5.92 |
-| 25 | Zay Flowers | BAL | CLE | 9.86 | 8.04 | 6.22 |
+| 1 | Drake London | ATL | CHI | 22.41 | 18.48 | 14.55 |
+| 2 | CeeDee Lamb | DAL | GB | 20.69 | 16.66 | 12.62 |
+| 3 | George Pickens | DAL | GB | 18.37 | 15.25 | 12.14 |
+| 4 | Parker Washington | JAX | HOU | 18.1 | 15.97 | 13.84 |
+| 5 | Malik Nabers | NYG | NO | 17.69 | 14.46 | 11.23 |
+| 6 | Mike Evans | SF | WAS | 16.88 | 14.26 | 11.65 |
+| 7 | Davante Adams | LA | ARI | 16.61 | 14.28 | 11.95 |
+| 8 | Puka Nacua | LA | ARI | 16.58 | 13.08 | 9.58 |
+| 9 | Christian Watson | GB | DAL | 15.93 | 14.03 | 12.13 |
+| 10 | Garrett Wilson | NYJ | NE | 15.64 | 12.98 | 10.32 |
+| 11 | Xavier Worthy | KC | LAC | 13.43 | 10.75 | 8.06 |
+| 12 | Chris Olave | NO | NYG | 13.39 | 10.61 | 7.83 |
+| 13 | Wan'Dale Robinson | TEN | IND | 12.91 | 10.1 | 7.29 |
+| 14 | Jakobi Meyers | JAX | HOU | 12.69 | 10.47 | 8.26 |
+| 15 | Nico Collins | HOU | JAX | 12.58 | 10.53 | 8.48 |
+| 16 | Matthew Golden | GB | DAL | 12.58 | 10.63 | 8.68 |
+| 17 | Demarcus Robinson | SF | WAS | 12.27 | 10.67 | 9.07 |
+| 18 | Michael Wilson | ARI | LA | 11.85 | 9.09 | 6.32 |
+| 19 | Denzel Boston | CLE | BAL | 11.82 | 10.38 | 8.94 |
+| 20 | Tetairoa McMillan | CAR | PHI | 11.55 | 9.69 | 7.82 |
+| 21 | Zay Flowers | BAL | CLE | 11.09 | 9.03 | 6.97 |
+| 22 | DeVonta Smith | PHI | CAR | 11.07 | 8.84 | 6.6 |
+| 23 | Ryan Flournoy | DAL | GB | 10.83 | 8.92 | 7.01 |
+| 24 | Carnell Tate | TEN | IND | 10.78 | 8.47 | 6.16 |
+| 25 | Jaylin Noel | HOU | JAX | 10.73 | 9.1 | 7.46 |
 
 ## TE — Top 25 (Full PPR)
 
 | Rank | Player | Team | Opponent | PPR | Half PPR | Standard |
 |---:|---|---|---|---:|---:|---:|
-| 1 | Isaiah Likely | NYG | NO | 14.35 | 11.67 | 8.98 |
-| 2 | Brock Bowers | LV | BUF | 13.22 | 11.05 | 8.88 |
-| 3 | Kyle Pitts | ATL | CHI | 11.46 | 9.45 | 7.44 |
-| 4 | Brenton Strange | JAX | HOU | 11.3 | 8.73 | 6.16 |
-| 5 | Trey McBride | ARI | LA | 11.13 | 8.53 | 5.93 |
-| 6 | George Kittle | SF | WAS | 11.04 | 9.07 | 7.11 |
-| 7 | Tyler Warren | IND | TEN | 10.66 | 8.2 | 5.74 |
-| 8 | Pat Freiermuth | PIT | TB | 10.37 | 8.74 | 7.11 |
-| 9 | Tyler Higbee | LA | ARI | 10.12 | 8.08 | 6.04 |
-| 10 | Travis Kelce | KC | LAC | 8.6 | 7.27 | 5.95 |
-| 11 | Juwan Johnson | NO | NYG | 8.27 | 6.41 | 4.56 |
-| 12 | Elijah Higgins | ARI | LA | 8.02 | 6.8 | 5.58 |
-| 13 | Dallas Goedert | PHI | CAR | 7.68 | 6.35 | 5.01 |
-| 14 | Jake Ferguson | DAL | GB | 7.46 | 5.76 | 4.05 |
-| 15 | Tucker Kraft | GB | DAL | 7.29 | 5.77 | 4.25 |
-| 16 | Hunter Henry | NE | NYJ | 6.9 | 5.8 | 4.69 |
-| 17 | Harold Fannin Jr. | CLE | BAL | 6.87 | 5.71 | 4.54 |
-| 18 | Noah Fant | NO | NYG | 6.66 | 5.55 | 4.43 |
-| 19 | Teagan Quitoriano | ARI | LA | 6.61 | 5.44 | 4.28 |
-| 20 | Darnell Washington | PIT | TB | 6.08 | 4.94 | 3.79 |
-| 21 | Noah Gray | KC | LAC | 6.06 | 4.58 | 3.09 |
-| 22 | Theo Johnson | NYG | NO | 5.98 | 5.16 | 4.34 |
-| 23 | Terrance Ferguson | LA | ARI | 5.62 | 4.56 | 3.51 |
-| 24 | Dalton Schultz | HOU | JAX | 5.57 | 4.17 | 2.77 |
-| 25 | Jeremy Ruckert | NYJ | NE | 5.53 | 4.51 | 3.49 |
+| 1 | Isaiah Likely | NYG | NO | 18.55 | 15.08 | 11.61 |
+| 2 | Brock Bowers | LV | BUF | 16.26 | 13.59 | 10.92 |
+| 3 | Brenton Strange | JAX | HOU | 14.51 | 11.21 | 7.91 |
+| 4 | Trey McBride | ARI | LA | 14.49 | 11.11 | 7.73 |
+| 5 | Tyler Warren | IND | TEN | 14.12 | 10.82 | 7.53 |
+| 6 | Pat Freiermuth | PIT | TB | 13.11 | 11.05 | 8.99 |
+| 7 | George Kittle | SF | WAS | 12.88 | 10.59 | 8.29 |
+| 8 | Travis Kelce | KC | LAC | 12.77 | 10.8 | 8.83 |
+| 9 | Tyler Higbee | LA | ARI | 12.19 | 9.73 | 7.27 |
+| 10 | Kyle Pitts | ATL | CHI | 10.7 | 8.82 | 6.95 |
+| 11 | Juwan Johnson | NO | NYG | 9.54 | 7.4 | 5.25 |
+| 12 | Tucker Kraft | GB | DAL | 9.25 | 7.32 | 5.39 |
+| 13 | Noah Gray | KC | LAC | 9.01 | 6.8 | 4.6 |
+| 14 | Dallas Goedert | PHI | CAR | 8.76 | 7.23 | 5.71 |
+| 15 | Harold Fannin Jr. | CLE | BAL | 8.69 | 7.22 | 5.74 |
+| 16 | Darnell Washington | PIT | TB | 7.82 | 6.35 | 4.88 |
+| 17 | Teagan Quitoriano | ARI | LA | 7.66 | 6.31 | 4.96 |
+| 18 | Elijah Higgins | ARI | LA | 7.02 | 5.95 | 4.88 |
+| 19 | Jake Ferguson | DAL | GB | 6.98 | 5.38 | 3.78 |
+| 20 | Jeremy Ruckert | NYJ | NE | 6.91 | 5.64 | 4.36 |
+| 21 | Hunter Henry | NE | NYJ | 6.87 | 5.77 | 4.67 |
+| 22 | Terrance Ferguson | LA | ARI | 6.18 | 5.03 | 3.87 |
+| 23 | David Njoku | LAC | KC | 5.79 | 4.45 | 3.11 |
+| 24 | Mark Redman | GB | DAL | 5.76 | 4.65 | 3.53 |
+| 25 | Michael Mayer | LV | BUF | 5.51 | 4.18 | 2.84 |
 
-## Complete projections and data
+## Complete projection tables
 
-[Download the full Week 6 player projection CSV](https://raw.githubusercontent.com/rosterxreport-cloud/roster-report-trade-analyzer/main/data/projections/2026_week6_league_v4_full.csv)
+[All 254 player stat lines and PPR formats](https://raw.githubusercontent.com/rosterxreport-cloud/roster-report-trade-analyzer/main/data/projections/2026_week6_league_v4_full.csv)
 
-[Download the Week 6 touchdown projection CSV](https://raw.githubusercontent.com/rosterxreport-cloud/roster-report-trade-analyzer/main/data/projections/2026_week6_league_v4_touchdowns.csv)
+[Projected rushing and receiving touchdowns](https://raw.githubusercontent.com/rosterxreport-cloud/roster-report-trade-analyzer/main/data/projections/2026_week6_league_v4_touchdowns.csv)
 
-**Editorial note:** Check official Sunday inactive reports before lineup lock, especially for questionable players. This forecast uses available data through Week 5 and the injury exclusions noted above. Fantasy scoring uses four-point passing touchdowns.
+Model uses four-point passing touchdowns. This is a forecast, not a guarantee of production.
 
 Follow The Roster Report For More.
