@@ -15,6 +15,9 @@ for season in (2026,):
     response=requests.get(url,timeout=90)
     response.raise_for_status()
     df=pd.read_csv(io.BytesIO(response.content))
+    # nflverse player-stats exports use team in some versions, recent_team in others.
+    if "recent_team" not in df.columns and "team" in df.columns:
+        df=df.rename(columns={"team":"recent_team"})
     needed={"player_id","player_name","recent_team","week","season_type","targets"}
     missing=needed-set(df.columns)
     if missing: raise ValueError(f"Missing nflverse columns: {missing}")
