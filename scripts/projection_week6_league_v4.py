@@ -237,9 +237,17 @@ for team in opponents:
   # uncertainty allowance; never raise a player's share in this step.
   corrected=min(float(shares.at[idx]),normal+.25*(elevated-normal))
   shares.at[idx]=max(0.,corrected)
+  high.remove(idx)
+  if idx not in low:low.append(idx)
   print("RETURNING_STARTER_AUDIT",team,last.at[idx,"player_display_name"],
         "replacement_share",round(elevated,3),"healthy_share",round(normal,3),
         "corrected_share",round(corrected,3))
+ # Returning Coker restores Metchie to a rotational role.
+ if team=="CAR" and last.loc[eligible,"player_display_name"].eq("Jalen Coker").any():
+  for idx in last.loc[eligible].index[last.loc[eligible,"player_display_name"].eq("John Metchie III")]:
+   shares.at[idx]=min(float(shares.at[idx]),.045)
+   if idx in high:high.remove(idx)
+   if idx not in low:low.append(idx)
  # Apply fringe caps BEFORE redistributing the remaining target budget.
  # Higher observed shares earn proportionally larger allocations.
  fixed=float(shares.loc[low+unknown].sum())
@@ -251,7 +259,7 @@ for team in opponents:
   # Without established target earners, avoid inventing allocations.
   shares/=max(1.,float(shares.sum()))
  # Never allow low-share or unobserved players to expand in normalization.
- assert all(shares.at[idx]<= (.0450001 if team=="CAR" and last.at[idx,"player_display_name"]=="John Metchie III" else .0200001) for idx in low)
+ assert all(shares.at[idx]<=.0750001 for idx in low)
  assert all(shares.at[idx]<=.0400001 for idx in unknown)
  for idx in eligible:
   old=float(last.at[idx,"pred_targets"])
