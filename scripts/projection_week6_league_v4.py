@@ -112,126 +112,9 @@ last=last.sort_values("prior_opp",ascending=False)
 q5=w[(w.position=="QB") & (w.week==5)].sort_values("attempts",ascending=False)
 starter_ids=set(q5.drop_duplicates("recent_team").player_id)
 # Confirmed Week 6 replacement starters from NFL team reports.
-for name in ("Tyson Bagent","Tyler Huntley","Jayden Daniels"):
+for name in ("Tyler Huntley",):
  ids=set(w.loc[w.player_display_name.eq(name),"player_id"])
  starter_ids.update(ids)
-# Exclude secondary quarterbacks after accounting for replacement starters.
-starter_ids.discard(next(iter(set(w.loc[w.player_display_name.eq("Athan Kaliakmanis"),"player_id"])),None))
-last=last[(last.position!="QB") | last.player_id.isin(starter_ids)].copy()
-# Structural v4 baseline, with player-specific observed usage.
-pred=last.apply(project,axis=1)
-last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
-# Smooth QB rushing touchdowns using observed 2026 QB touchdown frequency.
-qh=w[w.position=="QB"]
-qr=float(qh.rushing_tds.sum())/max(float(qh.carries.sum()),1.)
-for i in last.index[last.position=="QB"]:
- h=qh[qh.player_id==last.at[i,"player_id"]]
- n=float(h.carries.sum())
- rate=(float(h.rushing_tds.sum())+20*qr)/(n+20)
- last.at[i,"pred_rush_td"]=min(float(last.at[i,"pred_carries"])*rate,0.75)
-# Reduce small-sample touchdown spikes for secondary backs.
-rb=(last.position=="RB")&last.player_display_name.ne("Javonte Williams")
-carries=last.loc[rb,"pred_carries"].clip(lower=0)
-raw=last.loc[rb,"pred_rush_td"]/carries.clip(lower=1)
-last.loc[rb,"pred_rush_td"]=carries*(.75*.025+.25*raw).clip(upper=.06)
-# Restrict fringe-player roles before redistributing to regular contributors.
-caps={"Jonathan Mingo":0.6,"KaVontae Turpin":2.0,"Luke Schoonmaker":1.5,"Brevyn Spann-Ford":1.0,"Hunter Luepke":1.2,"Tyler Goodson":1.0}
-for name,cap in caps.items():
- m=last.player_display_name.eq(name)
- if m.any():
-  factor=(cap/last.loc[m,"pred_targets"].clip(lower=.001)).clip(upper=1)
-  for field in ["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]:last.loc[m,field]*=factor
-for name,cap in {"Tyler Goodson":3.,"Hunter Luepke":1.}.items():
- m=last.player_display_name.eq(name)
- if m.any():
-  factor=(cap/last.loc[m,"pred_carries"].clip(lower=.001)).clip(upper=1)
-  for field in ["pred_carries","pred_rush_yds","pred_rush_td"]:last.loc[m,field]*=factor
-# Allocate team volume from projected QB attempts and historical team rush volume.
-for team in opponents:
- mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
- qb=(last.recent_team==team)&(last.position=="QB")
- attempts=float(last.loc[qb,"pred_att"].max()) if qb.any() else float(last.loc[mask,"pre_team_pass"].median())
- qb_rush=float(last.loc[qb,"pred_carries"].max()) if qb.any() else 0.
- history=last.loc[mask,"pre_team_carries"].dropna()
- rush_budget=max(0.,float(history.iloc[0])-qb_rush) if len(history) else float(last.loc[mask,"pred_carries"].sum())
- for volume,budget,fields in [
-  ("pred_targets",attempts,["pred_targets","pred_rec","pred_rec_yds","pred_rec_td"]),
-  ("pred_carries",rush_budget,["pred_carries","pred_rush_yds","pred_rush_td"])
- ]:
-  total=float(last.loc[mask,volume].sum())
-  if total>budget and total>0:
-   factor=budget/total
-   for field in fields:last.loc[mask,field]*=factor
-  elif total<budget:
-   eligible=mask&((last.pred_targets>=2.5) if volume=="pred_targets" else ((last.position=="RB")&(last.pred_carries>=5)))
-   weight=float(last.loc[eligible,volume].sum())
-   if weight>0:
-    factor=1+(budget-total)/weight
-    for field in fields:last.loc[eligible,field]*=factor
-# Constrain projected team RB workload to historical team carries.
-# Avoid allocating all missing quarterback carries to one running back.
-for t in opponents:
- m=(last.recent_team==t)&last.position.eq("RB")
- if not m.any():continue
- hist=last.loc[m,"pre_team_carries"].dropna()
- if hist.empty:continue
- budget=float(hist.iloc[0])
- total=float(last.loc[m,"pred_carries"].sum())
- if total>budget and total>0:
-  ratio=budget/total
-  for f in ("pred_carries","pred_rush_yds","pred_rush_td"):
-   last.loc[m,f]*=ratio
-# Reallocate backfield carries using actual Weeks 3-5 RB carry shares.
-# Apply AFTER team-volume normalization so lead-back usage is not erased.
-for team in opponents:
- backs=(last.recent_team==team)&last.position.eq("RB")
- recent=w[(w.recent_team==team)&w.week.between(2,4)&w.position.eq("RB")]
- observed=recent.groupby("player_id").carries.sum()
- denom=float(observed.sum())
- total=float(last.loc[backs,"pred_carries"].sum())
- if denom<=0 or total<=0:continue
- weights=last.loc[backs,"player_id"].map(observed).fillna(0).astype(float)
- if float(weights.sum())<=0:continue
- for idx,weight in weights.items():
-  old=float(last.at[idx,"pred_carries"])
-  new=total*float(weight)/float(weights.sum())
-  if old>0:
-   factor=new/old
-   for field in ["pred_carries","pred_rush_yds","pred_rush_td"]:
-    last.at[idx,field]*=factor
-  else:
-   last.at[idx,"pred_carries"]=new
-   # Zero historical carries means efficiency is unknown; avoid inventing it.
-# Bound implausible individual RB volume after team-share reallocation.
-for idx in last.index[last.position.eq("RB")]:
- volume=float(last.at[idx,"pred_carries"])
- if volume>25:
-  factor=25/volume
-  for field in ("pred_carries","pred_rush_yds","pred_rush_td"):
-   last.at[idx,field]*=factor
-last["Opponent"]=last.recent_team.map(opponents)
-last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
-last["PPR"]=last.apply(score,axis=1)
-last["Half_PPR"]=last.PPR-.5*last.pred_rec
-last["Standard"]=last.PPR-last.pred_rec
-last["Pass_Att"]=last.pred_att;last["Pass_Yds"]=last.pred_pass_yds;last["Pass_TD"]=last.pred_pass_td
-last["INT"]=last.pred_int;last["Rush_Att"]=last.pred_carries;last["Rush_Yds"]=last.pred_rush_yds
-last["Rush_TD"]=last.pred_rush_td;last["Targets"]=last.pred_targets;last["Receptions"]=last.pred_rec
-last["Rec_Yds"]=last.pred_rec_yds;last["Rec_TD"]=last.pred_rec_td
-last=last[(last.position=="QB")|(last.prior_opp>=1)].copy()
-last=last.rename(columns={"player_display_name":"Player","recent_team":"Team","position":"Position"})
-out=last[["Player","Team","Opponent","Position","Rush_TD","Rec_TD","Total_xTD"]].sort_values("Total_xTD",ascending=False).round(3)
-Path("data/projections").mkdir(parents=True,exist_ok=True)
-out.to_csv("data/projections/2026_week6_league_v4_touchdowns.csv",index=False)
-full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR","Snap_Share_3W","Snap_Games","Snap_Data_Status"]].copy()
-full=full.sort_values(["Position","PPR"],ascending=[True,False]).round(2)
-full.to_csv("data/projections/2026_week6_league_v4_full.csv",index=False)
-assert len(full)>=150, f"Unusually low Week 6 coverage: {len(full)}"
-assert not full.PPR.isna().any(), "Missing projected points"
-assert not full.Team.isin(["SEA","DEN"]).any(), "Completed Thursday teams must not be published"
-print("Full projections:",len(full),"players")
-print(out.head(30).to_string(index=False))# Confirmed Week 6 starter replacing injured Lamar Jackson.
-starter_ids.update(set(w.loc[w.player_display_name.eq("Tyler Huntley"),"player_id"]))
 starter_ids.difference_update(set(w.loc[w.player_display_name.eq("Lamar Jackson"),"player_id"]))
 # Exclude secondary quarterbacks after accounting for replacement starters.
 starter_ids.discard(next(iter(set(w.loc[w.player_display_name.eq("Athan Kaliakmanis"),"player_id"])),None))
@@ -303,7 +186,7 @@ for t in opponents:
 # Apply AFTER team-volume normalization so lead-back usage is not erased.
 for team in opponents:
  backs=(last.recent_team==team)&last.position.eq("RB")
- recent=w[(w.recent_team==team)&w.week.between(2,4)&w.position.eq("RB")]
+ recent=w[(w.recent_team==team)&w.week.between(3,5)&w.position.eq("RB")]
  observed=recent.groupby("player_id").carries.sum()
  denom=float(observed.sum())
  total=float(last.loc[backs,"pred_carries"].sum())
@@ -344,5 +227,8 @@ out.to_csv("data/projections/2026_week6_league_v4_touchdowns.csv",index=False)
 full=last[["Player","Team","Opponent","Position","Pass_Att","Pass_Yds","Pass_TD","INT","Rush_Att","Rush_Yds","Rush_TD","Targets","Receptions","Rec_Yds","Rec_TD","Total_xTD","Standard","Half_PPR","PPR","Snap_Share_3W","Snap_Games","Snap_Data_Status"]].copy()
 full=full.sort_values(["Position","PPR"],ascending=[True,False]).round(2)
 full.to_csv("data/projections/2026_week6_league_v4_full.csv",index=False)
+assert len(full)>=150, f"Unusually low Week 6 coverage: {len(full)}"
+assert not full.PPR.isna().any(), "Missing projected points"
+assert not full.Team.isin(["SEA","DEN"]).any(), "Completed Thursday teams must not be published"
 print("Full projections:",len(full),"players")
 print(out.head(30).to_string(index=False))
