@@ -104,7 +104,7 @@ print("Snap-share coverage:",int(last.avg_snap_share.notna().sum()),"/",len(last
 
 # Week 6 confirmed outs as of Oct 17; questionable players retained.
 # Sunday inactive lists will require a final pre-kickoff update.
-inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson","Dillon Gabriel","Dylan Sampson","Adonai Mitchell","Ashton Dulin","David Sills","Jeremiyah Love","Tre Harris","Dont'e Thornton Jr.","Roman Wilson","Ben Skowronek","Skyy Moore","Stefon Diggs","Marcus Mariota")
+inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson","Dillon Gabriel","Dylan Sampson","Adonai Mitchell","Ashton Dulin","David Sills","Jeremiyah Love","Tre Harris","Dont'e Thornton Jr.","Roman Wilson","Ben Skowronek","Skyy Moore","Stefon Diggs","Marcus Mariota","Demarcus Robinson","Tank Bigsby","Travis Etienne","Xavier Legette")
 last=last[~last.player_display_name.isin(inactive_players)].copy()
 
 last=last.sort_values("prior_opp",ascending=False)
@@ -259,6 +259,7 @@ full.to_csv("data/projections/2026_week6_league_v4_full.csv",index=False)
 assert len(full)>=150, f"Unusually low Week 6 coverage: {len(full)}"
 assert not full.PPR.isna().any(), "Missing projected points"
 assert not full.Player.isin(inactive_players).any(), "Unavailable player survived injury filter"
+assert not full.Player.isin(["Demarcus Robinson","Tank Bigsby","Travis Etienne","Xavier Legette"]).any(), "Known IR player survived"
 assert not full.Team.isin(["SEA","DEN"]).any(), "Completed Thursday teams must not be published"
 print("Full projections:",len(full),"players")
 print(out.head(30).to_string(index=False))
