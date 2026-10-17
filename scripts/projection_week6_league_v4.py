@@ -273,6 +273,22 @@ for team in opponents:
    if brown in unknown:unknown.remove(brown)
    if brown not in high:high.append(brown)
    adjusted.add(brown)
+ # Reconcile NE's target ledger to Maye's projected attempts. The
+ # historical team targets/attempt ratio already accounts for throwaways,
+ # spikes and other uncredited passes. Keep Brown at his return-workload
+ # cap and allocate residual volume among active observed target earners.
+ if team=="NE":
+  active=shares.index[shares.gt(0)]
+  brown=by_name.get("A.J. Brown")
+  fixed_brown=float(shares.at[brown]) if brown is not None else 0.
+  others=[i for i in active if i!=brown]
+  remaining=max(0.,1.-fixed_brown)
+  current=float(shares.loc[others].sum())
+  if current>0:
+   shares.loc[others]*=remaining/current
+  low=[];unknown=[];high=list(active)
+  # Brown's share is fixed during normalization, not a spare capacity pool.
+  assert abs(float(shares.sum())-1.)<1e-7
  # Apply fringe caps BEFORE redistributing the remaining target budget.
  # Higher observed shares earn proportionally larger allocations.
  fixed=float(shares.loc[low+unknown].sum())
@@ -457,6 +473,23 @@ for idx in last.index:
  else:fields=("pred_rec_yds","pred_rec_td")
  for field in fields:last.at[idx,field]*=factor
  print("DEFENSE_AUDIT",last.at[idx,"player_display_name"],defense,pos,round(factor,4))
+# Reconcile New England's passing and receiving yard ledgers after the
+# defensive adjustment. Receiver yards sum to team QB passing yards by
+# definition; this changes the QB projection, not player receiving efficiency.
+ne_passers=last.index[(last.recent_team=="NE")&(last.position=="QB")]
+ne_receivers=last.index[(last.recent_team=="NE")&last.position.isin(["RB","WR","TE"])]
+if len(ne_passers)==1 and len(ne_receivers)>0:
+ projected_receiving=float(last.loc[ne_receivers,"pred_rec_yds"].sum())
+ if projected_receiving>0:
+  before=float(last.at[ne_passers[0],"pred_pass_yds"])
+  last.at[ne_passers[0],"pred_pass_yds"]=projected_receiving
+  print("NE_PASS_YARDS_RECONCILED",round(before,2),round(projected_receiving,2))
+# Hard checks prevent publishing mismatched team receiving totals.
+if len(ne_passers)==1:
+ projected_targets=float(last.loc[ne_receivers,"pred_targets"].sum())
+ expected_targets=float(last.at[ne_passers[0],"pred_att"])*float(team_target_rate.get("NE",.90))
+ assert abs(projected_targets-expected_targets)<.10,(projected_targets,expected_targets)
+ assert abs(float(last.loc[ne_receivers,"pred_rec_yds"].sum())-float(last.at[ne_passers[0],"pred_pass_yds"]))<.01
 last["Opponent"]=last.recent_team.map(opponents)
 last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
 last["PPR"]=last.apply(score,axis=1)
