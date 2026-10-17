@@ -16,9 +16,10 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install pandas requests
       - run: python scripts/build_week6_historical_targets.py
+      - run: python scripts/rebuild_week6_2026_target_shares.py
       - name: Commit historical dataset
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/projections/2026_week6_historical_target_shares.csv
-          git diff --cached --quiet || (git commit -m "Import 2025-26 weekly target-share observations" && git push)
+          git add data/projections/2026_week6_historical_target_shares.csv data/projections/2026_week6_2026_target_share_review.csv
+          git diff --cached --quiet || (git commit -m "Import 2026 target shares and calculate Week 6 review projections" && git push)
