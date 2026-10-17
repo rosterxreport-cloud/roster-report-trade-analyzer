@@ -141,9 +141,12 @@ recent=recent[recent.team_targets.gt(0)].copy()
 recent["snap_name"]=recent.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
 participation=snaps.groupby(["team","week","player"],as_index=False).offense_snaps.max()
 participation["snap_name"]=participation.player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
-recent=recent.merge(participation[["team","week","snap_name","offense_snaps"]],left_on=["recent_team","week","snap_name"],right_on=["team","week","snap_name"],how="left")
+participation=participation.groupby(["team","week","snap_name"],as_index=False).offense_snaps.max()
+recent=recent.merge(participation[["team","week","snap_name","offense_snaps"]],left_on=["recent_team","week","snap_name"],right_on=["team","week","snap_name"],how="left",validate="many_to_one")
 recent=recent[(recent.targets.gt(0))|(recent.carries.gt(0))|(recent.offense_snaps.gt(0))].copy()
 recent["weekly_share"]=recent.targets/recent.team_targets
+assert recent.week.between(1,5).all(), "Target-share history includes an unexpected week"
+assert recent.weekly_share.between(0,1).all(), "Invalid observed target share"
 recent["recency_weight"]=recent.week.map({1:.10,2:.15,3:.20,4:.25,5:.30})
 # Team pass attempts set the forecast ceiling, with an empirically observed
 # targeted-pass rate; avoid treating all pass attempts as actual targets.
@@ -297,6 +300,20 @@ for idx in last.index[last.position.eq("RB")]:
   factor=25/volume
   for field in ("pred_carries","pred_rush_yds","pred_rush_td"):
    last.at[idx,field]*=factor
+# Publication gate: ensure every team has a valid, conserved receiving budget.
+for team in opponents:
+ receiving=last[(last.recent_team==team)&last.position.isin(["RB","WR","TE"])]
+ if receiving.empty:continue
+ assert receiving.pred_targets.ge(0).all(), f"{team}: negative targets"
+ assert receiving.pred_rec.le(receiving.pred_targets+1e-6).all(), f"{team}: receptions exceed targets"
+ qb=last[(last.recent_team==team)&last.position.eq("QB")]
+ if not qb.empty:
+  cap=float(qb.pred_att.max())
+  assert float(receiving.pred_targets.sum())<=cap+1e-5, f"{team}: targets exceed attempts"
+ print("TARGET_AUDIT",team,"targets",round(float(receiving.pred_targets.sum()),2),
+       "leaders",[(str(x.Player if "Player" in receiving else x.player_display_name),round(float(x.pred_targets),2))
+                  for _,x in receiving.nlargest(5,"pred_targets").iterrows()])
+
 last["Opponent"]=last.recent_team.map(opponents)
 last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
 last["PPR"]=last.apply(score,axis=1)
