@@ -23,8 +23,25 @@ shares=h.groupby(["player_name","recent_team"],as_index=False).agg(
     observed_games=("week","nunique"),
     total_targets=("targets","sum"))
 shares["share_2026"]=shares.target_numerator/shares.attempt_denominator
-shares["player_key"]=shares.player_name.str.casefold().str.strip()
-p["player_key"]=p.Player.str.casefold().str.strip()
+# nflverse sometimes exports abbreviated player_name (e.g. K.Allen).
+# Match initial + surname within team, but reject ambiguous keys.
+import re
+def identity(name):
+    name=re.sub(r"[^a-z0-9 ]"," ",str(name).casefold())
+    parts=name.split()
+    if not parts: return ""
+    suffixes={"jr","sr","ii","iii","iv","v"}
+    while parts and parts[-1] in suffixes: parts.pop()
+    if not parts: return ""
+    return parts[0][0]+"_"+parts[-1]
+shares["player_key"]=shares.player_name.map(identity)
+p["player_key"]=p.Player.map(identity)
+# Combine same player/team across alternate display names; fail closed on ambiguity.
+dupes=shares.duplicated(["player_key","recent_team"],keep=False)
+if dupes.any():
+    ambiguous=shares.loc[dupes,["player_name","recent_team","player_key"]]
+    raise ValueError("Ambiguous historical identity keys; manual ID mapping needed:\\n"+ambiguous.to_string(index=False))
+
 qbs=p[p.Position=="QB"].groupby("Team").Pass_Att.sum().to_dict()
 p=p.merge(shares[["player_key","recent_team","share_2026","observed_games","total_targets"]],
           how="left",left_on=["player_key","Team"],right_on=["player_key","recent_team"])
