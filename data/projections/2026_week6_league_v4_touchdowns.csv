@@ -4,17 +4,17 @@ Parker Washington,JAX,HOU,WR,0.001,1.71,1.711
 Kenneth Walker III,KC,LAC,RB,0.738,0.879,1.617
 Christian Watson,GB,DAL,WR,0.002,1.439,1.441
 Javonte Williams,DAL,GB,RB,1.413,0.015,1.427
+Tetairoa McMillan,CAR,PHI,WR,0.009,1.238,1.247
 Garrett Wilson,NYJ,NE,WR,0.003,1.173,1.177
 Davante Adams,LA,ARI,WR,0.002,1.142,1.145
-Tetairoa McMillan,CAR,PHI,WR,0.009,1.075,1.084
 Brock Bowers,LV,BUF,TE,0.0,1.084,1.084
 Nico Collins,HOU,JAX,WR,0.001,1.031,1.033
 Jaylen Warren,PIT,TB,RB,0.499,0.511,1.01
 Pat Freiermuth,PIT,TB,TE,0.002,0.981,0.982
 Malik Nabers,NYG,NO,WR,0.003,0.963,0.966
+Jalen Coker,CAR,PHI,WR,0.009,0.941,0.95
 Chuba Hubbard,CAR,PHI,RB,0.859,0.046,0.905
 Trey McBride,ARI,LA,TE,0.0,0.882,0.882
-Jalen Coker,CAR,PHI,WR,0.009,0.818,0.827
 DeMario Douglas,NE,NYJ,WR,0.002,0.816,0.819
 CeeDee Lamb,DAL,GB,WR,0.001,0.781,0.782
 Travis Kelce,KC,LAC,TE,0.0,0.778,0.778
@@ -49,12 +49,12 @@ Puka Nacua,LA,ARI,WR,0.097,0.4,0.497
 Devaughn Vele,NO,NYG,WR,0.002,0.488,0.491
 Matthew Golden,GB,DAL,WR,0.001,0.489,0.49
 Kyle Pitts,ATL,CHI,TE,0.0,0.478,0.478
-John Metchie III,CAR,PHI,WR,0.009,0.431,0.44
 Dameon Pierce,PHI,CAR,RB,0.409,0.019,0.428
 Jakobi Meyers,JAX,HOU,WR,0.001,0.426,0.427
 MarShawn Lloyd,GB,DAL,RB,0.395,0.012,0.407
 Bhayshul Tuten,JAX,HOU,RB,0.397,0.002,0.398
 Jacory Croskey-Merritt,WAS,SF,RB,0.388,0.001,0.389
+Darren Waller,CAR,PHI,TE,0.0,0.386,0.386
 Brian Robinson,ATL,CHI,RB,0.384,0.001,0.385
 Terrance Ferguson,LA,ARI,TE,0.0,0.383,0.383
 Terry McLaurin,WAS,SF,WR,0.002,0.378,0.38
@@ -62,7 +62,6 @@ Quinshon Judkins,CLE,BAL,RB,0.352,0.024,0.377
 Rhamondre Stevenson,NE,NYJ,RB,0.369,0.003,0.372
 Cam Skattebo,NYG,NO,RB,0.362,0.002,0.364
 Tony Pollard,TEN,IND,RB,0.361,0.002,0.363
-Darren Waller,CAR,PHI,TE,0.0,0.335,0.335
 Zay Flowers,BAL,CLE,WR,0.002,0.332,0.334
 Tyler Huntley,BAL,CLE,QB,0.331,0.0,0.331
 Omarion Hampton,LAC,KC,RB,0.33,0.001,0.331
@@ -107,6 +106,7 @@ Rachaad White,WAS,SF,RB,0.1,0.034,0.134
 Mike Washington Jr.,LV,BUF,RB,0.133,0.001,0.134
 Emeka Egbuka,TB,PIT,WR,0.072,0.062,0.133
 Antonio Williams,WAS,SF,WR,0.002,0.129,0.131
+John Metchie III,CAR,PHI,WR,0.009,0.12,0.129
 Justin Herbert,LAC,KC,QB,0.126,0.0,0.126
 Deshaun Watson,CLE,BAL,QB,0.126,0.0,0.126
 Kaelon Black,SF,WAS,RB,0.113,0.0,0.113
