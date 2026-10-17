@@ -1,5 +1,5 @@
 """Build a historical target-share input from nflverse weekly player stats.
-Fetches 2025 and 2026 data, using only weeks 1-5 in 2026.
+Fetches 2026 data only, using weeks 1-5. No prior-season target shares.
 Does not overwrite projections. Requires pandas and network access.
 """
 import io
@@ -10,7 +10,7 @@ import requests
 ROOT="https://github.com/nflverse/nflverse-data/releases/download/stats_player"
 OUT=Path("data/projections/2026_week6_historical_target_shares.csv")
 frames=[]
-for season in (2025,2026):
+for season in (2026,):
     url=f"{ROOT}/stats_player_week_{season}.csv"
     response=requests.get(url,timeout=90)
     response.raise_for_status()
@@ -18,7 +18,7 @@ for season in (2025,2026):
     needed={"player_id","player_name","recent_team","week","season_type","targets"}
     missing=needed-set(df.columns)
     if missing: raise ValueError(f"Missing nflverse columns: {missing}")
-    df=df[(df.season_type=="REG") & (df.week<= (5 if season==2026 else 18))].copy()
+    df=df[(df.season_type=="REG") & (df.week<= 5)].copy()
     df["season"]=season
     df["position"]=df["position"].fillna("")
     frames.append(df)
