@@ -119,6 +119,10 @@ starter_ids.difference_update(set(w.loc[w.player_display_name.eq("Lamar Jackson"
 # Exclude secondary quarterbacks after accounting for replacement starters.
 starter_ids.discard(next(iter(set(w.loc[w.player_display_name.eq("Athan Kaliakmanis"),"player_id"])),None))
 last=last[(last.position!="QB") | last.player_id.isin(starter_ids)].copy()
+# Caleb Williams is questionable, not ruled out: publish the projected starter only.
+# Re-run with the replacement if Sunday inactive status changes.
+if last.player_display_name.eq("Caleb Williams").any():
+ last=last[~last.player_display_name.eq("Tyson Bagent")].copy()
 # Structural v4 baseline, with player-specific observed usage.
 pred=last.apply(project,axis=1)
 last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
