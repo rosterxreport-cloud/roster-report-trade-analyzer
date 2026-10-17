@@ -155,7 +155,7 @@ for team in opponents:
  # rather than dividing by the number of games the player happened to play.
  hist=recent[recent.recent_team==team]
  observed=hist.groupby("player_id").targets.sum()
- observed_team=hist.groupby("player_id").team_targets.sum()
+ observed_team=hist.drop_duplicates(["player_id","week"]).groupby("player_id").team_targets.sum()
  # Team targets must be deduplicated by player and week, so a player's
  # denominator is the sum of team targets for weeks they actually appeared.
  obs_share=(observed/observed_team.replace(0,np.nan)).clip(0,1)
