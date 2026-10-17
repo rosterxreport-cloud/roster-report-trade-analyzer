@@ -464,10 +464,11 @@ for idx in last.index:
  else:fields=("pred_rec_yds","pred_rec_td")
  for field in fields:last.at[idx,field]*=factor
  print("DEFENSE_AUDIT",last.at[idx,"player_display_name"],defense,pos,round(factor,4))
-# Reconcile each active team's passing-yard ledger with receiving yards.
-# Target budgets are calculated from team QB attempts and the historical
-# targets/attempt ratio; receiving yards must sum to QB passing yards.
-# The receiving projections retain their player-specific efficiency.
+# Preserve the original structural QB model as the source of truth.
+# Normalize individual receiving yards to that QB's projected passing yards,
+# never overwrite QB attempts, yards, TDs, or interceptions.
+# Target allocation remains tied to the QB's projected attempts and the
+# historical credited-target rate, with no fabricated target recipients.
 team_reconciliation=[]
 for team in sorted(opponents):
  passers=last.index[(last.recent_team==team)&(last.position=="QB")]
@@ -476,21 +477,33 @@ for team in sorted(opponents):
   print("TEAM_RECONCILIATION_SKIP",team,"passers",len(passers),"receivers",len(receivers))
   continue
  qbidx=passers[0]
+ qb_attempts=float(last.at[qbidx,"pred_att"])
+ qb_yards=float(last.at[qbidx,"pred_pass_yds"])
  actual_targets=float(last.loc[receivers,"pred_targets"].sum())
- target_budget=float(last.at[qbidx,"pred_att"])*float(team_target_rate.get(team,.90))
- projected_yards=float(last.loc[receivers,"pred_rec_yds"].sum())
- old_yards=float(last.at[qbidx,"pred_pass_yds"])
- last.at[qbidx,"pred_pass_yds"]=projected_yards
+ target_budget=qb_attempts*float(team_target_rate.get(team,.90))
+ old_receiving_yards=float(last.loc[receivers,"pred_rec_yds"].sum())
+ if old_receiving_yards>0:
+  yard_factor=qb_yards/old_receiving_yards
+  last.loc[receivers,"pred_rec_yds"]*=yard_factor
+ else:
+  assert qb_yards<=.01,(team,"No receiving yards to normalize",qb_yards)
+  yard_factor=1.
+ new_receiving_yards=float(last.loc[receivers,"pred_rec_yds"].sum())
  target_gap=target_budget-actual_targets
- # A nonzero residual must be explicitly reported rather than silently
- # inventing usage for unknown or capped fringe players.
- team_reconciliation.append((team,actual_targets,target_budget,target_gap,old_yards,projected_yards))
- assert actual_targets<=float(last.at[qbidx,"pred_att"])+.01,(team,actual_targets)
- assert abs(float(last.loc[receivers,"pred_rec_yds"].sum())-float(last.at[qbidx,"pred_pass_yds"]))<.01
- print("TEAM_PASS_RECONCILED",team,"targets",round(actual_targets,2),
-       "budget",round(target_budget,2),"unallocated",round(target_gap,2),
-       "pass_yards_before",round(old_yards,2),"pass_yards_after",round(projected_yards,2))
-pd.DataFrame(team_reconciliation,columns=["Team","Projected_Targets","Expected_Targets","Unallocated_Targets","Previous_QB_Pass_Yds","Reconciled_QB_Pass_Yds"]).round(3).to_csv("data/projections/2026_week6_team_pass_reconciliation.csv",index=False)
+ team_reconciliation.append((team,qb_attempts,actual_targets,target_budget,target_gap,
+                             qb_yards,old_receiving_yards,new_receiving_yards,yard_factor))
+ assert actual_targets<=qb_attempts+.01,(team,actual_targets,qb_attempts)
+ assert abs(new_receiving_yards-qb_yards)<.01,(team,new_receiving_yards,qb_yards)
+ print("TEAM_PASS_RECONCILED",team,"QB_att",round(qb_attempts,2),
+       "targets",round(actual_targets,2),"budget",round(target_budget,2),
+       "unallocated",round(target_gap,2),"QB_pass_yds_unchanged",round(qb_yards,2),
+       "receiver_yards_before",round(old_receiving_yards,2),
+       "receiver_yards_after",round(new_receiving_yards,2),
+       "receiving_yard_factor",round(yard_factor,3))
+pd.DataFrame(team_reconciliation,columns=["Team","QB_Pass_Att","Projected_Targets",
+ "Expected_Targets","Unallocated_Targets","QB_Pass_Yds","Previous_Receiver_Yds",
+ "Normalized_Receiver_Yds","Receiving_Yard_Factor"]).round(3).to_csv(
+ "data/projections/2026_week6_team_pass_reconciliation.csv",index=False)
 last["Opponent"]=last.recent_team.map(opponents)
 last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
 last["PPR"]=last.apply(score,axis=1)
