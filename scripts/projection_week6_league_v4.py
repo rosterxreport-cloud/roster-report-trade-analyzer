@@ -257,7 +257,7 @@ for team in opponents:
  if high:
   available=max(0.,1.-fixed)
   weights=shares.loc[high].clip(lower=0)
-  if weights.sum()>0:shares.loc[high]=available*weights/weights.sum()
+  if weights.sum()>available:shares.loc[high]=available*weights/weights.sum()
  elif shares.sum()>0:
   # Without established target earners, avoid inventing allocations.
   shares/=max(1.,float(shares.sum()))
