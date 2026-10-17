@@ -31,7 +31,7 @@ last=last[last.recent_team.isin(opponents)].copy()
 last=last[last.prior_opp>=1].copy()
 # Consistent low-usage role gate. Weekly player stats do not include snap shares;
 # use observed opportunities, never label this as a measured snap percentage.
-recent_usage=w[w.week.between(3,5)].copy()
+recent_usage=w[w.week.between(1,5)].copy()
 recent_usage["opportunities"]=recent_usage.carries+recent_usage.targets+recent_usage.attempts
 role=recent_usage.groupby("player_id").agg(
  role_games=("week","nunique"),
@@ -131,15 +131,24 @@ last=pd.concat([last.reset_index(drop=True),pred.reset_index(drop=True)],axis=1)
 # excludes sacks, spikes, throwaways and other passes without a target.
 # Shrink player shares toward the v4 baseline and use recent game exposure.
 # Never redistribute unavailable players' targets to arbitrary fringe receivers.
-recent=w[w.week.between(3,5)].copy()
+recent=w[w.week.between(1,5)].copy()
 recent_team_targets=recent.groupby(["recent_team","week"]).targets.sum().rename("team_targets").reset_index()
 recent=recent.merge(recent_team_targets,on=["recent_team","week"],how="left",validate="many_to_one")
 recent=recent[recent.team_targets.gt(0)].copy()
+# Missing player-weeks are absent, never inserted as zero-target games.
+# Only count an observed zero-target appearance when actual carries or
+# offensive snaps establish participation.
+recent["snap_name"]=recent.player_display_name.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+participation=snaps.groupby(["team","week","player"],as_index=False).offense_snaps.max()
+participation["snap_name"]=participation.player.astype(str).str.lower().str.replace(r"[^a-z0-9]","",regex=True)
+recent=recent.merge(participation[["team","week","snap_name","offense_snaps"]],left_on=["recent_team","week","snap_name"],right_on=["team","week","snap_name"],how="left")
+recent=recent[(recent.targets.gt(0))|(recent.carries.gt(0))|(recent.offense_snaps.gt(0))].copy()
 recent["weekly_share"]=recent.targets/recent.team_targets
+recent["recency_weight"]=recent.week.map({1:.10,2:.15,3:.20,4:.25,5:.30})
 # Team pass attempts set the forecast ceiling, with an empirically observed
 # targeted-pass rate; avoid treating all pass attempts as actual targets.
 team_target_rate=(recent_team_targets.groupby("recent_team").team_targets.sum()/
-                  w[w.week.between(3,5)].groupby("recent_team").attempts.sum().replace(0,np.nan)).clip(0,1)
+                  w[w.week.between(1,5)].groupby("recent_team").attempts.sum().replace(0,np.nan)).clip(0,1)
 for team in opponents:
  mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
  if not mask.any():continue
@@ -158,7 +167,7 @@ for team in opponents:
  observed_team=hist.drop_duplicates(["player_id","week"]).groupby("player_id").team_targets.sum()
  # Team targets must be deduplicated by player and week, so a player's
  # denominator is the sum of team targets for weeks they actually appeared.
- obs_share=(observed/observed_team.replace(0,np.nan)).clip(0,1)
+ obs_share=hist.groupby("player_id").apply(lambda g: np.average(g.weekly_share,weights=g.recency_weight),include_groups=False).clip(0,1)
  hist_games=hist.groupby("player_id").week.nunique()
  shares=[]
  for idx in eligible:
@@ -166,15 +175,15 @@ for team in opponents:
   prior=float(base.at[idx])/max(float(base.sum()),1.)
   empirical=float(obs_share.get(pid,np.nan))
   n=int(hist_games.get(pid,0))
-  # Empirical 75%, structural prior 25% at three observed games.
-  reliability=min(0.75,0.25*n)
+  # Empirical 80%, structural prior 20% at five observed games.
+  reliability=min(0.80,0.16*n)
   if not np.isfinite(empirical):reliability=0.;empirical=0.
   shares.append(max(0.,reliability*empirical+(1-reliability)*prior))
  shares=pd.Series(shares,index=eligible,dtype=float)
  if shares.sum()<=0:continue
  shares/=shares.sum()
  # Role safeguard: projected volume for fringe players without at least
- # two targets in Weeks 3-5 cannot exceed the structural prior allocation.
+ # two targets in Weeks 1-5 cannot exceed the structural prior allocation.
  fringe_ids=[idx for idx in eligible if float(observed.get(last.at[idx,"player_id"],0))<2]
  for idx in fringe_ids:shares.at[idx]=min(shares.at[idx],float(base.at[idx])/max(float(base.sum()),1.))
  # Redistribute freed share only to players with meaningful recent targets.
