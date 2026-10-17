@@ -202,6 +202,17 @@ for team in opponents:
    # New/returning players have no eligible observed share: keep a
    # conservative prior rather than misclassifying injury absences as 0%.
    shares.at[idx]=min(.04,structural*.50)
+ # Injury-replacement role correction: Metchie's Weeks 3-4 volume came
+ # while Coker was limited/out. With Coker returning, Metchie is rotational.
+ # Preserve team target budget and allocate freed share to established earners.
+ if team=="CAR":
+  coker_active=last.loc[eligible,"player_display_name"].eq("Jalen Coker").any()
+  if coker_active:
+   metchie=last.loc[eligible,"player_display_name"].eq("John Metchie III")
+   for idx in last.loc[eligible].index[metchie]:
+    shares.at[idx]=min(float(shares.at[idx]),.045)
+    if idx in high:high.remove(idx)
+    if idx not in low:low.append(idx)
  # Apply fringe caps BEFORE redistributing the remaining target budget.
  # Higher observed shares earn proportionally larger allocations.
  fixed=float(shares.loc[low+unknown].sum())
@@ -213,7 +224,7 @@ for team in opponents:
   # Without established target earners, avoid inventing allocations.
   shares/=max(1.,float(shares.sum()))
  # Never allow low-share or unobserved players to expand in normalization.
- assert all(shares.at[idx]<=.0200001 for idx in low)
+ assert all(shares.at[idx]<= (.0450001 if team=="CAR" and last.at[idx,"player_display_name"]=="John Metchie III" else .0200001) for idx in low)
  assert all(shares.at[idx]<=.0400001 for idx in unknown)
  for idx in eligible:
   old=float(last.at[idx,"pred_targets"])
