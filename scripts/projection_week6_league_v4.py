@@ -180,6 +180,7 @@ for team in opponents:
  # Only observed player appearances enter each average; absences are not zeros.
  shares=pd.Series(0.,index=eligible,dtype=float)
  low=[]
+ adjusted=set()
  high=[]
  unknown=[]
  for idx in eligible:
@@ -239,6 +240,7 @@ for team in opponents:
   shares.at[idx]=max(0.,corrected)
   high.remove(idx)
   if idx not in low:low.append(idx)
+  adjusted.add(idx)
   print("RETURNING_STARTER_AUDIT",team,last.at[idx,"player_display_name"],
         "replacement_share",round(elevated,3),"healthy_share",round(normal,3),
         "corrected_share",round(corrected,3))
@@ -248,6 +250,7 @@ for team in opponents:
    shares.at[idx]=min(float(shares.at[idx]),.045)
    if idx in high:high.remove(idx)
    if idx not in low:low.append(idx)
+   adjusted.add(idx)
  # Apply fringe caps BEFORE redistributing the remaining target budget.
  # Higher observed shares earn proportionally larger allocations.
  fixed=float(shares.loc[low+unknown].sum())
@@ -259,7 +262,8 @@ for team in opponents:
   # Without established target earners, avoid inventing allocations.
   shares/=max(1.,float(shares.sum()))
  # Never allow low-share or unobserved players to expand in normalization.
- assert all(shares.at[idx]<=.0750001 for idx in low)
+ assert all(shares.at[idx]<=.0200001 for idx in low if idx not in adjusted)
+ assert all(shares.at[idx]<=float(obs_share.get(last.at[idx,"player_id"],1.))+1e-6 for idx in adjusted)
  assert all(shares.at[idx]<=.0400001 for idx in unknown)
  for idx in eligible:
   old=float(last.at[idx,"pred_targets"])
