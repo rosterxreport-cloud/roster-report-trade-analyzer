@@ -63,10 +63,22 @@ for team, subset in p[p.Position.isin(["WR","TE","RB"])].groupby("Team"):
         continue
     total=subset.Targets.sum()
     if total>qb_attempts:
-        scale=qb_attempts/total
-        for col in ("Targets","Receptions","Rec_Yds","Rec_TD"):
-            p.loc[indices,col]=p.loc[indices,col]*scale
-        p.loc[indices,"Team_Pass_Volume_Status"]="scaled_down_to_qb_attempts"
+        # Protect primary options: remove excess from the smallest projected
+        # target workloads first. Never scale every receiver proportionally.
+        excess=total-qb_attempts
+        order=sorted(indices,key=lambda i:(p.at[i,"Targets"],p.at[i,"Player"]))
+        for idx in order:
+            if excess<=1e-9: break
+            old_targets=float(p.at[idx,"Targets"])
+            if old_targets<=0: continue
+            removed=min(old_targets,excess)
+            factor=(old_targets-removed)/old_targets
+            for col in ("Targets","Receptions","Rec_Yds","Rec_TD"):
+                p.at[idx,col]=float(p.at[idx,col])*factor
+            p.at[idx,"Team_Pass_Volume_Status"]="reduced_bottom_up"
+            excess-=removed
+        if excess>1e-6:
+            raise ValueError(f"Failed to reconcile {team}: {excess:.3f} targets remain")
 # Recalculate receiving contribution, preserving original rushing and passing scoring adjustments.
 for i,row in p.iterrows():
     if row.Position not in ("WR","TE","RB"): continue
