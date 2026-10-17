@@ -1,0 +1,24 @@
+name: Historical Week 6 target shares
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/week6-historical-targets.yml'
+permissions:
+  contents: write
+jobs:
+  historical-targets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install pandas requests
+      - run: python scripts/build_week6_historical_targets.py
+      - name: Commit historical dataset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/projections/2026_week6_historical_target_shares.csv
+          git diff --cached --quiet || (git commit -m "Import 2025-26 weekly target-share observations" && git push)
