@@ -18,7 +18,9 @@ jobs:
           python-version: '3.11'
       - run: pip install pandas numpy pyarrow requests
       - name: Generate and audit projections
-        run: python scripts/projection_week6_league_v4.py | tee /tmp/week6_audit.log
+        run: |
+          set -o pipefail
+          python scripts/projection_week6_league_v4.py | tee /tmp/week6_audit.log
       - name: Refresh Substack exports
         run: |
           python - <<'PY'
