@@ -147,8 +147,13 @@ recent["weekly_share"]=recent.targets/recent.team_targets
 recent["recency_weight"]=recent.week.map({1:.10,2:.15,3:.20,4:.25,5:.30})
 # Team pass attempts set the forecast ceiling, with an empirically observed
 # targeted-pass rate; avoid treating all pass attempts as actual targets.
-team_target_rate=(recent_team_targets.groupby("recent_team").team_targets.sum()/
-                  w[w.week.between(1,5)].groupby("recent_team").attempts.sum().replace(0,np.nan)).clip(0,1)
+team_pass_week=w[w.week.between(1,5)].groupby(["recent_team","week"]).attempts.sum().rename("attempts").reset_index()
+team_rates=recent_team_targets.merge(team_pass_week,on=["recent_team","week"],how="inner")
+team_rates=team_rates[team_rates.attempts.gt(0)].copy()
+team_rates["rate"]=(team_rates.team_targets/team_rates.attempts).clip(0,1)
+team_rates["weight"]=team_rates.week.map({1:.10,2:.15,3:.20,4:.25,5:.30})
+team_target_rate=team_rates.groupby("recent_team").apply(
+ lambda g:np.average(g.rate,weights=g.weight),include_groups=False)
 for team in opponents:
  mask=(last.recent_team==team)&last.position.isin(["RB","WR","TE"])
  if not mask.any():continue
@@ -164,8 +169,7 @@ for team in opponents:
  # rather than dividing by the number of games the player happened to play.
  hist=recent[recent.recent_team==team]
  observed=hist.groupby("player_id").targets.sum()
- observed_team=hist.drop_duplicates(["player_id","week"]).groupby("player_id").team_targets.sum()
- # Team targets must be deduplicated by player and week, so a player's
+  # Team targets must be deduplicated by player and week, so a player's
  # denominator is the sum of team targets for weeks they actually appeared.
  obs_share=hist.groupby("player_id").apply(lambda g: np.average(g.weekly_share,weights=g.recency_weight),include_groups=False).clip(0,1)
  hist_games=hist.groupby("player_id").week.nunique()
