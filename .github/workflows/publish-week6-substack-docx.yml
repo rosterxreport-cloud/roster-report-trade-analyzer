@@ -1,0 +1,35 @@
+name: Publish Week 6 Substack Word Article
+on:
+  push:
+    paths:
+      - scripts/create_week6_substack_docx.py
+      - data/projections/2026_week6_league_v4_full.csv
+      - .github/workflows/publish-week6-substack-docx.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install python-docx
+      - run: python scripts/create_week6_substack_docx.py
+      - name: Publish Word article
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/projections/Roster_Report_Week6_Substack_Ready.docx
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish complete Week 6 Substack Word article"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
