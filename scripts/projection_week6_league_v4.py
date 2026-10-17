@@ -104,7 +104,7 @@ print("Snap-share coverage:",int(last.avg_snap_share.notna().sum()),"/",len(last
 
 # Week 6 confirmed outs as of Oct 17; questionable players retained.
 # Sunday inactive lists will require a final pre-kickoff update.
-inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson","Dillon Gabriel","Dylan Sampson","Adonai Mitchell","Ashton Dulin","David Sills","Jeremiyah Love","Tre Harris","Dont'e Thornton Jr.","Roman Wilson","Ben Skowronek","Skyy Moore","Stefon Diggs","Marcus Mariota","Demarcus Robinson","Tank Bigsby","Travis Etienne","Xavier Legette")
+inactive_players=("Lamar Jackson","David Montgomery","Tank Dell","Kyle Monangai","Jalen Hurts","Tyquan Thornton","Saquon Barkley","Will Shipley","Breece Hall","Baker Mayfield","Rashee Rice","Theo Johnson","Dillon Gabriel","Dylan Sampson","Adonai Mitchell","Ashton Dulin","David Sills","Jeremiyah Love","Tre Harris","Dont'e Thornton Jr.","Roman Wilson","Ben Skowronek","Skyy Moore","Stefon Diggs","Marcus Mariota","Mack Hollins","Reggie Gilliam","Demarcus Robinson","Tank Bigsby","Travis Etienne","Xavier Legette")
 last=last[~last.player_display_name.isin(inactive_players)].copy()
 
 last=last.sort_values("prior_opp",ascending=False)
@@ -251,6 +251,28 @@ for team in opponents:
    if idx in high:high.remove(idx)
    if idx not in low:low.append(idx)
    adjusted.add(idx)
+ # Patriots Week 6: Hollins/Gilliam are on IR. Brown is expected back,
+ # but his ankle return warrants a reduced, conditional target workload.
+ # For healthy NE role players, avoid the generic 2% cap on observed
+ # 6-12% target earners; redistribute only the freed IR opportunity.
+ if team=="NE":
+  by_name={last.at[i,"player_display_name"]:i for i in eligible}
+  for name in ("Kyle Williams","Efton Chism III"):
+   idx=by_name.get(name)
+   if idx is not None:
+    empirical=float(obs_share.get(last.at[idx,"player_id"],0.))
+    if empirical>0:
+     shares.at[idx]=max(float(shares.at[idx]),min(empirical,.12))
+     if idx in low:low.remove(idx)
+     if idx not in high:high.append(idx)
+  brown=by_name.get("A.J. Brown")
+  if brown is not None:
+   # ~6 targets on a managed return; retain status uncertainty.
+   shares.at[brown]=min(.20,6./max(budget,1.))
+   if brown in low:low.remove(brown)
+   if brown in unknown:unknown.remove(brown)
+   if brown not in high:high.append(brown)
+   adjusted.add(brown)
  # Apply fringe caps BEFORE redistributing the remaining target budget.
  # Higher observed shares earn proportionally larger allocations.
  fixed=float(shares.loc[low+unknown].sum())
@@ -263,7 +285,7 @@ for team in opponents:
   shares/=max(1.,float(shares.sum()))
  # Never allow low-share or unobserved players to expand in normalization.
  assert all(shares.at[idx]<=.0200001 for idx in low if idx not in adjusted)
- assert all(shares.at[idx]<=float(obs_share.get(last.at[idx,"player_id"],1.))+1e-6 for idx in adjusted)
+ assert all(shares.at[idx]<=max(float(obs_share.get(last.at[idx,"player_id"],1.)), .20 if team=="NE" and last.at[idx,"player_display_name"]=="A.J. Brown" else 0.)+1e-6 for idx in adjusted)
  assert all(shares.at[idx]<=.0400001 for idx in unknown)
  for idx in eligible:
   old=float(last.at[idx,"pred_targets"])
