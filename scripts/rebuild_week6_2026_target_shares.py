@@ -32,6 +32,11 @@ def identity(name):
     return parts[0][0]+"_"+parts[-1] if parts else ""
 shares["player_key"]=shares.player_name.map(identity)
 p["player_key"]=p.Player.map(identity)
+# Resolve abbreviated Atlanta RB names using distinct 2026 player IDs.
+for pid,key in [("00-0038542","bijan_robinson"),("00-0037746","brian_robinson")]:
+    shares.loc[(shares.player_id==pid)&(shares.recent_team=="ATL"),"player_key"]=key
+for name,key in [("Bijan Robinson","bijan_robinson"),("Brian Robinson","brian_robinson")]:
+    p.loc[(p.Player==name)&(p.Team=="ATL"),"player_key"]=key
 # A key like B.Robinson on ATL can refer to two players. Exclude those
 # ambiguous keys rather than combining unrelated players.
 dupes=shares.duplicated(["player_key","recent_team"],keep=False)
