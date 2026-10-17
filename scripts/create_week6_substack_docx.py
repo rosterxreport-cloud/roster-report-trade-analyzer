@@ -7,7 +7,7 @@ from docx.enum.table import WD_TABLE_ALIGNMENT,WD_CELL_VERTICAL_ALIGNMENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
-# Rebuild after the Week 6 Patriots passing-volume reconciliation.
+# Rebuild after all-team Week 6 passing-volume reconciliation.
 src=Path("data/projections/2026_week6_league_v4_full.csv")
 out=Path("data/projections/Roster_Report_Week6_Substack_Ready.docx")
 with src.open(newline="",encoding="utf-8") as f: players=list(csv.DictReader(f))
