@@ -273,36 +273,27 @@ for team in opponents:
    if brown in unknown:unknown.remove(brown)
    if brown not in high:high.append(brown)
    adjusted.add(brown)
- # Reconcile NE's target ledger to Maye's projected attempts. The
- # historical team targets/attempt ratio already accounts for throwaways,
- # spikes and other uncredited passes. Keep Brown at his return-workload
- # cap and allocate residual volume among active observed target earners.
+ # Team-wide reconciliation: allocate the target budget to established
+ # healthy receivers, keeping capped low-role/unknown players capped.
+ # The observed targets/attempts rate already excludes throwaways/spikes.
+ # NE Brown has a fixed managed-return workload of six targets.
  if team=="NE":
-  active=shares.index[shares.gt(0)]
   brown=by_name.get("A.J. Brown")
-  fixed_brown=float(shares.at[brown]) if brown is not None else 0.
-  others=[i for i in active if i!=brown]
-  remaining=max(0.,1.-fixed_brown)
-  current=float(shares.loc[others].sum())
-  if current>0:
-   shares.loc[others]*=remaining/current
-  low=[];unknown=[];high=list(active)
-  # Brown's share is fixed during normalization, not a spare capacity pool.
-  assert abs(float(shares.sum())-1.)<1e-7
- # Apply fringe caps BEFORE redistributing the remaining target budget.
- # Higher observed shares earn proportionally larger allocations.
+  if brown is not None:
+   shares.at[brown]=min(.20,6./max(budget,1.))
+   if brown in high:high.remove(brown)
+   if brown not in unknown:unknown.append(brown)
+ # Preserve every fixed/capped player's share. Only established target
+ # earners may absorb the residual; no generic depth-player inflation.
  fixed=float(shares.loc[low+unknown].sum())
  if high:
   available=max(0.,1.-fixed)
   weights=shares.loc[high].clip(lower=0)
-  if weights.sum()>available:shares.loc[high]=available*weights/weights.sum()
- elif shares.sum()>0:
-  # Without established target earners, avoid inventing allocations.
-  shares/=max(1.,float(shares.sum()))
+  if weights.sum()>0:shares.loc[high]=available*weights/weights.sum()
  # Never allow low-share or unobserved players to expand in normalization.
  assert all(shares.at[idx]<=.0200001 for idx in low if idx not in adjusted)
  assert all(shares.at[idx]<=max(float(obs_share.get(last.at[idx,"player_id"],1.)), .20 if team=="NE" and last.at[idx,"player_display_name"]=="A.J. Brown" else 0.)+1e-6 for idx in adjusted)
- assert all(shares.at[idx]<=.0400001 for idx in unknown)
+ assert all(shares.at[idx]<=.0400001 for idx in unknown if not (team=="NE" and last.at[idx,"player_display_name"]=="A.J. Brown"))
  for idx in eligible:
   old=float(last.at[idx,"pred_targets"])
   new=budget*float(shares.at[idx])
@@ -473,23 +464,33 @@ for idx in last.index:
  else:fields=("pred_rec_yds","pred_rec_td")
  for field in fields:last.at[idx,field]*=factor
  print("DEFENSE_AUDIT",last.at[idx,"player_display_name"],defense,pos,round(factor,4))
-# Reconcile New England's passing and receiving yard ledgers after the
-# defensive adjustment. Receiver yards sum to team QB passing yards by
-# definition; this changes the QB projection, not player receiving efficiency.
-ne_passers=last.index[(last.recent_team=="NE")&(last.position=="QB")]
-ne_receivers=last.index[(last.recent_team=="NE")&last.position.isin(["RB","WR","TE"])]
-if len(ne_passers)==1 and len(ne_receivers)>0:
- projected_receiving=float(last.loc[ne_receivers,"pred_rec_yds"].sum())
- if projected_receiving>0:
-  before=float(last.at[ne_passers[0],"pred_pass_yds"])
-  last.at[ne_passers[0],"pred_pass_yds"]=projected_receiving
-  print("NE_PASS_YARDS_RECONCILED",round(before,2),round(projected_receiving,2))
-# Hard checks prevent publishing mismatched team receiving totals.
-if len(ne_passers)==1:
- projected_targets=float(last.loc[ne_receivers,"pred_targets"].sum())
- expected_targets=float(last.at[ne_passers[0],"pred_att"])*float(team_target_rate.get("NE",.90))
- assert abs(projected_targets-expected_targets)<.10,(projected_targets,expected_targets)
- assert abs(float(last.loc[ne_receivers,"pred_rec_yds"].sum())-float(last.at[ne_passers[0],"pred_pass_yds"]))<.01
+# Reconcile each active team's passing-yard ledger with receiving yards.
+# Target budgets are calculated from team QB attempts and the historical
+# targets/attempt ratio; receiving yards must sum to QB passing yards.
+# The receiving projections retain their player-specific efficiency.
+team_reconciliation=[]
+for team in sorted(opponents):
+ passers=last.index[(last.recent_team==team)&(last.position=="QB")]
+ receivers=last.index[(last.recent_team==team)&last.position.isin(["RB","WR","TE"])]
+ if len(passers)!=1 or len(receivers)==0:
+  print("TEAM_RECONCILIATION_SKIP",team,"passers",len(passers),"receivers",len(receivers))
+  continue
+ qbidx=passers[0]
+ actual_targets=float(last.loc[receivers,"pred_targets"].sum())
+ target_budget=float(last.at[qbidx,"pred_att"])*float(team_target_rate.get(team,.90))
+ projected_yards=float(last.loc[receivers,"pred_rec_yds"].sum())
+ old_yards=float(last.at[qbidx,"pred_pass_yds"])
+ last.at[qbidx,"pred_pass_yds"]=projected_yards
+ target_gap=target_budget-actual_targets
+ # A nonzero residual must be explicitly reported rather than silently
+ # inventing usage for unknown or capped fringe players.
+ team_reconciliation.append((team,actual_targets,target_budget,target_gap,old_yards,projected_yards))
+ assert actual_targets<=float(last.at[qbidx,"pred_att"])+.01,(team,actual_targets)
+ assert abs(float(last.loc[receivers,"pred_rec_yds"].sum())-float(last.at[qbidx,"pred_pass_yds"]))<.01
+ print("TEAM_PASS_RECONCILED",team,"targets",round(actual_targets,2),
+       "budget",round(target_budget,2),"unallocated",round(target_gap,2),
+       "pass_yards_before",round(old_yards,2),"pass_yards_after",round(projected_yards,2))
+pd.DataFrame(team_reconciliation,columns=["Team","Projected_Targets","Expected_Targets","Unallocated_Targets","Previous_QB_Pass_Yds","Reconciled_QB_Pass_Yds"]).round(3).to_csv("data/projections/2026_week6_team_pass_reconciliation.csv",index=False)
 last["Opponent"]=last.recent_team.map(opponents)
 last["Total_xTD"]=last.pred_rush_td+last.pred_rec_td
 last["PPR"]=last.apply(score,axis=1)
