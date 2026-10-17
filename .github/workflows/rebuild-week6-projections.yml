@@ -49,4 +49,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/projections/2026_week6_*.csv
-          git diff --cached --quiet || (git commit -m "Rebuild audited Week 6 projections and Substack exports" && git push)
+          if ! git diff --cached --quiet; then
+            git commit -m "Rebuild audited Week 6 projections and Substack exports"
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            echo "Unable to publish projections after five push attempts" >&2
+            exit 1
+          fi
