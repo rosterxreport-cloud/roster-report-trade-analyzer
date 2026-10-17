@@ -94,9 +94,15 @@ def main():
     h=f[(f.season.eq(2025)) & f.position.eq('WR')].copy(); h['name_key']=h['player_display_name'].fillna(h.get('player_name','')).map(norm)
     h['games_2025']=pd.to_numeric(h.get('games'),errors='coerce'); h['targets_2025_role']=pd.to_numeric(h.get('targets'),errors='coerce')
     hist=h[['name_key','games_2025','targets_2025_role']].drop_duplicates('name_key')
-    route=load_route_metrics(a.source,set(hist.name_key)); hist=hist.merge(route,on='name_key',how='left')
+    try:
+        route=load_route_metrics(a.source,set(hist.name_key))
+    except (RuntimeError, OSError, TimeoutError, ValueError) as exc:
+        # Optional third-party HTML route data: preserve baseline when unavailable.
+        print(f'WARNING: WR route source unavailable ({exc}); preserving existing projections')
+        route=pd.DataFrame(columns=['name_key','routes_2025','tprr_2025','yprr_role_2025'])
+    hist=hist.merge(route,on='name_key',how='left')
     valid=hist[(hist.games_2025.ge(MIN_GAMES)) & hist.tprr_2025.notna()]
-    tprr_med=float(valid.tprr_2025.median()); yprr_med=float(valid.yprr_role_2025.median())
+    tprr_med=float(valid.tprr_2025.median()) if len(valid) else .2; yprr_med=float(valid.yprr_role_2025.median()) if len(valid) else 1.5
 
     m=s.copy(); m['name_key_avail']=m.name.map(norm); m=m.merge(hist,left_on='name_key_avail',right_on='name_key',how='left')
     m['availability_neutral_multiplier']=1.0; m['availability_neutral_target_pace']=np.nan; m['availability_neutral_evidence']=np.nan; m['availability_neutral_applied']=False; m['wr_routes_per_game_2025']=np.nan; m['wr_tprr_2025']=m.get('tprr_2025'); m['wr_role_yprr_2025']=m.get('yprr_role_2025')
