@@ -101,3 +101,17 @@ Values are rounded to two decimals and overall ranks are recalculated. The adjus
 After a new weekly master CSV and matching run manifest are finalized, run `python scripts/publish-weekly-projections.py`. The publisher selects the newest season/week with a manifest and fails on missing input, duplicate players, invalid statistics, mismatched counts or scoring discrepancies. It preserves the original model-run timestamp instead of presenting the upload time as a fresh forecast. The Week 7 export invokes it automatically. The publishing workflow also regenerates the snapshot when a weekly master or manifest changes on main. Future weekly exports should write the same master/manifest contract; this publishes existing projections and does not rerun the model or refresh injuries.
 
 Validate with `node --test tests/test-weekly-projections.mjs` and `python scripts/publish-weekly-projections.py`.
+
+## Search-friendly static build
+
+Vercel runs `node scripts/build-seo.mjs` and serves `dist/`. No dependency installation or framework migration is required. The build copies only public app assets and the current published projections/CSV; Python model scripts, tests, historical audits and repository documentation are not shipped as site content.
+
+The build reads the published player database, executes the **unchanged** browser injury layer and RB premium, and creates HTML ranking snapshots. It uses the existing projection display model for position statlines. It never runs rankings/projection models or modifies input data. Every deployment regenerates the snapshots from that deployment's inputs, including automated weekly data commits. Run the SEO/regression checks with:
+
+```bash
+node --test tests/test-seo.mjs tests/test-app.mjs tests/test-scoring-settings.mjs tests/test-weekly-projections.mjs
+```
+
+Canonical URLs use `https://www.rosterreport.app/`. Vercel normalizes page trailing slashes and redirects explicit index.html duplicates. The legacy Vercel production hostname remains accessible with canonical tags pointing at the custom domain: browser-local saved teams do not transfer across origins, so forcing an immediate hostname redirect would strand those users' saved teams. Preview hosts are not redirected to production.
+
+The build publishes a sitemap, robots file, metadata/social cards, rankings, scoring charts, full position projections and explanatory guides. Keep content claims consistent with the model. Do not add blanket crawl blocks, long-lived data caching, copied player analysis or generated pairwise trade pages. No Search Console settings are changed by the build. Git history provides the published-input change timestamp when available; missing history omits that label rather than inventing freshness.
