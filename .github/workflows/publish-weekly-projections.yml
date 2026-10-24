@@ -1,0 +1,33 @@
+name: Publish weekly projections page data
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data/projections/*_week*_league_v4_full.csv'
+      - 'data/projections/*_week*_run_manifest.json'
+      - 'scripts/publish-weekly-projections.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-weekly-projections
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: python scripts/publish-weekly-projections.py
+      - run: node --test tests/test-weekly-projections.mjs
+      - name: Commit validated website snapshot
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/weekly-projections.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish latest weekly projection snapshot"
+            git push
+          fi

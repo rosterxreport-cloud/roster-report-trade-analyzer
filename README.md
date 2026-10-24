@@ -93,3 +93,11 @@ Saving one or more SF slots enables a model-based QB scarcity premium across sea
 
 Values are rounded to two decimals and overall ranks are recalculated. The adjustment always starts from the unchanged database after the existing RB premium; it never compounds across saves, reloads, or scoring changes. Saving zero SF slots restores the standard values exactly. Selected trade players refresh when settings change. Workbook data, player positions, scoring formats, RB premiums, package discounts, elite thresholds, and verdict boundaries are unchanged.
 
+
+## Weekly projections page
+
+`/projections/` reads the validated `data/weekly-projections.json` snapshot. It supports player search, team/position filters, all three reception scoring formats, 4/6-point passing TDs, numeric sorting, pagination, full statlines and source-time availability notes. The analyzer’s trade values are independent of this page.
+
+After a new weekly master CSV and matching run manifest are finalized, run `python scripts/publish-weekly-projections.py`. The publisher selects the newest season/week with a manifest and fails on missing input, duplicate players, invalid statistics, mismatched counts or scoring discrepancies. It preserves the original model-run timestamp instead of presenting the upload time as a fresh forecast. The publishing workflow also regenerates the snapshot when a weekly master or manifest changes on main. Future weekly exports should write the same master/manifest contract; this publishes existing projections and does not rerun the model or refresh injuries.
+
+Validate with `node --test tests/test-weekly-projections.mjs` and `python scripts/publish-weekly-projections.py`.

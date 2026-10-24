@@ -1,0 +1,24 @@
+import {columns,points,selectPlayers,pageRows,statline} from './model.mjs';
+const $=id=>document.getElementById(id);const state={search:'',position:'',team:'',format:'ppr',passTD:4,sort:'points',direction:'desc',page:1,size:30,view:'all'};let data;
+const nf=new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function visibleColumns(){return columns.filter(([k])=>state.view==='all'||({passing:['Pass_Att','Pass_Yds','Pass_TD','INT'],rushing:['Rush_Att','Rush_Yds','Rush_TD'],receiving:['Targets','Receptions','Rec_Yds','Rec_TD']}[state.view]||[]).includes(k));}
+function render(){if(!data)return;const list=selectPlayers(data.players,state),pages=Math.max(1,Math.ceil(list.length/state.size));state.page=Math.min(state.page,pages);const cols=[['Player','Player'],['points',state.format==='ppr'?'PPR pts':state.format==='half'?'Half PPR pts':'Standard pts'],...visibleColumns()];
+ $('head').innerHTML='<tr>'+cols.map(([key,label])=>`<th scope="col" aria-sort="${state.sort===key?(state.direction==='asc'?'ascending':'descending'):'none'}"><button type="button" data-sort="${key}">${label}${state.sort===key?(state.direction==='asc'?' ↑':' ↓'):''}</button></th>`).join('')+'</tr>';
+ const start=(state.page-1)*state.size;const subset=pageRows(list,state.page,state.size);
+ $('rows').innerHTML=subset.length?subset.map((p,i)=>{const notes=[p.starterNote,p.note==='No current injury report designation'?'':p.note,p.snapStatus==='unmatched'?'Recent snap data unmatched; workload less certain.':''].filter(Boolean);return `<tr><td><details class="player-detail"><summary>${start+i+1}. ${esc(p.Player)}<span>${esc(p.Position)} · ${esc(p.Team)} vs ${esc(p.Opponent)}${p.starterNote?' · Conditional':''}</span></summary><p class="statline">${esc(statline(p))}</p>${notes.map(n=>`<p class="player-note">${esc(n)}</p>`).join('')}</details></td><td class="points">${nf.format(points(p,state.format,state.passTD))}</td>${visibleColumns().map(([k])=>`<td>${nf.format(p[k])}</td>`).join('')}</tr>`;}).join(''):`<tr><td colspan="${cols.length}">No players match. Try another name or reset the filters.</td></tr>`;
+ $('resultCount').textContent=`${list.length} of ${data.players.length} players${state.position?' · '+state.position:''}`;$('pageLabel').textContent=`Page ${state.page} of ${pages}`;$('previous').disabled=state.page<=1;$('next').disabled=state.page>=pages;
+}
+$('head').addEventListener('click',e=>{const b=e.target.closest('[data-sort]');if(!b)return;state.direction=state.sort===b.dataset.sort&&state.direction==='desc'?'asc':'desc';state.sort=b.dataset.sort;state.page=1;render();});
+for(const [id,key] of [['search','search'],['position','position'],['team','team'],['scoring','format'],['passTD','passTD'],['pageSize','size'],['statView','view']])$(id).addEventListener(id==='search'?'input':'change',e=>{state[key]=['passTD','size'].includes(key)?Number(e.target.value):e.target.value;state.page=1;render();});
+$('previous').addEventListener('click',()=>{state.page--;render();});$('next').addEventListener('click',()=>{state.page++;render();});$('reset').addEventListener('click',()=>{Object.assign(state,{search:'',position:'',team:'',sort:'points',direction:'desc',page:1});for(const id of ['search','position','team'])$(id).value='';render();});
+async function init(){try{const res=await fetch('../data/weekly-projections.json',{cache:'no-cache'});if(!res.ok)throw Error('Unavailable');data=await res.json();if(!data.players?.length||!data.updatedAt)throw Error('Incomplete');
+ $('weekLabel').textContent=`${data.season} SEASON · WEEK ${data.week}`;
+ const updated=new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Los_Angeles'}).format(new Date(data.updatedAt));
+ $('dataMeta').textContent=`${data.status} · Updated ${updated} PT · Includes games through Week ${data.throughWeek}`;
+ $('download').href='../'+data.source;$('download').download=`roster-report-${data.season}-week${data.week}.csv`;$('download').hidden=false;
+ const starters=Object.entries(data.conditionalStarters||{}).map(([team,name])=>`${team}: ${name}`);
+ $('runNotes').innerHTML=`<strong>Published run: Week ${data.week}.</strong> Projections reflect the timestamp above.${starters.length?' Conditional QB starters — '+esc(starters.join('; '))+'. Player details include availability notes.':''}`;$('runNotes').hidden=false;
+ for(const t of [...new Set(data.players.map(p=>p.Team))].sort())$('team').add(new Option(t,t));render();
+ }catch(e){$('error').hidden=false;$('error').textContent='The projections could not be loaded. Please refresh to try again.';$('resultCount').textContent='Projections unavailable';$('dataMeta').textContent='Latest published data is temporarily unavailable.';}}
+init();

@@ -1,0 +1,42 @@
+{
+  "as_of": "2026-10-22T14:50:09.399256+00:00",
+  "input_weeks": [
+    1,
+    6
+  ],
+  "snap_weeks": [
+    4,
+    6
+  ],
+  "forecast_week": 7,
+  "model_base": "projection_week6_league_v4.py at 1e1fab1",
+  "counts": {
+    "WR": 116,
+    "RB": 69,
+    "TE": 62,
+    "QB": 28
+  },
+  "conditional_starters": {
+    "BAL": "Tyler Huntley",
+    "TB": "Jalon Daniels"
+  },
+  "sources": {
+    "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+    "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
+    "roster.parquet": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
+    "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet"
+  },
+  "sha256": {
+    "games.csv": "da38c3a7b917d3e86dab35021703eee8375bd6fdeeeea9a10607a60b7d6ae6df",
+    "snaps.parquet": "715cad4c0619d89d400d3a57e79dd753bccc49d625a61cf7864bcd5038b3a4fa",
+    "injuries.parquet": "2ad0e6c6f00e8998b0433d17690539cdb23d26186e8e28d5a9f3bb1d896a6c6d",
+    "player_stats.parquet": "17c5e71586394a7786bba7f29e7606da83223f6defa2b76d7514895a36558cdd",
+    "roster.parquet": "702e30e9b1d10a940d832ff9529d2f40738dfc753091aeba4ad4b3b100e25cdd"
+  },
+  "validation": "28 starting QBs; 28 scheduled teams; unique players; team targets <= QB attempts; receiving yards match QB yards within rounding",
+  "review": "Baltimore and Tampa Bay QB starters remain conditional; unmatched snap records listed separately.",
+  "target_allocation": "Recency-weighted observed target shares for all measured players. No 12% threshold, no 2% receiving share cap, no upward redistribution. Downward team reconciliation and returning-starter adjustment retained.",
+  "verified_out_overrides": {
+    "00-0035719": "Deebo Samuel Sr. \u2014 Week 7 Out, hamstring; CBS injury report"
+  }
+}
