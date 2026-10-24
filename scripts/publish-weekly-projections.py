@@ -31,7 +31,7 @@ def build(source,manifest):
  if not all(counts.values()):raise ValueError('Missing position')
  if counts!=meta['counts']:raise ValueError('Manifest counts differ from master')
  return {'season':int(match[1]),'week':week,'updatedAt':meta['as_of'],'throughWeek':max(meta['input_weeks']),
- 'status':'Preliminary','source':str(source.relative_to(ROOT)),
+ 'status':'Preliminary','updateNote':meta.get('update_note',''),'source':str(source.relative_to(ROOT)),
  'conditionalStarters':meta.get('conditional_starters',{}),'counts':counts,'players':players}
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--source');ap.add_argument('--manifest');a=ap.parse_args()

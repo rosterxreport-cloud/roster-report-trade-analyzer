@@ -1,0 +1,45 @@
+[
+  {
+    "player_id": "00-0035700",
+    "Player": "Josh Jacobs",
+    "Team": "GB",
+    "Position": "RB",
+    "input_season": 2025,
+    "sample_games": 12,
+    "sample_weeks": [
+      1,
+      2,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      13,
+      14,
+      15
+    ],
+    "selection": "2025 regular-season games with at least 50% offensive snaps",
+    "full_workload_assumption": "User requested a full lead-back workload; no ramp-up reduction. Actual workload is not confirmed.",
+    "per_game": {
+      "attempts": 0.0,
+      "completions": 0.0,
+      "passing_yards": 0.0,
+      "passing_tds": 0.0,
+      "interceptions": 0.0,
+      "carries": 17.583333333333332,
+      "rushing_yards": 70.83333333333333,
+      "rushing_tds": 1.0833333333333333,
+      "targets": 3.3333333333333335,
+      "receptions": 2.75,
+      "receiving_yards": 22.5,
+      "receiving_tds": 0.08333333333333333
+    },
+    "target_share": 0.11267605633802817,
+    "source_urls": [
+      "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2025.parquet",
+      "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2025.parquet"
+    ]
+  }
+]

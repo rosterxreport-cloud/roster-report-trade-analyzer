@@ -18,7 +18,7 @@ async function init(){try{const res=await fetch('../data/weekly-projections.json
  $('dataMeta').textContent=`${data.status} · Updated ${updated} PT · Includes games through Week ${data.throughWeek}`;
  $('download').href='../'+data.source;$('download').download=`roster-report-${data.season}-week${data.week}.csv`;$('download').hidden=false;
  const starters=Object.entries(data.conditionalStarters||{}).map(([team,name])=>`${team}: ${name}`);
- $('runNotes').innerHTML=`<strong>Published run: Week ${data.week}.</strong> Projections reflect the timestamp above.${starters.length?' Conditional QB starters — '+esc(starters.join('; '))+'. Player details include availability notes.':''}`;$('runNotes').hidden=false;
+ $('runNotes').innerHTML=`<strong>Published run: Week ${data.week}.</strong> Projections reflect the timestamp above.${data.updateNote?' '+esc(data.updateNote):''}${starters.length?' Conditional QB starters — '+esc(starters.join('; '))+'. Player details include availability notes.':''}`;$('runNotes').hidden=false;
  for(const t of [...new Set(data.players.map(p=>p.Team))].sort())$('team').add(new Option(t,t));render();
  }catch(e){$('error').hidden=false;$('error').textContent='The projections could not be loaded. Please refresh to try again.';$('resultCount').textContent='Projections unavailable';$('dataMeta').textContent='Latest published data is temporarily unavailable.';}}
 init();

@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-22T14:50:09.399256+00:00",
+  "as_of": "2026-10-24T20:13:12.188088+00:00",
   "input_weeks": [
     1,
     6
@@ -11,8 +11,8 @@
   "forecast_week": 7,
   "model_base": "projection_week6_league_v4.py at 1e1fab1",
   "counts": {
-    "WR": 116,
-    "RB": 69,
+    "WR": 114,
+    "RB": 70,
     "TE": 62,
     "QB": 28
   },
@@ -27,16 +27,67 @@
     "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet"
   },
   "sha256": {
-    "games.csv": "da38c3a7b917d3e86dab35021703eee8375bd6fdeeeea9a10607a60b7d6ae6df",
-    "snaps.parquet": "715cad4c0619d89d400d3a57e79dd753bccc49d625a61cf7864bcd5038b3a4fa",
     "injuries.parquet": "2ad0e6c6f00e8998b0433d17690539cdb23d26186e8e28d5a9f3bb1d896a6c6d",
+    "games.csv": "da38c3a7b917d3e86dab35021703eee8375bd6fdeeeea9a10607a60b7d6ae6df",
+    "roster.parquet": "702e30e9b1d10a940d832ff9529d2f40738dfc753091aeba4ad4b3b100e25cdd",
     "player_stats.parquet": "17c5e71586394a7786bba7f29e7606da83223f6defa2b76d7514895a36558cdd",
-    "roster.parquet": "702e30e9b1d10a940d832ff9529d2f40738dfc753091aeba4ad4b3b100e25cdd"
+    "snaps.parquet": "715cad4c0619d89d400d3a57e79dd753bccc49d625a61cf7864bcd5038b3a4fa",
+    "jacobs_2025_full_role_inputs.csv": "a23d882d2a9cb2b917b3644bcbf245e559ec447541d781ddf6aa715f7aeb59ec",
+    "returning_player_profiles.json": "e5e267ce8f6a9a0e09fdb123cd9dec81f14a83da4ca8d231b8e0ac48b8a1bcbb"
   },
   "validation": "28 starting QBs; 28 scheduled teams; unique players; team targets <= QB attempts; receiving yards match QB yards within rounding",
   "review": "Baltimore and Tampa Bay QB starters remain conditional; unmatched snap records listed separately.",
   "target_allocation": "Recency-weighted observed target shares for all measured players. No 12% threshold, no 2% receiving share cap, no upward redistribution. Downward team reconciliation and returning-starter adjustment retained.",
   "verified_out_overrides": {
-    "00-0035719": "Deebo Samuel Sr. \u2014 Week 7 Out, hamstring; CBS injury report"
-  }
+    "00-0035719": "Deebo Samuel Sr. \u2014 Week 7 Out, hamstring; CBS injury report",
+    "00-0036912": "DeVonta Smith \u2014 Week 7 Out, hamstring; October 24 Eagles final report",
+    "00-0038393": "Dontayvion Wicks \u2014 Week 7 Out, ankle; October 24 Eagles final report"
+  },
+  "baseline_as_of": "2026-10-22T14:50:09.399256+00:00",
+  "update_note": "October 24 targeted update: Jacobs added with a full-workload assumption; DeVonta Smith and Dontayvion Wicks excluded. Other availability notes retain the October 22 baseline.",
+  "returning_player_profiles": [
+    {
+      "player_id": "00-0035700",
+      "Player": "Josh Jacobs",
+      "Team": "GB",
+      "Position": "RB",
+      "input_season": 2025,
+      "sample_games": 12,
+      "sample_weeks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        15
+      ],
+      "selection": "2025 regular-season games with at least 50% offensive snaps",
+      "full_workload_assumption": "User requested a full lead-back workload; no ramp-up reduction. Actual workload is not confirmed.",
+      "per_game": {
+        "attempts": 0.0,
+        "completions": 0.0,
+        "passing_yards": 0.0,
+        "passing_tds": 0.0,
+        "interceptions": 0.0,
+        "carries": 17.583333333333332,
+        "rushing_yards": 70.83333333333333,
+        "rushing_tds": 1.0833333333333333,
+        "targets": 3.3333333333333335,
+        "receptions": 2.75,
+        "receiving_yards": 22.5,
+        "receiving_tds": 0.08333333333333333
+      },
+      "target_share": 0.11267605633802817,
+      "source_urls": [
+        "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2025.parquet",
+        "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2025.parquet"
+      ]
+    }
+  ]
 }
