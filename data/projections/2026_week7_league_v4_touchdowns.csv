@@ -8,7 +8,7 @@ Tre Tucker,LV,LA,WR,0.002,0.819,0.82
 Pat Freiermuth,PIT,NO,TE,0.001,0.803,0.804
 DeMario Douglas,NE,CHI,WR,0.003,0.795,0.798
 Jameson Williams,DET,GB,WR,0.003,0.783,0.786
-Darius Cooper,PHI,DAL,WR,0.002,0.752,0.753
+Darius Cooper,PHI,DAL,WR,0.001,0.752,0.753
 George Kittle,SF,ATL,TE,0.0,0.736,0.736
 Ja'Marr Chase,CIN,BAL,WR,0.003,0.73,0.732
 Sam LaPorta,DET,GB,TE,0.0,0.726,0.726
@@ -46,7 +46,6 @@ Tetairoa McMillan,CAR,TB,WR,0.003,0.45,0.452
 Isaiah Likely,NYG,HOU,TE,0.0,0.445,0.445
 Carnell Tate,TEN,CLE,WR,0.002,0.443,0.444
 Colby Parkinson,LA,LV,TE,0.0,0.442,0.442
-Dameon Pierce,PHI,DAL,RB,0.411,0.026,0.437
 Ryan Flournoy,DAL,PHI,WR,0.002,0.427,0.429
 Ashton Jeanty,LV,LA,RB,0.336,0.091,0.426
 Bijan Robinson,ATL,SF,RB,0.352,0.057,0.409
@@ -150,6 +149,7 @@ Keenan Allen,IND,MIN,WR,0.003,0.103,0.106
 Theo Johnson,NYG,HOU,TE,0.0,0.104,0.104
 Seth McGowan,IND,MIN,RB,0.099,0.003,0.102
 CJ Donaldson,NO,PIT,RB,0.098,0.005,0.102
+Saquon Barkley,PHI,DAL,RB,0.075,0.018,0.093
 Jared Goff,DET,GB,QB,0.091,0.0,0.091
 Eli Raridon,NE,CHI,TE,0.0,0.087,0.087
 Kalif Raymond,CHI,NE,WR,0.001,0.082,0.084
@@ -176,6 +176,7 @@ Jalen Royals,KC,SEA,WR,0.003,0.049,0.052
 AJ Dillon,CAR,TB,RB,0.047,0.003,0.05
 Dak Prescott,DAL,PHI,QB,0.049,0.0,0.049
 Evan Engram,DEN,ARI,TE,0.0,0.048,0.048
+Dameon Pierce,PHI,DAL,RB,0.026,0.022,0.047
 A.J. Brown,NE,CHI,WR,0.003,0.044,0.047
 Tyjae Spears,TEN,CLE,RB,0.033,0.013,0.045
 Tanner McKee,PHI,DAL,QB,0.045,0.0,0.045
@@ -185,7 +186,6 @@ Justice Hill,BAL,CIN,RB,0.033,0.008,0.041
 Tyler Goodson,DAL,PHI,RB,0.032,0.008,0.041
 Emmett Johnson,KC,SEA,RB,0.031,0.008,0.039
 Rashod Bateman,BAL,CIN,WR,0.003,0.035,0.039
-Saquon Barkley,PHI,DAL,RB,0.025,0.013,0.038
 Aaron Rodgers,PIT,NO,QB,0.037,0.0,0.037
 Malik Washington,MIA,NYJ,WR,0.004,0.031,0.035
 Makai Lemon,PHI,DAL,WR,0.0,0.035,0.035
@@ -237,8 +237,8 @@ Tai Felton,MIN,IND,WR,0.004,0.008,0.012
 Myles Price,MIN,IND,WR,0.001,0.01,0.012
 Brevyn Spann-Ford,DAL,PHI,TE,0.0,0.012,0.012
 Calvin Ridley,TEN,CLE,WR,0.002,0.01,0.012
-Elijah Moore,PHI,DAL,WR,0.002,0.01,0.011
 Jonathan Mingo,DAL,PHI,WR,0.002,0.01,0.011
+Elijah Moore,PHI,DAL,WR,0.001,0.01,0.011
 Mark Redman,GB,DET,TE,0.0,0.011,0.011
 Breece Hall,NYJ,MIA,RB,0.0,0.011,0.011
 Tez Johnson,TB,CAR,WR,0.001,0.01,0.011
@@ -266,8 +266,8 @@ Deven Thompkins,LV,LA,WR,0.002,0.005,0.007
 Kalel Mullings,TEN,CLE,RB,0.007,0.0,0.007
 Adam Trautman,DEN,ARI,TE,0.0,0.006,0.006
 Johnny Mundt,PHI,DAL,TE,0.0,0.006,0.006
-Marquise Brown,PHI,DAL,WR,0.006,0.0,0.006
 Charlie Jones,NYG,HOU,WR,0.002,0.003,0.006
+Marquise Brown,PHI,DAL,WR,0.005,0.0,0.005
 Pharaoh Brown,IND,MIN,TE,0.0,0.004,0.004
 Ben Yurosek,MIN,IND,TE,0.0,0.004,0.004
 Marlin Klein,HOU,NYG,TE,0.0,0.004,0.004

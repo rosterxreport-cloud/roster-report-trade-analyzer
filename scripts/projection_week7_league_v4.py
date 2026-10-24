@@ -138,6 +138,14 @@ last=last[last.recent_team.eq(last.player_id.map(roster_teams))].copy()
 profiles=json.loads((INPUTS/"returning_player_profiles.json").read_text())
 returning_profiles={p["player_id"]:p for p in profiles}
 for pid,profile in returning_profiles.items():
+ if profile["input_season"]==2026:
+  assert profile["sample_games"]>=2 and pid not in excluded_ids
+  idx=last.index[last.player_id.eq(pid)]
+  assert len(idx)==1, "Returning current-season player missing"
+  for c in cols:last.loc[idx,"pre_"+c]=profile["per_game"][c]
+  last.loc[idx,"prior_opp"]=profile["per_game"]["carries"]+1.5*profile["per_game"]["targets"]
+  last.loc[idx,"Snap_Data_Status"]="healthy_role_return"
+  continue
  assert not w.player_id.eq(pid).any(), "Returning historical profile has 2026 usage"
  assert profile["sample_games"]>=8 and pid not in excluded_ids
  template=last[(last.recent_team==profile["Team"])&last.position.eq(profile["Position"])].iloc[0].copy()
@@ -242,7 +250,9 @@ for team in opponents:
   idx=last.index[(last.player_id==pid)&mask][0]
   backups=last.index[mask&last.position.eq("RB")&last.player_id.ne(pid)]
   pool=float(shares.loc[backups].sum())
-  if pool>0:shares.loc[backups]*=max(0.,pool-float(shares.at[idx]))/pool
+  original_lead=hist[hist.player_id.eq(pid)]
+  prior_lead_share=float(np.average(original_lead.weekly_share,weights=original_lead.recency_weight)) if len(original_lead) else 0.
+  if pool>0:shares.loc[backups]*=max(0.,pool+prior_lead_share-float(shares.at[idx]))/pool
  # League-wide injury-replacement regression. Compare a role player's
  # target share with and without an established high-share teammate.
  # Never treat an absent player's missed game as a zero-target appearance.

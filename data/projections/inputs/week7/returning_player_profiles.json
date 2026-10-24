@@ -41,5 +41,38 @@
       "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2025.parquet",
       "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2025.parquet"
     ]
+  },
+  {
+    "player_id": "00-0034844",
+    "Player": "Saquon Barkley",
+    "Team": "PHI",
+    "Position": "RB",
+    "input_season": 2026,
+    "sample_games": 2,
+    "sample_weeks": [
+      1,
+      3
+    ],
+    "selection": "2026 Weeks 1\u20136 games with at least 50% offensive snaps; excludes Week 4 hamstring exit and Week 2 limited participation",
+    "full_workload_assumption": "Expected to play Monday; conditional on active status. Restore observed healthy-game role; no independently confirmed workload guarantee.",
+    "per_game": {
+      "attempts": 0.0,
+      "completions": 0.0,
+      "passing_yards": 0.0,
+      "passing_tds": 0.0,
+      "interceptions": 0.0,
+      "carries": 15.0,
+      "rushing_yards": 82.55000000000001,
+      "rushing_tds": 0.0,
+      "targets": 2.0,
+      "receptions": 1.0,
+      "receiving_yards": -2.55,
+      "receiving_tds": 0.0
+    },
+    "target_share": 0.08363636363636363,
+    "source_urls": [
+      "https://www.philadelphiaeagles.com/news/cowboys-vs-eagles-injury-report-2026-nfl-week-7-saquon-barkley-jalyx-hunt"
+    ],
+    "feature_method": "Same alpha=.45 EWM as v4 on qualifying healthy appearances; recency-weighted observed target share."
   }
 ]
