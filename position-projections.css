@@ -1,0 +1,27 @@
+/* Position pages use a full table on wide screens and readable rows on phones. */
+.position-projections{max-width:100%;overflow:auto;border:1px solid var(--line);margin:24px 0}
+.position-projections table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+.position-projections caption{text-align:left;padding:14px;color:var(--muted);background:var(--navy)}
+.position-projections th,.position-projections td{padding:14px 12px;border-bottom:1px solid var(--line);text-align:left;overflow-wrap:normal;word-break:normal}
+.position-projections thead th{background:var(--blue);color:var(--yellow);white-space:nowrap}
+.position-projections tbody th{min-width:160px;line-height:1.6}
+.position-projections tbody th small{color:var(--muted);font-weight:500}
+.position-projections tbody td:not(.seo-statline){white-space:nowrap}
+.position-projections tbody tr:nth-child(even){background:#0b2743}
+.position-projections .mobile-score-label{display:none}
+.position-projections .seo-statline{line-height:1.7}
+.position-projections .seo-statline p{white-space:normal;margin:12px 0 0}
+@media(max-width:700px){
+  .position-projections{overflow:visible;border:0}
+  .position-projections table,.position-projections tbody{display:block;width:100%}
+  .position-projections caption{display:block;border:1px solid var(--line);margin-bottom:14px}
+  .position-projections thead{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  .position-projections tbody tr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 8px;padding:16px;margin-bottom:16px;border:1px solid var(--line);border-radius:10px;background:#0b223b}
+  .position-projections tbody th,.position-projections tbody td{display:block;min-width:0;padding:0;border:0}
+  .position-projections tbody th{grid-column:1/-1;font-size:18px}
+  .position-projections .projection-table tbody th[scope="row"]{width:auto;min-width:0;max-width:none}
+  .position-projections tbody th small{font-size:13px}
+  .position-projections tbody td:not(.seo-statline){font-size:18px;font-weight:800;color:var(--cream)}
+  .position-projections .mobile-score-label{display:block;font-size:11px;line-height:1.5;letter-spacing:0;color:var(--muted);font-weight:600;white-space:nowrap;margin-bottom:4px}
+  .position-projections tbody .seo-statline{grid-column:1/-1;min-width:0;width:100%;max-width:100%;font-size:14px;overflow-wrap:anywhere}
+}
