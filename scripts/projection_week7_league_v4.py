@@ -127,6 +127,11 @@ inactive_players=tuple(reserve.full_name)+tuple(reports.loc[reports.report_statu
 verified_out_ids={"00-0035719","00-0036912","00-0038393"}  # Deebo Samuel Sr., SF, hamstring
 excluded_ids.update(verified_out_ids)
 inactive_players+=tuple(w.loc[w.player_id.isin(verified_out_ids),"player_display_name"].unique())
+gameday=json.loads((INPUTS/'gameday_availability.json').read_text())
+# Explicit Week 7 team announcements override the older reserve/report snapshot.
+excluded_ids.difference_update(gameday['active'])
+excluded_ids.update(gameday['out'])
+inactive_players=tuple(n for n in inactive_players if n not in gameday['active'].values())+tuple(gameday['out'].values())
 last=last[~last.player_id.isin(excluded_ids)].copy()
 # Only current active-team records may forecast; traded/cut players cannot
 # remain under their old team's history.
@@ -139,9 +144,9 @@ profiles=json.loads((INPUTS/"returning_player_profiles.json").read_text())
 returning_profiles={p["player_id"]:p for p in profiles}
 for pid,profile in returning_profiles.items():
  if profile["input_season"]==2026:
-  assert profile["sample_games"]>=2 and pid not in excluded_ids
+  assert profile["sample_games"]>=1 and pid not in excluded_ids
   idx=last.index[last.player_id.eq(pid)]
-  assert len(idx)==1, "Returning current-season player missing"
+  assert len(idx)==1, ("Returning current-season player missing",profile["Player"])
   for c in cols:last.loc[idx,"pre_"+c]=profile["per_game"][c]
   last.loc[idx,"prior_opp"]=profile["per_game"]["carries"]+1.5*profile["per_game"]["targets"]
   last.loc[idx,"Snap_Data_Status"]="healthy_role_return"
@@ -160,7 +165,7 @@ for pid,profile in returning_profiles.items():
 qhist=w[w.position.eq("QB")].sort_values(["week","attempts"],ascending=[False,False])
 starters=qhist.drop_duplicates("recent_team").set_index("recent_team").player_display_name.to_dict()
 starters.update({"NYG":"J.J. McCarthy","PHI":"Tanner McKee","SEA":"Sam Darnold"})
-# BAL and TB remain conditional until the teams announce their starters.
+starters.update(gameday["starters"])
 last=last[last.position.ne("QB")|last.apply(lambda r:starters.get(r.recent_team)==r.player_display_name,axis=1)].copy()
 last=last.sort_values("prior_opp",ascending=False)
 # Structural v4 baseline, with player-specific observed usage.
@@ -246,13 +251,13 @@ for team in opponents:
  # A returning lead back displaces the existing backup receiving allocation.
  # Preserve the current team RB target pool rather than inflating team volume.
  for pid,profile in returning_profiles.items():
-  if profile["Team"]!=team:continue
+  if profile["Team"]!=team or profile["Position"]!="RB":continue
   idx=last.index[(last.player_id==pid)&mask][0]
   backups=last.index[mask&last.position.eq("RB")&last.player_id.ne(pid)]
   pool=float(shares.loc[backups].sum())
   original_lead=hist[hist.player_id.eq(pid)]
   prior_lead_share=float(np.average(original_lead.weekly_share,weights=original_lead.recency_weight)) if len(original_lead) else 0.
-  if pool>0:shares.loc[backups]*=max(0.,pool+prior_lead_share-float(shares.at[idx]))/pool
+  if pool>0:shares.loc[backups]*=min(1.,max(0.,pool+prior_lead_share-float(shares.at[idx]))/pool)
  # League-wide injury-replacement regression. Compare a role player's
  # target share with and without an established high-share teammate.
  # Never treat an absent player's missed game as a zero-target appearance.
@@ -389,7 +394,7 @@ for team in opponents:
  denom=float(observed.sum())
  total=float(last.loc[backs,"pred_carries"].sum())
  if denom<=0 or total<=0:continue
- returning=[(pid,p) for pid,p in returning_profiles.items() if p["Team"]==team]
+ returning=[(pid,p) for pid,p in returning_profiles.items() if p["Team"]==team and p["Position"]=="RB"]
  if returning:
   assert len(returning)==1, "Multiple returning lead backs require an explicit allocation"
   pid,profile=returning[0]

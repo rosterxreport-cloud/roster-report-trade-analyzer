@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-24T20:22:12.059087+00:00",
+  "as_of": "2026-10-25T16:54:05.341770+00:00",
   "input_weeks": [
     1,
     6
@@ -11,15 +11,12 @@
   "forecast_week": 7,
   "model_base": "projection_week6_league_v4.py at 1e1fab1",
   "counts": {
-    "WR": 114,
-    "RB": 70,
-    "TE": 62,
+    "WR": 107,
+    "RB": 66,
+    "TE": 59,
     "QB": 28
   },
-  "conditional_starters": {
-    "BAL": "Tyler Huntley",
-    "TB": "Jalon Daniels"
-  },
+  "conditional_starters": {},
   "sources": {
     "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
     "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
@@ -27,25 +24,50 @@
     "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet"
   },
   "sha256": {
-    "barkley_2026_healthy_role_inputs.csv": "dbeb5025c8844951b5e961d0ad8c6346f739fd1ceb9df2f306b312f80eb66e98",
+    "returning_player_profiles.json": "3681ec9d7c06498d84ce771a2a327ecc6676ec1f604996824c6c206ecaea5205",
     "injuries.parquet": "2ad0e6c6f00e8998b0433d17690539cdb23d26186e8e28d5a9f3bb1d896a6c6d",
-    "games.csv": "da38c3a7b917d3e86dab35021703eee8375bd6fdeeeea9a10607a60b7d6ae6df",
-    "roster.parquet": "702e30e9b1d10a940d832ff9529d2f40738dfc753091aeba4ad4b3b100e25cdd",
-    "player_stats.parquet": "17c5e71586394a7786bba7f29e7606da83223f6defa2b76d7514895a36558cdd",
+    "barkley_2026_healthy_role_inputs.csv": "dbeb5025c8844951b5e961d0ad8c6346f739fd1ceb9df2f306b312f80eb66e98",
     "snaps.parquet": "715cad4c0619d89d400d3a57e79dd753bccc49d625a61cf7864bcd5038b3a4fa",
+    "player_stats.parquet": "17c5e71586394a7786bba7f29e7606da83223f6defa2b76d7514895a36558cdd",
+    "roster.parquet": "702e30e9b1d10a940d832ff9529d2f40738dfc753091aeba4ad4b3b100e25cdd",
     "jacobs_2025_full_role_inputs.csv": "a23d882d2a9cb2b917b3644bcbf245e559ec447541d781ddf6aa715f7aeb59ec",
-    "returning_player_profiles.json": "bfc4c4e52182c98ba766f2831c57307d0ef0cda139bc81ecaeb0ed2c93489a66"
+    "games.csv": "da38c3a7b917d3e86dab35021703eee8375bd6fdeeeea9a10607a60b7d6ae6df",
+    "gameday_availability.json": "b05ac5633400adca57bb5f70fe3bad651e64b2f6e6589297b16f09c661366787"
   },
   "validation": "28 starting QBs; 28 scheduled teams; unique players; team targets <= QB attempts; receiving yards match QB yards within rounding",
-  "review": "Baltimore and Tampa Bay QB starters remain conditional; unmatched snap records listed separately.",
+  "review": "Later-game inactive decisions remain pending, including Puka Nacua and Monday Saquon Barkley. Kirk, Dell and Sampson lack usable 2026 offensive inputs; no numeric forecasts fabricated. Returning RB samples are small. Unmatched snap records listed separately.",
   "target_allocation": "Recency-weighted observed target shares for all measured players. No 12% threshold, no 2% receiving share cap, no upward redistribution. Downward team reconciliation and returning-starter adjustment retained.",
   "verified_out_overrides": {
-    "00-0035719": "Deebo Samuel Sr. \u2014 Week 7 Out, hamstring; CBS injury report",
-    "00-0036912": "DeVonta Smith \u2014 Week 7 Out, hamstring; October 24 Eagles final report",
-    "00-0038393": "Dontayvion Wicks \u2014 Week 7 Out, ankle; October 24 Eagles final report"
+    "00-0037085": "Tyler Badie \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0036912": "DeVonta Smith \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0036876": "Kylen Granson \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0036862": "Ben Skowronek \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0037801": "KaVontae Turpin \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0037746": "Brian Robinson \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0037666": "Jalen Tolbert \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0038120": "Breece Hall \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0038393": "Dontayvion Wicks \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0039067": "Rashee Rice \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0039032": "Tyjae Spears \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0039165": "Zach Charbonnet \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0039816": "Anthony Gould \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0039847": "Theo Johnson \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0040078": "Brashard Smith \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0040129": "Emeka Egbuka \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0040128": "Tyler Warren \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0035719": "Deebo Samuel Sr. \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0035685": "David Montgomery \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0035208": "Olamide Zaccheaus \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0040581": "Dont'e Thornton Jr. \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0040886": "Nicholas Singleton \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0040876": "Elijah Sarratt \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0034837": "Calvin Ridley \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0034796": "Lamar Jackson \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0041027": "Jeremiyah Love \u2014 confirmed Week 7 Out/inactive; October 25 availability check",
+    "00-0031408": "Mike Evans \u2014 confirmed Week 7 Out/inactive; October 25 availability check"
   },
   "baseline_as_of": "2026-10-22T14:50:09.399256+00:00",
-  "update_note": "October 24 targeted update: Jacobs added with a full-workload assumption; Barkley restored to his observed healthy 2026 lead-back role, conditional on playing Monday; DeVonta Smith and Dontayvion Wicks excluded. Other availability notes retain the October 22 baseline.",
+  "update_note": "October 25 pregame injury refresh: confirmed inactives excluded; Mayfield and Huntley confirmed starters; Mason and Coleman restored using recorded 2026 roles. Jacobs full-workload and Barkley conditional healthy-role assumptions retained. Puka remains conditional. Kirk, Dell and Sampson are activated but have no usable 2026 offensive sample, so no numeric forecast is invented. Thursday and Paris-game forecasts preserved for audit.",
   "returning_player_profiles": [
     {
       "player_id": "00-0035700",
@@ -122,6 +144,85 @@
         "https://www.philadelphiaeagles.com/news/cowboys-vs-eagles-injury-report-2026-nfl-week-7-saquon-barkley-jalyx-hunt"
       ],
       "feature_method": "Same alpha=.45 EWM as v4 on qualifying healthy appearances; recency-weighted observed target share."
+    },
+    {
+      "player_id": "00-0037525",
+      "Player": "Jordan Mason",
+      "Team": "MIN",
+      "Position": "RB",
+      "input_season": 2026,
+      "sample_games": 1,
+      "sample_weeks": [
+        1
+      ],
+      "selection": "All recorded 2026 appearances before Week 7; small-sample returning-role assumption",
+      "per_game": {
+        "attempts": 0.0,
+        "completions": 0.0,
+        "passing_yards": 0.0,
+        "passing_tds": 0.0,
+        "interceptions": 0.0,
+        "carries": 15.0,
+        "rushing_yards": 59.0,
+        "rushing_tds": 1.0,
+        "targets": 0.0,
+        "receptions": 0.0,
+        "receiving_yards": 0.0,
+        "receiving_tds": 0.0
+      },
+      "target_share": 0.0,
+      "source_urls": [
+        "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet"
+      ]
+    },
+    {
+      "player_id": "00-0041496",
+      "Player": "Jonah Coleman",
+      "Team": "DEN",
+      "Position": "RB",
+      "input_season": 2026,
+      "sample_games": 2,
+      "sample_weeks": [
+        1,
+        2
+      ],
+      "selection": "All recorded 2026 appearances before Week 7; small-sample returning-role assumption",
+      "per_game": {
+        "attempts": 0.0,
+        "completions": 0.0,
+        "passing_yards": 0.0,
+        "passing_tds": 0.0,
+        "interceptions": 0.0,
+        "carries": 5.0,
+        "rushing_yards": 19.5,
+        "rushing_tds": 0.5,
+        "targets": 1.5,
+        "receptions": 1.5,
+        "receiving_yards": 9.5,
+        "receiving_tds": 0.0
+      },
+      "target_share": 0.05357142857142857,
+      "source_urls": [
+        "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet"
+      ]
     }
+  ],
+  "confirmed_starters": {
+    "BAL": "Tyler Huntley",
+    "TB": "Baker Mayfield"
+  },
+  "gameday_sources": [
+    "https://www.fantasypros.com/nfl/players/inactives.php",
+    "https://www.newyorkjets.com/news/jets-vs-dolphins-nfl-game-inactives-10-25-2026",
+    "https://www.tennesseetitans.com/news/game-inactives-week-7-titans-vs-browns",
+    "https://www.buccaneers.com/news/bucs-panthers-inactives-baker-mayfield-returns-action",
+    "https://amp.nfl.com/news/nfl-week-7-injury-report-2026-season",
+    "https://www.49ers.com/news/stout-kirk-active-vs-falcons-inactives-week-7-sfvsatl",
+    "https://www.vikings.com/news/jordan-mason-activated-colts-game-week-7-2026"
+  ],
+  "active_without_usable_2026_sample": [
+    "Christian Kirk",
+    "Tank Dell",
+    "Dylan Sampson"
   ]
 }

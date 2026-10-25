@@ -1,0 +1,57 @@
+{
+  "checked_at": "2026-10-25",
+  "out": {
+    "00-0037085": "Tyler Badie",
+    "00-0036912": "DeVonta Smith",
+    "00-0036876": "Kylen Granson",
+    "00-0036862": "Ben Skowronek",
+    "00-0037801": "KaVontae Turpin",
+    "00-0037746": "Brian Robinson",
+    "00-0037666": "Jalen Tolbert",
+    "00-0038120": "Breece Hall",
+    "00-0038393": "Dontayvion Wicks",
+    "00-0039067": "Rashee Rice",
+    "00-0039032": "Tyjae Spears",
+    "00-0039165": "Zach Charbonnet",
+    "00-0039816": "Anthony Gould",
+    "00-0039847": "Theo Johnson",
+    "00-0040078": "Brashard Smith",
+    "00-0040129": "Emeka Egbuka",
+    "00-0040128": "Tyler Warren",
+    "00-0035719": "Deebo Samuel Sr.",
+    "00-0035685": "David Montgomery",
+    "00-0035208": "Olamide Zaccheaus",
+    "00-0040581": "Dont'e Thornton Jr.",
+    "00-0040886": "Nicholas Singleton",
+    "00-0040876": "Elijah Sarratt",
+    "00-0034837": "Calvin Ridley",
+    "00-0034796": "Lamar Jackson",
+    "00-0041027": "Jeremiyah Love",
+    "00-0031408": "Mike Evans"
+  },
+  "active": {
+    "00-0037525": "Jordan Mason",
+    "00-0038977": "Tank Dell",
+    "00-0039890": "Adonai Mitchell",
+    "00-0039874": "Jaylen Wright",
+    "00-0040162": "Dylan Sampson",
+    "00-0035700": "Josh Jacobs",
+    "00-0034855": "Baker Mayfield",
+    "00-0034775": "Christian Kirk",
+    "00-0041523": "Caleb Douglas",
+    "00-0041496": "Jonah Coleman"
+  },
+  "starters": {
+    "BAL": "Tyler Huntley",
+    "TB": "Baker Mayfield"
+  },
+  "sources": [
+    "https://www.fantasypros.com/nfl/players/inactives.php",
+    "https://www.newyorkjets.com/news/jets-vs-dolphins-nfl-game-inactives-10-25-2026",
+    "https://www.tennesseetitans.com/news/game-inactives-week-7-titans-vs-browns",
+    "https://www.buccaneers.com/news/bucs-panthers-inactives-baker-mayfield-returns-action",
+    "https://amp.nfl.com/news/nfl-week-7-injury-report-2026-season",
+    "https://www.49ers.com/news/stout-kirk-active-vs-falcons-inactives-week-7-sfvsatl",
+    "https://www.vikings.com/news/jordan-mason-activated-colts-game-week-7-2026"
+  ]
+}

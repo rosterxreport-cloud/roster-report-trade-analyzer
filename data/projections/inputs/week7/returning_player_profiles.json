@@ -74,5 +74,66 @@
       "https://www.philadelphiaeagles.com/news/cowboys-vs-eagles-injury-report-2026-nfl-week-7-saquon-barkley-jalyx-hunt"
     ],
     "feature_method": "Same alpha=.45 EWM as v4 on qualifying healthy appearances; recency-weighted observed target share."
+  },
+  {
+    "player_id": "00-0037525",
+    "Player": "Jordan Mason",
+    "Team": "MIN",
+    "Position": "RB",
+    "input_season": 2026,
+    "sample_games": 1,
+    "sample_weeks": [
+      1
+    ],
+    "selection": "All recorded 2026 appearances before Week 7; small-sample returning-role assumption",
+    "per_game": {
+      "attempts": 0.0,
+      "completions": 0.0,
+      "passing_yards": 0.0,
+      "passing_tds": 0.0,
+      "interceptions": 0.0,
+      "carries": 15.0,
+      "rushing_yards": 59.0,
+      "rushing_tds": 1.0,
+      "targets": 0.0,
+      "receptions": 0.0,
+      "receiving_yards": 0.0,
+      "receiving_tds": 0.0
+    },
+    "target_share": 0.0,
+    "source_urls": [
+      "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet"
+    ]
+  },
+  {
+    "player_id": "00-0041496",
+    "Player": "Jonah Coleman",
+    "Team": "DEN",
+    "Position": "RB",
+    "input_season": 2026,
+    "sample_games": 2,
+    "sample_weeks": [
+      1,
+      2
+    ],
+    "selection": "All recorded 2026 appearances before Week 7; small-sample returning-role assumption",
+    "per_game": {
+      "attempts": 0.0,
+      "completions": 0.0,
+      "passing_yards": 0.0,
+      "passing_tds": 0.0,
+      "interceptions": 0.0,
+      "carries": 5.0,
+      "rushing_yards": 19.5,
+      "rushing_tds": 0.5,
+      "targets": 1.5,
+      "receptions": 1.5,
+      "receiving_yards": 9.5,
+      "receiving_tds": 0.0
+    },
+    "target_share": 0.05357142857142857,
+    "source_urls": [
+      "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet"
+    ]
   }
 ]
