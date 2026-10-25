@@ -2,25 +2,25 @@
   "schemaVersion": 1,
   "season": 2026,
   "throughWeek": 6,
-  "capturedAt": "2026-10-25T01:10:47.475934+00:00",
+  "capturedAt": "2026-10-25T01:53:01.876655+00:00",
   "sources": [
     {
       "file": "player_stats.parquet",
       "url": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
       "sha256": "eee4191d540b95ebbc40748dc4e42fef25b69b4f8c0f47f8c4eaf4b6fa040ac6",
-      "capturedAt": "2026-10-25T01:10:47.475934+00:00"
+      "capturedAt": "2026-10-25T01:53:01.876655+00:00"
     },
     {
       "file": "snaps.parquet",
       "url": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
       "sha256": "5065e069449ec1330f05469c0a18d01a2a32e633ee0b7a0a15939d87071619fb",
-      "capturedAt": "2026-10-25T01:10:47.475934+00:00"
+      "capturedAt": "2026-10-25T01:53:01.876655+00:00"
     },
     {
       "file": "roster.parquet",
       "url": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
       "sha256": "5995112b9b4706b923a480eabc941b40a4efbc76f6cfc164d883f137f997542c",
-      "capturedAt": "2026-10-25T01:10:47.475934+00:00"
+      "capturedAt": "2026-10-25T01:53:01.876655+00:00"
     }
   ],
   "players": {
