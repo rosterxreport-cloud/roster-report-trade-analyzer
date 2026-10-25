@@ -124,7 +124,7 @@ def dst_model(t25,t26,schedules):
     f=pd.DataFrame(rows);f["score"]=.35*pct(f.fantasy)+.15*pct(f.sacks)+.15*pct(f.takeaways)+.10*pct(f.touchdowns)+.10*pct(f.points_allowed,False)+.10*pct(f.pressure)+.05*pct(f.fantasy);f["value"]=(8+20*f.score/100).round(2)
     return {r.team:r.to_dict() for _,r in f.iterrows()}
 
-def live_scores(data,scoring):
+def live_scores(data,scoring,evidence=None):
     """Position-specific 2026 signal using the established Roster Report formulas.
 
     Each metric is converted to a within-position percentile before weighting.
@@ -187,6 +187,7 @@ def live_scores(data,scoring):
     f["score"]=50.0
     for pos,g in f.groupby("position"):
         score=pd.Series(0.0,index=g.index)
+        metric_audit={}
         for metric,w in weights[pos]:
             s=pd.to_numeric(g[metric],errors="coerce")
             if s.notna().any():
@@ -194,8 +195,21 @@ def live_scores(data,scoring):
                 ranked=ranked.fillna(50)
             else:
                 ranked=pd.Series(50.0,index=g.index)
+            if evidence is not None:
+                # Observation provenance is separate from the model's existing
+                # neutral/zero defaults. Never present an imputed input as NFL data.
+                base_metric=metric.lstrip("_")
+                source_cols={"fp_g":["fantasy_points_ppr"] if scoring=="ppr" else ["fantasy_points"] if scoring=="standard" else ["fantasy_points","fantasy_points_ppr"],"ypc":["rushing_yards","carries"],"rb_td_rate":["rushing_tds","receiving_tds","carries","targets"],"rec_td_rate":["receiving_tds","targets"],"completion_pct":["completions","attempts"],"int_avoid":["interceptions","attempts"],"epa_g":["passing_epa","rushing_epa","receiving_epa"],"qb_epa_g":["passing_epa","rushing_epa"],"rec_epa_g":["receiving_epa"],"first_down_g":["receiving_first_downs","rushing_first_downs"]}.get(base_metric,[base_metric[:-2] if base_metric.endswith("_g") else base_metric])
+                observed=pd.Series(True,index=g.index)
+                for col in source_cols:
+                    observed &= pd.to_numeric(g[col],errors="coerce").notna() if col in g else False
+                observed &= s.notna()
+                metric_audit[metric]={str(idx):{"observed":bool(observed.loc[idx]),"input":float(s.loc[idx]) if observed.loc[idx] else None,"modelInput":float(s.loc[idx]) if pd.notna(s.loc[idx]) else None,"percentile":float(ranked.loc[idx]),"weight":w,"contribution":float(w*ranked.loc[idx])} for idx in g.index}
             score=score+w*ranked
         f.loc[g.index,"score"]=score
+        if evidence is not None:
+            for idx in g.index:
+                evidence.setdefault("signals",{})[str(f.loc[idx,"player_id"]) if "player_id" in f else namekey(f.loc[idx,"player_display_name"]) ]={"name":str(f.loc[idx,"player_display_name"]),"position":pos,"score":float(score.loc[idx]),"metrics":{m:values[str(idx)] for m,values in metric_audit.items()}}
     return dict(zip(f.player_display_name.map(namekey),f.score))
 
 def role_reality_modifier(p, matches):
@@ -257,8 +271,8 @@ def role_reality_modifier(p, matches):
 def special(nm,tm,pos,d,rank):
     return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False,"rankingScore":round(d["score"],2)}
 
-def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries,current_week):
-    old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring);out=[]
+def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries,current_week,evidence=None):
+    old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring,evidence);out=[]
     if not special_only and scoring=="half":
         debug=[]
         for nm in ("Jahmyr Gibbs","Bijan Robinson","Christian McCaffrey","Jonathan Taylor","James Cook III"):
@@ -324,6 +338,8 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             # Availability remains downstream so an unavailable player cannot
             # regain value merely because the rankings signal is strong.
             q["value"]=round(max(0.0,q["value"]-injury_deduction(adj)),2) if adj else q["value"]
+        if evidence is not None and not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None:
+            evidence.setdefault("calculations",{})[p["name"]]={"games":games,"hasLiveSignal":has_live,"priorAnalytics":prior,"liveSignal":live,"preseasonValue":preseason,"context":ctx_adj,"seasonWeight":season_w,"priorWeight":pre_w,"contextWeight":ctx_w,"roleMultiplier":role_mod,"rankingScore":q["rankingScore"],"analyticsScore":q["analyticsScore"],"injuryDeduction":injury_deduction(adj) if adj else 0,"value":q["value"]}
         out.append(q)
     # Restore any 2026 QB who is missing from the locked preseason pool but has
     # played a meaningful role. Forty offensive snaps is roughly a substantial
@@ -445,7 +461,7 @@ def injury_deduction(adj):
     return min(cap,max(0.0,severity*25.0))
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injury_path=a.players.parent/"injury-adjustments.json";injuries=(json.loads(injury_path.read_text()).get("players",{}) if injury_path.exists() else {})
+    ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");ap.add_argument("--evidence",type=Path);a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injury_path=a.players.parent/"injury-adjustments.json";injuries=(json.loads(injury_path.read_text()).get("players",{}) if injury_path.exists() else {})
     for scoring,rows in before.items():
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250:raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         for p in rows:p.setdefault("rankingScore",round(float(p.get("value",0)),2))
@@ -468,5 +484,18 @@ def main():
     t25,t26=stats(TEAM_URL,2025),stats(TEAM_URL,2026);schedules=pd.read_csv(SCHEDULE_URL,low_memory=False);kvals=kicker_model(kickers,p25,p26,t25,t26);dvals=dst_model(t25,t26,schedules)
     current_week=int(json.loads(injury_path.read_text()).get("sourceWeek",0)) if injury_path.exists() else 0
     if current_week<1: raise RuntimeError("Missing current NFL week for preseason protection expiry")
-    after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries,current_week) for s in FORMATS};validate(after);oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
+    audit={s:{} for s in FORMATS} if a.evidence else None
+    after={s:update(before[s],s,kickers,kvals,dvals,p26,snaps26,a.special_teams_only,baseline,injuries,current_week,audit[s] if audit is not None else None) for s in FORMATS};validate(after);
+    if a.evidence:
+        try:
+            a.evidence.parent.mkdir(parents=True,exist_ok=True)
+            previous_path=a.evidence.with_name("ranking-evidence.json")
+            previous_audit=json.loads(previous_path.read_text()) if previous_path.exists() else {}
+            payload={"previousCalculations":{f:d.get("calculations",{}) for f,d in previous_audit.get("formats",{}).items()},"schemaVersion":1,"capturedAt":datetime.now(timezone.utc).isoformat(),"sourceWeek":current_week,"formats":audit,"published":after,"previousPublished":before}
+            a.evidence.write_text(json.dumps(payload,indent=2,allow_nan=False)+"\n")
+        except Exception as exc:
+            if a.evidence.exists(): a.evidence.unlink()
+            print(f"WARNING: ranking evidence unavailable; profiles retain prior snapshot: {exc}")
+    oldk={team(p["team"]):p["name"] for p in before["half"] if p["pos"]=="K"};rendered=json.dumps(after,indent=2,ensure_ascii=False)+"\n";changed=rendered!=a.players.read_text();a.players.write_text(rendered);a.summary.write_text(make_summary(before,after,oldk,kickers,changed));print(f"Validated {len(after['half'])} records per format; verified 32 K and 32 D/ST")
 if __name__=="__main__":main()
+

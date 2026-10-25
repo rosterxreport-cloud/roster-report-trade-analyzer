@@ -30,6 +30,7 @@ concurrency:
 
 jobs:
   refresh:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -52,7 +53,7 @@ jobs:
           # All refresh triggers run the full in-season model. The old push path
           # refreshed only K/DST, which left core QB/RB/WR/TE rankings stale after
           # model-code changes were merged.
-          python scripts/refresh-live-player-data.py
+          python scripts/refresh-live-player-data.py --evidence data/ranking-evidence.pending.json
           python scripts/build-scoring-profiles.py
           # Injury adjustments are part of the same Tuesday publication cycle.
           # Fail closed if the injury file is stale so rankings cannot silently
@@ -74,11 +75,29 @@ jobs:
         run: python scripts/validate-live-player-data.py && python tests/test-scoring-profiles.py
       - name: Verify My Team and Superflex
         run: node tests/test-app.mjs && node tests/test-scoring-settings.mjs
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build verified player profiles without blocking rankings
+        id: profiles
+        continue-on-error: true
+        run: |
+          mkdir -p .profile-candidate
+          python scripts/build-player-evidence.py --output .profile-candidate/statistics.json
+          node scripts/publish-player-profiles.mjs --evidence .profile-candidate/statistics.json --ranking-evidence data/ranking-evidence.pending.json --require-fresh
+          node --test tests/test-player-profiles.mjs
+      - name: Report retained profile snapshot
+        if: steps.profiles.outcome == 'failure'
+        run: |
+          echo '::warning::Player profile update failed; the last validated profile snapshot is retained.'
+          echo 'Player profiles: update failed. Last validated profiles retained; inspect the profile step logs.' >> "$GITHUB_STEP_SUMMARY"
+          git restore -- data/player-profiles.json data/player-registry.json data/player-evidence.json
+          if git ls-files --error-unmatch data/ranking-evidence.json >/dev/null 2>&1; then git restore -- data/ranking-evidence.json; else rm -f data/ranking-evidence.json; fi
       - name: Detect website update
         id: changes
         shell: bash
         run: |
-          if git diff --quiet -- players.json scoring-profiles.json injury-adjustments.json; then
+          if git diff --quiet -- players.json scoring-profiles.json injury-adjustments.json data/player-profiles.json data/player-registry.json data/player-evidence.json data/ranking-evidence.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -99,6 +118,8 @@ jobs:
         run: |
           git config user.name 'roster-report-data-bot'
           git config user.email 'rosterxreport@gmail.com'
-          git add players.json data/live-refresh-baseline.json scoring-profiles.json injury-adjustments.json
+          git add players.json data/live-refresh-baseline.json scoring-profiles.json injury-adjustments.json data/player-profiles.json data/player-registry.json data/player-evidence.json
+          if [[ -f data/ranking-evidence.json ]]; then git add data/ranking-evidence.json; fi
           git commit -m 'Refresh 2026 in-season player data'
           git push origin HEAD:main
+

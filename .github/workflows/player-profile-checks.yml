@@ -1,0 +1,28 @@
+name: Validate automated player profiles
+on:
+  pull_request:
+  push:
+    branches: ['feature/player-profiles']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'beautifulsoup4==4.13.5'
+      - run: python tests/test-ranking-evidence.py
+      - run: node --test tests/test-player-profiles.mjs tests/test-seo.mjs tests/test-app.mjs tests/test-scoring-settings.mjs tests/test-weekly-projections.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: player-profile-site-preview
+          path: dist/
+          retention-days: 14

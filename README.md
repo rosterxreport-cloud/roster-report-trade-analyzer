@@ -58,7 +58,7 @@ The calculation order is: live Roster Report value (including the existing RB pr
 
 ## 2026 in-season refresh
 
-`.github/workflows/refresh-2026-player-data.yml` runs on alternating ISO weeks and with `workflow_dispatch`. It reads the latest nflverse 2026 player/team data, moves only the current-season portion of the locked 35% analytics component, rebuilds all three scoring formats, refreshes documented scoring profiles, and rechecks every primary kicker against PFN's current all-team depth chart. AW inputs, veteran and rookie pathways, Superflex behavior, trade-engine thresholds, and the Tier 0 Bijan Robinson/Jahmyr Gibbs premium are not rewritten.
+`.github/workflows/refresh-2026-player-data.yml` runs every Tuesday and with `workflow_dispatch`. It reads the latest nflverse 2026 player/team data, moves only the current-season portion of the locked 35% analytics component, rebuilds all three scoring formats, refreshes documented scoring profiles, and rechecks every primary kicker against PFN's current all-team depth chart. AW inputs, veteran and rookie pathways, Superflex behavior, trade-engine thresholds, and the Tier 0 Bijan Robinson/Jahmyr Gibbs premium are not rewritten.
 
 Publishing is fail closed. The workflow will not commit if source columns, schemas, values, core Top 250 coverage, uniqueness, or 32-team K/D/ST coverage are invalid. Each run uploads `refresh-summary.md` with ranking movers, kicker changes, warnings, and update status. A validated `players.json` change is committed to `main`, which triggers the existing Vercel deployment.
 
@@ -115,3 +115,8 @@ node --test tests/test-seo.mjs tests/test-app.mjs tests/test-scoring-settings.mj
 Canonical URLs use `https://www.rosterreport.app/`. Vercel normalizes page trailing slashes and redirects explicit index.html duplicates. The legacy Vercel production hostname remains accessible with canonical tags pointing at the custom domain: browser-local saved teams do not transfer across origins, so forcing an immediate hostname redirect would strand those users' saved teams. Preview hosts are not redirected to production.
 
 The build publishes a sitemap, robots file, metadata/social cards, rankings, scoring charts, full position projections and explanatory guides. Keep content claims consistent with the model. Do not add blanket crawl blocks, long-lived data caching, copied player analysis or generated pairwise trade pages. No Search Console settings are changed by the build. Git history provides the published-input change timestamp when available; missing history omits that label rather than inventing freshness.
+
+
+## Automated player profiles
+
+See [PLAYER_PROFILES.md](PLAYER_PROFILES.md) for evidence provenance, publication safeguards, permanent URLs and validation commands. The profile generator reads existing model outputs; it never changes scoring or trade calculations.
