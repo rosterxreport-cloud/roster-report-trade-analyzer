@@ -28,7 +28,7 @@ jobs:
       - name: Update player profile projections from verified snapshot
         id: profiles
         continue-on-error: true
-        run: node scripts/publish-player-profiles.mjs --require-fresh && node --test tests/test-player-analysis.mjs tests/test-player-profiles.mjs
+        run: node scripts/publish-player-profiles.mjs --require-fresh && node --test tests/test-player-matchups.mjs tests/test-player-analysis.mjs tests/test-player-profiles.mjs
       - name: Retain profiles after failed validation
         if: steps.profiles.outcome == 'failure'
         run: |
