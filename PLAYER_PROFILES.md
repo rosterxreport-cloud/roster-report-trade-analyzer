@@ -53,3 +53,15 @@ node scripts/publish-player-profiles.mjs --evidence .profile-candidate/statistic
 ```
 
 The separate feature branch must not publish rankings to main. The rankings refresh job now explicitly requires `refs/heads/main`, preventing the legacy push trigger from running its main-branch publication command on this feature branch.
+
+## Player headshots
+
+The verified roster's `headshot_url` is attached to the same GSIS identity used by the profile evidence. The checked initial snapshot contains NFL-hosted headshot URLs for all 250 selected players. Tuesday evidence refreshes update these URLs automatically; missing or invalid URLs do not prevent rankings or profile publication.
+
+Photos are linked from the provider, not downloaded into the repository. NFL CDN requests limit images to 320px on profiles and 112px in directory cards without cropping. The page reserves image dimensions, preserves the full headshot with `object-fit: contain`, sets descriptive alt text and asynchronous decoding, and suppresses outgoing referrers. Directory images load lazily and are decorative beside the player name. Individual profile images load eagerly. Person structured data includes the validated headshot URL.
+
+The image script handles failed and cached-failed loads: headshot → current-team logo → local team abbreviation badge. Logo URLs were checked against ESPN's official teams API. Only allowlisted HTTPS image hosts are accepted; credential-bearing URLs and non-default ports are rejected. No generated player faces are used.
+
+Image rights are not established by the roster dataset's license or by URL availability. The NFL terms checked on October 25, 2026 restrict reuse and do not provide blanket commercial permission. The protected preview implements the integration for review; production image reuse permission remains unconfirmed. Source terms: https://www.nfl.com/legal/terms/. Roster dictionary: https://nflreadr.nflverse.com/articles/dictionary_rosters.html. Team logo source: https://site.api.espn.com/apis/site/v2/sports/football/nfl/teams. Logos also remain third-party intellectual property. Confirm appropriate image rights before publishing the photos on the commercial site.
+
+Image checks: `node --test tests/test-player-images.mjs tests/test-player-profiles.mjs`. Browser checks include an actual NFL image, forced headshot failure, and failure of both external image sources.

@@ -7,13 +7,14 @@
     "players": "a42da1064f749b9fac42464392ff2376117d959bebbf82d8f6b2363d00c124b6",
     "injuries": "26bbeb30370b55e069d2a3cfead32bc390d5a3425ea31d378d42ea90d208b4e5",
     "projections": "f50c5f97a1764e9f8e1cb2175c4040c9dca33faab17ef64af8b9b9d1f2e3e631",
-    "evidence": "db15db759219b0799ad640dc99a1b112a1e0fd7db029b62d593da96b2f727de2",
+    "evidence": "6970040e5190828d77af17f6a15f620d37b83b27f8331af1780bcfc5f98fa0a1",
     "app": "cf845dd2fba149f7651caff310d125ad2b5f3c6fa660abf88bcb4a02e6f3ce9e",
     "injuryLayer": "672ef68ed7c058242503a5979ed7bba7f7fd8e9c9c65311b2d5d43e7041384fc"
   },
   "profiles": [
     {
       "id": "00-0038543",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yx1xjrupbqdknnjaq4a6",
       "name": "Jaxon Smith-Njigba",
       "slug": "jaxon-smith-njigba",
       "team": "SEA",
@@ -312,6 +313,7 @@
     },
     {
       "id": "00-0039338",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/waorceny0ggpaeckaol8",
       "name": "Brock Bowers",
       "slug": "brock-bowers",
       "team": "LV",
@@ -562,6 +564,7 @@
     },
     {
       "id": "00-0039139",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/cursejnmmp1i9hnxihkj",
       "name": "Jahmyr Gibbs",
       "slug": "jahmyr-gibbs",
       "team": "DET",
@@ -836,6 +839,7 @@
     },
     {
       "id": "00-0037744",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/psasp10nn5pcvkli9kil",
       "name": "Trey McBride",
       "slug": "trey-mcbride",
       "team": "ARI",
@@ -1134,6 +1138,7 @@
     },
     {
       "id": "00-0036963",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/fd8nwhm6pvxfyzphzl6i",
       "name": "Amon-Ra St. Brown",
       "slug": "amon-ra-st-brown",
       "team": "DET",
@@ -1408,6 +1413,7 @@
     },
     {
       "id": "00-0036358",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mbblzwtynxr15ovzkevi",
       "name": "CeeDee Lamb",
       "slug": "ceedee-lamb",
       "team": "DAL",
@@ -1706,6 +1712,7 @@
     },
     {
       "id": "00-0038542",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zaxetgy0p0ul6evlsf63",
       "name": "Bijan Robinson",
       "slug": "bijan-robinson",
       "team": "ATL",
@@ -2004,6 +2011,7 @@
     },
     {
       "id": "00-0039075",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ipy6qw7hdygdfc8k86ba",
       "name": "Puka Nacua",
       "slug": "puka-nacua",
       "team": "LAR",
@@ -2254,6 +2262,7 @@
     },
     {
       "id": "00-0036900",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qya3dtjb5kgofcuj2tuw",
       "name": "Ja'Marr Chase",
       "slug": "jamarr-chase",
       "team": "CIN",
@@ -2528,6 +2537,7 @@
     },
     {
       "id": "00-0033280",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/st82s2ytyzanatcmkqck",
       "name": "Christian McCaffrey",
       "slug": "christian-mccaffrey",
       "team": "SF",
@@ -2826,6 +2836,7 @@
     },
     {
       "id": "00-0038134",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vk6nruaqdewdglofcwwg",
       "name": "Kenneth Walker III",
       "slug": "kenneth-walker-iii",
       "team": "KC",
@@ -3100,6 +3111,7 @@
     },
     {
       "id": "00-0036223",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/d7pmatz5wylijbsplnkg",
       "name": "Jonathan Taylor",
       "slug": "jonathan-taylor",
       "team": "IND",
@@ -3398,6 +3410,7 @@
     },
     {
       "id": "00-0037248",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/anjbznqb9i21wzcgrtbs",
       "name": "James Cook III",
       "slug": "james-cook-iii",
       "team": "BUF",
@@ -3674,6 +3687,7 @@
     },
     {
       "id": "00-0034857",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ynrhq9iv30ysjpwmrfdv",
       "name": "Josh Allen",
       "slug": "josh-allen",
       "team": "BUF",
@@ -3950,6 +3964,7 @@
     },
     {
       "id": "00-0036912",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/k724kq3hyv7jc0y9s03x",
       "name": "DeVonta Smith",
       "slug": "devonta-smith",
       "team": "PHI",
@@ -4178,6 +4193,7 @@
     },
     {
       "id": "00-0040124",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gilgvjemumd6kpc9eiku",
       "name": "Tetairoa McMillan",
       "slug": "tetairoa-mcmillan",
       "team": "CAR",
@@ -4452,6 +4468,7 @@
     },
     {
       "id": "00-0036554",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pyevyueqikk1vbkh9ju1",
       "name": "Nico Collins",
       "slug": "nico-collins",
       "team": "HOU",
@@ -4702,6 +4719,7 @@
     },
     {
       "id": "00-0037247",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/cbpyykoguf7rsxezqzvk",
       "name": "George Pickens",
       "slug": "george-pickens",
       "team": "DAL",
@@ -5000,6 +5018,7 @@
     },
     {
       "id": "00-0036322",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tzx1iqbxxa1807m6olwj",
       "name": "Justin Jefferson",
       "slug": "justin-jefferson",
       "team": "MIN",
@@ -5250,6 +5269,7 @@
     },
     {
       "id": "00-0037238",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/y5mkxrljhsglpwl3ky94",
       "name": "Drake London",
       "slug": "drake-london",
       "team": "ATL",
@@ -5548,6 +5568,7 @@
     },
     {
       "id": "00-0032764",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tm79x0iknqg6hms3ypyt",
       "name": "Derrick Henry",
       "slug": "derrick-henry",
       "team": "BAL",
@@ -5846,6 +5867,7 @@
     },
     {
       "id": "00-0033288",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vkicdglglkyukgyxtmpx",
       "name": "George Kittle",
       "slug": "george-kittle",
       "team": "SF",
@@ -6144,6 +6166,7 @@
     },
     {
       "id": "00-0036410",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gpwtyv3viwy9q4ewderl",
       "name": "Tee Higgins",
       "slug": "tee-higgins",
       "team": "CIN",
@@ -6418,6 +6441,7 @@
     },
     {
       "id": "00-0038124",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tumeg4d32sirkab2xzu5",
       "name": "Christian Watson",
       "slug": "christian-watson",
       "team": "GB",
@@ -6716,6 +6740,7 @@
     },
     {
       "id": "00-0037840",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xti3pek6rmojqchakxpy",
       "name": "Kyren Williams",
       "slug": "kyren-williams",
       "team": "LAR",
@@ -7014,6 +7039,7 @@
     },
     {
       "id": "00-0037239",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/u1wdmijwkbobujmw7kbb",
       "name": "Chris Olave",
       "slug": "chris-olave",
       "team": "NO",
@@ -7360,6 +7386,7 @@
     },
     {
       "id": "00-0039064",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xzhto2dejy2pflkfx40c",
       "name": "Zay Flowers",
       "slug": "zay-flowers",
       "team": "BAL",
@@ -7634,6 +7661,7 @@
     },
     {
       "id": "00-0037740",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/bo2gf1ohffbzo0rd71kp",
       "name": "Garrett Wilson",
       "slug": "garrett-wilson",
       "team": "NYJ",
@@ -7932,6 +7960,7 @@
     },
     {
       "id": "00-0039337",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/w3edoyyuomqlovvp9ixc",
       "name": "Malik Nabers",
       "slug": "malik-nabers",
       "team": "NYG",
@@ -8230,6 +8259,7 @@
     },
     {
       "id": "00-0038606",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yn0hc5xrz5nqeccg8two",
       "name": "Parker Washington",
       "slug": "parker-washington",
       "team": "JAC",
@@ -8506,6 +8536,7 @@
     },
     {
       "id": "00-0040122",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/syspis1mntov9kgspb7r",
       "name": "Ashton Jeanty",
       "slug": "ashton-jeanty",
       "team": "LV",
@@ -8804,6 +8835,7 @@
     },
     {
       "id": "00-0039065",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wxlk7ysg2nfq6h6ntdcu",
       "name": "Sam LaPorta",
       "slug": "sam-laporta",
       "team": "DET",
@@ -9078,6 +9110,7 @@
     },
     {
       "id": "00-0040128",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ggbgv9okpladwqzth5l5",
       "name": "Tyler Warren",
       "slug": "tyler-warren",
       "team": "IND",
@@ -9400,6 +9433,7 @@
     },
     {
       "id": "00-0036275",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/owpmwzoilitcodc6cmxo",
       "name": "D'Andre Swift",
       "slug": "dandre-swift",
       "team": "CHI",
@@ -9698,6 +9732,7 @@
     },
     {
       "id": "00-0040129",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/z224kbzs62rjuykc0vha",
       "name": "Emeka Egbuka",
       "slug": "emeka-egbuka",
       "team": "TB",
@@ -9996,6 +10031,7 @@
     },
     {
       "id": "00-0036997",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xvwroirev2kie6oiphtz",
       "name": "Javonte Williams",
       "slug": "javonte-williams",
       "team": "DAL",
@@ -10294,6 +10330,7 @@
     },
     {
       "id": "00-0037240",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/byiptqggtglvy5qrw5wp",
       "name": "Jameson Williams",
       "slug": "jameson-williams",
       "team": "DET",
@@ -10568,6 +10605,7 @@
     },
     {
       "id": "00-0038996",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/n6vu44jbq31rydoaadaq",
       "name": "Tucker Kraft",
       "slug": "tucker-kraft",
       "team": "GB",
@@ -10866,6 +10904,7 @@
     },
     {
       "id": "00-0036442",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gnnvcgui1cijybukk2w7",
       "name": "Joe Burrow",
       "slug": "joe-burrow",
       "team": "CIN",
@@ -11140,6 +11179,7 @@
     },
     {
       "id": "00-0037838",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/b1pahldt9ixp9lssxi2d",
       "name": "Isaiah Likely",
       "slug": "isaiah-likely",
       "team": "NYG",
@@ -11438,6 +11478,7 @@
     },
     {
       "id": "00-0040735",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/iyuwdz7pbowdkwzq2tg5",
       "name": "Luther Burden III",
       "slug": "luther-burden-iii",
       "team": "CHI",
@@ -11736,6 +11777,7 @@
     },
     {
       "id": "00-0035640",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/kxql4sjfelubhxawu2zh",
       "name": "DK Metcalf",
       "slug": "dk-metcalf",
       "team": "PIT",
@@ -12034,6 +12076,7 @@
     },
     {
       "id": "00-0031408",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zc4ujpmndyxrbiyyjomz",
       "name": "Mike Evans",
       "slug": "mike-evans",
       "team": "SF",
@@ -12380,6 +12423,7 @@
     },
     {
       "id": "00-0038597",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tch3y6jlj7khvyi9jg0c",
       "name": "Chase Brown",
       "slug": "chase-brown",
       "team": "CIN",
@@ -12654,6 +12698,7 @@
     },
     {
       "id": "00-0040126",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tdeidev1typrqjijtb3a",
       "name": "Colston Loveland",
       "slug": "colston-loveland",
       "team": "CHI",
@@ -12952,6 +12997,7 @@
     },
     {
       "id": "00-0040666",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/lf2jxvxnbexlinoydbej",
       "name": "Omarion Hampton",
       "slug": "omarion-hampton",
       "team": "LAC",
@@ -13228,6 +13274,7 @@
     },
     {
       "id": "00-0039361",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vkc00rvnix3f2b96vkwo",
       "name": "Bucky Irving",
       "slug": "bucky-irving",
       "team": "TB",
@@ -13526,6 +13573,7 @@
     },
     {
       "id": "00-0038559",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hm2b9z4zujjmbiyldh8n",
       "name": "Michael Wilson",
       "slug": "michael-wilson",
       "team": "ARI",
@@ -13824,6 +13872,7 @@
     },
     {
       "id": "00-0037228",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/dkiteytgnxar1mpaxcxv",
       "name": "Jaylen Warren",
       "slug": "jaylen-warren",
       "team": "PIT",
@@ -14122,6 +14171,7 @@
     },
     {
       "id": "00-0030506",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/dpxovcfku6ud2aohgf6a",
       "name": "Travis Kelce",
       "slug": "travis-kelce",
       "team": "KC",
@@ -14396,6 +14446,7 @@
     },
     {
       "id": "00-0036613",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gkh7m1jedon9mwn5jlf1",
       "name": "Jaylen Waddle",
       "slug": "jaylen-waddle",
       "team": "DEN",
@@ -14694,6 +14745,7 @@
     },
     {
       "id": "00-0041438",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xlva68qwhtm0n36pwyad",
       "name": "Carnell Tate",
       "slug": "carnell-tate",
       "team": "TEN",
@@ -14992,6 +15044,7 @@
     },
     {
       "id": "00-0040715",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hlggiqdfvj1f4kntkafr",
       "name": "Cam Skattebo",
       "slug": "cam-skattebo",
       "team": "NYG",
@@ -15272,6 +15325,7 @@
     },
     {
       "id": "00-0035676",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qfhvjyssf0lwsh0kienp",
       "name": "A.J. Brown",
       "slug": "a-j-brown",
       "team": "NE",
@@ -15522,6 +15576,7 @@
     },
     {
       "id": "00-0040719",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ryjnphuyjbedmgpx5qqj",
       "name": "Bhayshul Tuten",
       "slug": "bhayshul-tuten",
       "team": "JAC",
@@ -15798,6 +15853,7 @@
     },
     {
       "id": "00-0039851",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mkauzrg7vo8lfziigsbg",
       "name": "Drake Maye",
       "slug": "drake-maye",
       "team": "NE",
@@ -16096,6 +16152,7 @@
     },
     {
       "id": "00-0039491",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yynz8rxen6tsvhojggiv",
       "name": "Jalen Coker",
       "slug": "jalen-coker",
       "team": "CAR",
@@ -16346,6 +16403,7 @@
     },
     {
       "id": "00-0040663",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/fxublmpnxx9uggsddwik",
       "name": "Harold Fannin Jr.",
       "slug": "harold-fannin-jr",
       "team": "CLE",
@@ -16644,6 +16702,7 @@
     },
     {
       "id": "00-0031381",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tdzluk4xau3arxqk9zsl",
       "name": "Davante Adams",
       "slug": "davante-adams",
       "team": "LAR",
@@ -16968,6 +17027,7 @@
     },
     {
       "id": "00-0040667",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/dbjki6b0swksr7mk17wk",
       "name": "Matthew Golden",
       "slug": "matthew-golden",
       "team": "GB",
@@ -17266,6 +17326,7 @@
     },
     {
       "id": "00-0039918",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/h4qs11kutwiw7whekmyt",
       "name": "Caleb Williams",
       "slug": "caleb-williams",
       "team": "CHI",
@@ -17540,6 +17601,7 @@
     },
     {
       "id": "00-0031588",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/dpmpctgbwlvgyzg3opli",
       "name": "Stefon Diggs",
       "slug": "stefon-diggs",
       "team": "WAS",
@@ -17840,6 +17902,7 @@
     },
     {
       "id": "00-0039910",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gfz8k5onuqjrche9ogqc",
       "name": "Jayden Daniels",
       "slug": "jayden-daniels",
       "team": "WAS",
@@ -18068,6 +18131,7 @@
     },
     {
       "id": "00-0039067",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qhkbqrydjeur8zvrrmfl",
       "name": "Rashee Rice",
       "slug": "rashee-rice",
       "team": "KC",
@@ -18348,6 +18412,7 @@
     },
     {
       "id": "00-0033106",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/kaicbot8qhzrvddilbtp",
       "name": "Jared Goff",
       "slug": "jared-goff",
       "team": "DET",
@@ -18622,6 +18687,7 @@
     },
     {
       "id": "00-0034796",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/eno6s5qzl9grbfbfwhoa",
       "name": "Lamar Jackson",
       "slug": "lamar-jackson",
       "team": "BAL",
@@ -18898,6 +18964,7 @@
     },
     {
       "id": "00-0035659",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tmfl2zruajmkrtcg4zxp",
       "name": "Terry McLaurin",
       "slug": "terry-mclaurin",
       "team": "WAS",
@@ -19150,6 +19217,7 @@
     },
     {
       "id": "00-0036555",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/rzsvnt0pxsaize2ndhxm",
       "name": "Chuba Hubbard",
       "slug": "chuba-hubbard",
       "team": "CAR",
@@ -19424,6 +19492,7 @@
     },
     {
       "id": "00-0039915",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/q2sk7yforrkiusvruo1o",
       "name": "Ladd McConkey",
       "slug": "ladd-mcconkey",
       "team": "LAC",
@@ -19676,6 +19745,7 @@
     },
     {
       "id": "00-0039919",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/kqxetflykjn9clz04k68",
       "name": "Rome Odunze",
       "slug": "rome-odunze",
       "team": "CHI",
@@ -19974,6 +20044,7 @@
     },
     {
       "id": "00-0041037",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ybkny6eh5eegq3bqmony",
       "name": "Denzel Boston",
       "slug": "denzel-boston",
       "team": "CLE",
@@ -20272,6 +20343,7 @@
     },
     {
       "id": "00-0034827",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tmiale9dvql5ol2xmhf1",
       "name": "DJ Moore",
       "slug": "dj-moore",
       "team": "BUF",
@@ -20548,6 +20620,7 @@
     },
     {
       "id": "00-0036971",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/k9uzdernqkx7oquy7dkg",
       "name": "Trevor Lawrence",
       "slug": "trevor-lawrence",
       "team": "JAC",
@@ -20824,6 +20897,7 @@
     },
     {
       "id": "00-0038117",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/e4fazi7xfvo5c7aquenn",
       "name": "Wan'Dale Robinson",
       "slug": "wandale-robinson",
       "team": "TEN",
@@ -21122,6 +21196,7 @@
     },
     {
       "id": "00-0036875",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/x9dlpy3i5fciajd4w9ij",
       "name": "Rhamondre Stevenson",
       "slug": "rhamondre-stevenson",
       "team": "NE",
@@ -21420,6 +21495,7 @@
     },
     {
       "id": "00-0040784",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ojtce2im0wp2ltyel0vc",
       "name": "Quinshon Judkins",
       "slug": "quinshon-judkins",
       "team": "CLE",
@@ -21742,6 +21818,7 @@
     },
     {
       "id": "00-0034351",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/bafepstxu7vvxb9v5vua",
       "name": "Dallas Goedert",
       "slug": "dallas-goedert",
       "team": "PHI",
@@ -21992,6 +22069,7 @@
     },
     {
       "id": "00-0038563",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hazzk3hrcequzosdgzgv",
       "name": "Tre Tucker",
       "slug": "tre-tucker",
       "team": "LV",
@@ -22290,6 +22368,7 @@
     },
     {
       "id": "00-0033077",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yvscmqq1qki8zfsemmcd",
       "name": "Dak Prescott",
       "slug": "dak-prescott",
       "team": "DAL",
@@ -22588,6 +22667,7 @@
     },
     {
       "id": "00-0039040",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xk1xwio0bryfxo1ylweu",
       "name": "De'Von Achane",
       "slug": "devon-achane",
       "team": "MIA",
@@ -22840,6 +22920,7 @@
     },
     {
       "id": "00-0038120",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pb9i8clrmkhwwjs7jndy",
       "name": "Breece Hall",
       "slug": "breece-hall",
       "team": "NYJ",
@@ -23114,6 +23195,7 @@
     },
     {
       "id": "00-0036970",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xczipzxvytnmvgznhhb4",
       "name": "Kyle Pitts Sr.",
       "slug": "kyle-pitts-sr",
       "team": "ATL",
@@ -23412,6 +23494,7 @@
     },
     {
       "id": "00-0038994",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ty8e8iasniuuhto6qfdx",
       "name": "Jordan Addison",
       "slug": "jordan-addison",
       "team": "MIN",
@@ -23662,6 +23745,7 @@
     },
     {
       "id": "00-0037834",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xs2fyj1sqdgwvt9ihbri",
       "name": "Brock Purdy",
       "slug": "brock-purdy",
       "team": "SF",
@@ -23960,6 +24044,7 @@
     },
     {
       "id": "00-0033873",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wdckwtob1lybvkmxnf7p",
       "name": "Patrick Mahomes II",
       "slug": "patrick-mahomes-ii",
       "team": "KC",
@@ -24234,6 +24319,7 @@
     },
     {
       "id": "00-0033293",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/bktkfvgfwujkdbzkcfim",
       "name": "Aaron Jones Sr.",
       "slug": "aaron-jones-sr",
       "team": "MIN",
@@ -24508,6 +24594,7 @@
     },
     {
       "id": "00-0035700",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/uceokxeo0uqrqms3e3vl",
       "name": "Josh Jacobs",
       "slug": "josh-jacobs",
       "team": "GB",
@@ -24661,6 +24748,7 @@
     },
     {
       "id": "00-0034960",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zrs4ij8mvw7wr1uujwew",
       "name": "Jakobi Meyers",
       "slug": "jakobi-meyers",
       "team": "JAC",
@@ -24937,6 +25025,7 @@
     },
     {
       "id": "00-0038997",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zniq20yhnxjqajqcgfc5",
       "name": "Josh Downs",
       "slug": "josh-downs",
       "team": "IND",
@@ -25235,6 +25324,7 @@
     },
     {
       "id": "00-0041027",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/b12gtjsylmql5v7iyyla",
       "name": "Jeremiyah Love",
       "slug": "jeremiyah-love",
       "team": "ARI",
@@ -25557,6 +25647,7 @@
     },
     {
       "id": "00-0038933",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/cmrfup2mfx13pjb0qznw",
       "name": "Dalton Kincaid",
       "slug": "dalton-kincaid",
       "team": "BUF",
@@ -25833,6 +25924,7 @@
     },
     {
       "id": "00-0039738",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/axzqbqjkrbwfzodwwakq",
       "name": "Blake Corum",
       "slug": "blake-corum",
       "team": "LAR",
@@ -26131,6 +26223,7 @@
     },
     {
       "id": "00-0026498",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/jwpkjfrkzufdyh8u1mg7",
       "name": "Matthew Stafford",
       "slug": "matthew-stafford",
       "team": "LAR",
@@ -26429,6 +26522,7 @@
     },
     {
       "id": "00-0034753",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/u4xzz7tclch0tpzm9hhz",
       "name": "Mark Andrews",
       "slug": "mark-andrews",
       "team": "BAL",
@@ -26727,6 +26821,7 @@
     },
     {
       "id": "00-0039880",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/uainpdjrwkwk9zjdxpem",
       "name": "Malik Washington",
       "slug": "malik-washington",
       "team": "MIA",
@@ -27001,6 +27096,7 @@
     },
     {
       "id": "00-0036973",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pwko5dybmjie8qqo4qz2",
       "name": "Travis Etienne Jr.",
       "slug": "travis-etienne-jr",
       "team": "NO",
@@ -27253,6 +27349,7 @@
     },
     {
       "id": "00-0036158",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/cevotvl3ho5h1mioruyg",
       "name": "J.K. Dobbins",
       "slug": "j-k-dobbins",
       "team": "DEN",
@@ -27551,6 +27648,7 @@
     },
     {
       "id": "00-0040730",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/szxmro5enrxlscvv67xg",
       "name": "RJ Harvey",
       "slug": "rj-harvey",
       "team": "DEN",
@@ -27825,6 +27923,7 @@
     },
     {
       "id": "00-0034844",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qcayrzjpura2zydszonh",
       "name": "Saquon Barkley",
       "slug": "saquon-barkley",
       "team": "PHI",
@@ -28123,6 +28222,7 @@
     },
     {
       "id": "00-0035261",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/u4poetcrbxffcuyglmj8",
       "name": "Tony Pollard",
       "slug": "tony-pollard",
       "team": "TEN",
@@ -28421,6 +28521,7 @@
     },
     {
       "id": "00-0037261",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ituuwxmqtheiha2kkrvt",
       "name": "Khalil Shakir",
       "slug": "khalil-shakir",
       "team": "BUF",
@@ -28697,6 +28798,7 @@
     },
     {
       "id": "00-0040743",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vu51ogqu4i3abbwpj2fl",
       "name": "Tyler Shough",
       "slug": "tyler-shough",
       "team": "NO",
@@ -28995,6 +29097,7 @@
     },
     {
       "id": "00-0040734",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ac50ezemcsqyjkrfrzgt",
       "name": "TreVeyon Henderson",
       "slug": "treveyon-henderson",
       "team": "NE",
@@ -29317,6 +29420,7 @@
     },
     {
       "id": "00-0038544",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/lyvsrjh4mjb4dqwp6shm",
       "name": "Quentin Johnston",
       "slug": "quentin-johnston",
       "team": "LAC",
@@ -29569,6 +29673,7 @@
     },
     {
       "id": "00-0036040",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/lxnxhlxnolrx7ybhu5ug",
       "name": "Juwan Johnson",
       "slug": "juwan-johnson",
       "team": "NO",
@@ -29867,6 +29972,7 @@
     },
     {
       "id": "00-0033921",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ilkheljdx4hbjpisulke",
       "name": "Chris Godwin Jr.",
       "slug": "chris-godwin-jr",
       "team": "TB",
@@ -30165,6 +30271,7 @@
     },
     {
       "id": "00-0039811",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xp8sd4enimuk4zd0aqgu",
       "name": "MarShawn Lloyd",
       "slug": "marshawn-lloyd",
       "team": "GB",
@@ -30463,6 +30570,7 @@
     },
     {
       "id": "00-0038393",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/v1lt8kpvkn0qw5elyaoz",
       "name": "Dontayvion Wicks",
       "slug": "dontayvion-wicks",
       "team": "PHI",
@@ -30739,6 +30847,7 @@
     },
     {
       "id": "00-0030279",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ri267r6lzfwarh89hsn6",
       "name": "Keenan Allen",
       "slug": "keenan-allen",
       "team": "IND",
@@ -31013,6 +31122,7 @@
     },
     {
       "id": "00-0038935",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/devxzxwf1sfficgncggm",
       "name": "Brenton Strange",
       "slug": "brenton-strange",
       "team": "JAC",
@@ -31289,6 +31399,7 @@
     },
     {
       "id": "00-0039424",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qt1phcijlgeilrf4zpef",
       "name": "Devaughn Vele",
       "slug": "devaughn-vele",
       "team": "NO",
@@ -31587,6 +31698,7 @@
     },
     {
       "id": "00-0041547",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/evzxqxsyr1m3ohchqcan",
       "name": "KC Concepcion",
       "slug": "kc-concepcion",
       "team": "CLE",
@@ -31885,6 +31997,7 @@
     },
     {
       "id": "00-0039894",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/u6fmnffwteccoxn3uguq",
       "name": "Xavier Worthy",
       "slug": "xavier-worthy",
       "team": "KC",
@@ -32159,6 +32272,7 @@
     },
     {
       "id": "00-0039893",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/plnekkriys4cm11rnxwl",
       "name": "Brian Thomas Jr.",
       "slug": "brian-thomas-jr",
       "team": "JAC",
@@ -32435,6 +32549,7 @@
     },
     {
       "id": "00-0035229",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/rs8o65x0u0n9xzde0fd6",
       "name": "T.J. Hockenson",
       "slug": "t-j-hockenson",
       "team": "MIN",
@@ -32709,6 +32824,7 @@
     },
     {
       "id": "00-0039849",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hwpoo1icpnh8emjvqaii",
       "name": "Marvin Harrison Jr.",
       "slug": "marvin-harrison-jr",
       "team": "ARI",
@@ -32983,6 +33099,7 @@
     },
     {
       "id": "00-0035719",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ntgyhqg6hq7fanhhsqiw",
       "name": "Deebo Samuel Sr.",
       "slug": "deebo-samuel-sr",
       "team": "SF",
@@ -33283,6 +33400,7 @@
     },
     {
       "id": "00-0033090",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hfbzcsv4v7fdpohl42mk",
       "name": "Hunter Henry",
       "slug": "hunter-henry",
       "team": "NE",
@@ -33581,6 +33699,7 @@
     },
     {
       "id": "00-0034383",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hikxxqqislrmtqirbua5",
       "name": "Dalton Schultz",
       "slug": "dalton-schultz",
       "team": "HOU",
@@ -33879,6 +33998,7 @@
     },
     {
       "id": "00-0035685",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/npagyuku5zvrnu9q3jvn",
       "name": "David Montgomery",
       "slug": "david-montgomery",
       "team": "HOU",
@@ -34201,6 +34321,7 @@
     },
     {
       "id": "00-0034348",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/kqwmqcrlrwmqcvfuguhs",
       "name": "Courtland Sutton",
       "slug": "courtland-sutton",
       "team": "DEN",
@@ -34499,6 +34620,7 @@
     },
     {
       "id": "00-0039410",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tqwq3cgpqu7j9hzoyicx",
       "name": "Ryan Flournoy",
       "slug": "ryan-flournoy",
       "team": "DAL",
@@ -34797,6 +34919,7 @@
     },
     {
       "id": "00-0039066",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/twnkr9uq1phvukxb5jmh",
       "name": "Michael Mayer",
       "slug": "michael-mayer",
       "team": "LV",
@@ -35095,6 +35218,7 @@
     },
     {
       "id": "00-0037256",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wtdhs50gcl2p6vngsnre",
       "name": "Rachaad White",
       "slug": "rachaad-white",
       "team": "WAS",
@@ -35347,6 +35471,7 @@
     },
     {
       "id": "00-0036389",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xow5yvxjeqa6witmofmp",
       "name": "Jalen Hurts",
       "slug": "jalen-hurts",
       "team": "PHI",
@@ -35647,6 +35772,7 @@
     },
     {
       "id": "00-0037809",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pzcez6pi9tpdqkmjjnzk",
       "name": "Chig Okonkwo",
       "slug": "chig-okonkwo",
       "team": "WAS",
@@ -35875,6 +36001,7 @@
     },
     {
       "id": "00-0041512",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/toy90i08oumgbdlvctja",
       "name": "Jadarian Price",
       "slug": "jadarian-price",
       "team": "SEA",
@@ -36127,6 +36254,7 @@
     },
     {
       "id": "00-0037252",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/nzqdkcpzcnspgfpflxcu",
       "name": "Greg Dulcich",
       "slug": "greg-dulcich",
       "team": "MIA",
@@ -36383,6 +36511,7 @@
     },
     {
       "id": "00-0037545",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ku2naisfbxmzgagxojnm",
       "name": "Rashid Shaheed",
       "slug": "rashid-shaheed",
       "team": "SEA",
@@ -36681,6 +36810,7 @@
     },
     {
       "id": "00-0036264",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/thz8stjkbjwddxqnozi5",
       "name": "Jordan Love",
       "slug": "jordan-love",
       "team": "GB",
@@ -36979,6 +37109,7 @@
     },
     {
       "id": "00-0036139",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mx2bxccuzmdvzbksypws",
       "name": "Rico Dowdle",
       "slug": "rico-dowdle",
       "team": "PIT",
@@ -37253,6 +37384,7 @@
     },
     {
       "id": "00-0040236",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/sdrq7yje01g4fvsikoga",
       "name": "Kyle Monangai",
       "slug": "kyle-monangai",
       "team": "CHI",
@@ -37529,6 +37661,7 @@
     },
     {
       "id": "00-0034829",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/dykckg6we3cnw9yhpggi",
       "name": "Mike Gesicki",
       "slug": "mike-gesicki",
       "team": "CIN",
@@ -37785,6 +37918,7 @@
     },
     {
       "id": "00-0040138",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ysyfwwvlkop9rd3lbck9",
       "name": "Jaylin Noel",
       "slug": "jaylin-noel",
       "team": "HOU",
@@ -38083,6 +38217,7 @@
     },
     {
       "id": "00-0039163",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tt4zrtxlhifaljhj0rn7",
       "name": "C.J. Stroud",
       "slug": "c-j-stroud",
       "team": "HOU",
@@ -38381,6 +38516,7 @@
     },
     {
       "id": "00-0040867",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ys2i2o7c0bl36xvlrojz",
       "name": "Makai Lemon",
       "slug": "makai-lemon",
       "team": "PHI",
@@ -38679,6 +38815,7 @@
     },
     {
       "id": "00-0040583",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ksk0fjj4bl9jvfh2s0rm",
       "name": "Woody Marks",
       "slug": "woody-marks",
       "team": "HOU",
@@ -38977,6 +39114,7 @@
     },
     {
       "id": "00-0038041",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xpykb0tbosfwsn6dqstb",
       "name": "Jake Ferguson",
       "slug": "jake-ferguson",
       "team": "DAL",
@@ -39275,6 +39413,7 @@
     },
     {
       "id": "00-0036355",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/jnkspnntgebegzp4ghve",
       "name": "Justin Herbert",
       "slug": "justin-herbert",
       "team": "LAC",
@@ -39551,6 +39690,7 @@
     },
     {
       "id": "00-0036894",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pyrdsypgggjshiaygkr7",
       "name": "Pat Freiermuth",
       "slug": "pat-freiermuth",
       "team": "PIT",
@@ -39897,6 +40037,7 @@
     },
     {
       "id": "00-0039793",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/i0esiguve9if4ts5mm1q",
       "name": "AJ Barner",
       "slug": "aj-barner",
       "team": "SEA",
@@ -40195,6 +40336,7 @@
     },
     {
       "id": "00-0031610",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/loyehiyzcu2lexjk7plq",
       "name": "Darren Waller",
       "slug": "darren-waller",
       "team": "CAR",
@@ -40469,6 +40611,7 @@
     },
     {
       "id": "00-0040727",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/v5ofh8jggzo8rygtpwl7",
       "name": "Tre' Harris",
       "slug": "tre-harris",
       "team": "LAC",
@@ -40721,6 +40864,7 @@
     },
     {
       "id": "00-0036550",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gtktmsfcxc1eijwpwzyq",
       "name": "Rashod Bateman",
       "slug": "rashod-bateman",
       "team": "BAL",
@@ -41019,6 +41163,7 @@
     },
     {
       "id": "00-0038129",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yanr6h9aplae3jyzimf7",
       "name": "Cade Otton",
       "slug": "cade-otton",
       "team": "TB",
@@ -41317,6 +41462,7 @@
     },
     {
       "id": "00-0038611",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pknd5uajvpvfd8c744im",
       "name": "Chris Rodriguez Jr.",
       "slug": "chris-rodriguez-jr",
       "team": "JAC",
@@ -41593,6 +41739,7 @@
     },
     {
       "id": "00-0039794",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/x78ebxfvyyuemrxyank1",
       "name": "Braelon Allen",
       "slug": "braelon-allen",
       "team": "NYJ",
@@ -41891,6 +42038,7 @@
     },
     {
       "id": "00-0041035",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/eu1nxtlztiwr5ko48iwz",
       "name": "De'Zhaun Stribling",
       "slug": "dezhaun-stribling",
       "team": "SF",
@@ -42077,6 +42225,7 @@
     },
     {
       "id": "00-0036919",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/eo62l8ec8e3lzt86ihth",
       "name": "Kenny Gainwell",
       "slug": "kenny-gainwell",
       "team": "TB",
@@ -42375,6 +42524,7 @@
     },
     {
       "id": "00-0040736",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/lejmnygqgkeu7ujr7x36",
       "name": "Mason Taylor",
       "slug": "mason-taylor",
       "team": "NYJ",
@@ -42607,6 +42757,7 @@
     },
     {
       "id": "00-0037816",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/d27wez0jqd5vfcrjizpb",
       "name": "Romeo Doubs",
       "slug": "romeo-doubs",
       "team": "NE",
@@ -42931,6 +43082,7 @@
     },
     {
       "id": "00-0037263",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/sp9lhhmpv4qy3xy2msxd",
       "name": "Tyler Allgeier",
       "slug": "tyler-allgeier",
       "team": "ARI",
@@ -43229,6 +43381,7 @@
     },
     {
       "id": "00-0038454",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ztciwwpbyaffmckwrzdk",
       "name": "Keaton Mitchell",
       "slug": "keaton-mitchell",
       "team": "LAC",
@@ -43505,6 +43658,7 @@
     },
     {
       "id": "00-0040242",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qew4qhlj4yuf50voko61",
       "name": "Jacory Croskey-Merritt",
       "slug": "jacory-croskey-merritt",
       "team": "WAS",
@@ -43805,6 +43959,7 @@
     },
     {
       "id": "00-0040198",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/bv33rgypaauv7sealwkr",
       "name": "Ollie Gordon II",
       "slug": "ollie-gordon-ii",
       "team": "MIA",
@@ -44061,6 +44216,7 @@
     },
     {
       "id": "00-0033908",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/kjixprihktsfog6wx9sq",
       "name": "Cooper Kupp",
       "slug": "cooper-kupp",
       "team": "SEA",
@@ -44359,6 +44515,7 @@
     },
     {
       "id": "00-0041040",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/noywrsgaqoqlv64c12yw",
       "name": "Antonio Williams",
       "slug": "antonio-williams",
       "team": "WAS",
@@ -44635,6 +44792,7 @@
     },
     {
       "id": "00-0041042",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tpls1aptxx9x8xaqvjtj",
       "name": "Malachi Fields",
       "slug": "malachi-fields",
       "team": "NYG",
@@ -44933,6 +45091,7 @@
     },
     {
       "id": "00-0033906",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hedvtdbdgdyf4lo5e12p",
       "name": "Alvin Kamara",
       "slug": "alvin-kamara",
       "team": "NO",
@@ -45255,6 +45414,7 @@
     },
     {
       "id": "00-0039732",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zvo9xatffmqn9lnukpgk",
       "name": "Bo Nix",
       "slug": "bo-nix",
       "team": "DEN",
@@ -45553,6 +45713,7 @@
     },
     {
       "id": "00-0041048",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mmf6qmo6a2evw4feupcm",
       "name": "Ted Hurst",
       "slug": "ted-hurst",
       "team": "TB",
@@ -45833,6 +45994,7 @@
     },
     {
       "id": "00-0041029",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/bmiqhbfepmwian4cjddy",
       "name": "Jordyn Tyson",
       "slug": "jordyn-tyson",
       "team": "NO",
@@ -46012,6 +46174,7 @@
     },
     {
       "id": "00-0040737",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/w5o0s5yf6j5dsmiwdtfg",
       "name": "Terrance Ferguson",
       "slug": "terrance-ferguson",
       "team": "LAR",
@@ -46264,6 +46427,7 @@
     },
     {
       "id": "00-0035228",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qzoa3bglbgxpxcvjqzo1",
       "name": "Kyler Murray",
       "slug": "kyler-murray",
       "team": "MIN",
@@ -46514,6 +46678,7 @@
     },
     {
       "id": "00-0041523",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/h0ds6lir4svszjcpc3hr",
       "name": "Caleb Douglas",
       "slug": "caleb-douglas",
       "team": "MIA",
@@ -46716,6 +46881,7 @@
     },
     {
       "id": "00-0040878",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ocdjq5ohmtgdghqdh5m4",
       "name": "Mike Washington Jr.",
       "slug": "mike-washington-jr",
       "team": "LV",
@@ -47014,6 +47180,7 @@
     },
     {
       "id": "00-0037664",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tkoewtwmphwglrdaljyp",
       "name": "Alec Pierce",
       "slug": "alec-pierce",
       "team": "IND",
@@ -47242,6 +47409,7 @@
     },
     {
       "id": "00-0038558",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/inwx7uipfktapaump5pj",
       "name": "Darnell Washington",
       "slug": "darnell-washington",
       "team": "PIT",
@@ -47540,6 +47708,7 @@
     },
     {
       "id": "00-0037525",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/xe3i1lsb3rsioqy61krt",
       "name": "Jordan Mason",
       "slug": "jordan-mason",
       "team": "MIN",
@@ -47744,6 +47913,7 @@
     },
     {
       "id": "00-0037746",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/n1xhex1ytisxcbcggqu7",
       "name": "Brian Robinson",
       "slug": "brian-robinson",
       "team": "ATL",
@@ -48042,6 +48212,7 @@
     },
     {
       "id": "00-0036407",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/szca1v9butuqkjs7ekpm",
       "name": "Jerry Jeudy",
       "slug": "jerry-jeudy",
       "team": "CLE",
@@ -48322,6 +48493,7 @@
     },
     {
       "id": "00-0038608",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/afjemks6p7md28t57f0g",
       "name": "Kayshon Boutte",
       "slug": "kayshon-boutte",
       "team": "HOU",
@@ -48620,6 +48792,7 @@
     },
     {
       "id": "00-0038104",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/bjqzuempyiwxe0hl7e5a",
       "name": "Tyquan Thornton",
       "slug": "tyquan-thornton",
       "team": "KC",
@@ -48896,6 +49069,7 @@
     },
     {
       "id": "00-0040669",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ducfhbiy2a8loytcjymn",
       "name": "Isaac TeSlaa",
       "slug": "isaac-teslaa",
       "team": "DET",
@@ -49170,6 +49344,7 @@
     },
     {
       "id": "00-0033119",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qjswiunczrn5xmdiqhlz",
       "name": "Jacoby Brissett",
       "slug": "jacoby-brissett",
       "team": "ARI",
@@ -49468,6 +49643,7 @@
     },
     {
       "id": "00-0041013",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/avdz4njz1slqn7ktqcuq",
       "name": "Emmett Johnson",
       "slug": "emmett-johnson",
       "team": "KC",
@@ -49742,6 +49918,7 @@
     },
     {
       "id": "00-0041032",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mnswulwto4yqkgmugoiq",
       "name": "Kenyon Sadiq",
       "slug": "kenyon-sadiq",
       "team": "NYJ",
@@ -50088,6 +50265,7 @@
     },
     {
       "id": "00-0033881",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/nucl2dxmpvhlywhyro8o",
       "name": "Evan Engram",
       "slug": "evan-engram",
       "team": "DEN",
@@ -50386,6 +50564,7 @@
     },
     {
       "id": "00-0041052",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/nwgkzr1ysr32jc79zfnt",
       "name": "Kaelon Black",
       "slug": "kaelon-black",
       "team": "SF",
@@ -50684,6 +50863,7 @@
     },
     {
       "id": "00-0041511",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/lmua2lbg0m77ibvydvaq",
       "name": "Omar Cooper",
       "slug": "omar-cooper",
       "team": "NYJ",
@@ -50886,6 +51066,7 @@
     },
     {
       "id": "00-0039391",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/tqdctdun0bv60d5ziwtl",
       "name": "Kimani Vidal",
       "slug": "kimani-vidal",
       "team": "LAC",
@@ -51144,6 +51325,7 @@
     },
     {
       "id": "00-0039299",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/pgwvv5qhcmnwf3tomy1a",
       "name": "George Holani",
       "slug": "george-holani",
       "team": "SEA",
@@ -51442,6 +51624,7 @@
     },
     {
       "id": "00-0034869",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/fyay8vruj0cqmhopufzk",
       "name": "Sam Darnold",
       "slug": "sam-darnold",
       "team": "SEA",
@@ -51716,6 +51899,7 @@
     },
     {
       "id": "00-0038797",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/uorruvczsxzvffpbxu8z",
       "name": "Emanuel Wilson",
       "slug": "emanuel-wilson",
       "team": "SEA",
@@ -52014,6 +52198,7 @@
     },
     {
       "id": "00-0041525",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/fm5rlhfcjhiiaaf1y5ss",
       "name": "Chris Bell",
       "slug": "chris-bell",
       "team": "MIA",
@@ -52288,6 +52473,7 @@
     },
     {
       "id": "00-0040189",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/r8b4oghjwhw8x9nv1wbs",
       "name": "Oronde Gadsden II",
       "slug": "oronde-gadsden-ii",
       "team": "LAC",
@@ -52564,6 +52750,7 @@
     },
     {
       "id": "00-0040691",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/n6uymxssgiicjmxkzxoc",
       "name": "Jaxson Dart",
       "slug": "jaxson-dart",
       "team": "NYG",
@@ -52792,6 +52979,7 @@
     },
     {
       "id": "00-0036252",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/q1ythn05kwcmdr4mwzll",
       "name": "Michael Pittman Jr.",
       "slug": "michael-pittman-jr",
       "team": "PIT",
@@ -53044,6 +53232,7 @@
     },
     {
       "id": "00-0040870",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gjezd2a8imfrxyv16wuj",
       "name": "Ja'Kobi Lane",
       "slug": "jakobi-lane",
       "team": "BAL",
@@ -53294,6 +53483,7 @@
     },
     {
       "id": "00-0041496",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qbauucaxakkhtxihuvmr",
       "name": "Jonah Coleman",
       "slug": "jonah-coleman",
       "team": "DEN",
@@ -53522,6 +53712,7 @@
     },
     {
       "id": "00-0040718",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/absw1gfqoiztajjagmf6",
       "name": "Travis Hunter",
       "slug": "travis-hunter",
       "team": "JAC",
@@ -53774,6 +53965,7 @@
     },
     {
       "id": "00-0039917",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/mip4kogkqxwkkya6mvmh",
       "name": "Michael Penix",
       "slug": "michael-penix",
       "team": "ATL",
@@ -54024,6 +54216,7 @@
     },
     {
       "id": "00-0030565",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/q8wfqvmy7cwxdi35dtby",
       "name": "Geno Smith",
       "slug": "geno-smith",
       "team": "NYJ",
@@ -54322,6 +54515,7 @@
     },
     {
       "id": "00-0038128",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/earybrx24kkhnk4innsw",
       "name": "Malik Willis",
       "slug": "malik-willis",
       "team": "MIA",
@@ -54596,6 +54790,7 @@
     },
     {
       "id": "00-0039344",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/txl39rwjrs2fkm1shtxh",
       "name": "Jonathon Brooks",
       "slug": "jonathon-brooks",
       "team": "CAR",
@@ -54824,6 +55019,7 @@
     },
     {
       "id": "00-0037291",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/nojopyt8hxuwycxyaokb",
       "name": "Jalen Nailor",
       "slug": "jalen-nailor",
       "team": "LV",
@@ -55080,6 +55276,7 @@
     },
     {
       "id": "00-0040134",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/n91hznzkfpftxhqt1qd9",
       "name": "Pat Bryant",
       "slug": "pat-bryant",
       "team": "DEN",
@@ -55356,6 +55553,7 @@
     },
     {
       "id": "00-0036244",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qsyrgtfjj06wryahnxc9",
       "name": "Colby Parkinson",
       "slug": "colby-parkinson",
       "team": "LAR",
@@ -55630,6 +55828,7 @@
     },
     {
       "id": "00-0039032",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/muogqv7ht7djqi97snjv",
       "name": "Tyjae Spears",
       "slug": "tyjae-spears",
       "team": "TEN",
@@ -55976,6 +56175,7 @@
     },
     {
       "id": "00-0040584",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vxm3tzziboxezsb9thjm",
       "name": "Gunnar Helm",
       "slug": "gunnar-helm",
       "team": "TEN",
@@ -56256,6 +56456,7 @@
     },
     {
       "id": "00-0036309",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/eaejonwaflt9drrs9ika",
       "name": "Darnell Mooney",
       "slug": "darnell-mooney",
       "team": "NYG",
@@ -56554,6 +56755,7 @@
     },
     {
       "id": "00-0039890",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hwwacoa3pqapd7pgahfx",
       "name": "Adonai Mitchell",
       "slug": "adonai-mitchell",
       "team": "NYJ",
@@ -56804,6 +57006,7 @@
     },
     {
       "id": "00-0040142",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zpzc4oobxi8nr5dyonob",
       "name": "Kaleb Johnson",
       "slug": "kaleb-johnson",
       "team": "GB",
@@ -57078,6 +57281,7 @@
     },
     {
       "id": "00-0036893",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/grfxgbvqnzz40r7rdtvk",
       "name": "Najee Harris",
       "slug": "najee-harris",
       "team": "NYG",
@@ -57330,6 +57534,7 @@
     },
     {
       "id": "00-0039146",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/uhb95fij1uo92ymqxpmg",
       "name": "Jayden Reed",
       "slug": "jayden-reed",
       "team": "GB",
@@ -57558,6 +57763,7 @@
     },
     {
       "id": "00-0033526",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/fllwhcdovol5i7xxahf6",
       "name": "Samaje Perine",
       "slug": "samaje-perine",
       "team": "CIN",
@@ -57832,6 +58038,7 @@
     },
     {
       "id": "00-0039165",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/cuuyog0lpxfaj0y0huvp",
       "name": "Zach Charbonnet",
       "slug": "zach-charbonnet",
       "team": "SEA",
@@ -58011,6 +58218,7 @@
     },
     {
       "id": "00-0034837",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zwlil5uar0xasdbf6frm",
       "name": "Calvin Ridley",
       "slug": "calvin-ridley",
       "team": "TEN",
@@ -58291,6 +58499,7 @@
     },
     {
       "id": "00-0039384",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/b9nje50lohbprf06xoom",
       "name": "Tyrone Tracy",
       "slug": "tyrone-tracy",
       "team": "NYG",
@@ -58589,6 +58798,7 @@
     },
     {
       "id": "00-0034855",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gjb8e69jtt1ffqf1afue",
       "name": "Baker Mayfield",
       "slug": "baker-mayfield",
       "team": "TB",
@@ -58841,6 +59051,7 @@
     },
     {
       "id": "00-0034975",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/fuodbrwvianete2gy5ag",
       "name": "Justice Hill",
       "slug": "justice-hill",
       "team": "BAL",
@@ -59139,6 +59350,7 @@
     },
     {
       "id": "00-0040676",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/l7iuimdeqgmmhdzdhl67",
       "name": "Cam Ward",
       "slug": "cam-ward",
       "team": "TEN",
@@ -59437,6 +59649,7 @@
     },
     {
       "id": "00-0033885",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/y4g1iayqrbrhdvkqywpx",
       "name": "David Njoku",
       "slug": "david-njoku",
       "team": "LAC",
@@ -59665,6 +59878,7 @@
     },
     {
       "id": "00-0038555",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vfkdjfpiyrcuzahrmfvn",
       "name": "Tank Bigsby",
       "slug": "tank-bigsby",
       "team": "PHI",
@@ -59941,6 +60155,7 @@
     },
     {
       "id": "00-0040890",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/qput6hanukjbatuao8ca",
       "name": "Cyrus Allen",
       "slug": "cyrus-allen",
       "team": "KC",
@@ -60157,6 +60372,7 @@
     },
     {
       "id": "00-0039868",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wgfbgxjntyqzojpizgaj",
       "name": "Troy Franklin",
       "slug": "troy-franklin",
       "team": "DEN",
@@ -60437,6 +60653,7 @@
     },
     {
       "id": "00-0038951",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wiarwjvy8p6bojlratp4",
       "name": "Sean Tucker",
       "slug": "sean-tucker",
       "team": "TB",
@@ -60671,6 +60888,7 @@
     },
     {
       "id": "00-0035535",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/otksyfjll5waf0vsczeu",
       "name": "Darius Slayton",
       "slug": "darius-slayton",
       "team": "NYG",
@@ -60802,6 +61020,7 @@
     },
     {
       "id": "00-0041125",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/f4h7kmayu7kqncha3f6v",
       "name": "Seth McGowan",
       "slug": "seth-mcgowan",
       "team": "IND",
@@ -61100,6 +61319,7 @@
     },
     {
       "id": "00-0036259",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/g99ydreysqfoo0ucocl3",
       "name": "Jauan Jennings",
       "slug": "jauan-jennings",
       "team": "MIN",
@@ -61328,6 +61548,7 @@
     },
     {
       "id": "00-0041096",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vbhwkqty94alwjyz8cin",
       "name": "Kaytron Allen",
       "slug": "kaytron-allen",
       "team": "WAS",
@@ -61532,6 +61753,7 @@
     },
     {
       "id": "00-0036212",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ofdaeqinzmboli54fyis",
       "name": "Tua Tagovailoa",
       "slug": "tua-tagovailoa",
       "team": "ATL",
@@ -61688,6 +61910,7 @@
     },
     {
       "id": "00-0040886",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ztwqbc0s69cbz5ow0r0q",
       "name": "Nicholas Singleton",
       "slug": "nicholas-singleton",
       "team": "TEN",
@@ -61890,6 +62113,7 @@
     },
     {
       "id": "00-0040668",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/joe08hz6to2madpko8zl",
       "name": "Shedeur Sanders",
       "slug": "shedeur-sanders",
       "team": "CLE",
@@ -62046,6 +62270,7 @@
     },
     {
       "id": "00-0039875",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/o1pjw2vvag9cz7bw1kte",
       "name": "Ray Davis",
       "slug": "ray-davis",
       "team": "BUF",
@@ -62304,6 +62529,7 @@
     },
     {
       "id": "00-0041104",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/gfjjkifm7ul9incsl4ag",
       "name": "Demond Claiborne",
       "slug": "demond-claiborne",
       "team": "MIN",
@@ -62532,6 +62758,7 @@
     },
     {
       "id": "00-0041562",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/umygvel2pumkyvxt3jm9",
       "name": "Fernando Mendoza",
       "slug": "fernando-mendoza",
       "team": "LV",
@@ -62688,6 +62915,7 @@
     },
     {
       "id": "00-0039874",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/sqj7ywvb2lymgykhzr7r",
       "name": "Jaylen Wright",
       "slug": "jaylen-wright",
       "team": "MIA",
@@ -62938,6 +63166,7 @@
     },
     {
       "id": "00-0038685",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ityat7ltppdxe9t0imjd",
       "name": "Chris Brooks",
       "slug": "chris-brooks",
       "team": "GB",
@@ -63214,6 +63443,7 @@
     },
     {
       "id": "00-0039855",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/s8tlj5wsi6cq8kjhp06v",
       "name": "Jalen McMillan",
       "slug": "jalen-mcmillan",
       "team": "TB",
@@ -63424,6 +63654,7 @@
     },
     {
       "id": "00-0040177",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/un9cfqnwdzugrcy8caoh",
       "name": "Jordan James",
       "slug": "jordan-james",
       "team": "SF",
@@ -63580,6 +63811,7 @@
     },
     {
       "id": "00-0033553",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ka8wlhtteg8hsowsdofk",
       "name": "James Conner",
       "slug": "james-conner",
       "team": "ARI",
@@ -63759,6 +63991,7 @@
     },
     {
       "id": "00-0040238",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/i0utigksuuvo2njb9wtk",
       "name": "LeQuint Allen",
       "slug": "lequint-allen",
       "team": "JAX",
@@ -64017,6 +64250,7 @@
     },
     {
       "id": "00-0037197",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hkqb4imkum3vxxkwuetl",
       "name": "Isiah Pacheco",
       "slug": "isiah-pacheco",
       "team": "DET",
@@ -64196,6 +64430,7 @@
     },
     {
       "id": "00-0037563",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/zvranxxyt8qeihn8c2q9",
       "name": "Malik Davis",
       "slug": "malik-davis",
       "team": "DAL",
@@ -64375,6 +64610,7 @@
     },
     {
       "id": "00-0038896",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/wunm6abfmikwaewmwkp7",
       "name": "Jacob Saylors",
       "slug": "jacob-saylors",
       "team": "DET",
@@ -64531,6 +64767,7 @@
     },
     {
       "id": "00-0040162",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/den1hzzomdxfcsgk88o5",
       "name": "Dylan Sampson",
       "slug": "dylan-sampson",
       "team": "CLE",
@@ -64710,6 +64947,7 @@
     },
     {
       "id": "00-0023459",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/dypvakakxhccxs67tb0y",
       "name": "Aaron Rodgers",
       "slug": "aaron-rodgers",
       "team": "PIT",
@@ -65008,6 +65246,7 @@
     },
     {
       "id": "00-0041117",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/ahtbv63jyg8ampmyrxn9",
       "name": "Athan Kaliakmanis",
       "slug": "athan-kaliakmanis",
       "team": "WAS",
@@ -65164,6 +65403,7 @@
     },
     {
       "id": "00-0039150",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vcvhmxvxw2a3armle0af",
       "name": "Bryce Young",
       "slug": "bryce-young",
       "team": "CAR",
@@ -65438,6 +65678,7 @@
     },
     {
       "id": "00-0032950",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/azwdmcksvjva4tgaa8vm",
       "name": "Carson Wentz",
       "slug": "carson-wentz",
       "team": "MIN",
@@ -65618,6 +65859,7 @@
     },
     {
       "id": "00-0028986",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/weixhyzal4ntsyszyepu",
       "name": "Case Keenum",
       "slug": "case-keenum",
       "team": "CHI",
@@ -65804,6 +66046,7 @@
     },
     {
       "id": "00-0033662",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/rvpk214lubzxw5ibbhjd",
       "name": "Cooper Rush",
       "slug": "cooper-rush",
       "team": "ATL",
@@ -65984,6 +66227,7 @@
     },
     {
       "id": "00-0035710",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/yslz8jcyiekbmm7iguxm",
       "name": "Daniel Jones",
       "slug": "daniel-jones",
       "team": "IND",
@@ -66282,6 +66526,7 @@
     },
     {
       "id": "00-0033537",
+      "headshotUrl": "https://static.www.nfl.com/image/private/f_auto,q_auto/league/otfs2docj6eahaebo5xn",
       "name": "Deshaun Watson",
       "slug": "deshaun-watson",
       "team": "CLE",
@@ -66580,6 +66825,7 @@
     },
     {
       "id": "00-0035704",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/vdixnkk1uglfpwowalf8",
       "name": "Drew Lock",
       "slug": "drew-lock",
       "team": "SEA",
@@ -66760,6 +67006,7 @@
     },
     {
       "id": "00-0041251",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/hwhfl6i5drktwjvslfpn",
       "name": "Jalon Daniels",
       "slug": "jalon-daniels",
       "team": "TB",
@@ -67010,6 +67257,7 @@
     },
     {
       "id": "00-0031503",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/e5qyxnibbyawi0pvfpjl",
       "name": "Jameis Winston",
       "slug": "jameis-winston",
       "team": "NYG",
@@ -67262,6 +67510,7 @@
     },
     {
       "id": "00-0029604",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/za7cynvpwlsro1tsaijk",
       "name": "Kirk Cousins",
       "slug": "kirk-cousins",
       "team": "LV",
@@ -67560,6 +67809,7 @@
     },
     {
       "id": "00-0032268",
+      "headshotUrl": "https://static.www.nfl.com/image/upload/f_auto,q_auto/league/grx6m1fmu1odltjo3y31",
       "name": "Marcus Mariota",
       "slug": "marcus-mariota",
       "team": "WAS",

@@ -20,7 +20,7 @@ jobs:
           python-version: '3.12'
       - run: pip install 'pandas==2.3.2' 'numpy==2.3.2' 'beautifulsoup4==4.13.5'
       - run: python tests/test-ranking-evidence.py
-      - run: node --test tests/test-player-profiles.mjs tests/test-seo.mjs tests/test-app.mjs tests/test-scoring-settings.mjs tests/test-weekly-projections.mjs
+      - run: node --test tests/test-player-images.mjs tests/test-player-profiles.mjs tests/test-seo.mjs tests/test-app.mjs tests/test-scoring-settings.mjs tests/test-weekly-projections.mjs
       - uses: actions/upload-artifact@v4
         with:
           name: player-profile-site-preview
