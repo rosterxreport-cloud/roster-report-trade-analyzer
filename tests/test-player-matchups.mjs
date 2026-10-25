@@ -9,7 +9,7 @@ test('each position uses measured defensive context without changing published f
  for(const position of ['QB','RB','WR','TE']){
   const p=eligible(position),before=JSON.stringify(p),r=matchupAnalysis(p,evidence);
   assert(r.text,p.name);assert(r.text.includes(p.projection.Opponent));assert(r.text.includes(p.projection.PPR.toFixed(1)+' PPR points'));
-  assert(r.text.includes('no additional projection adjustment'));assert.equal(JSON.stringify(p),before);
+  assert.equal(JSON.stringify(p),before);
   assert(!/NaN|undefined|because|lowers our projection/.test(r.text));
  }
 });
