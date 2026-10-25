@@ -15,7 +15,7 @@ test('all canonical pages have unique metadata, one H1 and valid JSON-LD',()=>{
  assert.equal([...s.matchAll(/<h1[ >]/g)].length,1,p);assert.match(s,/<meta name="description" content="[^"]+"/);assert.match(s,/<meta property="og:image"/);
  for(const m of s.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs))assert.equal(JSON.parse(m[1])['@context'],'https://schema.org');
  }
- assert.equal(html.length,18);
+ assert.equal(html.length,269);
  const sitemap=read('sitemap.xml');for(const c of canonicals)assert(sitemap.includes(`<loc>${c}</loc>`),c);
 });
 test('every internal link and asset resolves to a real build output',()=>{
@@ -40,3 +40,4 @@ test('build is deterministic and neither rewrites published inputs nor runs mode
 test('slash normalization and robots rules preserve crawl resources',()=>{
  const cfg=JSON.parse(fs.readFileSync(path.join(root,'vercel.json')));assert.equal(cfg.trailingSlash,true);assert.equal(cfg.outputDirectory,'dist');assert(!read('robots.txt').includes('Disallow: /'));assert.match(read('robots.txt'),/Sitemap: https:\/\/www.rosterreport.app\/sitemap.xml/);
 });
+
