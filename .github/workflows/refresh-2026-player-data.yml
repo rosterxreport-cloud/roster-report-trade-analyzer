@@ -85,7 +85,7 @@ jobs:
           mkdir -p .profile-candidate
           python scripts/build-player-evidence.py --output .profile-candidate/statistics.json
           node scripts/publish-player-profiles.mjs --evidence .profile-candidate/statistics.json --ranking-evidence data/ranking-evidence.pending.json --require-fresh
-          node --test tests/test-player-profiles.mjs
+          node --test tests/test-player-analysis.mjs tests/test-player-profiles.mjs
       - name: Report retained profile snapshot
         if: steps.profiles.outcome == 'failure'
         run: |
