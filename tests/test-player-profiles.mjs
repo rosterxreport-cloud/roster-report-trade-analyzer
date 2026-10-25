@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {analysis,makeRelease,hash,renderProfiles} from '../scripts/player-profiles.mjs';
+import {analysis,makeRelease,hash,renderProfiles,weeklyStatProjection} from '../scripts/player-profiles.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=f=>fs.readFileSync(path.join(root,f),'utf8'),load=f=>JSON.parse(read(f));
 const saved=load('data/player-profiles.json');
@@ -63,4 +63,18 @@ test('invalid identities and stale evidence fail without changing the last good 
 test('retained snapshots display a clear stale banner and all profiles render without JavaScript',()=>{
  const pages=[];renderProfiles({release:saved,stale:true,page:(slug,title,desc,body)=>pages.push({slug,title,desc,body}),esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;'),write:()=>{},dateLabel:s=>s});
  assert.equal(pages.length,251);for(const p of saved.profiles){const page=pages.find(x=>x.slug==='players/'+p.slug);assert(page.body.includes('last validated profile snapshot'));assert(page.body.includes(p.paragraphs[0].text));assert(page.body.includes('href="/#analyzer"'));}
+});
+
+test('weekly stat cards preserve published statlines, all scoring formats and availability safeguards',()=>{
+ const esc=s=>String(s).replace(/</g,'&lt;'),date=s=>s;
+ for(const position of ['QB','RB','WR','TE']){
+  const p=structuredClone(saved.profiles.find(p=>p.position===position&&p.projection&&!p.editorial?.out));
+  const html=weeklyStatProjection(p,esc,date);
+  assert(html.includes('Rushing yards'));assert(html.includes('Standard points'));assert(html.includes('Half-PPR points'));assert(html.includes('PPR points'));
+  assert(html.includes(p.projection.PPR.toFixed(1)));
+  assert.equal(html.includes('Passing yards'),position==='QB');assert.equal(html.includes('Receiving yards'),position!=='QB');
+  p.projection.Rush_Yds=null;assert(weeklyStatProjection(p,esc,date).includes('Unavailable'));
+  p.editorial={out:{reason:'out'}};assert(!weeklyStatProjection(p,esc,date).includes('weekly-stat-projections'));
+  p.editorial={};p.projection=null;assert(weeklyStatProjection(p,esc,date).includes('not a zero-point forecast'));
+ }
 });
