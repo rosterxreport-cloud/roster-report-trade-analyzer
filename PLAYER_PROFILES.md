@@ -59,3 +59,15 @@ The separate feature branch must not publish rankings to main. The rankings refr
 Profiles and directory cards display current-team logos from the verified ESPN team API URL pattern. No player headshots are collected, stored, rendered, requested or included in Person metadata. JAC/JAX and WAS/WSH aliases resolve to the same verified team logo. Logo requests reserve dimensions, omit outgoing referrers and decode asynchronously. Directory logos load lazily. If a logo is unavailable, a local team abbreviation badge remains visible. The existing rankings, projections and weekly publication safeguards are unchanged.
 
 Logo verification: `node --test tests/test-player-images.mjs`. Tests cover all 250 profiles, reject arbitrary image hosts through an explicit team allowlist, and ensure no headshot URLs or Person image properties are rendered.
+
+## Definitive, evidence-driven editorial voice
+
+The narrative generator lives in `scripts/player-analysis.mjs`. It interprets the existing outputs without changing rankings, trade values, projections or scoring. Each profile leads with a rest-of-season asset verdict, explains workload direction and efficiency, gives a weekly lineup call, and closes with a trade stance and same-position model-price peers.
+
+Rest-of-season tiers use published Half-PPR positional ranks and a 12-team baseline. QB/TE ranks 1–12 are starter tiers; RB/WR ranks 1–24 cover the two starting slots, with 25–36 labeled FLEX/WR3 options. Elite tiers are the top three QB/TEs and top six RB/WRs. Weekly calls use the player's rank among every player of that position in the published PPR forecast, not just the selected profiles. These are transparent editorial rules, not newly fitted model outputs or external market consensus.
+
+Workload comparisons use two disjoint appearance windows, up to three games each, and never missed-game zeros. Expanding/contracting labels require at least a 20% change and at least one carry/target (three pass attempts) per game. Efficiency comparisons require three recorded games and 50 pass attempts, 30 carries or 20 targets by position within the measured analyzer pool. Top/bottom-quarter interpretations refer only to that disclosed pool. Receiving production, interception scoring costs, snap shares and touchdown dependence are calculated directly from the same verified records.
+
+The current projection manifest's verified out overrides suppress lineup starts only when forecast week and original run timestamp match the published forecast. Missing projections never become invented out designations. Returning-player historical inputs and workload assumptions remain conditional. Same-position trade peers are the two nearest default Half-PPR model values, not claims about market pricing or guaranteed one-for-one offers. Rank-movement explanations remain limited to recorded changes; no injury or usage cause is invented.
+
+Shared methodology and repeated disclaimers appear in source notes rather than padding each analysis. Team logos remain unchanged. Verify with `node --test tests/test-player-analysis.mjs tests/test-player-profiles.mjs`.

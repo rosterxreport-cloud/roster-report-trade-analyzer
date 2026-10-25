@@ -1,5 +1,7 @@
 /** Evidence-only profile generation. No model fitting, network calls or invented commentary. */
 import fs from 'node:fs';
+import {analysis,editorialContext} from './player-analysis.mjs';
+export {analysis} from './player-analysis.mjs';
 import {teamLogo,imageCss,imageClient} from './player-images.mjs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -18,56 +20,13 @@ export async function adjustedPlayers(root){
  return Object.fromEntries(Object.entries(db).map(([f,rows])=>[f,c.applyRbPremium(rows)]));
 }
 const countWords=s=>s.trim().split(/\s+/).length;
-function totals(rows){return Object.fromEntries(['attempts','completions','passing_yards','passing_tds','passing_interceptions','carries','rushing_yards','rushing_tds','targets','receptions','receiving_yards','receiving_tds','fantasy_points_ppr'].map(k=>[k,rows.reduce((sum,w)=>sum+w[k],0)]));}
-export function analysis(p){
- const out=[];const add=(heading,text,evidenceRefs)=>out.push({heading,text,evidenceRefs});
- const r=p.rankings.half, rows=p.weekly.filter(w=>!w.statsMissing), t=totals(rows), n=rows.length;
- const rank=`${p.name} is ${p.position}${r.posRank} and ${r.rank===999?'currently unranked overall':'No. '+r.rank+' overall'} in the published Half-PPR rankings, with a default-league trade value of ${number(r.value)}.`;
- if(n){
-  const production=p.position==='QB'?`Across ${n} recorded offensive games, he has ${number(t.passing_yards,0)} passing yards, ${t.passing_tds} passing touchdowns and ${t.passing_interceptions} interceptions. His rushing contribution is ${number(t.rushing_yards,0)} yards and ${t.rushing_tds} touchdowns.`:p.position==='RB'?`Across ${n} recorded offensive games, he has ${t.carries} carries for ${number(t.rushing_yards,0)} yards and ${t.rushing_tds} rushing touchdowns, plus ${t.receptions} receptions for ${number(t.receiving_yards,0)} yards and ${t.receiving_tds} receiving touchdowns.`:`Across ${n} recorded offensive games, he has drawn ${t.targets} targets, catching ${t.receptions} passes for ${number(t.receiving_yards,0)} yards and ${t.receiving_tds} touchdowns.`;
-  add('Production',`${rank} ${production} That sample averages ${number(t.fantasy_points_ppr/n)} PPR points per recorded game through Week ${p.throughWeek}.`,['rankings.half','weekly']);
- }else add('Production',`${rank} The verified source snapshot contains no recorded offensive counting-stat sample for him through Week ${p.throughWeek}. That absence is not treated as a zero-point season or evidence of lost ability. His published model placement remains available, but a current-production or efficiency claim would not be supported.`,['rankings.half','weekly']);
- if(n){
-  const recent=rows.slice(-3),prev=rows.slice(-6,-3),rt=totals(recent);let usage='';
-  const metric=p.position==='QB'?'attempts':p.position==='RB'?'carries':'targets',label={attempts:'pass attempts',carries:'carries',targets:'targets'}[metric];
-  usage=`In his ${recent.length} most recent recorded offensive game${recent.length===1?'':'s'} (Week${recent.length===1?'':'s'} ${recent.map(w=>w.week).join(', ')}), ${p.name} averaged ${number(rt[metric]/recent.length)} ${label}`;
-  if(prev.length===3&&recent.length===3){const pt=totals(prev),delta=rt[metric]/3-pt[metric]/3;usage+=`, compared with ${number(pt[metric]/3)} over the preceding three appearances. That is ${delta>0?'an increase':delta<0?'a decrease':'a change'} of ${number(Math.abs(delta))} per game`;}usage+='.';
-  if(p.position==='QB'&&t.attempts)usage+=` His rushing production adds ${number(t.rushing_yards/n)} yards per recorded game alongside ${number(t.attempts/n)} pass attempts.`;
-  if(p.position==='RB'&&t.carries+t.receptions>0)usage+=` Receptions account for ${number(t.receptions/(t.carries+t.receptions)*100)}% of his recorded touches, making his receiving involvement directly relevant when comparing reception-scoring formats.`;
-  if(['WR','TE'].includes(p.position)){
-   const passTotal=rows.reduce((sum,w)=>sum+(w.teamPassAttempts||0),0);
-   if(passTotal>0)usage+=` His ${t.targets} targets represent ${number(t.targets/passTotal*100)}% of team pass attempts in those recorded games.`;
-  }
-  const snap=p.weekly.filter(w=>w.snapShare!=null).slice(-3);
-  if(snap.length)usage+=` His available recent snap shares were ${snap.map(w=>`Week ${w.week}: ${number(w.snapShare*100,0)}%`).join('; ')}.`;
-  const efficiency=p.position==='QB'?(t.attempts?`${number(t.passing_yards/t.attempts)} yards per pass attempt and ${number(t.completions/t.attempts*100)}% completions`:null):p.position==='RB'?(t.carries?`${number(t.rushing_yards/t.carries)} yards per carry`:null):(t.targets?`${number(t.receiving_yards/t.targets)} yards per target and ${number(t.receptions/t.targets*100)}% of targets caught`:null);
-  if(efficiency)usage+=` His sample efficiency is ${efficiency}.`;
-  usage+=' These are observed rates; they do not guarantee the same workload next week.';
-  add('Usage and efficiency',usage,['weekly']);
- }else{
-  const snap=p.weekly.filter(w=>w.snapShare!=null);
-  add('Usage and efficiency',snap.length?`The participation feed records offensive snaps in Week${snap.length===1?'':'s'} ${snap.map(w=>w.week).join(', ')}, but the corresponding counting statistics are missing. A per-game production rate would therefore be misleading. No target, carry, passing-volume or efficiency trend is assigned from incomplete records.`:`There is no verified recent offensive sample from which to calculate a ${p.position==='QB'?'passing-volume':p.position==='RB'?'carry-volume':'target-volume'} trend. Missing appearances are excluded rather than entered as zero-usage games. Historical priors or roster status alone do not establish a new workload, so the page withholds a numerical efficiency estimate.`,['weekly']);
- }
- const proj=p.projection;
- let outlook=proj?`The published Week ${p.projectionWeek} forecast gives ${p.name} ${number(proj.PPR)} PPR points`: `No individual Week ${p.projectionWeek} forecast is present in the published projection snapshot for ${p.name}`;
- if(proj){outlook+=p.position==='QB'?`, including ${number(proj.Pass_Att)} pass attempts, ${number(proj.Pass_Yds)} passing yards and ${number(proj.Rush_Yds)} rushing yards.`:p.position==='RB'?`, including ${number(proj.Rush_Att)} carries, ${number(proj.Rush_Yds)} rushing yards and ${number(proj.Targets)} targets.`:`, including ${number(proj.Targets)} targets, ${number(proj.Receptions)} catches and ${number(proj.Rec_Yds)} receiving yards.`;if(proj.starterNote||proj.note)outlook+=` Run note: ${[proj.starterNote,proj.note].filter(Boolean).join(' ').replace(/[. ]+$/,'')}.`;}else outlook+='; this can reflect availability or forecast coverage and is not a zero-point projection.';
- outlook+=` For the rest of the season, the published ${p.position}${r.posRank} placement is the model’s current relative assessment. The weekly forecast is not extrapolated into a season total.`;
- add('Outlook',outlook,['projection','rankings.half']);
- let trade=`His PPR trade value is ${number(p.rankings.ppr.value)}, versus ${number(p.rankings.standard.value)} in Standard. Those are model values, not fantasy-point forecasts or a guaranteed market price.`;
- if(p.change){const d=p.change.previousRank-r.rank;trade+=` Since the previous successful profile snapshot, his Half-PPR rank ${d>0?'rose':d<0?'fell':'held at'} ${d?Math.abs(d)+' places, from '+p.change.previousRank+' to '+r.rank:r.rank}.`;if(p.change.scoreDelta!=null)trade+=` His published ranking score changed by ${p.change.scoreDelta>=0?'+':''}${number(p.change.scoreDelta,2)}; rank movement also depends on other players.`;}
- else trade+=' This is his first profile snapshot, so no weekly movement explanation is assigned.';
- if(p.calculationChange){const c=p.calculationChange;trade+=` Recorded current-season signal: ${number(c.previousLiveSignal,2)} to ${number(c.liveSignal,2)}; role multiplier: ${number(c.previousRoleMultiplier,2)} to ${number(c.roleMultiplier,2)}.`;}
- else if(p.calculation)trade+=` The recorded calculation gives the current-season signal ${number(p.calculation.seasonWeight*100,0)}% weight and applies a ${number(p.calculation.roleMultiplier,2)} role multiplier.`;
- trade+=' Compare a proposed return in the analyzer: league scoring, Superflex demand and package adjustments can change the result.';
- add('Trade value and weekly change',trade,['rankings','change','calculation','calculationChange']);
- // Never pad sparse evidence to meet a word target. Quality checks report exceptions.
- return out;
-}
 export async function makeRelease(root,options={}){
  const read=p=>fs.readFileSync(path.join(root,p),'utf8'),load=p=>JSON.parse(read(p));
  const raw=load('players.json'),ev=load(options.evidencePath||'data/player-evidence.json'),projection=load('data/weekly-projections.json');
  if(ev.schemaVersion!==1||!ev.sources?.length||ev.throughWeek<1)throw Error('Invalid evidence snapshot');
  const injuries=load('injury-adjustments.json');
+ const manifestPath=projection.source.replace('_league_v4_full.csv','_run_manifest.json');
+ const manifest=fs.existsSync(path.join(root,manifestPath))?load(manifestPath):null;
  if(ev.throughWeek<Number(projection.throughWeek))throw Error('Statistics are behind the published projection inputs');
  if(options.requireFresh&&Date.now()-Date.parse(ev.capturedAt)>7*86400000)throw Error('Statistical snapshot is older than seven days');
  const adjusted=await adjustedPlayers(root);
@@ -98,12 +57,13 @@ export async function makeRelease(root,options={}){
    const prior=audit.previousCalculations?.half?.[source.name];
    if(prior)p.calculationChange={previousLiveSignal:prior.liveSignal,liveSignal:p.calculation.liveSignal,previousRoleMultiplier:prior.roleMultiplier,roleMultiplier:p.calculation.roleMultiplier};
   }
+  p.editorial=editorialContext(p,{evidence:ev,adjusted,projection,manifest});
   p.paragraphs=analysis(p);p.wordCount=countWords(p.paragraphs.map(x=>x.text).join(' '));
   if(p.wordCount>340||p.wordCount<180)throw Error('Profile length outside safety range: '+p.name+' '+p.wordCount);
   profiles.push(p);
  }
  const texts=new Set(profiles.map(p=>p.paragraphs.map(x=>x.text).join(' ')));if(texts.size!==profiles.length)throw Error('Duplicate analysis');
- return {registry,release:{schemaVersion:1,selection:'Published Half-PPR QB/RB/WR/TE top 250',statisticsAsOf:ev.capturedAt,throughWeek:ev.throughWeek,inputHashes:{players:hash(read('players.json')),injuries:hash(read('injury-adjustments.json')),projections:hash(read('data/weekly-projections.json')),evidence:hash(read(options.evidencePath||'data/player-evidence.json')),app:hash(read('app.js')),injuryLayer:hash(read('injury-layer.js'))},profiles}};
+ return {registry,release:{schemaVersion:1,editorialVersion:2,selection:'Published Half-PPR QB/RB/WR/TE top 250',statisticsAsOf:ev.capturedAt,throughWeek:ev.throughWeek,inputHashes:{players:hash(read('players.json')),injuries:hash(read('injury-adjustments.json')),projections:hash(read('data/weekly-projections.json')),evidence:hash(read(options.evidencePath||'data/player-evidence.json')),app:hash(read('app.js')),injuryLayer:hash(read('injury-layer.js'))},profiles}};
 }
 export function renderProfiles({release,page,esc,write,dateLabel,stale=false}){
  const active=release.profiles.filter(p=>p.active);
@@ -119,7 +79,7 @@ export function renderProfiles({release,page,esc,write,dateLabel,stale=false}){
   const r=p.rankings;
   const status=p.retained?'This player is no longer in the current published model. This page retains the last verified profile.':!p.active?'This player is outside the current profile Top 250. The permanent page remains available.':'';
   const personSchema=JSON.stringify({'@context':'https://schema.org','@type':'Person',name:p.name,identifier:p.id,url:'https://www.rosterreport.app/players/'+p.slug+'/'}).replace(/</g,'\\u003c');
-  const body=`<script type="application/ld+json">${personSchema}</script>${assets}<div class="player-analysis">${stale?'<p class="projection-notice">This is the last validated profile snapshot. Newer model or projection inputs are available; <a href="/">open the analyzer for current values</a>.</p>':''}<p><a href="/players/">All player profiles</a> / ${esc(p.name)}</p><div class="player-hero">${teamLogo(p,esc)}<p class="lede">${esc(p.team)} · ${p.position} · ${p.season} redraft outlook</p></div>${status?`<p class="projection-notice">${status}</p>`:''}<dl class="player-summary"><div><dt>Half-PPR rank</dt><dd>${p.position}${r.half.posRank} · ${r.half.rank===999?'Unranked overall':'#'+r.half.rank}</dd></div><div><dt>Half-PPR trade value</dt><dd>${number(r.half.value)}</dd></div><div><dt>PPR trade value</dt><dd>${number(r.ppr.value)}</dd></div><div><dt>Standard trade value</dt><dd>${number(r.standard.value)}</dd></div></dl><p class="data-meta">Observed statistics through Week ${p.throughWeek} · Source snapshot ${dateLabel(p.statisticsAsOf)}.<br>Rankings: ${p.rankingsAsOf?dateLabel(p.rankingsAsOf):'published repository snapshot; original model-run time unavailable'}.<br>Week ${p.projectionWeek} projections: ${dateLabel(p.projectionAsOf)} · ${esc(p.projectionStatus)}.</p>${p.paragraphs.map(x=>`<h2>${x.heading}</h2><p>${esc(x.text)}</p>`).join('')}<p><a class="seo-cta" href="/#analyzer">Compare ${esc(p.name)} in the Trade Analyzer →</a></p><p><a href="/rankings/${p.position.toLowerCase()}/">${p.position} rankings</a> · <a href="/projections/${p.position.toLowerCase()}/">${p.position} projections</a> · <a href="/methodology/">Model methodology</a></p><details><summary>Sources and calculation notes</summary><p>Automatically generated by The Roster Report from source-linked statistics and published calculations. No manual player writeups. Model neutral defaults are excluded from observed-stat claims. Recorded games can include injury-shortened appearances. Recent comparisons use appearances, not missed-game zeros.</p><ul>${p.sources.map(s=>`<li><a href="${esc(s.url)}">nflverse ${esc(s.file)}</a> · snapshot SHA-256 <code>${s.sha256}</code></li>`).join('')}</ul><p>Default-league values include the analyzer’s existing availability and RB adjustments. Custom scoring, Superflex and package premiums are evaluated inside the analyzer. No market discount or buy/sell recommendation is inferred without supporting market data.</p><p>Projection run assumptions: ${esc(p.projectionUpdateNote||'Read the published availability notes before setting a lineup.')}</p></details><p><a href="/players/">Browse all 250 profiles</a></p></div>`;
+  const body=`<script type="application/ld+json">${personSchema}</script>${assets}<div class="player-analysis">${stale?'<p class="projection-notice">This is the last validated profile snapshot. Newer model or projection inputs are available; <a href="/">open the analyzer for current values</a>.</p>':''}<p><a href="/players/">All player profiles</a> / ${esc(p.name)}</p><div class="player-hero">${teamLogo(p,esc)}<p class="lede">${esc(p.team)} · ${p.position} · ${p.season} redraft outlook</p></div><p class="data-meta">12-team baseline · Half-PPR trade tiers · PPR weekly calls with 4-point passing TDs</p>${status?`<p class="projection-notice">${status}</p>`:''}<dl class="player-summary"><div><dt>Half-PPR rank</dt><dd>${p.position}${r.half.posRank} · ${r.half.rank===999?'Unranked overall':'#'+r.half.rank}</dd></div><div><dt>Half-PPR trade value</dt><dd>${number(r.half.value)}</dd></div><div><dt>PPR trade value</dt><dd>${number(r.ppr.value)}</dd></div><div><dt>Standard trade value</dt><dd>${number(r.standard.value)}</dd></div></dl><p class="data-meta">Observed statistics through Week ${p.throughWeek} · Source snapshot ${dateLabel(p.statisticsAsOf)}.<br>Rankings: ${p.rankingsAsOf?dateLabel(p.rankingsAsOf):'published repository snapshot; original model-run time unavailable'}.<br>Week ${p.projectionWeek} projections: ${dateLabel(p.projectionAsOf)} · ${esc(p.projectionStatus)}.</p>${p.paragraphs.map(x=>`<h2>${x.heading}</h2><p>${esc(x.text)}</p>`).join('')}<p><a class="seo-cta" href="/#analyzer">Compare ${esc(p.name)} in the Trade Analyzer →</a></p><p><a href="/rankings/${p.position.toLowerCase()}/">${p.position} rankings</a> · <a href="/projections/${p.position.toLowerCase()}/">${p.position} projections</a> · <a href="/methodology/">Model methodology</a></p><details><summary>Sources and calculation notes</summary><p>Automatically generated by The Roster Report from source-linked statistics and published calculations. Fantasy tiers use a 12-team, one-QB baseline; lineup calls use the player’s rank within the published PPR forecast. Trade stances are editorial interpretations of model tiers, not market-price claims. Efficiency comparisons require three recorded games and at least 50 pass attempts for QBs, 30 carries for RBs, or 20 targets for WRs/TEs within the analyzer’s player pool. These editorial rules do not change model scores or rankings. No manual player writeups. Model neutral defaults are excluded from observed-stat claims. Recorded games can include injury-shortened appearances. Recent comparisons use appearances, not missed-game zeros.</p><ul>${p.sources.map(s=>`<li><a href="${esc(s.url)}">nflverse ${esc(s.file)}</a> · snapshot SHA-256 <code>${s.sha256}</code></li>`).join('')}</ul><p>Default-league values include the analyzer’s existing availability and RB adjustments. Custom scoring, Superflex and package premiums are evaluated inside the analyzer. No market discount or buy/sell recommendation is inferred without supporting market data.</p><p>Projection run assumptions: ${esc(p.projectionUpdateNote||'Read the published availability notes before setting a lineup.')}</p></details><p><a href="/players/">Browse all 250 profiles</a></p></div>`;
   // Do not claim a new model/statistical date on a presentation-only rebuild.
   page('players/'+p.slug,title,description,body);
  }
