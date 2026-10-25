@@ -13,7 +13,7 @@ const write=(p,s)=>{fs.mkdirSync(path.dirname(path.join(out,p)),{recursive:true}
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const origin='https://www.rosterreport.app';
 fs.rmSync(out,{recursive:true,force:true});fs.mkdirSync(out,{recursive:true});
-for(const p of ['index.html','styles.css','seo.css','favicon.svg','social-card.png','app.js','scoring-settings.js','team-needs.js','injury-layer.js','players.json','scoring-profiles.json','injury-adjustments.json','projections'])fs.cpSync(path.join(root,p),path.join(out,p),{recursive:true});
+for(const p of ['index.html','styles.css','seo.css','favicon.svg','social-card.png','player-profile-links.js','app.js','scoring-settings.js','team-needs.js','injury-layer.js','players.json','scoring-profiles.json','injury-adjustments.json','projections'])fs.cpSync(path.join(root,p),path.join(out,p),{recursive:true});
 const projection=JSON.parse(read('data/weekly-projections.json'));
 if(!projection.players?.length||!projection.updatedAt)throw Error('Missing published projections');
 write('data/weekly-projections.json',read('data/weekly-projections.json'));
@@ -79,6 +79,7 @@ home=home.replace(/<div class="method-grid">[\s\S]*?<\/div>\s*<p class="fine-pri
 home=home.replace(/Veteran analytics use 2023–2025 data[\s\S]*?five bench assets do not automatically outweigh one elite starter\./,'The established model combines historical analytics with current-season updates. Published ranks and adjusted trade values serve different purposes. Injury context, scoring, running-back premiums and multi-player package adjustments affect trade values. <a href="/methodology/">Read the current methodology and limitations</a>.');
 home=home.replace(/<footer>[\s\S]*?<\/footer>/,footer);
 home=meta(home,origin+'/','Fantasy Football Trade Analyzer | The Roster Report','Compare fantasy football trades with The Roster Report’s redraft trade analyzer. Explore player values, PPR scoring formats, rankings, and roster fit.');
+home=home.replace('</body>',`<script type="application/json" id="playerProfileSlugs">${JSON.stringify(Object.fromEntries(profileSlugs)).replace(/</g,'\\u003c')}</script><script defer src="/player-profile-links.js"></script></body>`);
 write('index.html',home);pages.unshift({url:origin+'/',lastmod:rankDate});
 let proj=read('projections/index.html').replace('<h1>Weekly Projections</h1>','<h1>Weekly Fantasy Football Projections</h1>').replace('<body>','<body><a class="skip-link" href="#mainContent">Skip to content</a>').replace('<main class="shell">','<main class="shell" id="mainContent">');
 proj=proj.replace('href="../styles.css"','href="/styles.css"').replace('href="projections.css"','href="/projections/projections.css"').replace('src="projections.mjs"','src="/projections/projections.mjs"');
