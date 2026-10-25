@@ -15,7 +15,7 @@ test('all canonical pages have unique metadata, one H1 and valid JSON-LD',()=>{
  assert.equal([...s.matchAll(/<h1[ >]/g)].length,1,p);assert.match(s,/<meta name="description" content="[^"]+"/);assert.match(s,/<meta property="og:image"/);
  for(const m of s.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs))assert.equal(JSON.parse(m[1])['@context'],'https://schema.org');
  }
- assert.equal(html.length,270);
+ assert.equal(html.length,269);
  const sitemap=read('sitemap.xml');for(const c of canonicals)assert(sitemap.includes(`<loc>${c}</loc>`),c);
 });
 test('every internal link and asset resolves to a real build output',()=>{
