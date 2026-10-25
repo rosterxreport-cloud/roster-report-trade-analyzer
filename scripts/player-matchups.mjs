@@ -32,7 +32,7 @@ export function matchupAnalysis(p,evidence){
    if(lead.games<6)lines.push('That leading-receiver split is a small sample; treat it as supporting context.');
   }
  }
- lines.push(`The published forecast remains ${n(q.PPR)} PPR points. These defensive results provide context; no additional projection adjustment has been applied.`);
+ lines.push(`The published forecast is ${n(q.PPR)} PPR points.`);
  return {text:lines.join(' '),source:evidence.source,throughWeek:evidence.throughWeek,capturedAt:evidence.capturedAt,definition:evidence.leadingReceiverDefinition};
 }
 export function renderMatchup(p,evidence,esc,dateLabel){
