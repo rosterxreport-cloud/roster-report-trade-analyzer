@@ -64,11 +64,3 @@ test('retained snapshots display a clear stale banner and all profiles render wi
  const pages=[];renderProfiles({release:saved,stale:true,page:(slug,title,desc,body)=>pages.push({slug,title,desc,body}),esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;'),write:()=>{},dateLabel:s=>s});
  assert.equal(pages.length,251);for(const p of saved.profiles){const page=pages.find(x=>x.slug==='players/'+p.slug);assert(page.body.includes('last validated profile snapshot'));assert(page.body.includes(p.paragraphs[0].text));assert(page.body.includes('href="/#analyzer"'));}
 });
-
-test('headshots match the same verified GSIS identity as their statistics',()=>{
- const ev=load('data/player-evidence.json');
- for(const p of saved.profiles.filter(p=>p.active)){
-  assert.equal(p.headshotUrl,ev.players[p.id].headshotUrl,p.name);
-  if(p.headshotUrl)assert.match(p.headshotUrl,/^https:\/\/(static\.www\.nfl\.com|static\.clubs\.nfl\.com|a\.espncdn\.com)\//);
- }
-});

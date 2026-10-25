@@ -3,7 +3,6 @@
 import argparse, datetime as dt, hashlib, io, json, math, re, unicodedata
 from pathlib import Path
 from urllib.request import Request, urlopen
-from urllib.parse import urlsplit
 import pandas as pd
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -16,14 +15,6 @@ TOTALS=['attempts','completions','passing_yards','passing_tds','passing_intercep
 def key(value):
  s=unicodedata.normalize('NFKD',str(value or '')).encode('ascii','ignore').decode().lower()
  return re.sub('[^a-z0-9]','',re.sub(r'\b(jr|sr|ii|iii|iv)\.?\b','',s))
-def headshot_url(value):
- if not isinstance(value,str):return None
- try:
-  u=urlsplit(value)
-  if u.scheme!='https' or u.hostname not in {'static.www.nfl.com','static.clubs.nfl.com','a.espncdn.com'} or u.username or u.password or u.port or not u.path:return None
-  return value
- except ValueError:return None
-
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def clean(v):
  if pd.isna(v):return None
@@ -64,7 +55,7 @@ def build(input_dir=None,manifest=None,through_week=None,season=2026):
  for _,r in roster.iterrows():
   nk=key(r.full_name);pid=str(r.gsis_id)
   if nk in identities and identities[nk]['id']!=pid:raise ValueError('Ambiguous roster identity: '+r.full_name)
-  identities[nk]={'id':pid,'pfr':r.pfr_id,'position':r.position,'headshotUrl':headshot_url(r.get('headshot_url'))}
+  identities[nk]={'id':pid,'pfr':r.pfr_id,'position':r.position}
  for _,r in stats[stats.position.isin(CORE)].iterrows():
   nk=key(r.player_display_name)
   if nk not in identities:identities[nk]={'id':str(r.player_id),'pfr':None,'position':r.position}
@@ -92,7 +83,7 @@ def build(input_dir=None,manifest=None,through_week=None,season=2026):
    if w.get('statsMissing'):continue
    if any(w[c] is None for c in ['attempts','completions','carries','targets','receptions','passing_yards','rushing_yards','receiving_yards','fantasy_points','fantasy_points_ppr']):raise ValueError('Missing required counting statistic')
    if w['receptions']>w['targets'] or w['completions']>w['attempts']:raise ValueError('Impossible statline')
-  result[pid]={'id':pid,'name':p['name'],'position':p['pos'],'weekly':weekly,'headshotUrl':identity.get('headshotUrl')}
+  result[pid]={'id':pid,'name':p['name'],'position':p['pos'],'weekly':weekly}
  return {'schemaVersion':1,'season':season,'throughWeek':through_week,'capturedAt':stamp,'sources':sources,'players':result}
 
 def main():

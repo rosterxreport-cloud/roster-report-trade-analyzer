@@ -1,23 +1,24 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {safeHeadshotUrl,sizedHeadshotUrl,portrait,teamLogoUrl} from '../scripts/player-images.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {teamLogo,teamLogoUrl} from '../scripts/player-images.mjs';
+import {renderProfiles} from '../scripts/player-profiles.mjs';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
-const p={name:'Test Player',team:'DET',position:'RB',headshotUrl:'https://static.www.nfl.com/image/upload/f_auto,q_auto/league/example'};
-test('untrusted and malformed image URLs never reach image markup',()=>{
- for(const url of ['javascript:alert(1)','data:image/svg+xml,<svg/>','http://static.www.nfl.com/a','https://static.www.nfl.com.evil.test/a','https://user:pass@static.www.nfl.com/a','https://static.www.nfl.com:8443/a','https://evil.test/a',null]){
-  assert.equal(safeHeadshotUrl(url),null);
-  const html=portrait({...p,headshotUrl:url},esc);assert(!html.includes('data-image-kind="headshot"'));assert(html.includes(teamLogoUrl('DET')));
+test('only allowlisted team logos render, regardless of a player-photo field',()=>{
+ const p={name:'Test Player',team:'DET',position:'RB',headshotUrl:'https://static.www.nfl.com/image/upload/player-photo'};
+ const html=teamLogo(p,esc);assert(html.includes(teamLogoUrl('DET')));assert(!html.includes('player-photo'));assert.match(html,/alt="DET team logo"/);assert.match(html,/width="112" height="112"/);
+ const small=teamLogo(p,esc,{small:true});assert.match(small,/loading="lazy"/);assert.match(small,/aria-hidden="true"/);assert.match(small,/alt=""/);
+ for(const team of ['UNKNOWN','javascript:alert(1)','https://evil.test/'])assert(!teamLogo({...p,team},esc).includes('<img'));
+ assert.equal(teamLogoUrl('WAS'),'https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png');
+});
+test('all built player pages and directory use team logos without any headshot URLs or Person images',()=>{
+ const pages=[];const release=JSON.parse(fs.readFileSync(path.join(root,'data/player-profiles.json'),'utf8'));
+ renderProfiles({release,page:(slug,title,description,body)=>pages.push({slug,body}),esc,write:()=>{},dateLabel:s=>s});
+ assert.equal(pages.length,251);
+ for(const {slug,body:s} of pages){assert(s.includes('data-team-logo-image'),slug);assert(!/headshot|static\.www\.nfl\.com\/image|data-player-image/.test(s),slug);
+ for(const m of s.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)){const d=JSON.parse(m[1]);if(d['@type']==='Person')assert(!d.image);}
  }
-});
-test('main photos have descriptive alt text and reserved space; directory images are lazy and decorative',()=>{
- const main=portrait(p,esc),small=portrait(p,esc,{small:true});
- assert.match(main,/alt="Test Player headshot"/);assert.match(main,/width="160" height="160"/);assert.match(main,/loading="eager"/);assert.match(main,/referrerpolicy="no-referrer"/);assert.match(main,/data-fallback-src="https:\/\/a.espncdn.com/);
- assert.match(small,/loading="lazy"/);assert.match(small,/aria-hidden="true"/);assert.match(small,/alt=""/);
- const absent=portrait({...p,headshotUrl:null,team:'UNKNOWN'},esc);assert(!absent.includes('<img'));assert(absent.includes('UNKNOWN'));
-});
-
-test('NFL CDN sizes preserve the source identity and never crop the photo',()=>{
- assert.equal(sizedHeadshotUrl(p.headshotUrl,320),'https://static.www.nfl.com/image/upload/w_320,c_limit/f_auto,q_auto/league/example');
- assert.equal(sizedHeadshotUrl(p.headshotUrl.replace('/upload/','/private/'),112),'https://static.www.nfl.com/image/private/w_112,c_limit/f_auto,q_auto/league/example');
- assert.throws(()=>sizedHeadshotUrl(p.headshotUrl,5000),/Invalid headshot width/);
 });
