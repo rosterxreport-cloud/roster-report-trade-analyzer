@@ -32,7 +32,14 @@ jobs:
               out.parent.mkdir(parents=True,exist_ok=True)
               shutil.copyfile(p,out)
           PY
-          python scripts/audit-weekly-projections.py --snapshot "$(find data/audits/snapshots -name '*.json' | sort | tail -1)" --output data/audits/latest.json --min-matched 10
+          SNAPSHOT=$(python - <<'PY'
+          import json
+          from pathlib import Path
+          d=json.loads(Path("data/weekly-projections.json").read_text())
+          print(f"data/audits/snapshots/{d['season']}_week{d['week']}.json")
+          PY
+          )
+          python scripts/audit-weekly-projections.py --snapshot "$SNAPSHOT" --output data/audits/latest.json --min-matched 10
           python - <<'PY'
           import json,pathlib,shutil
           d=json.loads(pathlib.Path("data/audits/latest.json").read_text())
