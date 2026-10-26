@@ -1,0 +1,53 @@
+name: Weekly projection accuracy audit
+on:
+  schedule:
+    - cron: '30 13 * * 1,2,3'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: weekly-projection-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate scoring logic
+        run: python scripts/audit-weekly-projections.py --self-test
+      - name: Save immutable snapshot and audit completed games
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json,pathlib,shutil
+          p=pathlib.Path("data/weekly-projections.json")
+          d=json.loads(p.read_text())
+          out=pathlib.Path(f"data/audits/snapshots/{d['season']}_week{d['week']}.json")
+          if not out.exists():
+              out.parent.mkdir(parents=True,exist_ok=True)
+              shutil.copyfile(p,out)
+          PY
+          python scripts/audit-weekly-projections.py --snapshot "$(find data/audits/snapshots -name '*.json' | sort | tail -1)" --output data/audits/latest.json --min-matched 10
+          python - <<'PY'
+          import json,pathlib,shutil
+          d=json.loads(pathlib.Path("data/audits/latest.json").read_text())
+          for ext in ("json","md"):
+              shutil.copyfile(f"data/audits/latest.{ext}",f"data/audits/{d['season']}_week{d['week']}.{ext}")
+          PY
+      - name: Commit audit artifacts only
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/
+          git diff --cached --quiet || (git commit -m "Record weekly projection accuracy audit" && git push)
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: weekly-projection-audit
+          path: data/audits/
+          if-no-files-found: ignore
