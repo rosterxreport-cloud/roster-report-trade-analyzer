@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 DATA_URL = "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_{season}.csv"
+SNAP_URL = "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_{season}.csv"
 POSITIONS = ("QB", "RB", "WR", "TE")
 
 def clean_name(value):
@@ -54,7 +55,17 @@ def actual_points(row):
         + 2*num(row,"receiving_2pt_conversions"), 2
     )
 
-def calc(projections, actual_rows, completed_teams=None):
+def load_snap_counts(url, season, week):
+    with urllib.request.urlopen(url.format(season=season), timeout=70) as response:
+        rows=list(csv.DictReader(io.TextIOWrapper(response,encoding="utf-8-sig")))
+    if not rows or not {"season","week","player","team","offense_snaps"}.issubset(rows[0]):
+        raise ValueError("Snap-count data missing required columns")
+    return [r for r in rows if str(r.get("season"))==str(season)
+            and str(r.get("week"))==str(week)
+            and str(r.get("game_type","REG")) in ("REG","")]
+
+def calc(projections, actual_rows, completed_teams=None, snap_rows=None):
+
     # A source row must have a nonempty player name and a specific week.
     actual_index = defaultdict(list)
     for r in actual_rows:
@@ -62,7 +73,12 @@ def calc(projections, actual_rows, completed_teams=None):
         team = r.get("team") or r.get("recent_team")
         if name and team:
             actual_index[(clean_name(name), team.upper())].append(r)
-    details, missing, ambiguous = [], [], []
+    snap_index=defaultdict(list)
+    for r in (snap_rows or []):
+        name, team=r.get("player"),r.get("team")
+        if name and team:
+            snap_index[(clean_name(name),team.upper())].append(r)
+    details, missing, ambiguous, confirmed_zero = [], [], [], []
     for p in projections:
         pos=p.get("Position")
         if pos not in POSITIONS:
@@ -73,7 +89,24 @@ def calc(projections, actual_rows, completed_teams=None):
             continue
         matches=actual_index.get((clean_name(name),team),[])
         if len(matches)!=1:
-            (ambiguous if matches else missing).append({"player":name,"team":team,"position":pos})
+            status={"player":name,"team":team,"position":pos}
+            if len(matches)>1:
+                ambiguous.append(status)
+                continue
+            snaps=snap_index.get((clean_name(name),team),[])
+            if len(snaps)==1 and num(snaps[0],"offense_snaps")>0:
+                # Proof of offensive participation with no fantasy-stat row.
+                # Do not infer zero from absent stat rows without this evidence.
+                status.update({"offense_snaps":int(num(snaps[0],"offense_snaps")),
+                               "projected":float(p["PPR"]),"actual":0.0,
+                               "absolute_error":round(abs(float(p["PPR"])),2),
+                               "signed_error":round(float(p["PPR"]),2)})
+                confirmed_zero.append(status)
+                details.append({k:status[k] for k in ("player","team","position","projected","actual","absolute_error","signed_error")})
+            else:
+                status["reason"]="No offensive stats; participation unverified"
+                status["snap_count_rows"]=len(snaps)
+                missing.append(status)
             continue
         a=matches[0]
         if "PPR" not in p:
@@ -97,7 +130,9 @@ def calc(projections, actual_rows, completed_teams=None):
     return {"overall":metrics(details),
             "by_position":{pos:metrics([r for r in details if r["position"]==pos]) for pos in POSITIONS},
             "matched":sorted(details,key=lambda r:-r["absolute_error"]),
-            "unmatched":missing,"ambiguous":ambiguous}
+            "unmatched":missing,"ambiguous":ambiguous,
+            "verified_zero_point_players":confirmed_zero,
+            "snap_teams":sorted({str(r.get("team","")).upper() for r in (snap_rows or []) if r.get("team")})}
 
 def load_stats(url,season,week):
     with urllib.request.urlopen(url.format(season=season),timeout=70) as response:
@@ -128,9 +163,10 @@ def run(args):
     players=snap["players"]
     if not players: raise ValueError("Empty projections")
     rows=load_stats(args.stats_url,season,week)
+    snaps=load_snap_counts(args.snaps_url,season,week)
     # Only teams represented by real weekly stats are eligible: future games are omitted.
     teams={str(r.get("team") or r.get("recent_team") or "").upper() for r in rows}
-    result=calc(players,rows,completed_teams=teams)
+    result=calc(players,rows,completed_teams=teams,snap_rows=snaps)
     coverage_den=result["overall"]["players"]+len(result["unmatched"])+len(result["ambiguous"])
     coverage=result["overall"]["players"]/coverage_den if coverage_den else 0
     if result["overall"]["players"]<args.min_matched or coverage<args.min_coverage:
@@ -139,7 +175,8 @@ def run(args):
     incomplete_teams=sorted(projected_teams-teams)
     result.update({"season":season,"week":week,"projection_source":str(source),
                    "actuals_source":args.stats_url.format(season=season),
-                   "source_rows":len(rows),"eligible_projections":coverage_den,
+                   "source_rows":len(rows),"snap_rows":len(snaps),
+                   "eligible_projections":coverage_den,
                    "coverage_pct":round(coverage*100,2),
                    "generated_at":datetime.now(timezone.utc).isoformat(),
                    "missing_team_results":incomplete_teams,
@@ -157,7 +194,16 @@ def run(args):
                "|---|---|---:|---:|---:|"]
     for r in result["matched"][:20]:
         markdown.append(f"| {r['player']} | {r['position']} | {r['projected']} | {r['actual']} | {r['absolute_error']} |")
-    markdown+=["",f"Unmatched: {len(result['unmatched'])}; ambiguous: {len(result['ambiguous'])}.",
+    markdown+=["",f"Verified zero-point offensive appearances: {len(result['verified_zero_point_players'])}.",
+               f"Unresolved (no stat row and participation not verified): {len(result['unmatched'])}; ambiguous: {len(result['ambiguous'])}.",
+               f"Snap-count data covers teams: {', '.join(result['snap_teams']) or 'none'}.",
+               "",
+               "## Unresolved players","",
+               "| Player | Team | Position | Why unresolved |",
+               "|---|---|---|---|"]
+    for p in result["unmatched"]:
+        markdown.append(f"| {p['player']} | {p['team']} | {p['position']} | {p['reason']} |")
+    markdown += ["",
                "This report never assumes unavailable games or missing player rows scored zero.",
                "Missing team results: "+(", ".join(incomplete_teams) if incomplete_teams else "none")+".",
                "A final label still requires all expected team games and player matches to be reconciled.",""]
@@ -169,6 +215,7 @@ if __name__=="__main__":
     ap.add_argument("--snapshot",default="data/weekly-projections.json")
     ap.add_argument("--output",default="data/audits/latest.json")
     ap.add_argument("--stats-url",default=DATA_URL)
+    ap.add_argument("--snaps-url",default=SNAP_URL)
     ap.add_argument("--min-matched",type=int,default=1)
     ap.add_argument("--min-coverage",type=float,default=.65)
     ap.add_argument("--self-test",action="store_true")
