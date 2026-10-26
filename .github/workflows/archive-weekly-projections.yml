@@ -1,0 +1,42 @@
+name: Preserve published projection snapshots
+on:
+  push:
+    branches: [main]
+    paths:
+      - data/weekly-projections.json
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: weekly-projection-snapshots
+  cancel-in-progress: false
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Archive first published snapshot for season/week
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("data/weekly-projections.json")
+          d=json.loads(p.read_text())
+          assert d.get("players"), "Empty published player list"
+          out=Path(f"data/audits/snapshots/{int(d['season'])}_week{int(d['week'])}.json")
+          if not out.exists():
+              out.parent.mkdir(parents=True,exist_ok=True)
+              out.write_bytes(p.read_bytes())
+              print(f"Archived {out}")
+          else:
+              print(f"Preserving existing immutable archive {out}")
+          PY
+      - name: Commit snapshot if new
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/audits/snapshots/
+          git diff --cached --quiet || (git commit -m "Archive published weekly projections for independent audit" && git push)
