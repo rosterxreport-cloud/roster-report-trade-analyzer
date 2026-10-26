@@ -154,6 +154,14 @@ def run(args):
         result=calc(p,a)
         assert result["overall"]["mae"]==3.0, result
         assert result["by_position"]["RB"]["within_3"]==100.0
+        # A player with recorded snaps but no stats is a verified zero;
+        # a player with neither remains unresolved, not a fabricated zero.
+        both=p+[{"Player":"No Stats","Team":"NE","Position":"WR","PPR":3.0},
+                {"Player":"Absent Evidence","Team":"NE","Position":"TE","PPR":2.0}]
+        snaps=[{"player":"No Stats","team":"NE","offense_snaps":"11"}]
+        check=calc(both,a,snap_rows=snaps)
+        assert check["overall"]["players"]==2 and len(check["verified_zero_point_players"])==1
+        assert len(check["unmatched"])==1 and check["unmatched"][0]["player"]=="Absent Evidence"
         print("Self-test passed")
         return
     source=Path(args.snapshot)
