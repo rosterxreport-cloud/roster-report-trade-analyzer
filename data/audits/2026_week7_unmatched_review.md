@@ -1,49 +1,40 @@
-# Week 7, 2026 projection accuracy (partial)
+# Week 7 2026 — unmatched-player investigation
 
-**MAE: 5.0791** | matched: 201 | coverage: 89.73%
+**Status:** 23 unresolved out of 224 projections eligible for teams with available weekly statistical records. 201 matched. The matched-player PPR MAE remains **5.0791**; the full-week MAE is not yet available.
 
-| Position | Players | MAE | Bias | ±1 | ±3 | ±5 |
-|---|---:|---:|---:|---:|---:|---:|
-| ALL | 201 | 5.0791 | -0.3145 | 9.95% | 39.8% | 60.2% |
-| QB | 24 | 5.2917 | -0.2767 | 8.33% | 37.5% | 62.5% |
-| RB | 48 | 5.021 | -1.4165 | 6.25% | 39.58% | 60.42% |
-| WR | 83 | 4.996 | 0.5184 | 12.05% | 43.37% | 59.04% |
-| TE | 46 | 5.1787 | -0.6874 | 10.87% | 34.78% | 60.87% |
+The nflverse weekly offensive statistics feed contains **no Week 7 row** for any of these 23 player/team pairs. The separate nflverse snap-count dataset currently provides Week 7 participation for **NE and CHI only** (Thursday game). It has no matching player row for any of the 23, but this does not establish inactive status or zero points. All 23 remain unresolved rather than being falsely counted as zero.
 
-## Largest misses
-
-| Player | Position | Projected | Actual | Error |
-|---|---|---:|---:|---:|
-| Tony Pollard | RB | 10.99 | 36.5 | 25.51 |
-| Mason Taylor | TE | 4.38 | 25.2 | 20.82 |
-| Zay Flowers | WR | 10.63 | 27.7 | 17.07 |
-| Bo Nix | QB | 9.96 | 26.18 | 16.22 |
-| KC Concepcion | WR | 7.0 | 23.2 | 16.2 |
-| Omar Cooper Jr. | WR | 6.51 | 22.5 | 15.99 |
-| Davis Allen | TE | 2.13 | 18.0 | 15.87 |
-| Bryce Young | QB | 21.11 | 5.42 | 15.69 |
-| Tee Higgins | WR | 12.29 | 26.8 | 14.51 |
-| Sam LaPorta | TE | 16.72 | 2.8 | 13.92 |
-| Caleb Douglas | WR | 7.14 | 21.0 | 13.86 |
-| Quinshon Judkins | RB | 9.89 | 23.4 | 13.51 |
-| Jalen Coker | WR | 15.35 | 1.9 | 13.45 |
-| Malik Willis | QB | 12.71 | 26.02 | 13.31 |
-| Jameson Williams | WR | 13.89 | 26.1 | 12.21 |
-| Nico Collins | WR | 14.51 | 2.6 | 11.91 |
-| Rhamondre Stevenson | RB | 10.94 | 22.5 | 11.56 |
-| Devin Singletary | RB | 3.05 | 14.5 | 11.45 |
-| Tetairoa McMillan | WR | 19.03 | 8.0 | 11.03 |
-| Jahmyr Gibbs | RB | 28.09 | 17.3 | 10.79 |
-
-Verified zero-point offensive appearances: 0.
-Unresolved (no stat row and participation not verified): 23; ambiguous: 0.
-Snap-count data covers teams: CHI, NE.
-
-## Unresolved players
-
-| Player | Team | Position | Why unresolved |
+| Player | Team | Position | Classification |
 |---|---|---|---|
-| Jawhar Jordan | HOU | RB | No offensive stats; participation unverified |
-| CJ Donaldson | NO | RB | No offensive stats; participation unverified |
-| Pierre Strong | GB | RB | No offensive stats; participation unverified |
-| Lan Larison | NE | RB | No offensive stats; participation...[truncated]
+| Jawhar Jordan | HOU | RB | No statistical record; playing-time status unverified |
+| CJ Donaldson | NO | RB | No statistical record; playing-time status unverified |
+| Pierre Strong | GB | RB | No statistical record; playing-time status unverified |
+| Lan Larison | NE | RB | No statistical record; playing-time status unverified |
+| DJ Herman | MIA | RB | No statistical record; playing-time status unverified |
+| Audric Estimé | CLE | RB | No statistical record; playing-time status unverified |
+| AJ Dillon | CAR | RB | No statistical record; playing-time status unverified |
+| Kaleb Johnson | GB | RB | No statistical record; playing-time status unverified |
+| Kalel Mullings | TEN | RB | No statistical record; playing-time status unverified |
+| Foster Moreau | HOU | TE | No statistical record; playing-time status unverified |
+| Teagan Quitoriano | ARI | TE | No statistical record; playing-time status unverified |
+| Marlin Klein | HOU | TE | No statistical record; playing-time status unverified |
+| Pharaoh Brown | IND | TE | No statistical record; playing-time status unverified |
+| Ben Yurosek | MIN | TE | No statistical record; playing-time status unverified |
+| Isaiah Bond | CLE | WR | No statistical record; playing-time status unverified |
+| Chris Moore | BAL | WR | No statistical record; playing-time status unverified |
+| Tim Patrick | NYJ | WR | No statistical record; playing-time status unverified |
+| Devontez Walker | BAL | WR | No statistical record; playing-time status unverified |
+| Jackson Meeks | DET | WR | No statistical record; playing-time status unverified |
+| Kevin Austin Jr. | NO | WR | No statistical record; playing-time status unverified |
+| Deven Thompkins | LV | WR | No statistical record; playing-time status unverified |
+| Lewis Bond | HOU | WR | No statistical record; playing-time status unverified |
+| Ja'Seem Reed | CAR | WR | No statistical record; playing-time status unverified |
+
+## Resolution and audit policy
+
+- If an updated weekly fantasy-stat row appears, match it by normalized player name and team and use its full-PPR points.
+- If a player's **offensive snap count is greater than zero** and there is no corresponding offensive-stat row, record a verified zero-point appearance under the current QB/RB/WR/TE fantasy scoring conventions.
+- If neither a stat row nor verified offensive participation exists, exclude the player from MAE and keep the case open. Do not assume the player was inactive or had zero points.
+- This remains a **partial** Week 7 report. NFL schedule: Sunday night KC–SEA and Monday night DAL–PHI were missing from the available stats feed when checked.
+
+Calculated from the immutable saved Week 7 pregame snapshot and 2026 nflverse weekly-stat/snap-count sources. The audit is scheduled to refresh as more stat and participation data is released.
