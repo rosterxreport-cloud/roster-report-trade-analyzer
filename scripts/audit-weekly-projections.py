@@ -135,15 +135,18 @@ def run(args):
     coverage=result["overall"]["players"]/coverage_den if coverage_den else 0
     if result["overall"]["players"]<args.min_matched or coverage<args.min_coverage:
         raise ValueError(f"Insufficient matching: {result['overall']['players']} matched, {coverage:.1%} coverage")
+    projected_teams={str(p.get("Team") or "").upper() for p in players if p.get("Position") in POSITIONS}
+    incomplete_teams=sorted(projected_teams-teams)
     result.update({"season":season,"week":week,"projection_source":str(source),
                    "actuals_source":args.stats_url.format(season=season),
                    "source_rows":len(rows),"eligible_projections":coverage_den,
                    "coverage_pct":round(coverage*100,2),
                    "generated_at":datetime.now(timezone.utc).isoformat(),
-                   "status":"partial (only teams with available stats); not confirmed full week"})
+                   "missing_team_results":incomplete_teams,
+                   "status":"partial" if incomplete_teams else "all projected teams have game stats"})
     out=Path(args.output);out.parent.mkdir(parents=True,exist_ok=True)
     out.write_text(json.dumps(result,indent=2)+"\n")
-    markdown=[f"# Week {week}, {season} projection accuracy (available games)",
+    markdown=[f"# Week {week}, {season} projection accuracy ({result['status']})",
               "",f"**MAE: {result['overall']['mae']}** | matched: {result['overall']['players']} | coverage: {result['coverage_pct']}%",
               "","| Position | Players | MAE | Bias | ±1 | ±3 | ±5 |",
               "|---|---:|---:|---:|---:|---:|---:|"]
@@ -156,7 +159,8 @@ def run(args):
         markdown.append(f"| {r['player']} | {r['position']} | {r['projected']} | {r['actual']} | {r['absolute_error']} |")
     markdown+=["",f"Unmatched: {len(result['unmatched'])}; ambiguous: {len(result['ambiguous'])}.",
                "This report never assumes unavailable games or missing player rows scored zero.",
-               "Partial-game coverage does not establish a final weekly MAE.",""]
+               "Missing team results: "+(", ".join(incomplete_teams) if incomplete_teams else "none")+".",
+               "A final label still requires all expected team games and player matches to be reconciled.",""]
     out.with_suffix(".md").write_text("\n".join(markdown))
     print(f"Audit saved: {out} ({result['overall']['players']} players, MAE {result['overall']['mae']})")
 
