@@ -1,44 +1,44 @@
 {
   "overall": {
-    "players": 227,
-    "mae": 4.9757,
-    "bias": 0.0042,
-    "within_1": 9.69,
-    "within_3": 39.21,
-    "within_5": 62.11
+    "players": 245,
+    "mae": 4.9362,
+    "bias": -0.0884,
+    "within_1": 9.8,
+    "within_3": 39.59,
+    "within_5": 62.04
   },
   "by_position": {
     "QB": {
-      "players": 26,
-      "mae": 5.3996,
-      "bias": -0.0212,
-      "within_1": 7.69,
-      "within_3": 34.62,
-      "within_5": 61.54
+      "players": 28,
+      "mae": 5.4514,
+      "bias": -0.275,
+      "within_1": 7.14,
+      "within_3": 35.71,
+      "within_5": 60.71
     },
     "RB": {
-      "players": 55,
-      "mae": 5.0007,
-      "bias": -0.8295,
-      "within_1": 7.27,
-      "within_3": 38.18,
-      "within_5": 61.82
+      "players": 59,
+      "mae": 4.9227,
+      "bias": -1.0342,
+      "within_1": 6.78,
+      "within_3": 37.29,
+      "within_5": 62.71
     },
     "WR": {
-      "players": 93,
-      "mae": 4.9169,
-      "bias": 0.7328,
-      "within_1": 10.75,
-      "within_3": 41.94,
-      "within_5": 60.22
+      "players": 101,
+      "mae": 4.9222,
+      "bias": 0.5531,
+      "within_1": 10.89,
+      "within_3": 42.57,
+      "within_5": 60.4
     },
     "TE": {
-      "players": 53,
-      "mae": 4.8451,
-      "bias": -0.3968,
-      "within_1": 11.32,
-      "within_3": 37.74,
-      "within_5": 66.04
+      "players": 57,
+      "mae": 4.7219,
+      "bias": -0.1546,
+      "within_1": 12.28,
+      "within_3": 38.6,
+      "within_5": 64.91
     }
   },
   "matched": [
@@ -196,6 +196,15 @@
       "signed_error": 11.91
     },
     {
+      "player": "Makai Lemon",
+      "team": "PHI",
+      "position": "WR",
+      "projected": 8.01,
+      "actual": 19.7,
+      "absolute_error": 11.69,
+      "signed_error": -11.69
+    },
+    {
       "player": "Rhamondre Stevenson",
       "team": "NE",
       "position": "RB",
@@ -239,6 +248,15 @@
       "actual": 27.1,
       "absolute_error": 10.69,
       "signed_error": -10.69
+    },
+    {
+      "player": "Darius Cooper",
+      "team": "PHI",
+      "position": "WR",
+      "projected": 13.35,
+      "actual": 2.7,
+      "absolute_error": 10.65,
+      "signed_error": 10.65
     },
     {
       "player": "Luther Burden III",
@@ -302,6 +320,15 @@
       "actual": 6.0,
       "absolute_error": 9.74,
       "signed_error": 9.74
+    },
+    {
+      "player": "Dak Prescott",
+      "team": "DAL",
+      "position": "QB",
+      "projected": 13.58,
+      "actual": 23.28,
+      "absolute_error": 9.7,
+      "signed_error": -9.7
     },
     {
       "player": "Malachi Fields",
@@ -430,6 +457,15 @@
       "signed_error": -8.21
     },
     {
+      "player": "CeeDee Lamb",
+      "team": "DAL",
+      "position": "WR",
+      "projected": 16.25,
+      "actual": 24.4,
+      "absolute_error": 8.15,
+      "signed_error": -8.15
+    },
+    {
       "player": "Isaiah Likely",
       "team": "NYG",
       "position": "TE",
@@ -545,6 +581,15 @@
       "actual": 12.0,
       "absolute_error": 7.28,
       "signed_error": -7.28
+    },
+    {
+      "player": "Dameon Pierce",
+      "team": "PHI",
+      "position": "RB",
+      "projected": 4.64,
+      "actual": 11.8,
+      "absolute_error": 7.16,
+      "signed_error": -7.16
     },
     {
       "player": "Cade Otton",
@@ -673,6 +718,15 @@
       "signed_error": -5.83
     },
     {
+      "player": "Jake Ferguson",
+      "team": "DAL",
+      "position": "TE",
+      "projected": 5.7,
+      "actual": 0.0,
+      "absolute_error": 5.7,
+      "signed_error": 5.7
+    },
+    {
       "player": "T.J. Hockenson",
       "team": "MIN",
       "position": "TE",
@@ -752,6 +806,15 @@
       "actual": 13.08,
       "absolute_error": 5.24,
       "signed_error": 5.24
+    },
+    {
+      "player": "Dallas Goedert",
+      "team": "PHI",
+      "position": "TE",
+      "projected": 15.03,
+      "actual": 9.8,
+      "absolute_error": 5.23,
+      "signed_error": 5.23
     },
     {
       "player": "Jordan Mason",
@@ -932,6 +995,15 @@
       "actual": 10.7,
       "absolute_error": 4.44,
       "signed_error": 4.44
+    },
+    {
+      "player": "Marquise Brown",
+      "team": "PHI",
+      "position": "WR",
+      "projected": 0.6,
+      "actual": 5.0,
+      "absolute_error": 4.4,
+      "signed_error": -4.4
     },
     {
       "player": "Foster Moreau",
@@ -1204,6 +1276,15 @@
       "signed_error": 3.23
     },
     {
+      "player": "Saquon Barkley",
+      "team": "PHI",
+      "position": "RB",
+      "projected": 11.9,
+      "actual": 15.1,
+      "absolute_error": 3.2,
+      "signed_error": -3.2
+    },
+    {
       "player": "George Holani",
       "team": "SEA",
       "position": "RB",
@@ -1220,6 +1301,15 @@
       "actual": 5.5,
       "absolute_error": 3.16,
       "signed_error": -3.16
+    },
+    {
+      "player": "Javonte Williams",
+      "team": "DAL",
+      "position": "RB",
+      "projected": 18.37,
+      "actual": 21.5,
+      "absolute_error": 3.13,
+      "signed_error": -3.13
     },
     {
       "player": "Pierre Strong",
@@ -1373,6 +1463,15 @@
       "actual": 0.0,
       "absolute_error": 2.56,
       "signed_error": 2.56
+    },
+    {
+      "player": "Tanner McKee",
+      "team": "PHI",
+      "position": "QB",
+      "projected": 13.09,
+      "actual": 10.54,
+      "absolute_error": 2.55,
+      "signed_error": 2.55
     },
     {
       "player": "Kirk Cousins",
@@ -1573,8 +1672,26 @@
       "signed_error": -1.96
     },
     {
+      "player": "Tyler Goodson",
+      "team": "DAL",
+      "position": "RB",
+      "projected": 1.89,
+      "actual": 3.8,
+      "absolute_error": 1.91,
+      "signed_error": -1.91
+    },
+    {
       "player": "Charlie Jones",
       "team": "NYG",
+      "position": "WR",
+      "projected": 1.9,
+      "actual": 0.0,
+      "absolute_error": 1.9,
+      "signed_error": 1.9
+    },
+    {
+      "player": "Jonathan Mingo",
+      "team": "DAL",
       "position": "WR",
       "projected": 1.9,
       "actual": 0.0,
@@ -1598,6 +1715,15 @@
       "actual": 0.5,
       "absolute_error": 1.85,
       "signed_error": 1.85
+    },
+    {
+      "player": "Elijah Moore",
+      "team": "PHI",
+      "position": "WR",
+      "projected": 1.76,
+      "actual": 3.6,
+      "absolute_error": 1.84,
+      "signed_error": -1.84
     },
     {
       "player": "Chris Godwin Jr.",
@@ -1744,6 +1870,15 @@
       "signed_error": -1.37
     },
     {
+      "player": "Johnny Mundt",
+      "team": "PHI",
+      "position": "TE",
+      "projected": 1.36,
+      "actual": 0.0,
+      "absolute_error": 1.36,
+      "signed_error": 1.36
+    },
+    {
       "player": "Jonnu Smith",
       "team": "GB",
       "position": "TE",
@@ -1832,6 +1967,15 @@
       "actual": 3.5,
       "absolute_error": 1.2,
       "signed_error": 1.2
+    },
+    {
+      "player": "Ryan Flournoy",
+      "team": "DAL",
+      "position": "WR",
+      "projected": 12.18,
+      "actual": 11.0,
+      "absolute_error": 1.18,
+      "signed_error": 1.18
     },
     {
       "player": "Bam Knight",
@@ -2084,6 +2228,24 @@
       "actual": 1.4,
       "absolute_error": 0.08,
       "signed_error": 0.08
+    },
+    {
+      "player": "Brevyn Spann-Ford",
+      "team": "DAL",
+      "position": "TE",
+      "projected": 3.03,
+      "actual": 3.1,
+      "absolute_error": 0.07,
+      "signed_error": -0.07
+    },
+    {
+      "player": "George Pickens",
+      "team": "DAL",
+      "position": "WR",
+      "projected": 15.76,
+      "actual": 15.7,
+      "absolute_error": 0.06,
+      "signed_error": 0.06
     }
   ],
   "unmatched": [
@@ -2128,6 +2290,20 @@
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 1
+    },
+    {
+      "player": "Emari Demercado",
+      "team": "DAL",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Zach Ertz",
+      "team": "PHI",
+      "position": "TE",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
     },
     {
       "player": "Marlin Klein",
@@ -2252,6 +2428,16 @@
       "signed_error": 1.5
     },
     {
+      "player": "Johnny Mundt",
+      "team": "PHI",
+      "position": "TE",
+      "offense_snaps": 16,
+      "projected": 1.36,
+      "actual": 0.0,
+      "absolute_error": 1.36,
+      "signed_error": 1.36
+    },
+    {
       "player": "Isaiah Bond",
       "team": "CLE",
       "position": "WR",
@@ -2290,6 +2476,7 @@
     "CHI",
     "CIN",
     "CLE",
+    "DAL",
     "DEN",
     "DET",
     "GB",
@@ -2304,6 +2491,7 @@
     "NO",
     "NYG",
     "NYJ",
+    "PHI",
     "PIT",
     "SEA",
     "SF",
@@ -2314,14 +2502,11 @@
   "week": 7,
   "projection_source": "data/audits/snapshots/2026_week7.json",
   "actuals_source": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv",
-  "source_rows": 889,
-  "snap_rows": 1217,
-  "eligible_projections": 240,
-  "coverage_pct": 94.58,
-  "generated_at": "2026-10-26T19:28:43.670536+00:00",
-  "missing_team_results": [
-    "DAL",
-    "PHI"
-  ],
-  "status": "partial"
+  "source_rows": 959,
+  "snap_rows": 1310,
+  "eligible_projections": 260,
+  "coverage_pct": 94.23,
+  "generated_at": "2026-10-27T18:49:32.692590+00:00",
+  "missing_team_results": [],
+  "status": "all projected teams have game stats"
 }
