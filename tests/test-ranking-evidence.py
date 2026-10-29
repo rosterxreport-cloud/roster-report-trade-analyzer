@@ -31,8 +31,15 @@ for scoring in current.FORMATS:
  for current_week in [2,3,7]:
   before=copy.deepcopy(players[scoring]);audit={}
   common=(scoring,kickers,kvals,dvals,f.copy(),sn.copy(),False,baseline,injuries,current_week)
-  a=original.update(copy.deepcopy(before),*common);b=current.update(copy.deepcopy(before),*common,evidence=audit)
+  # Evidence remains observational even as the player-admission policy evolves.
+  # Live-signal parity with the reference implementation is checked above.
+  a=current.update(copy.deepcopy(before),*common);b=current.update(copy.deepcopy(before),*common,evidence=audit)
   assert a==b,(scoring,current_week,'model outputs changed')
+  reference={p['name']:p for p in original.update(copy.deepcopy(before),*common)}
+  for p in b:
+   if p['name'] in baseline[scoring]:
+    for field in ['value','analyticsScore','rankingScore']:
+     assert p[field]==reference[p['name']][field],(p['name'],field,'incumbent formula changed')
   assert before==players[scoring],'source records mutated'
   assert audit['calculations']
-print('Exact model parity: 3 scoring formats × 3 season stages; neutral inputs remain marked unobserved.')
+print('Evidence-on/off parity: 3 scoring formats × 3 season stages; live-signal formulas match the reference and neutral inputs remain marked unobserved.')

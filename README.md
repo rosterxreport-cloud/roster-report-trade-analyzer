@@ -64,6 +64,8 @@ Publishing is fail closed. The workflow will not commit if source columns, schem
 
 Rookies retain the dedicated v10 rookie pathway used in the source rankings.
 
+Missing RBs, WRs and TEs enter the live player pool after at least 100 offensive snaps plus 15 carries/targets for RBs or 10 targets for receivers/tight ends. They use the existing position-specific live scoring and sample weights, anchored to a documented synthetic replacement prior from the bottom quartile of the immutable same-position preseason pool. No AW grade is invented. Rookie identity comes from current roster experience. Synthetic priors are reconstructed on every refresh to avoid compounding. All admitted core players compete for Top 250 membership by model value; players outside the Top 250 remain searchable. Previously admitted players remain available through injuries, with normal role and injury adjustments. Validate with `python tests/test-live-player-admission.py`.
+
 ## Fantasy starting-RB premium
 
 After loading the source v10 values, the app applies a 3% premium to fantasy RB1–12 and 1.5% to RB13–24 in each scoring format. Eligibility follows unadjusted model value, with original overall rank breaking ties; the source `posRank` is not used. RB25 onward and other positions retain their values. Premium values are rounded to two decimals and overall rankings are recalculated. Values may exceed 100 to preserve the full premium and ordering among elite backs.

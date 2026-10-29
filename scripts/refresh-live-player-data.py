@@ -271,8 +271,47 @@ def role_reality_modifier(p, matches):
 def special(nm,tm,pos,d,rank):
     return {"rank":rank,"name":nm,"team":tm,"pos":pos,"value":round(d["value"],2),"awRank":None,"analytics":round(d["score"],2),"analyticsScore":round(d["score"],2),"posRank":0,"scarcity":round(d["score"],2),"market":round(d["value"],2),"rookie":False,"rankingScore":round(d["score"],2)}
 
+def live_skill_records(records, scoring, p26, snaps26, baseline, evidence=None):
+    """Admit measured roles without inventing preseason grades or compounding priors."""
+    result=copy.deepcopy(records)
+    existing={namekey(p["name"]):i for i,p in enumerate(result)}
+    locked=baseline.get(scoring,{})
+    anchors={}
+    for pos in ("RB","WR","TE"):
+        pool=[{**p,**locked[p["name"]]} for p in records if p["pos"]==pos and p["name"] in locked]
+        pool=sorted(pool,key=lambda p:(p["value"],p["name"]))
+        replacement=pool[:max(1,int(math.ceil(len(pool)*.25)))]
+        if not replacement:raise RuntimeError(f"No immutable {pos} replacement prior")
+        anchors[pos]={k:float(np.median([p[k] for p in replacement])) for k in ("value","analyticsScore")}
+    for _,row in p26[p26.position.isin(anchors)].iterrows():
+        nm=str(row.player_display_name);nk=namekey(nm);pos=row.position
+        if nm in locked:continue
+        sr=snaps26[snaps26.name_key.eq(nk)]
+        snaps=float(sr.iloc[0].offense_snaps) if not sr.empty else 0.
+        opportunities=float(row.get("carries",0) or 0)+float(row.get("targets",0) or 0)
+        targets=float(row.get("targets",0) or 0)
+        qualified=snaps>=100 and (opportunities>=15 if pos=="RB" else targets>=10)
+        # Retain previously admitted players through injury/role changes. Their
+        # normal performance and availability layers determine subsequent value.
+        if nk not in existing and not qualified:continue
+        prior=anchors[pos];old=result[existing[nk]] if nk in existing else None
+        rookie=bool(float(row.years_exp)==0) if pd.notna(row.get("years_exp")) else bool((old or {}).get("rookie",False))
+        seed={"rank":999,"name":nm,"team":team(row.get("recent_team") or row.get("team")),"pos":pos,
+              "value":prior["value"],"awRank":None,"analytics":prior["analyticsScore"],
+              "analyticsScore":prior["analyticsScore"],"posRank":0,"scarcity":prior["analyticsScore"],
+              "market":prior["value"],"rookie":rookie,"rankingScore":prior["value"]}
+        if nk in existing:result[existing[nk]]=seed
+        else:existing[nk]=len(result);result.append(seed)
+        if evidence is not None:
+            evidence.setdefault("admissions",{})[nm]={"position":pos,"offensiveSnaps":snaps,
+                "opportunities":opportunities,"targets":targets,"new":old is None,
+                "priorSource":"Bottom quartile of immutable same-position preseason values; synthetic replacement prior, not an AW grade",
+                "priorValue":prior["value"],"priorAnalytics":prior["analyticsScore"]}
+    return result
+
 def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries,current_week,evidence=None):
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring,evidence);out=[]
+    if not special_only:records=live_skill_records(records,scoring,p26,snaps26,baseline,evidence)
     if not special_only and scoring=="half":
         debug=[]
         for nm in ("Jahmyr Gibbs","Bijan Robinson","Christian McCaffrey","Jonathan Taylor","James Cook III"):
@@ -387,7 +426,9 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
         # Temporary elite-preseason buffer through Week 3. Protect only the
         # Roster Report preseason Top 15; do not rewrite their values/analytics.
         # Major injury/availability or role-loss profiles can override it.
-        candidates=[x for x in out if x["rank"]<=250]
+        # Every admitted core player competes for the Top 250. Previous rank
+        # must never act as a permanent membership gate.
+        candidates=list(out)
         ordered=sorted(candidates,key=lambda x:(-x["value"],x["rank"]))
         provisional={p["name"]:i for i,p in enumerate(ordered,1)}
         max_drop=15 if current_week<=2 else 25  # No elite protection after Week 3
@@ -474,6 +515,10 @@ def main():
         missing=baseline_names-core_names
         if missing:raise RuntimeError(f"Immutable core baseline players missing in {scoring}: {sorted(missing)}")
     kickers=primary_kickers(fetch(DEPTH_URL));p25,p26=stats(PLAYER_URL,2025),stats(PLAYER_URL,2026);snaps26=snap_stats(2026);rbx=rb_creation_stats(2026);p26["name_key"]=p26.player_display_name.map(namekey)
+    roster=pd.read_parquet("https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet")
+    require(roster,{"gsis_id","week","years_exp"},"2026 rookie identities")
+    experience=roster.sort_values("week").drop_duplicates("gsis_id",keep="last").set_index("gsis_id").years_exp
+    p26["years_exp"]=p26.player_id.map(experience)
     p26["player_id"]=p26["player_id"].astype(str)
     p26=p26.merge(rbx,on="player_id",how="left");
     # Verify the experimental metric is actually attached to current RB rows.

@@ -23,7 +23,7 @@
     "longTds40": null,
     "longTds50": null
   },
-  "Aaron Jones Sr.": {
+  "Aaron Jones": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 3.7875,
@@ -131,6 +131,18 @@
     "longTds40": 17.0,
     "longTds50": null
   },
+  "Austin Hooper": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.56875,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 13.24375,
+    "receptions": 23.51875,
+    "baselinePoints": 63.801249999999996,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Baker Mayfield": {
     "passingYards": 3430.64375,
     "passingTds": 21.69375,
@@ -176,6 +188,18 @@
     "receivingFirstDowns": 7.768749999999999,
     "receptions": 17.2625,
     "baselinePoints": 148.695625,
+    "longTds40": 1.0,
+    "longTds50": null
+  },
+  "Bo Melton": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.43125,
+    "rushingFirstDowns": 0.8625,
+    "receivingFirstDowns": 3.10625,
+    "receptions": 8.63125,
+    "baselinePoints": 22.03875,
     "longTds40": 1.0,
     "longTds50": null
   },
@@ -227,6 +251,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Brevyn Spann-Ford": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.43125,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 8.63125,
+    "receptions": 16.3125,
+    "baselinePoints": 33.693124999999995,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Brian Robinson": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -275,6 +311,18 @@
     "longTds40": 4.857142857142857,
     "longTds50": 4.857142857142857
   },
+  "Bryce Lance": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.4285714285714284,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 12.142857142857142,
+    "receptions": 21.857142857142858,
+    "baselinePoints": 55.371428571428574,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Bryce Young": {
     "passingYards": 3907.8374999999996,
     "passingTds": 28.362500000000004,
@@ -286,6 +334,18 @@
     "baselinePoints": 271.80475,
     "longTds40": 3.2750000000000004,
     "longTds50": 5.666666666666666
+  },
+  "Brycen Tremayne": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 11.875,
+    "receptions": 15.4625,
+    "baselinePoints": 39.546875,
+    "longTds40": null,
+    "longTds50": null
   },
   "Bucky Irving": {
     "passingYards": 0.0,
@@ -310,6 +370,18 @@
     "baselinePoints": 267.672125,
     "longTds40": 4.0,
     "longTds50": 3.0
+  },
+  "CJ Donaldson": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 17.0,
+    "receivingFirstDowns": 2.833333333333333,
+    "receptions": 11.333333333333332,
+    "baselinePoints": 31.45,
+    "longTds40": null,
+    "longTds50": null
   },
   "Cade Otton": {
     "passingYards": 0.0,
@@ -431,6 +503,18 @@
     "longTds40": 1.0,
     "longTds50": 1.0
   },
+  "Charlie Kolar": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.35,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 11.600000000000001,
+    "receptions": 19.18125,
+    "baselinePoints": 44.877500000000005,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Chase Brown": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -551,6 +635,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Cody White": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 4.575,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 11.9125,
+    "receptions": 12.34375,
+    "baselinePoints": 61.9075,
+    "longTds40": 1.0,
+    "longTds50": 1.0
+  },
   "Colby Parkinson": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -560,6 +656,18 @@
     "receivingFirstDowns": 21.96875,
     "receptions": 41.375,
     "baselinePoints": 108.37437499999999,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Cole Kmet": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.24375,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 14.2375,
+    "receptions": 26.75,
+    "baselinePoints": 68.05625,
     "longTds40": null,
     "longTds50": null
   },
@@ -707,6 +815,30 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Dameon Pierce": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 2.7625,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 11.80625,
+    "receivingFirstDowns": 1.38125,
+    "receptions": 9.668750000000003,
+    "baselinePoints": 44.16000000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Daniel Bellinger": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.8625,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 6.0375000000000005,
+    "receptions": 16.48125,
+    "baselinePoints": 38.68625,
+    "longTds40": 1.0,
+    "longTds50": null
+  },
   "Daniel Jones": {
     "passingYards": 3268.29375,
     "passingTds": 13.71875,
@@ -718,6 +850,18 @@
     "baselinePoints": 187.04675,
     "longTds40": null,
     "longTds50": null
+  },
+  "Darius Cooper": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 5.5249999999999995,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 10.875,
+    "receptions": 16.3125,
+    "baselinePoints": 74.97749999999999,
+    "longTds40": 2.4285714285714284,
+    "longTds50": 2.4285714285714284
   },
   "Darius Slayton": {
     "passingYards": 0.0,
@@ -803,6 +947,30 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Davis Allen": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 4.05625,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 14.84375,
+    "receptions": 24.1625,
+    "baselinePoints": 68.93437499999999,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Dawson Knox": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.43125,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 15.93125,
+    "receptions": 29.5,
+    "baselinePoints": 77.45625,
+    "longTds40": null,
+    "longTds50": null
+  },
   "De'Von Achane": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -813,6 +981,18 @@
     "receptions": 60.3375,
     "baselinePoints": 278.09625,
     "longTds40": 3.0,
+    "longTds50": 1.0
+  },
+  "DeMario Douglas": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 5.4375,
+    "rushingFirstDowns": 0.8625,
+    "receivingFirstDowns": 25.2875,
+    "receptions": 45.137499999999996,
+    "baselinePoints": 130.5425,
+    "longTds40": 1.0,
     "longTds50": 1.0
   },
   "DeVonta Smith": {
@@ -899,6 +1079,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Dohnte Meyers": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 2.833333333333333,
+    "receivingFirstDowns": 25.5,
+    "receptions": 36.83333333333333,
+    "baselinePoints": 79.61666666666667,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Dontayvion Wicks": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -947,6 +1139,18 @@
     "longTds40": 17.0,
     "longTds50": 8.5
   },
+  "Dyami Brown": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.5125,
+    "rushingFirstDowns": 1.025,
+    "receivingFirstDowns": 12.1875,
+    "receptions": 22.68125,
+    "baselinePoints": 48.12375,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Dylan Sampson": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -958,6 +1162,54 @@
     "baselinePoints": 88.144375,
     "longTds40": 1.0,
     "longTds50": 1.0
+  },
+  "Efton Chism III": {
+    "passingYards": 22.1,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.89375,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 12.5875,
+    "receptions": 15.350000000000001,
+    "baselinePoints": 47.46274999999999,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Eli Raridon": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 5.666666666666666,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 25.5,
+    "receptions": 34.0,
+    "baselinePoints": 115.6,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Elic Ayomanor": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.10625,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 25.36875,
+    "receptions": 31.49375,
+    "baselinePoints": 96.78875000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Elijah Higgins": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.38125,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 18.7375,
+    "receptions": 34.712500000000006,
+    "baselinePoints": 76.87687500000001,
+    "longTds40": null,
+    "longTds50": null
   },
   "Emanuel Wilson": {
     "passingYards": 0.0,
@@ -1019,6 +1271,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Foster Moreau": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 4.143750000000001,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 9.312500000000002,
+    "receptions": 18.78125,
+    "baselinePoints": 56.61250000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Garrett Wilson": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1077,6 +1341,18 @@
     "receptions": 91.2125,
     "baselinePoints": 260.55375,
     "longTds40": 1.0,
+    "longTds50": null
+  },
+  "Germie Bernard": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.833333333333333,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 34.0,
+    "receptions": 76.5,
+    "baselinePoints": 166.6,
+    "longTds40": null,
     "longTds50": null
   },
   "Greg Dulcich": {
@@ -1151,6 +1427,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Isaiah Williams": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.3812499999999999,
+    "rushingFirstDowns": 3.1937499999999996,
+    "receivingFirstDowns": 9.837499999999999,
+    "receptions": 26.40625,
+    "baselinePoints": 73.415625,
+    "longTds40": 2.4285714285714284,
+    "longTds50": 2.4285714285714284
+  },
   "Isiah Pacheco": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1211,6 +1499,18 @@
     "longTds40": 1.89375,
     "longTds50": 1.0
   },
+  "Jacob Cowing": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 2.4285714285714284,
+    "receivingFirstDowns": 7.285714285714286,
+    "receptions": 9.714285714285714,
+    "baselinePoints": 24.042857142857144,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Jacob Saylors": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1259,6 +1559,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Jahan Dotson": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.1937499999999996,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 19.50625,
+    "receptions": 24.3375,
+    "baselinePoints": 88.22500000000001,
+    "longTds40": 1.0,
+    "longTds50": null
+  },
   "Jahmyr Gibbs": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1292,6 +1604,18 @@
     "receivingFirstDowns": 44.1375,
     "receptions": 66.0625,
     "baselinePoints": 173.939375,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Jalen Brooks": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 5.68125,
+    "receptions": 8.443750000000001,
+    "baselinePoints": 22.245624999999997,
     "longTds40": null,
     "longTds50": null
   },
@@ -1343,6 +1667,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Jalen Royals": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.38125,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 5.525,
+    "receptions": 7.93125,
+    "baselinePoints": 22.086875000000003,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Jalon Daniels": {
     "passingYards": 1703.4,
     "passingTds": 10.2,
@@ -1379,7 +1715,7 @@
     "longTds40": null,
     "longTds50": null
   },
-  "James Cook III": {
+  "James Cook": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 14.4375,
@@ -1413,6 +1749,18 @@
     "receptions": 0.0,
     "baselinePoints": 335.977125,
     "longTds40": 3.0,
+    "longTds50": null
+  },
+  "Jared Wayne": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 6.2,
+    "receptions": 6.875,
+    "baselinePoints": 17.203125,
+    "longTds40": null,
     "longTds50": null
   },
   "Jauan Jennings": {
@@ -1571,6 +1919,18 @@
     "longTds40": 2.833333333333333,
     "longTds50": null
   },
+  "John Metchie III": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.56875,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 18.575,
+    "receptions": 32.025,
+    "baselinePoints": 77.22187500000001,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Jonah Coleman": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1667,6 +2027,30 @@
     "longTds40": 5.325,
     "longTds50": 2.0
   },
+  "Josh Cameron": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 5.666666666666666,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 17.0,
+    "receptions": 22.666666666666664,
+    "baselinePoints": 89.81666666666666,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Josh Cuevas": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.4000000000000004,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 20.4,
+    "receptions": 30.6,
+    "baselinePoints": 91.46,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Josh Downs": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1689,6 +2073,18 @@
     "receptions": 39.981249999999996,
     "baselinePoints": 245.59875,
     "longTds40": 1.0,
+    "longTds50": null
+  },
+  "Josh Palmer": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.7625,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 13.59375,
+    "receptions": 20.375,
+    "baselinePoints": 73.563125,
+    "longTds40": 4.25,
     "longTds50": null
   },
   "Justice Hill": {
@@ -1775,6 +2171,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Kalif Raymond": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.8125,
+    "rushingFirstDowns": 0.43125,
+    "receivingFirstDowns": 22.6125,
+    "receptions": 46.2625,
+    "baselinePoints": 106.43375,
+    "longTds40": 2.4285714285714284,
+    "longTds50": null
+  },
   "Kayshon Boutte": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1823,6 +2231,30 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Kendre Miller": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 3.2750000000000004,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 18.425,
+    "receivingFirstDowns": 1.89375,
+    "receptions": 14.99375,
+    "baselinePoints": 70.38250000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Kendrick Bourne": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 29.03125,
+    "receptions": 53.493750000000006,
+    "baselinePoints": 114.05375000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Kenneth Walker III": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1856,6 +2288,30 @@
     "receivingFirstDowns": 12.142857142857142,
     "receptions": 38.857142857142854,
     "baselinePoints": 103.7,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Keon Coleman": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 6.1937500000000005,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 34.04375,
+    "receptions": 45.71875,
+    "baselinePoints": 142.675625,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Kevin Coleman Jr.": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.4000000000000004,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 10.2,
+    "receptions": 17.0,
+    "baselinePoints": 49.64,
     "longTds40": null,
     "longTds50": null
   },
@@ -1895,6 +2351,18 @@
     "longTds40": 3.1937499999999996,
     "longTds50": null
   },
+  "Konata Mumpfield": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.89375,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 11.875,
+    "receptions": 17.55625,
+    "baselinePoints": 53.247499999999995,
+    "longTds40": 2.833333333333333,
+    "longTds50": null
+  },
   "Kyle Monangai": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -1907,7 +2375,7 @@
     "longTds40": 4.25,
     "longTds50": 4.25
   },
-  "Kyle Pitts Sr.": {
+  "Kyle Pitts": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 0.0,
@@ -1918,6 +2386,18 @@
     "baselinePoints": 178.06437499999998,
     "longTds40": null,
     "longTds50": null
+  },
+  "Kyle Williams": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.675,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 9.924999999999999,
+    "receptions": 12.6,
+    "baselinePoints": 58.096875,
+    "longTds40": 1.0,
+    "longTds50": 1.0
   },
   "Kyler Murray": {
     "passingYards": 1692.7625,
@@ -1967,7 +2447,19 @@
     "longTds40": 2.73125,
     "longTds50": 2.73125
   },
-  "LeQuint Allen": {
+  "Laquon Treadwell": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 12.43125,
+    "receptions": 20.71875,
+    "baselinePoints": 47.929375,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "LeQuint Allen Jr.": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 0.0,
@@ -1990,6 +2482,18 @@
     "baselinePoints": 189.138125,
     "longTds40": 1.0,
     "longTds50": 1.0
+  },
+  "Mack Hollins": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.35,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 28.56875,
+    "receptions": 51.76875,
+    "baselinePoints": 126.13187500000001,
+    "longTds40": null,
+    "longTds50": null
   },
   "Makai Lemon": {
     "passingYards": 0.0,
@@ -2171,7 +2675,7 @@
     "longTds40": 1.0,
     "longTds50": 1.0
   },
-  "Michael Pittman Jr.": {
+  "Michael Pittman": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 0.0,
@@ -2231,6 +2735,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Mitchell Evans": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.025,
+    "rushingFirstDowns": 1.89375,
+    "receivingFirstDowns": 8.756250000000001,
+    "receptions": 20.7875,
+    "baselinePoints": 50.393750000000004,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Najee Harris": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -2267,6 +2783,42 @@
     "longTds40": 2.0,
     "longTds50": 2.0
   },
+  "Noah Fant": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 5.68125,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 12.1875,
+    "receptions": 32.61875,
+    "baselinePoints": 89.99375,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Noah Gray": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 12.900000000000002,
+    "receptions": 27.337500000000002,
+    "baselinePoints": 58.283750000000005,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Olamide Zaccheaus": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 1.025,
+    "rushingFirstDowns": 0.5125,
+    "receivingFirstDowns": 7.687499999999999,
+    "receptions": 25.512499999999996,
+    "baselinePoints": 51.333124999999995,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Ollie Gordon II": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -2279,7 +2831,7 @@
     "longTds40": null,
     "longTds50": null
   },
-  "Omar Cooper": {
+  "Omar Cooper Jr.": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 0.0,
@@ -2423,6 +2975,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Raheim Sanders": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.59375,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 5.5375,
+    "receivingFirstDowns": 4.14375,
+    "receptions": 16.975,
+    "baselinePoints": 43.407500000000006,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Rashee Rice": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -2492,6 +3056,18 @@
     "receivingFirstDowns": 16.356250000000003,
     "receptions": 44.28125,
     "baselinePoints": 191.58375000000004,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Roman Wilson": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.95,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 16.5875,
+    "receptions": 26.4625,
+    "baselinePoints": 84.79875,
     "longTds40": null,
     "longTds50": null
   },
@@ -2663,7 +3239,7 @@
     "longTds40": null,
     "longTds50": null
   },
-  "Ted Hurst": {
+  "Ted Hurst III": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 0.0,
@@ -2723,6 +3299,30 @@
     "longTds40": 1.0,
     "longTds50": null
   },
+  "Tez Johnson": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.5374999999999996,
+    "rushingFirstDowns": 2.7624999999999997,
+    "receivingFirstDowns": 13.806249999999999,
+    "receptions": 24.50625,
+    "baselinePoints": 87.91499999999999,
+    "longTds40": 1.0,
+    "longTds50": null
+  },
+  "Tommy Tremble": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.7875,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 16.175,
+    "receptions": 35.9375,
+    "baselinePoints": 90.20875000000001,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Tony Pollard": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -2735,7 +3335,19 @@
     "longTds40": 1.0,
     "longTds50": 1.0
   },
-  "Travis Etienne Jr.": {
+  "Tory Horton": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 4.75625,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 11.631250000000001,
+    "receptions": 15.68125,
+    "baselinePoints": 68.390625,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Travis Etienne": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 5.29375,
@@ -2759,6 +3371,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Tre Harris": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.59375,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 21.7375,
+    "receptions": 38.53125,
+    "baselinePoints": 93.00312500000001,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Tre Tucker": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -2770,18 +3394,6 @@
     "baselinePoints": 207.581875,
     "longTds40": 3.1937499999999996,
     "longTds50": 1.0
-  },
-  "Tre' Harris": {
-    "passingYards": 0.0,
-    "passingTds": 0.0,
-    "rushingTds": 0.0,
-    "receivingTds": 0.59375,
-    "rushingFirstDowns": 0.0,
-    "receivingFirstDowns": 21.7375,
-    "receptions": 38.53125,
-    "baselinePoints": 93.00312500000001,
-    "longTds40": null,
-    "longTds50": null
   },
   "TreVeyon Henderson": {
     "passingYards": 0.0,
@@ -2817,6 +3429,18 @@
     "receptions": 135.83125,
     "baselinePoints": 316.07062499999995,
     "longTds40": null,
+    "longTds50": null
+  },
+  "Treylon Burks": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 3.35625,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 12.44375,
+    "receptions": 18.36875,
+    "baselinePoints": 67.22,
+    "longTds40": 3.4000000000000004,
     "longTds50": null
   },
   "Troy Franklin": {
@@ -2879,6 +3503,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Tyler Higbee": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.91875,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 29.431250000000002,
+    "receptions": 48.725,
+    "baselinePoints": 111.02625,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Tyler Huntley": {
     "passingYards": 1291.71875,
     "passingTds": 6.875,
@@ -2927,7 +3563,7 @@
     "longTds40": 1.0,
     "longTds50": null
   },
-  "Tyrone Tracy": {
+  "Tyrone Tracy Jr.": {
     "passingYards": 0.0,
     "passingTds": 0.0,
     "rushingTds": 3.625,
@@ -2963,6 +3599,18 @@
     "longTds40": null,
     "longTds50": null
   },
+  "Will Shipley": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 1.38125,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 6.51875,
+    "receivingFirstDowns": 1.1875,
+    "receptions": 12.25,
+    "baselinePoints": 38.926874999999995,
+    "longTds40": null,
+    "longTds50": null
+  },
   "Woody Marks": {
     "passingYards": 0.0,
     "passingTds": 0.0,
@@ -2972,6 +3620,18 @@
     "receivingFirstDowns": 8.54375,
     "receptions": 29.6875,
     "baselinePoints": 148.90249999999997,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Xavier Hutchinson": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 2.675,
+    "rushingFirstDowns": 3.625,
+    "receivingFirstDowns": 26.15,
+    "receptions": 44.099999999999994,
+    "baselinePoints": 117.40249999999999,
     "longTds40": null,
     "longTds50": null
   },
@@ -2996,6 +3656,18 @@
     "receivingFirstDowns": 7.0,
     "receptions": 20.0,
     "baselinePoints": 181.4,
+    "longTds40": null,
+    "longTds50": null
+  },
+  "Zachariah Branch": {
+    "passingYards": 0.0,
+    "passingTds": 0.0,
+    "rushingTds": 0.0,
+    "receivingTds": 0.0,
+    "rushingFirstDowns": 0.0,
+    "receivingFirstDowns": 4.857142857142857,
+    "receptions": 24.285714285714285,
+    "baselinePoints": 46.628571428571426,
     "longTds40": null,
     "longTds50": null
   },

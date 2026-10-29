@@ -1253,5 +1253,245 @@
     "id": "00-0039923",
     "name": "J.J. McCarthy",
     "slug": "j-j-mccarthy"
+  },
+  "00-0033110": {
+    "id": "00-0033110",
+    "name": "Tyler Higbee",
+    "slug": "tyler-higbee"
+  },
+  "00-0039901": {
+    "id": "00-0039901",
+    "name": "Keon Coleman",
+    "slug": "keon-coleman"
+  },
+  "00-0038621": {
+    "id": "00-0038621",
+    "name": "DeMario Douglas",
+    "slug": "demario-douglas"
+  },
+  "00-0041489": {
+    "id": "00-0041489",
+    "name": "Germie Bernard",
+    "slug": "germie-bernard"
+  },
+  "00-0038618": {
+    "id": "00-0038618",
+    "name": "Xavier Hutchinson",
+    "slug": "xavier-hutchinson"
+  },
+  "00-0037005": {
+    "id": "00-0037005",
+    "name": "Tommy Tremble",
+    "slug": "tommy-tremble"
+  },
+  "00-0032464": {
+    "id": "00-0032464",
+    "name": "Kalif Raymond",
+    "slug": "kalif-raymond"
+  },
+  "00-0041395": {
+    "id": "00-0041395",
+    "name": "Eli Raridon",
+    "slug": "eli-raridon"
+  },
+  "00-0033307": {
+    "id": "00-0033307",
+    "name": "Kendrick Bourne",
+    "slug": "kendrick-bourne"
+  },
+  "00-0037741": {
+    "id": "00-0037741",
+    "name": "Jahan Dotson",
+    "slug": "jahan-dotson"
+  },
+  "00-0037742": {
+    "id": "00-0037742",
+    "name": "Treylon Burks",
+    "slug": "treylon-burks"
+  },
+  "00-0035644": {
+    "id": "00-0035644",
+    "name": "Noah Fant",
+    "slug": "noah-fant"
+  },
+  "00-0039041": {
+    "id": "00-0039041",
+    "name": "Elijah Higgins",
+    "slug": "elijah-higgins"
+  },
+  "00-0040024": {
+    "id": "00-0040024",
+    "name": "Darius Cooper",
+    "slug": "darius-cooper"
+  },
+  "00-0034981": {
+    "id": "00-0034981",
+    "name": "Foster Moreau",
+    "slug": "foster-moreau"
+  },
+  "00-0036637": {
+    "id": "00-0036637",
+    "name": "Noah Gray",
+    "slug": "noah-gray"
+  },
+  "00-0036988": {
+    "id": "00-0036988",
+    "name": "Josh Palmer",
+    "slug": "josh-palmer"
+  },
+  "00-0040887": {
+    "id": "00-0040887",
+    "name": "Josh Cuevas",
+    "slug": "josh-cuevas"
+  },
+  "00-0035993": {
+    "id": "00-0035993",
+    "name": "Tyler Huntley",
+    "slug": "tyler-huntley"
+  },
+  "00-0032951": {
+    "id": "00-0032951",
+    "name": "Laquon Treadwell",
+    "slug": "laquon-treadwell"
+  },
+  "00-0038046": {
+    "id": "00-0038046",
+    "name": "Charlie Kolar",
+    "slug": "charlie-kolar"
+  },
+  "00-0040170": {
+    "id": "00-0040170",
+    "name": "Elic Ayomanor",
+    "slug": "elic-ayomanor"
+  },
+  "00-0039739": {
+    "id": "00-0039739",
+    "name": "Roman Wilson",
+    "slug": "roman-wilson"
+  },
+  "00-0035891": {
+    "id": "00-0035891",
+    "name": "Cody White",
+    "slug": "cody-white"
+  },
+  "00-0037614": {
+    "id": "00-0037614",
+    "name": "John Metchie III",
+    "slug": "john-metchie-iii"
+  },
+  "00-0039074": {
+    "id": "00-0039074",
+    "name": "Davis Allen",
+    "slug": "davis-allen"
+  },
+  "00-0040590": {
+    "id": "00-0040590",
+    "name": "Konata Mumpfield",
+    "slug": "konata-mumpfield"
+  },
+  "00-0040237": {
+    "id": "00-0040237",
+    "name": "Tez Johnson",
+    "slug": "tez-johnson"
+  },
+  "00-0032392": {
+    "id": "00-0032392",
+    "name": "Austin Hooper",
+    "slug": "austin-hooper"
+  },
+  "00-0033555": {
+    "id": "00-0033555",
+    "name": "Mack Hollins",
+    "slug": "mack-hollins"
+  },
+  "00-0039451": {
+    "id": "00-0039451",
+    "name": "Isaiah Williams",
+    "slug": "isaiah-williams"
+  },
+  "00-0037258": {
+    "id": "00-0037258",
+    "name": "Dameon Pierce",
+    "slug": "dameon-pierce"
+  },
+  "00-0041100": {
+    "id": "00-0041100",
+    "name": "Josh Cameron",
+    "slug": "josh-cameron"
+  },
+  "00-0040563": {
+    "id": "00-0040563",
+    "name": "Efton Chism III",
+    "slug": "efton-chism-iii"
+  },
+  "00-0040785": {
+    "id": "00-0040785",
+    "name": "Dohnte Meyers",
+    "slug": "dohnte-meyers"
+  },
+  "00-0038551": {
+    "id": "00-0038551",
+    "name": "Kendre Miller",
+    "slug": "kendre-miller"
+  },
+  "00-0041529": {
+    "id": "00-0041529",
+    "name": "Kevin Coleman Jr.",
+    "slug": "kevin-coleman-jr"
+  },
+  "00-0040187": {
+    "id": "00-0040187",
+    "name": "Mitchell Evans",
+    "slug": "mitchell-evans"
+  },
+  "00-0041067": {
+    "id": "00-0041067",
+    "name": "Bryce Lance",
+    "slug": "bryce-lance"
+  },
+  "00-0035689": {
+    "id": "00-0035689",
+    "name": "Dawson Knox",
+    "slug": "dawson-knox"
+  },
+  "00-0040648": {
+    "id": "00-0040648",
+    "name": "Tory Horton",
+    "slug": "tory-horton"
+  },
+  "00-0040131": {
+    "id": "00-0040131",
+    "name": "Kyle Williams",
+    "slug": "kyle-williams"
+  },
+  "00-0039530": {
+    "id": "00-0039530",
+    "name": "Brevyn Spann-Ford",
+    "slug": "brevyn-spann-ford"
+  },
+  "00-0036626": {
+    "id": "00-0036626",
+    "name": "Dyami Brown",
+    "slug": "dyami-brown"
+  },
+  "00-0038728": {
+    "id": "00-0038728",
+    "name": "Jared Wayne",
+    "slug": "jared-wayne"
+  },
+  "00-0040646": {
+    "id": "00-0040646",
+    "name": "Jalen Royals",
+    "slug": "jalen-royals"
+  },
+  "00-0038840": {
+    "id": "00-0038840",
+    "name": "Brycen Tremayne",
+    "slug": "brycen-tremayne"
+  },
+  "00-0038640": {
+    "id": "00-0038640",
+    "name": "Jalen Brooks",
+    "slug": "jalen-brooks"
   }
 }

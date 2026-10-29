@@ -17,7 +17,7 @@ test('only allowlisted team logos render, regardless of a player-photo field',()
 test('all built player pages and directory use team logos without any headshot URLs or Person images',()=>{
  const pages=[];const release=JSON.parse(fs.readFileSync(path.join(root,'data/player-profiles.json'),'utf8'));
  renderProfiles({release,page:(slug,title,description,body)=>pages.push({slug,body}),esc,write:()=>{},dateLabel:s=>s});
- assert.equal(pages.length,251);
+ assert.equal(pages.length,release.profiles.length+1);
  for(const {slug,body:s} of pages){assert(s.includes('data-team-logo-image'),slug);assert(!/headshot|static\.www\.nfl\.com\/image|data-player-image/.test(s),slug);
  for(const m of s.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)){const d=JSON.parse(m[1]);if(d['@type']==='Person')assert(!d.image);}
  }
