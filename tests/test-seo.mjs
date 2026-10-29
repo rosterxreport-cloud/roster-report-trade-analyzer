@@ -15,7 +15,7 @@ test('all canonical pages have unique metadata, one H1 and valid JSON-LD',()=>{
  assert.equal([...s.matchAll(/<h1[ >]/g)].length,1,p);assert.match(s,/<meta name="description" content="[^"]+"/);assert.match(s,/<meta property="og:image"/);
  for(const m of s.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs))assert.equal(JSON.parse(m[1])['@context'],'https://schema.org');
  }
- assert.equal(html.length,269);
+ assert.equal(html.length,JSON.parse(fs.readFileSync(path.join(root,'data/player-profiles.json'))).profiles.length+19);
  const sitemap=read('sitemap.xml');for(const c of canonicals)assert(sitemap.includes(`<loc>${c}</loc>`),c);
 });
 test('every internal link and asset resolves to a real build output',()=>{
@@ -31,7 +31,7 @@ test('data, calculations and interactive engine are copied byte-for-byte',()=>{
 test('published rows exist without JavaScript and every projected player is discoverable',()=>{
  const data=JSON.parse(read('data/weekly-projections.json'));
  for(const pos of ['QB','RB','WR','TE']){const s=read(`projections/${pos.toLowerCase()}/index.html`);for(const player of data.players.filter(p=>p.Position===pos))assert(s.includes(player.Player.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')),player.Player);}
- assert.equal((read('index.html').match(/<th scope="row">/g)||[]).length,317);
+ assert.equal((read('index.html').match(/<th scope="row">/g)||[]).length,JSON.parse(fs.readFileSync(path.join(root,'players.json'))).half.length);
  assert.equal((read('projections/index.html').match(/<th scope="row">/g)||[]).length,30);
 });
 test('build is deterministic and neither rewrites published inputs nor runs models',()=>{

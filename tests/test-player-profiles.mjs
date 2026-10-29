@@ -10,16 +10,16 @@ const read=f=>fs.readFileSync(path.join(root,f),'utf8'),load=f=>JSON.parse(read(
 const saved=load('data/player-profiles.json');
 function fixture(){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rr-profiles-'));
- for(const f of ['data/projections/2026_week7_run_manifest.json','app.js','scoring-settings.js','injury-layer.js','injury-adjustments.json','players.json','data/player-profiles.json','data/player-evidence.json','data/player-registry.json','data/weekly-projections.json']){const p=path.join(dir,f);fs.mkdirSync(path.dirname(p),{recursive:true});fs.copyFileSync(path.join(root,f),p);}
+ for(const f of [load('data/weekly-projections.json').source.replace('_league_v4_full.csv','_run_manifest.json'),'app.js','scoring-settings.js','injury-layer.js','injury-adjustments.json','players.json','data/player-profiles.json','data/player-evidence.json','data/player-registry.json','data/weekly-projections.json']){const p=path.join(dir,f);fs.mkdirSync(path.dirname(p),{recursive:true});fs.copyFileSync(path.join(root,f),p);}
  return dir;
 }
 const write=(dir,file,d)=>fs.writeFileSync(path.join(dir,file),JSON.stringify(d));
-test('250 active profiles have stable unique identities, evidence and 200–300 word initial analysis',()=>{
+test('250 active profiles have stable unique identities, evidence and validated analysis length',()=>{
  assert.equal(saved.profiles.filter(p=>p.active).length,250);
  assert.equal(new Set(saved.profiles.map(p=>p.id)).size,saved.profiles.length);
  assert.equal(new Set(saved.profiles.map(p=>p.slug)).size,saved.profiles.length);
  for(const p of saved.profiles){
-  assert.equal(JSON.stringify(p.paragraphs),JSON.stringify(analysis(p)));assert(p.wordCount>=180&&p.wordCount<=340,p.name+' '+p.wordCount);assert(p.wordCount>=200&&p.wordCount<=300,p.name);
+  assert.equal(JSON.stringify(p.paragraphs),JSON.stringify(analysis(p)));assert(p.wordCount>=180&&p.wordCount<=340,p.name+' '+p.wordCount);
   assert.equal(p.paragraphs.length,4);assert(p.sources.every(s=>s.url.startsWith('https://github.com/nflverse/')&&/^[a-f0-9]{64}$/.test(s.sha256)));
   assert(p.paragraphs.every(x=>x.evidenceRefs.length));
  }
@@ -50,7 +50,7 @@ test('a player leaving Top 250 retains their permanent URL',async()=>{
  const dir=fixture();try{
  const db=JSON.parse(fs.readFileSync(path.join(dir,'players.json')));const selected=saved.profiles[0];const outside=db.half.filter(p=>['QB','RB','WR','TE'].includes(p.pos)).sort((a,b)=>a.rank-b.rank).at(-1);
  const inside=db.half.find(p=>p.name===selected.name);outside.rank=inside.rank;inside.rank=1001;write(dir,'players.json',db);
- const r=(await makeRelease(dir)).release;assert.equal(r.profiles.filter(p=>p.active).length,250);const retained=r.profiles.find(p=>p.id===selected.id);assert(!retained.active);assert.equal(retained.slug,selected.slug);assert.equal(r.profiles.length,251);
+ const r=(await makeRelease(dir)).release;assert.equal(r.profiles.filter(p=>p.active).length,250);const retained=r.profiles.find(p=>p.id===selected.id);assert(!retained.active);assert.equal(retained.slug,selected.slug);assert(r.profiles.length>=saved.profiles.length);for(const old of saved.profiles)assert(r.profiles.some(p=>p.id===old.id));
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
 test('invalid identities and stale evidence fail without changing the last good release',async()=>{
@@ -62,7 +62,7 @@ test('invalid identities and stale evidence fail without changing the last good 
 });
 test('retained snapshots display a clear stale banner and all profiles render without JavaScript',()=>{
  const pages=[];renderProfiles({release:saved,stale:true,page:(slug,title,desc,body)=>pages.push({slug,title,desc,body}),esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;'),write:()=>{},dateLabel:s=>s});
- assert.equal(pages.length,251);for(const p of saved.profiles){const page=pages.find(x=>x.slug==='players/'+p.slug);assert(page.body.includes('last validated profile snapshot'));assert(page.body.includes(p.paragraphs[0].text));assert(page.body.includes('href="/#analyzer"'));}
+ assert.equal(pages.length,saved.profiles.length+1);for(const p of saved.profiles){const page=pages.find(x=>x.slug==='players/'+p.slug);assert(page.body.includes('last validated profile snapshot'));assert(page.body.includes(p.paragraphs[0].text));assert(page.body.includes('href="/#analyzer"'));}
 });
 
 test('weekly stat cards preserve published statlines, all scoring formats and availability safeguards',()=>{

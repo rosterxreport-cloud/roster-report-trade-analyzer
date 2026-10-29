@@ -1,0 +1,64 @@
+[
+  {
+    "player_id": "00-0035700",
+    "Player": "Josh Jacobs",
+    "Team": "GB",
+    "Position": "RB",
+    "input_season": 2026,
+    "sample_games": 1,
+    "sample_weeks": [
+      7
+    ],
+    "selection": "Latest return appearance after at least two missed weeks, with at least 50% offensive snaps. Current measured role replaces injury-fill-in carry shares; no full healthy-workload guarantee.",
+    "per_game": {
+      "attempts": 0.0,
+      "completions": 0.0,
+      "passing_yards": 0.0,
+      "passing_tds": 0.0,
+      "interceptions": 0.0,
+      "carries": 11.0,
+      "rushing_yards": 36.0,
+      "rushing_tds": 0.0,
+      "targets": 7.0,
+      "receptions": 5.0,
+      "receiving_yards": 55.0,
+      "receiving_tds": 1.0
+    },
+    "target_share": 0.16666666666666666,
+    "source_urls": [
+      "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+      "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet"
+    ]
+  },
+  {
+    "player_id": "00-0037525",
+    "Player": "Jordan Mason",
+    "Team": "MIN",
+    "Position": "RB",
+    "input_season": 2026,
+    "sample_games": 1,
+    "sample_weeks": [
+      7
+    ],
+    "selection": "Latest return appearance after at least two missed weeks, with at least 50% offensive snaps. Current measured role replaces injury-fill-in carry shares; no full healthy-workload guarantee.",
+    "per_game": {
+      "attempts": 0.0,
+      "completions": 0.0,
+      "passing_yards": 0.0,
+      "passing_tds": 0.0,
+      "interceptions": 0.0,
+      "carries": 15.0,
+      "rushing_yards": 68.0,
+      "rushing_tds": 0.0,
+      "targets": 2.0,
+      "receptions": 0.0,
+      "receiving_yards": 0.0,
+      "receiving_tds": 0.0
+    },
+    "target_share": 0.08333333333333333,
+    "source_urls": [
+      "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+      "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet"
+    ]
+  }
+]

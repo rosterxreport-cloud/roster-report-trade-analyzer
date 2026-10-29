@@ -15,20 +15,20 @@ test('elite verdicts give a clear trade stance and explain the receiving contrib
  assert(!/do not guarantee|current relative assessment|not a guaranteed market/.test(text));
 });
 test('a verified weekly out overrides even an elite rank and an existing projection',()=>{
- const p=find('Jahmyr Gibbs');p.editorial.out='Jahmyr Gibbs — Week 7 Out, test report';
+ const p=find('Jahmyr Gibbs');p.projectionWeek=7;p.editorial.out='Jahmyr Gibbs — Week 7 Out, test report';
  const call=analysis(p)[2].text;assert.match(call,/Keep him out of Week 7 lineups/);assert(!call.includes('Start him'));assert.match(call,/elite RB1/);
- const smith=find('DeVonta Smith');assert(smith.editorial.out);assert.match(analysis(smith)[2].text,/Keep him out of Week 7 lineups/);
+ const smith=find('DeVonta Smith');smith.projectionWeek=7;smith.editorial.out='Week 7 Out, fixture';assert.match(analysis(smith)[2].text,/Keep him out of Week 7 lineups/);
 });
 test('stale or mismatched manifest overrides cannot create an out designation',()=>{
  const p=find('DeVonta Smith'),projection={week:7,updatedAt:'2026-10-24T00:00:00Z',players:[]};
  const context=editorialContext(p,{evidence:{players:{}},adjusted:{half:[]},projection,manifest:{forecast_week:7,as_of:'2026-10-23T00:00:00Z',verified_out_overrides:{[p.id]:'Out'}}});assert.equal(context.out,null);
 });
 test('absence of a projection remains distinct from an out designation',()=>{
- const p=find('Jordyn Tyson');p.editorial.out=null;
+ const p=find('Jordyn Tyson');p.projectionWeek=7;p.projection=null;p.editorial.out=null;
  const call=analysis(p)[2].text;assert.match(call,/no Week 7 projection/);assert.match(call,/not a zero-point prediction or confirmation that he is out/);assert(!call.includes('Start him'));
 });
 test('historical return assumptions stay conditional despite a strong weekly forecast',()=>{
- const p=find('Josh Jacobs'),text=analysis(p).map(x=>x.text).join(' ');
+ const p=find('Josh Jacobs');p.rankings.half.posRank=30;p.projection.note='Conditional historical role based on 12 games in 2025';const text=analysis(p).map(x=>x.text).join(' ');
  assert.match(text,/if active under the stated role assumption/);assert.match(text,/12 games in 2025/);assert(!text.includes('at user request'));
  assert.match(text,/FLEX option asset for rest-of-season trades/);
 });

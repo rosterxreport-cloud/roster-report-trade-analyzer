@@ -1,0 +1,15 @@
+{
+  "active": {},
+  "out": {},
+  "starters": {
+    "BAL": "Lamar Jackson"
+  },
+  "conditional_starters": {
+    "BAL": "Lamar Jackson: full practice October 28; forecast conditional on active status."
+  },
+  "sources": [
+    "https://www.baltimoreravens.com/news/lamar-jackson-injury-practice-report-emotional-boost",
+    "https://www.azcardinals.com/news/as-jacoby-brissett-remains-qb1-carson-beck-remains-topic",
+    "https://amp.nfl.com/news/nfl-week-8-injury-report-2026-season"
+  ]
+}

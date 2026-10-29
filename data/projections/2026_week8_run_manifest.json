@@ -1,0 +1,111 @@
+{
+  "as_of": "2026-10-29T13:37:50.208599+00:00",
+  "forecast_week": 8,
+  "input_weeks": [
+    1,
+    7
+  ],
+  "snap_weeks": [
+    5,
+    7
+  ],
+  "model_base": "Established structural v4 model, advanced from Week 7 with fresh frozen inputs; target-share, volume, touchdown and matchup formulas retained.",
+  "returning_player_profiles": [
+    {
+      "player_id": "00-0035700",
+      "Player": "Josh Jacobs",
+      "Team": "GB",
+      "Position": "RB",
+      "input_season": 2026,
+      "sample_games": 1,
+      "sample_weeks": [
+        7
+      ],
+      "selection": "Latest return appearance after at least two missed weeks, with at least 50% offensive snaps. Current measured role replaces injury-fill-in carry shares; no full healthy-workload guarantee.",
+      "per_game": {
+        "attempts": 0.0,
+        "completions": 0.0,
+        "passing_yards": 0.0,
+        "passing_tds": 0.0,
+        "interceptions": 0.0,
+        "carries": 11.0,
+        "rushing_yards": 36.0,
+        "rushing_tds": 0.0,
+        "targets": 7.0,
+        "receptions": 5.0,
+        "receiving_yards": 55.0,
+        "receiving_tds": 1.0
+      },
+      "target_share": 0.16666666666666666,
+      "source_urls": [
+        "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+        "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet"
+      ]
+    },
+    {
+      "player_id": "00-0037525",
+      "Player": "Jordan Mason",
+      "Team": "MIN",
+      "Position": "RB",
+      "input_season": 2026,
+      "sample_games": 1,
+      "sample_weeks": [
+        7
+      ],
+      "selection": "Latest return appearance after at least two missed weeks, with at least 50% offensive snaps. Current measured role replaces injury-fill-in carry shares; no full healthy-workload guarantee.",
+      "per_game": {
+        "attempts": 0.0,
+        "completions": 0.0,
+        "passing_yards": 0.0,
+        "passing_tds": 0.0,
+        "interceptions": 0.0,
+        "carries": 15.0,
+        "rushing_yards": 68.0,
+        "rushing_tds": 0.0,
+        "targets": 2.0,
+        "receptions": 0.0,
+        "receiving_yards": 0.0,
+        "receiving_tds": 0.0
+      },
+      "target_share": 0.08333333333333333,
+      "source_urls": [
+        "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+        "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet"
+      ]
+    }
+  ],
+  "counts": {
+    "WR": 115,
+    "RB": 75,
+    "TE": 61,
+    "QB": 28
+  },
+  "conditional_starters": {
+    "BAL": "Lamar Jackson: full practice October 28; forecast conditional on active status."
+  },
+  "sources": {
+    "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+    "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
+    "roster.parquet": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
+    "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet",
+    "games.csv": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+  },
+  "availability_sources": [
+    "https://www.baltimoreravens.com/news/lamar-jackson-injury-practice-report-emotional-boost",
+    "https://www.azcardinals.com/news/as-jacoby-brissett-remains-qb1-carson-beck-remains-topic",
+    "https://amp.nfl.com/news/nfl-week-8-injury-report-2026-season"
+  ],
+  "sha256": {
+    "player_stats.parquet": "400c1461a91d6893977fc06e0e8eb41ed49a17d0734103959c8882e46c6fecfd",
+    "returning_player_profiles.json": "573bab8c091f2a4233196349ed96bbda1fa1b2dd53993169f59f9a72555f2a94",
+    "snaps.parquet": "a25005f128a6e560cbafb400eb531f39c97e56810bf0876165dbb5fae36dedcc",
+    "games.csv": "2a3bd051e922d4da6a9d132d47078b21438277fc6ad6657f12fd397c73527da5",
+    "gameday_availability.json": "59f4934c776655b13e24bcdfd8d7dc014e6f00f2e4a1d1ec15bee3b2f0ce7788",
+    "injuries.parquet": "8cb3ce68f321a7349e7929b4722f58628e556713d65954ad8a17f12859cb3d0a",
+    "roster.parquet": "1dba2b77946ab77e7bf8d9aab8b9c79f886b0f77a5b231b1901335414dda952b"
+  },
+  "model_sha256": "dfacd4f75c31b518789c750eba8c4f0edfce12cdd39d480655bdb15e553a2b3c",
+  "update_note": "Week 8 initial run using 2026 Weeks 1-7 statistics and Weeks 5-7 snaps. Current roster reserve statuses and Week 8 reports checked. Lamar Jackson assumed to start, conditional on playing. Final weekend injury designations and game-day inactives pending.",
+  "validation": "28 unique starting QBs; all 28 scheduled teams; no duplicate or current reserve/Out players; team targets <= QB attempts; receiving yards match QB yards within rounding; observed target shares never inflated.",
+  "review": "Preliminary Thursday forecast. Practice absence alone is not an Out designation. Unmatched recent snap records retained in review_flags; no missing player forecasts invented. Prior-week gameday exclusions and workload overrides not inherited. Jacobs and Mason use their observed Week 7 return roles to avoid retaining injury-fill-in backfield allocations."
+}
