@@ -2,10 +2,10 @@
   "schemaVersion": 1,
   "season": 2026,
   "throughWeek": 7,
-  "capturedAt": "2026-10-29T13:36:26.028434+00:00",
+  "capturedAt": "2026-10-30T03:36:35.347726+00:00",
   "source": {
     "url": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
-    "sha256": "400c1461a91d6893977fc06e0e8eb41ed49a17d0734103959c8882e46c6fecfd"
+    "sha256": "ed63a6dcfcc62ed09a04b8a2f4a9b43476ba828f1c75fa731198ffd423ef251f"
   },
   "minimumGames": 3,
   "ranking": "Most PPR points allowed per game; rank 1 allows the most. Ties share rank.",
