@@ -274,8 +274,11 @@ def special(nm,tm,pos,d,rank):
 def live_skill_records(records, scoring, p26, snaps26, baseline, evidence=None):
     """Admit measured roles without inventing preseason grades or compounding priors."""
     result=copy.deepcopy(records)
-    existing={namekey(p["name"]):i for i,p in enumerate(result)}
     locked=baseline.get(scoring,{})
+    locked_names={namekey(n):n for n in locked}
+    for p in result:
+        p["name"]=locked_names.get(namekey(p["name"]),p["name"])
+    existing={namekey(p["name"]):i for i,p in enumerate(result)}
     anchors={}
     for pos in ("RB","WR","TE"):
         pool=[{**p,**locked[p["name"]]} for p in records if p["pos"]==pos and p["name"] in locked]
@@ -285,7 +288,7 @@ def live_skill_records(records, scoring, p26, snaps26, baseline, evidence=None):
         anchors[pos]={k:float(np.median([p[k] for p in replacement])) for k in ("value","analyticsScore")}
     for _,row in p26[p26.position.isin(anchors)].iterrows():
         nm=str(row.player_display_name);nk=namekey(nm);pos=row.position
-        if nm in locked:continue
+        if nk in locked_names:continue
         sr=snaps26[snaps26.name_key.eq(nk)]
         snaps=float(sr.iloc[0].offense_snaps) if not sr.empty else 0.
         opportunities=float(row.get("carries",0) or 0)+float(row.get("targets",0) or 0)
@@ -310,6 +313,9 @@ def live_skill_records(records, scoring, p26, snaps26, baseline, evidence=None):
     return result
 
 def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries,current_week,evidence=None):
+    # Defensive players can share an offensive player's full name. Only the
+    # correct fantasy position may supply that player's role/sample inputs.
+    p26=p26[p26.position.isin(CORE)].copy()
     old={(p["pos"],team(p["team"])):p for p in records if p["pos"] in {"K","DST"}};scores={} if special_only else live_scores(p26,scoring,evidence);out=[]
     if not special_only:records=live_skill_records(records,scoring,p26,snaps26,baseline,evidence)
     if not special_only and scoring=="half":
@@ -323,7 +329,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
         q=copy.deepcopy(p);q.setdefault("rankingScore",round(float(q.get("value",0)),2));base=baseline.get(scoring,{}).get(p["name"])
         if base:q.update(value=base["value"],analyticsScore=base["analyticsScore"],rank=base["rank"])
         if not special_only and p["pos"] in CORE and p.get("analyticsScore") is not None:
-            matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"]))].copy();sk=namekey(p["name"]);sr=snaps26.loc[snaps26.name_key.eq(sk)];
+            matches=p26.loc[p26.player_display_name.map(namekey).eq(namekey(p["name"])) & p26.position.eq(p["pos"])].copy();sk=namekey(p["name"]);sr=snaps26.loc[snaps26.name_key.eq(sk)];
             if not matches.empty and not sr.empty:
                 matches.loc[:,"offense_snaps"]=float(sr.iloc[0].offense_snaps);matches.loc[:,"offense_pct"]=float(sr.iloc[0].offense_pct)
             games=float(matches["games"].max() or 0) if not matches.empty else 0.0;prior=float(q["analyticsScore"]);has_live=namekey(p["name"]) in scores;live=scores[namekey(p["name"])] if has_live else prior;scarcity=float(q.get("scarcity") or prior);market=float(q.get("market") or q["value"]);preseason=max(0.0,min(100.0,float(q["value"])));context=max(0.0,min(100.0,.60*market+.40*scarcity));season_w=.60 if games>=4 else .45 if games>=2 else .30 if games==1 else 0.0;pre_w=.25 if games>=4 else .40 if games>=2 else .50 if games==1 else .65
@@ -504,6 +510,8 @@ def injury_deduction(adj):
 def main():
     ap=argparse.ArgumentParser();ap.add_argument("--players",type=Path,default=Path("players.json"));ap.add_argument("--baseline",type=Path,default=Path("data/live-refresh-baseline.json"));ap.add_argument("--summary",type=Path,default=Path("refresh-summary.md"));ap.add_argument("--special-teams-only",action="store_true");ap.add_argument("--evidence",type=Path);a=ap.parse_args();before=json.loads(a.players.read_text());baseline=json.loads(a.baseline.read_text());injury_path=a.players.parent/"injury-adjustments.json";injuries=(json.loads(injury_path.read_text()).get("players",{}) if injury_path.exists() else {})
     for scoring,rows in before.items():
+        canonical={namekey(n):n for n in baseline.get(scoring,{})}
+        for p in rows:p["name"]=canonical.get(namekey(p["name"]),p["name"])
         if len(rows)<250 or sum(int(p["rank"])<=250 for p in rows)!=250:raise RuntimeError(f"Locked {scoring} Top 250 baseline/schema invalid")
         for p in rows:p.setdefault("rankingScore",round(float(p.get("value",0)),2))
         # The immutable baseline intentionally predates QBs restored from live 2026

@@ -47,4 +47,12 @@ class AdmissionTests(unittest.TestCase):
  def test_source_records_and_baseline_are_unchanged(self):
   before=copy.deepcopy(self.rows);base=copy.deepcopy(self.base);self.run_model()
   self.assertEqual(self.rows,before);self.assertEqual(self.base,base)
+ def test_source_suffix_aliases_preserve_immutable_player_identities(self):
+  canonical=next(p for p in self.rows if p['name']=='James Cook III')
+  row=self.stats.iloc[0].copy();row['player_display_name']='James Cook';row['position']='RB'
+  self.stats=pd.concat([self.stats,pd.DataFrame([row])],ignore_index=True)
+  self.snaps=pd.concat([self.snaps,pd.DataFrame([dict(name_key=m.namekey('James Cook'),offense_snaps=200,offense_pct=.7)])],ignore_index=True)
+  out=self.run_model();names={p['name'] for p in out}
+  self.assertIn(canonical['name'],names);self.assertNotIn('James Cook',names)
+  self.assertTrue(set(self.base['half'])<=names)
 if __name__=='__main__':unittest.main()
