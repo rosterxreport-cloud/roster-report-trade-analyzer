@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-29T13:37:50.208599+00:00",
+  "as_of": "2026-10-31T18:40:32.798869+00:00",
   "forecast_week": 8,
   "input_weeks": [
     1,
@@ -74,15 +74,63 @@
       ]
     }
   ],
+  "verified_out_overrides": {
+    "00-0035676": "A.J. Brown",
+    "00-0040734": "TreVeyon Henderson",
+    "00-0038571": "Jon Gaines II",
+    "00-0040706": "Walter Nolen",
+    "00-0037746": "Brian Robinson",
+    "00-0036302": "Jaylinn Hawkins",
+    "00-0040866": "Olaivavega Ioane",
+    "00-0038679": "Tyrell Shavers",
+    "00-0036417": "Damien Lewis",
+    "00-0036934": "Jaelan Phillips",
+    "00-0038101": "Akayleb Evans",
+    "00-0040541": "Torricelli Simpkins III",
+    "00-0036231": "Kyle Dugger",
+    "00-0037801": "KaVontae Turpin",
+    "00-0038625": "Dee Winters",
+    "00-0036564": "Talanoa Hufanga",
+    "00-0040730": "RJ Harvey",
+    "00-0037667": "Kerby Joseph",
+    "00-0034431": "Zaire Franklin",
+    "00-0037076": "Sean Rhyan",
+    "00-0039819": "Travis Glover",
+    "00-0039816": "Anthony Gould",
+    "00-0040139": "Justin Walley",
+    "00-0038596": "Antonio Johnson",
+    "00-0040748": "Omarr Norman-Lott",
+    "00-0034790": "Derwin James",
+    "00-0036736": "Kayode Awosika",
+    "00-0037320": "Deane Leonard",
+    "00-0041550": "Brenen Thompson",
+    "00-0036922": "Patrick Johnson",
+    "00-0040488": "Carter Runyon",
+    "00-0041521": "Kadyn Proctor",
+    "00-0036902": "Joseph Ossai",
+    "00-0038114": "Max Mitchell",
+    "00-0039886": "T'Vondre Sweat",
+    "00-0032580": "Jonathan Jones",
+    "00-0036912": "DeVonta Smith",
+    "00-0037132": "Britain Covey",
+    "00-0038393": "Dontayvion Wicks",
+    "00-0040708": "Jihaad Campbell",
+    "00-0036504": "Brandin Echols",
+    "00-0040341": "Doneiko Slaughter",
+    "00-0040129": "Emeka Egbuka",
+    "00-0035889": "Tommy Townsend",
+    "00-0039032": "Tyjae Spears",
+    "00-0041438": "Carnell Tate",
+    "00-0034333": "Daron Payne",
+    "00-0036260": "Javon Kinlaw"
+  },
   "counts": {
-    "WR": 115,
-    "RB": 75,
+    "WR": 108,
+    "RB": 71,
     "TE": 61,
     "QB": 28
   },
-  "conditional_starters": {
-    "BAL": "Lamar Jackson: full practice October 28; forecast conditional on active status."
-  },
+  "conditional_starters": {},
   "sources": {
     "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
     "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
@@ -91,21 +139,20 @@
     "games.csv": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
   },
   "availability_sources": [
-    "https://www.baltimoreravens.com/news/lamar-jackson-injury-practice-report-emotional-boost",
-    "https://www.azcardinals.com/news/as-jacoby-brissett-remains-qb1-carson-beck-remains-topic",
-    "https://amp.nfl.com/news/nfl-week-8-injury-report-2026-season"
+    "https://fantasy-www.nfl.com/news/nfl-week-8-injury-report-2026-season"
   ],
   "sha256": {
-    "player_stats.parquet": "400c1461a91d6893977fc06e0e8eb41ed49a17d0734103959c8882e46c6fecfd",
     "returning_player_profiles.json": "573bab8c091f2a4233196349ed96bbda1fa1b2dd53993169f59f9a72555f2a94",
     "snaps.parquet": "a25005f128a6e560cbafb400eb531f39c97e56810bf0876165dbb5fae36dedcc",
+    "gameday_availability.json": "3d4421def02570a3f6cbd5d9fb511a904cd8823469ef93928e41230de424f155",
+    "completed_game_forecasts.csv": "915bc71370e9bff76217d46e0b2f5b33f119ed267b23fc054023d6df690f5c68",
     "games.csv": "2a3bd051e922d4da6a9d132d47078b21438277fc6ad6657f12fd397c73527da5",
-    "gameday_availability.json": "59f4934c776655b13e24bcdfd8d7dc014e6f00f2e4a1d1ec15bee3b2f0ce7788",
-    "injuries.parquet": "8cb3ce68f321a7349e7929b4722f58628e556713d65954ad8a17f12859cb3d0a",
-    "roster.parquet": "1dba2b77946ab77e7bf8d9aab8b9c79f886b0f77a5b231b1901335414dda952b"
+    "injuries.parquet": "cde38d94c795c05b87c74e85e5f94e184b8d1f9ece43e360bc129d19bde6ec0f",
+    "player_stats.parquet": "400c1461a91d6893977fc06e0e8eb41ed49a17d0734103959c8882e46c6fecfd",
+    "roster.parquet": "8fe8117fd3b9de8be6497ded075dd86246f4d6e2459f155578901bcabc02474d"
   },
   "model_sha256": "dfacd4f75c31b518789c750eba8c4f0edfce12cdd39d480655bdb15e553a2b3c",
-  "update_note": "Week 8 initial run using 2026 Weeks 1-7 statistics and Weeks 5-7 snaps. Current roster reserve statuses and Week 8 reports checked. Lamar Jackson assumed to start, conditional on playing. Final weekend injury designations and game-day inactives pending.",
+  "update_note": "October 31 injury refresh: latest roster and Week 8 reports checked against NFL.com. A.J. Brown and TreVeyon Henderson Saturday Out designations override the earlier feed. Cleared players retain observed roles; questionable projections conditional on playing. Thursday pregame forecasts preserved. Sunday/Monday game-day inactives pending.",
   "validation": "28 unique starting QBs; all 28 scheduled teams; no duplicate or current reserve/Out players; team targets <= QB attempts; receiving yards match QB yards within rounding; observed target shares never inflated.",
   "review": "Preliminary Thursday forecast. Practice absence alone is not an Out designation. Unmatched recent snap records retained in review_flags; no missing player forecasts invented. Prior-week gameday exclusions and workload overrides not inherited. Jacobs and Mason use their observed Week 7 return roles to avoid retaining injury-fill-in backfield allocations."
 }

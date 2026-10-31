@@ -1,15 +1,60 @@
 {
   "active": {},
-  "out": {},
+  "out": {
+    "00-0035676": "A.J. Brown",
+    "00-0040734": "TreVeyon Henderson",
+    "00-0038571": "Jon Gaines II",
+    "00-0040706": "Walter Nolen",
+    "00-0037746": "Brian Robinson",
+    "00-0036302": "Jaylinn Hawkins",
+    "00-0040866": "Olaivavega Ioane",
+    "00-0038679": "Tyrell Shavers",
+    "00-0036417": "Damien Lewis",
+    "00-0036934": "Jaelan Phillips",
+    "00-0038101": "Akayleb Evans",
+    "00-0040541": "Torricelli Simpkins III",
+    "00-0036231": "Kyle Dugger",
+    "00-0037801": "KaVontae Turpin",
+    "00-0038625": "Dee Winters",
+    "00-0036564": "Talanoa Hufanga",
+    "00-0040730": "RJ Harvey",
+    "00-0037667": "Kerby Joseph",
+    "00-0034431": "Zaire Franklin",
+    "00-0037076": "Sean Rhyan",
+    "00-0039819": "Travis Glover",
+    "00-0039816": "Anthony Gould",
+    "00-0040139": "Justin Walley",
+    "00-0038596": "Antonio Johnson",
+    "00-0040748": "Omarr Norman-Lott",
+    "00-0034790": "Derwin James",
+    "00-0036736": "Kayode Awosika",
+    "00-0037320": "Deane Leonard",
+    "00-0041550": "Brenen Thompson",
+    "00-0036922": "Patrick Johnson",
+    "00-0040488": "Carter Runyon",
+    "00-0041521": "Kadyn Proctor",
+    "00-0036902": "Joseph Ossai",
+    "00-0038114": "Max Mitchell",
+    "00-0039886": "T'Vondre Sweat",
+    "00-0032580": "Jonathan Jones",
+    "00-0036912": "DeVonta Smith",
+    "00-0037132": "Britain Covey",
+    "00-0038393": "Dontayvion Wicks",
+    "00-0040708": "Jihaad Campbell",
+    "00-0036504": "Brandin Echols",
+    "00-0040341": "Doneiko Slaughter",
+    "00-0040129": "Emeka Egbuka",
+    "00-0035889": "Tommy Townsend",
+    "00-0039032": "Tyjae Spears",
+    "00-0041438": "Carnell Tate",
+    "00-0034333": "Daron Payne",
+    "00-0036260": "Javon Kinlaw"
+  },
   "starters": {
     "BAL": "Lamar Jackson"
   },
-  "conditional_starters": {
-    "BAL": "Lamar Jackson: full practice October 28; forecast conditional on active status."
-  },
+  "conditional_starters": {},
   "sources": [
-    "https://www.baltimoreravens.com/news/lamar-jackson-injury-practice-report-emotional-boost",
-    "https://www.azcardinals.com/news/as-jacoby-brissett-remains-qb1-carson-beck-remains-topic",
-    "https://amp.nfl.com/news/nfl-week-8-injury-report-2026-season"
+    "https://fantasy-www.nfl.com/news/nfl-week-8-injury-report-2026-season"
   ]
 }

@@ -11,11 +11,16 @@ roster=pd.read_parquet(inputs/'roster.parquet').sort_values('week').drop_duplica
 reports=i.set_index('full_name')
 profiles=json.loads((inputs/'returning_player_profiles.json').read_text())
 returners={r['Player']:r for r in profiles}
+# Preserve pregame forecasts for the completed Thursday game.
+before=pd.read_csv(inputs/'completed_game_forecasts.csv') if (inputs/'completed_game_forecasts.csv').exists() else pd.DataFrame()
+locked={'CAR','GB'}
+if not before.empty:
+ d=pd.concat([d[~d.Team.isin(locked)],before[before.Team.isin(locked)]],ignore_index=True)
 def note(n):
- if n=='Lamar Jackson':return 'Conditional on playing: full practice October 28 after three missed games; final game status pending.'
+ if n=='Lamar Jackson':return 'Cleared from final injury report; expected Week 8 starter.'
  if n in returners:return 'Returning-role assumption based on the recorded Week 7 appearance with at least 50% offensive snaps; one-game sample, workload uncertain; final availability pending.'
  if n not in reports.index:return 'No Week 8 injury designation in the downloaded report; final game-day availability pending.'
- r=reports.loc[n];status=r.report_status if pd.notna(r.report_status) else 'Final game status pending'
+ r=reports.loc[n];status=r.report_status if pd.notna(r.report_status) else ('Final game status pending' if r.team in {'CHI','SEA'} else 'No final game designation')
  return f'{status}; {r.practice_status}; {r.practice_primary_injury}'
 d['Availability_Note']=d.Player.map(note)
 d['QB_Starter_Assumption']=d.Team.map(gameday['conditional_starters']).fillna('')
@@ -26,7 +31,7 @@ teams=set(games.away_team)|set(games.home_team)
 assert set(d.Team)==teams and d.Player.nunique()==len(d)
 reserved=set(roster.loc[roster.status.isin(['RES','RSV','IR','PUP','NFI','CUT','RET']),'full_name'])
 outs=set(i.loc[i.report_status.fillna('').str.lower().eq('out'),'full_name'])
-assert not set(d.Player)&(reserved|outs)
+assert not set(d.loc[~d.Team.isin(locked),'Player'])&(reserved|outs|set(gameday['out'].values()))
 assert (d.Receptions<=d.Targets+.01).all()
 for team,g in d.groupby('Team'):
  q=g[g.Position.eq('QB')];assert len(q)==1,team
@@ -47,12 +52,12 @@ base='https://github.com/nflverse/nflverse-data/releases/download/'
 sources={'player_stats.parquet':base+'stats_player/stats_player_week_2026.parquet','snaps.parquet':base+'snap_counts/snap_counts_2026.parquet','roster.parquet':base+'rosters/roster_2026.parquet','injuries.parquet':base+'injuries/injuries_2026.parquet','games.csv':base+'schedules/games.csv'}
 meta={'as_of':datetime.now(timezone.utc).isoformat(),'forecast_week':8,'input_weeks':[1,7],'snap_weeks':[5,7],
  'model_base':'Established structural v4 model, advanced from Week 7 with fresh frozen inputs; target-share, volume, touchdown and matchup formulas retained.',
- 'returning_player_profiles':profiles,
+ 'returning_player_profiles':profiles,'verified_out_overrides':gameday['out'],
  'counts':{k:int(v) for k,v in d.Position.value_counts().items()},'conditional_starters':gameday['conditional_starters'],
  'sources':sources,'availability_sources':gameday['sources'],
  'sha256':{f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in inputs.iterdir()},
  'model_sha256':hashlib.sha256(Path('scripts/projection_week8_league_v4.py').read_bytes()).hexdigest(),
- 'update_note':'Week 8 initial run using 2026 Weeks 1-7 statistics and Weeks 5-7 snaps. Current roster reserve statuses and Week 8 reports checked. Lamar Jackson assumed to start, conditional on playing. Final weekend injury designations and game-day inactives pending.',
+ 'update_note':'October 31 injury refresh: latest roster and Week 8 reports checked against NFL.com. A.J. Brown and TreVeyon Henderson Saturday Out designations override the earlier feed. Cleared players retain observed roles; questionable projections conditional on playing. Thursday pregame forecasts preserved. Sunday/Monday game-day inactives pending.',
  'validation':'28 unique starting QBs; all 28 scheduled teams; no duplicate or current reserve/Out players; team targets <= QB attempts; receiving yards match QB yards within rounding; observed target shares never inflated.',
  'review':'Preliminary Thursday forecast. Practice absence alone is not an Out designation. Unmatched recent snap records retained in review_flags; no missing player forecasts invented. Prior-week gameday exclusions and workload overrides not inherited. Jacobs and Mason use their observed Week 7 return roles to avoid retaining injury-fill-in backfield allocations.'}
 (p/'2026_week8_run_manifest.json').write_text(json.dumps(meta,indent=2)+'\n')
