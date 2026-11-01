@@ -11,9 +11,13 @@ roster=pd.read_parquet(inputs/'roster.parquet').sort_values('week').drop_duplica
 reports=i.set_index('full_name')
 profiles=json.loads((inputs/'returning_player_profiles.json').read_text())
 returners={r['Player']:r for r in profiles}
-# Preserve pregame forecasts for the completed Thursday game.
-before=pd.read_csv(inputs/'completed_game_forecasts.csv') if (inputs/'completed_game_forecasts.csv').exists() else pd.DataFrame()
-locked={'CAR','GB'}
+# Preserve published pregame forecasts for every game already started.
+before=pd.read_csv(inputs/'published_pregame_forecasts.csv')
+schedule=pd.read_csv(inputs/'games.csv')
+schedule=schedule[schedule.season.eq(2026)&schedule.week.eq(8)].copy()
+kickoffs=pd.to_datetime(schedule.gameday+' '+schedule.gametime).dt.tz_localize('America/New_York').dt.tz_convert('UTC')
+started=schedule[kickoffs.le(pd.Timestamp.now(tz='UTC'))]
+locked=set(started.away_team)|set(started.home_team)
 if not before.empty:
  d=pd.concat([d[~d.Team.isin(locked)],before[before.Team.isin(locked)]],ignore_index=True)
 def note(n):
@@ -23,6 +27,9 @@ def note(n):
  r=reports.loc[n];status=r.report_status if pd.notna(r.report_status) else ('Final game status pending' if r.team in {'CHI','SEA'} else 'No final game designation')
  return f'{status}; {r.practice_status}; {r.practice_primary_injury}'
 d['Availability_Note']=d.Player.map(note)
+for idx in d.index[d.Team.isin(locked)]:
+ prior=before[before.Player.eq(d.at[idx,'Player'])]
+ if not prior.empty:d.at[idx,'Availability_Note']=prior.iloc[0].get('Availability_Note','')
 d['QB_Starter_Assumption']=d.Team.map(gameday['conditional_starters']).fillna('')
 checks=[]
 games=pd.read_csv(inputs/'games.csv');games=games[games.season.eq(2026)&games.week.eq(8)]
@@ -43,6 +50,9 @@ for pos in ['QB','RB','WR','TE']:
  assert d.Position.eq(pos).any()
  d[d.Position.eq(pos)].to_csv(p/f'2026_week8_{pos.lower()}_substack.csv',index=False)
 d.to_csv(p/'2026_week8_league_v4_full.csv',index=False)
+d[['Player','Team','Opponent','Position','Rush_TD','Rec_TD','Total_xTD']].sort_values('Total_xTD',ascending=False).to_csv(p/'2026_week8_league_v4_touchdowns.csv',index=False)
+if locked:
+ pd.testing.assert_frame_equal(d[d.Team.isin(locked)].set_index('Player')[before.columns.drop('Player')].sort_index().fillna(''),before[before.Team.isin(locked)].set_index('Player').sort_index().fillna(''),check_dtype=False)
 pd.DataFrame(checks).round(2).to_csv(p/'2026_week8_publication_checks.csv',index=False)
 flags=d[d.Snap_Data_Status.eq('unmatched')].copy();flags['Review_Reason']='No matched Week 5-7 snap record; may reflect missed games or source naming differences.'
 flags.to_csv(p/'2026_week8_review_flags.csv',index=False)
@@ -57,7 +67,7 @@ meta={'as_of':datetime.now(timezone.utc).isoformat(),'forecast_week':8,'input_we
  'sources':sources,'availability_sources':gameday['sources'],
  'sha256':{f.name:hashlib.sha256(f.read_bytes()).hexdigest() for f in inputs.iterdir()},
  'model_sha256':hashlib.sha256(Path('scripts/projection_week8_league_v4.py').read_bytes()).hexdigest(),
- 'update_note':'October 31 injury refresh: latest roster and Week 8 reports checked against NFL.com. A.J. Brown and TreVeyon Henderson Saturday Out designations override the earlier feed. Cleared players retain observed roles; questionable projections conditional on playing. Thursday pregame forecasts preserved. Sunday/Monday game-day inactives pending.',
+ 'update_note':'November 1 final early-slate inactive refresh: confirmed Sunday inactives and Monday Out designations applied. Breece Hall, Kyle Monangai and Rashid Shaheed excluded; affected workloads recalculated using the unchanged v4 model. Published forecasts for games already started preserved. Later Sunday/Monday final inactive lists remain pending.',
  'validation':'28 unique starting QBs; all 28 scheduled teams; no duplicate or current reserve/Out players; team targets <= QB attempts; receiving yards match QB yards within rounding; observed target shares never inflated.',
  'review':'Preliminary Thursday forecast. Practice absence alone is not an Out designation. Unmatched recent snap records retained in review_flags; no missing player forecasts invented. Prior-week gameday exclusions and workload overrides not inherited. Jacobs and Mason use their observed Week 7 return roles to avoid retaining injury-fill-in backfield allocations.'}
 (p/'2026_week8_run_manifest.json').write_text(json.dumps(meta,indent=2)+'\n')

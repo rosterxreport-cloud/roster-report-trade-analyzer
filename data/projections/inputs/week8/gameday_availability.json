@@ -48,13 +48,37 @@
     "00-0039032": "Tyjae Spears",
     "00-0041438": "Carnell Tate",
     "00-0034333": "Daron Payne",
-    "00-0036260": "Javon Kinlaw"
+    "00-0036260": "Javon Kinlaw",
+    "00-0040876": "Elijah Sarratt",
+    "00-0041443": "Skyler Bell",
+    "00-0036876": "Kylen Granson",
+    "00-0038397": "Evan Hull",
+    "00-0038547": "Luke Schoonmaker",
+    "00-0041104": "Demond Claiborne",
+    "00-0040390": "Jackson Meeks",
+    "00-0033439": "Pharaoh Brown",
+    "00-0041106": "C.J. Williams",
+    "00-0040581": "Dont'e Thornton Jr.",
+    "00-0040894": "Malik Benson",
+    "00-0038120": "Breece Hall",
+    "00-0033375": "Tim Patrick",
+    "00-0039373": "Audric Estim\u00e9",
+    "00-0036862": "Ben Skowronek",
+    "00-0041490": "Eli Heidenreich",
+    "00-0040236": "Kyle Monangai",
+    "00-0037545": "Rashid Shaheed",
+    "00-0037745": "Velus Jones Jr."
   },
   "starters": {
     "BAL": "Lamar Jackson"
   },
   "conditional_starters": {},
   "sources": [
-    "https://fantasy-www.nfl.com/news/nfl-week-8-injury-report-2026-season"
-  ]
+    "https://fantasy-www.nfl.com/news/nfl-week-8-injury-report-2026-season",
+    "https://www.nfl.com/news/nfl-week-8-inactives-players-ruled-out-sunday-2026-season",
+    "https://staging-aws.sports.yahoo.com/articles/nfl-inactive-report-163901003.html",
+    "https://www.newyorkjets.com/news/jets-vs-raiders-nfl-game-inactives-11-1-2026"
+  ],
+  "checked_at": "2026-11-01T17:50:00+00:00",
+  "availability_status": "Early Sunday inactives confirmed; later Sunday and Monday final inactive lists pending."
 }
