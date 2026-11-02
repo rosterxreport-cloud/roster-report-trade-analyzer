@@ -1,878 +1,896 @@
 {
   "overall": {
-    "players": 245,
-    "mae": 4.9362,
-    "bias": -0.0884,
-    "within_1": 9.8,
-    "within_3": 39.59,
-    "within_5": 62.04
+    "players": 230,
+    "mae": 5.3364,
+    "bias": -0.2824,
+    "within_1": 12.61,
+    "within_3": 36.96,
+    "within_5": 58.7
   },
   "by_position": {
     "QB": {
-      "players": 28,
-      "mae": 5.4514,
-      "bias": -0.275,
-      "within_1": 7.14,
-      "within_3": 35.71,
-      "within_5": 60.71
+      "players": 26,
+      "mae": 7.9088,
+      "bias": 2.0688,
+      "within_1": 3.85,
+      "within_3": 19.23,
+      "within_5": 46.15
     },
     "RB": {
       "players": 59,
-      "mae": 4.9227,
-      "bias": -1.0342,
-      "within_1": 6.78,
-      "within_3": 37.29,
-      "within_5": 62.71
+      "mae": 5.219,
+      "bias": -0.4241,
+      "within_1": 15.25,
+      "within_3": 44.07,
+      "within_5": 61.02
     },
     "WR": {
-      "players": 101,
-      "mae": 4.9222,
-      "bias": 0.5531,
-      "within_1": 10.89,
-      "within_3": 42.57,
-      "within_5": 60.4
+      "players": 92,
+      "mae": 5.1541,
+      "bias": -0.6363,
+      "within_1": 15.22,
+      "within_3": 38.04,
+      "within_5": 59.78
     },
     "TE": {
-      "players": 57,
-      "mae": 4.7219,
-      "bias": -0.1546,
-      "within_1": 12.28,
-      "within_3": 38.6,
-      "within_5": 64.91
+      "players": 53,
+      "mae": 4.5217,
+      "bias": -0.664,
+      "within_1": 9.43,
+      "within_3": 35.85,
+      "within_5": 60.38
     }
   },
   "matched": [
     {
-      "player": "Tony Pollard",
-      "team": "TEN",
-      "position": "RB",
-      "projected": 10.99,
-      "actual": 36.5,
-      "absolute_error": 25.51,
-      "signed_error": -25.51
-    },
-    {
-      "player": "Mason Taylor",
-      "team": "NYJ",
-      "position": "TE",
-      "projected": 4.38,
-      "actual": 25.2,
-      "absolute_error": 20.82,
-      "signed_error": -20.82
-    },
-    {
-      "player": "Zay Flowers",
-      "team": "BAL",
-      "position": "WR",
-      "projected": 10.63,
-      "actual": 27.7,
-      "absolute_error": 17.07,
-      "signed_error": -17.07
-    },
-    {
-      "player": "Bo Nix",
-      "team": "DEN",
-      "position": "QB",
-      "projected": 9.96,
-      "actual": 26.18,
-      "absolute_error": 16.22,
-      "signed_error": -16.22
-    },
-    {
-      "player": "KC Concepcion",
-      "team": "CLE",
-      "position": "WR",
-      "projected": 7.0,
-      "actual": 23.2,
-      "absolute_error": 16.2,
-      "signed_error": -16.2
-    },
-    {
-      "player": "Omar Cooper Jr.",
-      "team": "NYJ",
-      "position": "WR",
-      "projected": 6.51,
-      "actual": 22.5,
-      "absolute_error": 15.99,
-      "signed_error": -15.99
-    },
-    {
-      "player": "Davis Allen",
-      "team": "LA",
-      "position": "TE",
-      "projected": 2.13,
-      "actual": 18.0,
-      "absolute_error": 15.87,
-      "signed_error": -15.87
-    },
-    {
-      "player": "Bryce Young",
-      "team": "CAR",
-      "position": "QB",
-      "projected": 21.11,
-      "actual": 5.42,
-      "absolute_error": 15.69,
-      "signed_error": 15.69
-    },
-    {
-      "player": "Kenneth Walker III",
-      "team": "KC",
-      "position": "RB",
-      "projected": 24.65,
-      "actual": 9.7,
-      "absolute_error": 14.95,
-      "signed_error": 14.95
-    },
-    {
-      "player": "Tee Higgins",
-      "team": "CIN",
-      "position": "WR",
-      "projected": 12.29,
-      "actual": 26.8,
-      "absolute_error": 14.51,
-      "signed_error": -14.51
-    },
-    {
-      "player": "Sam LaPorta",
-      "team": "DET",
-      "position": "TE",
-      "projected": 16.72,
-      "actual": 2.8,
-      "absolute_error": 13.92,
-      "signed_error": 13.92
-    },
-    {
-      "player": "Caleb Douglas",
-      "team": "MIA",
-      "position": "WR",
-      "projected": 7.14,
-      "actual": 21.0,
-      "absolute_error": 13.86,
-      "signed_error": -13.86
-    },
-    {
-      "player": "Quinshon Judkins",
-      "team": "CLE",
-      "position": "RB",
-      "projected": 9.89,
-      "actual": 23.4,
-      "absolute_error": 13.51,
-      "signed_error": -13.51
-    },
-    {
-      "player": "Jalen Coker",
-      "team": "CAR",
-      "position": "WR",
-      "projected": 15.35,
-      "actual": 1.9,
-      "absolute_error": 13.45,
-      "signed_error": 13.45
-    },
-    {
-      "player": "Malik Willis",
-      "team": "MIA",
-      "position": "QB",
-      "projected": 12.71,
-      "actual": 26.02,
-      "absolute_error": 13.31,
-      "signed_error": -13.31
-    },
-    {
-      "player": "Jameson Williams",
-      "team": "DET",
-      "position": "WR",
-      "projected": 13.89,
-      "actual": 26.1,
-      "absolute_error": 12.21,
-      "signed_error": -12.21
-    },
-    {
-      "player": "Nico Collins",
-      "team": "HOU",
-      "position": "WR",
-      "projected": 14.51,
-      "actual": 2.6,
-      "absolute_error": 11.91,
-      "signed_error": 11.91
-    },
-    {
-      "player": "Makai Lemon",
-      "team": "PHI",
-      "position": "WR",
-      "projected": 8.01,
-      "actual": 19.7,
-      "absolute_error": 11.69,
-      "signed_error": -11.69
-    },
-    {
-      "player": "Rhamondre Stevenson",
-      "team": "NE",
-      "position": "RB",
-      "projected": 10.94,
-      "actual": 22.5,
-      "absolute_error": 11.56,
-      "signed_error": -11.56
-    },
-    {
-      "player": "Devin Singletary",
-      "team": "NYG",
-      "position": "RB",
-      "projected": 3.05,
-      "actual": 14.5,
-      "absolute_error": 11.45,
-      "signed_error": -11.45
-    },
-    {
-      "player": "Tetairoa McMillan",
-      "team": "CAR",
-      "position": "WR",
-      "projected": 19.03,
-      "actual": 8.0,
-      "absolute_error": 11.03,
-      "signed_error": 11.03
-    },
-    {
-      "player": "Jahmyr Gibbs",
-      "team": "DET",
-      "position": "RB",
-      "projected": 28.09,
-      "actual": 17.3,
-      "absolute_error": 10.79,
-      "signed_error": 10.79
-    },
-    {
-      "player": "Trey McBride",
+      "player": "Tyler Allgeier",
       "team": "ARI",
-      "position": "TE",
-      "projected": 16.41,
-      "actual": 27.1,
-      "absolute_error": 10.69,
-      "signed_error": -10.69
-    },
-    {
-      "player": "Darius Cooper",
-      "team": "PHI",
-      "position": "WR",
-      "projected": 13.35,
-      "actual": 2.7,
-      "absolute_error": 10.65,
-      "signed_error": 10.65
-    },
-    {
-      "player": "Luther Burden III",
-      "team": "CHI",
-      "position": "WR",
-      "projected": 13.23,
-      "actual": 23.7,
-      "absolute_error": 10.47,
-      "signed_error": -10.47
-    },
-    {
-      "player": "DeMario Douglas",
-      "team": "NE",
-      "position": "WR",
-      "projected": 15.52,
-      "actual": 5.3,
-      "absolute_error": 10.22,
-      "signed_error": 10.22
-    },
-    {
-      "player": "Geno Smith",
-      "team": "NYJ",
-      "position": "QB",
-      "projected": 13.28,
-      "actual": 23.48,
-      "absolute_error": 10.2,
-      "signed_error": -10.2
-    },
-    {
-      "player": "Jahan Dotson",
-      "team": "ATL",
-      "position": "WR",
-      "projected": 11.77,
-      "actual": 1.6,
-      "absolute_error": 10.17,
-      "signed_error": 10.17
-    },
-    {
-      "player": "Colston Loveland",
-      "team": "CHI",
-      "position": "TE",
-      "projected": 9.82,
-      "actual": 19.9,
-      "absolute_error": 10.08,
-      "signed_error": -10.08
-    },
-    {
-      "player": "Rico Dowdle",
-      "team": "PIT",
       "position": "RB",
-      "projected": 4.82,
-      "actual": 14.6,
-      "absolute_error": 9.78,
-      "signed_error": -9.78
-    },
-    {
-      "player": "Patrick Mahomes",
-      "team": "KC",
-      "position": "QB",
-      "projected": 15.74,
-      "actual": 6.0,
-      "absolute_error": 9.74,
-      "signed_error": 9.74
-    },
-    {
-      "player": "Dak Prescott",
-      "team": "DAL",
-      "position": "QB",
-      "projected": 13.58,
-      "actual": 23.28,
-      "absolute_error": 9.7,
-      "signed_error": -9.7
-    },
-    {
-      "player": "Malachi Fields",
-      "team": "NYG",
-      "position": "WR",
-      "projected": 2.61,
-      "actual": 12.3,
-      "absolute_error": 9.69,
-      "signed_error": -9.69
-    },
-    {
-      "player": "Eli Raridon",
-      "team": "NE",
-      "position": "TE",
-      "projected": 5.08,
-      "actual": 14.6,
-      "absolute_error": 9.52,
-      "signed_error": -9.52
-    },
-    {
-      "player": "Cam Skattebo",
-      "team": "NYG",
-      "position": "RB",
-      "projected": 9.99,
-      "actual": 19.1,
-      "absolute_error": 9.11,
-      "signed_error": -9.11
-    },
-    {
-      "player": "Jaylin Noel",
-      "team": "HOU",
-      "position": "WR",
-      "projected": 10.7,
-      "actual": 1.7,
-      "absolute_error": 9.0,
-      "signed_error": 9.0
-    },
-    {
-      "player": "George Kittle",
-      "team": "SF",
-      "position": "TE",
-      "projected": 23.75,
-      "actual": 14.8,
-      "absolute_error": 8.95,
-      "signed_error": 8.95
-    },
-    {
-      "player": "Germie Bernard",
-      "team": "PIT",
-      "position": "WR",
-      "projected": 14.59,
-      "actual": 5.7,
-      "absolute_error": 8.89,
-      "signed_error": 8.89
+      "projected": 7.87,
+      "actual": 36.1,
+      "absolute_error": 28.23,
+      "signed_error": -28.23
     },
     {
       "player": "Adonai Mitchell",
       "team": "NYJ",
       "position": "WR",
-      "projected": 8.89,
-      "actual": 0.0,
-      "absolute_error": 8.89,
-      "signed_error": 8.89
+      "projected": 3.81,
+      "actual": 27.2,
+      "absolute_error": 23.39,
+      "signed_error": -23.39
     },
     {
-      "player": "Roschon Johnson",
-      "team": "CHI",
-      "position": "RB",
-      "projected": 10.07,
-      "actual": 1.3,
-      "absolute_error": 8.77,
-      "signed_error": 8.77
-    },
-    {
-      "player": "Jaxon Smith-Njigba",
-      "team": "SEA",
-      "position": "WR",
-      "projected": 22.56,
-      "actual": 31.3,
-      "absolute_error": 8.74,
-      "signed_error": -8.74
-    },
-    {
-      "player": "Daniel Jones",
-      "team": "IND",
-      "position": "QB",
-      "projected": 12.17,
-      "actual": 3.62,
-      "absolute_error": 8.55,
-      "signed_error": 8.55
-    },
-    {
-      "player": "Chuba Hubbard",
-      "team": "CAR",
-      "position": "RB",
-      "projected": 18.46,
-      "actual": 10.0,
-      "absolute_error": 8.46,
-      "signed_error": 8.46
-    },
-    {
-      "player": "Xavier Worthy",
+      "player": "Emmett Johnson",
       "team": "KC",
-      "position": "WR",
-      "projected": 12.42,
-      "actual": 4.1,
-      "absolute_error": 8.32,
-      "signed_error": 8.32
-    },
-    {
-      "player": "Greg Dulcich",
-      "team": "MIA",
-      "position": "TE",
-      "projected": 5.39,
-      "actual": 13.6,
-      "absolute_error": 8.21,
-      "signed_error": -8.21
-    },
-    {
-      "player": "Drew Sample",
-      "team": "CIN",
-      "position": "TE",
-      "projected": 2.19,
-      "actual": 10.4,
-      "absolute_error": 8.21,
-      "signed_error": -8.21
-    },
-    {
-      "player": "CeeDee Lamb",
-      "team": "DAL",
-      "position": "WR",
-      "projected": 16.25,
-      "actual": 24.4,
-      "absolute_error": 8.15,
-      "signed_error": -8.15
-    },
-    {
-      "player": "Isaiah Likely",
-      "team": "NYG",
-      "position": "TE",
-      "projected": 11.3,
-      "actual": 3.2,
-      "absolute_error": 8.1,
-      "signed_error": 8.1
-    },
-    {
-      "player": "Derrick Henry",
-      "team": "BAL",
       "position": "RB",
-      "projected": 13.86,
-      "actual": 5.9,
-      "absolute_error": 7.96,
-      "signed_error": 7.96
+      "projected": 3.43,
+      "actual": 25.3,
+      "absolute_error": 21.87,
+      "signed_error": -21.87
     },
     {
-      "player": "Ashton Jeanty",
-      "team": "LV",
-      "position": "RB",
-      "projected": 13.76,
-      "actual": 21.6,
-      "absolute_error": 7.84,
-      "signed_error": -7.84
-    },
-    {
-      "player": "Ted Hurst III",
-      "team": "TB",
-      "position": "WR",
-      "projected": 7.82,
-      "actual": 0.0,
-      "absolute_error": 7.82,
-      "signed_error": 7.82
-    },
-    {
-      "player": "Pat Freiermuth",
-      "team": "PIT",
-      "position": "TE",
-      "projected": 11.77,
-      "actual": 4.0,
-      "absolute_error": 7.77,
-      "signed_error": 7.77
-    },
-    {
-      "player": "Tez Johnson",
-      "team": "TB",
-      "position": "WR",
-      "projected": 5.04,
-      "actual": 12.7,
-      "absolute_error": 7.66,
-      "signed_error": -7.66
-    },
-    {
-      "player": "Brock Purdy",
-      "team": "SF",
+      "player": "Michael Penix Jr.",
+      "team": "ATL",
       "position": "QB",
-      "projected": 19.55,
-      "actual": 12.02,
-      "absolute_error": 7.53,
-      "signed_error": 7.53
+      "projected": 19.36,
+      "actual": -1.9,
+      "absolute_error": 21.26,
+      "signed_error": 21.26
     },
     {
-      "player": "Tyler Higbee",
-      "team": "LA",
-      "position": "TE",
-      "projected": 10.88,
-      "actual": 3.4,
-      "absolute_error": 7.48,
-      "signed_error": 7.48
+      "player": "Lamar Jackson",
+      "team": "BAL",
+      "position": "QB",
+      "projected": 19.99,
+      "actual": 0.0,
+      "absolute_error": 19.99,
+      "signed_error": 19.99
     },
     {
-      "player": "Amon-Ra St. Brown",
-      "team": "DET",
+      "player": "Cam Ward",
+      "team": "TEN",
+      "position": "QB",
+      "projected": 8.14,
+      "actual": 26.26,
+      "absolute_error": 18.12,
+      "signed_error": -18.12
+    },
+    {
+      "player": "Tee Higgins",
+      "team": "CIN",
       "position": "WR",
-      "projected": 16.75,
-      "actual": 24.2,
-      "absolute_error": 7.45,
-      "signed_error": -7.45
+      "projected": 19.82,
+      "actual": 37.5,
+      "absolute_error": 17.68,
+      "signed_error": -17.68
     },
     {
-      "player": "Devaughn Vele",
-      "team": "NO",
+      "player": "Chimere Dike",
+      "team": "TEN",
       "position": "WR",
-      "projected": 8.97,
-      "actual": 16.4,
-      "absolute_error": 7.43,
-      "signed_error": -7.43
-    },
-    {
-      "player": "Tommy Tremble",
-      "team": "CAR",
-      "position": "TE",
-      "projected": 9.22,
-      "actual": 1.8,
-      "absolute_error": 7.42,
-      "signed_error": 7.42
+      "projected": 0.95,
+      "actual": 18.1,
+      "absolute_error": 17.15,
+      "signed_error": -17.15
     },
     {
       "player": "Harold Fannin Jr.",
       "team": "CLE",
       "position": "TE",
-      "projected": 5.71,
-      "actual": 13.1,
-      "absolute_error": 7.39,
-      "signed_error": -7.39
+      "projected": 7.91,
+      "actual": 23.4,
+      "absolute_error": 15.49,
+      "signed_error": -15.49
     },
     {
-      "player": "Darren Waller",
-      "team": "CAR",
-      "position": "TE",
-      "projected": 4.72,
-      "actual": 12.0,
-      "absolute_error": 7.28,
-      "signed_error": -7.28
-    },
-    {
-      "player": "Dameon Pierce",
-      "team": "PHI",
-      "position": "RB",
-      "projected": 4.64,
-      "actual": 11.8,
-      "absolute_error": 7.16,
-      "signed_error": -7.16
-    },
-    {
-      "player": "Cade Otton",
-      "team": "TB",
-      "position": "TE",
-      "projected": 7.14,
-      "actual": 0.0,
-      "absolute_error": 7.14,
-      "signed_error": 7.14
-    },
-    {
-      "player": "Malik Nabers",
-      "team": "NYG",
+      "player": "Michael Wilson",
+      "team": "ARI",
       "position": "WR",
-      "projected": 11.13,
-      "actual": 18.1,
-      "absolute_error": 6.97,
-      "signed_error": -6.97
+      "projected": 11.63,
+      "actual": 26.8,
+      "absolute_error": 15.17,
+      "signed_error": -15.17
     },
     {
-      "player": "Blake Corum",
-      "team": "LA",
+      "player": "Jonah Coleman",
+      "team": "DEN",
       "position": "RB",
-      "projected": 10.19,
-      "actual": 17.1,
-      "absolute_error": 6.91,
-      "signed_error": -6.91
-    },
-    {
-      "player": "Bucky Irving",
-      "team": "TB",
-      "position": "RB",
-      "projected": 17.25,
-      "actual": 24.0,
-      "absolute_error": 6.75,
-      "signed_error": -6.75
-    },
-    {
-      "player": "Kaelon Black",
-      "team": "SF",
-      "position": "RB",
-      "projected": 4.24,
-      "actual": 10.9,
-      "absolute_error": 6.66,
-      "signed_error": -6.66
-    },
-    {
-      "player": "Kalif Raymond",
-      "team": "CHI",
-      "position": "WR",
-      "projected": 6.65,
-      "actual": 0.0,
-      "absolute_error": 6.65,
-      "signed_error": 6.65
-    },
-    {
-      "player": "Keenan Allen",
-      "team": "IND",
-      "position": "WR",
-      "projected": 12.73,
-      "actual": 6.1,
-      "absolute_error": 6.63,
-      "signed_error": 6.63
-    },
-    {
-      "player": "Tucker Kraft",
-      "team": "GB",
-      "position": "TE",
-      "projected": 8.28,
-      "actual": 14.8,
-      "absolute_error": 6.52,
-      "signed_error": -6.52
-    },
-    {
-      "player": "Joe Burrow",
-      "team": "CIN",
-      "position": "QB",
-      "projected": 22.43,
-      "actual": 28.88,
-      "absolute_error": 6.45,
-      "signed_error": -6.45
-    },
-    {
-      "player": "Garrett Wilson",
-      "team": "NYJ",
-      "position": "WR",
-      "projected": 11.04,
-      "actual": 4.6,
-      "absolute_error": 6.44,
-      "signed_error": 6.44
-    },
-    {
-      "player": "Baker Mayfield",
-      "team": "TB",
-      "position": "QB",
-      "projected": 12.83,
-      "actual": 6.66,
-      "absolute_error": 6.17,
-      "signed_error": 6.17
+      "projected": 5.44,
+      "actual": 20.4,
+      "absolute_error": 14.96,
+      "signed_error": -14.96
     },
     {
       "player": "Tre Tucker",
       "team": "LV",
       "position": "WR",
-      "projected": 15.16,
-      "actual": 21.3,
-      "absolute_error": 6.14,
-      "signed_error": -6.14
-    },
-    {
-      "player": "Justin Jefferson",
-      "team": "MIN",
-      "position": "WR",
-      "projected": 14.45,
-      "actual": 8.4,
-      "absolute_error": 6.05,
-      "signed_error": 6.05
-    },
-    {
-      "player": "Emanuel Wilson",
-      "team": "SEA",
-      "position": "RB",
-      "projected": 12.67,
-      "actual": 18.5,
-      "absolute_error": 5.83,
-      "signed_error": -5.83
-    },
-    {
-      "player": "Jake Ferguson",
-      "team": "DAL",
-      "position": "TE",
-      "projected": 5.7,
+      "projected": 14.89,
       "actual": 0.0,
-      "absolute_error": 5.7,
-      "signed_error": 5.7
+      "absolute_error": 14.89,
+      "signed_error": 14.89
     },
     {
-      "player": "T.J. Hockenson",
-      "team": "MIN",
-      "position": "TE",
-      "projected": 7.9,
-      "actual": 13.5,
-      "absolute_error": 5.6,
-      "signed_error": -5.6
-    },
-    {
-      "player": "DK Metcalf",
-      "team": "PIT",
-      "position": "WR",
-      "projected": 13.17,
-      "actual": 7.6,
-      "absolute_error": 5.57,
-      "signed_error": 5.57
-    },
-    {
-      "player": "Jaylen Warren",
-      "team": "PIT",
-      "position": "RB",
-      "projected": 22.23,
-      "actual": 16.7,
-      "absolute_error": 5.53,
-      "signed_error": 5.53
-    },
-    {
-      "player": "Aaron Jones",
-      "team": "MIN",
-      "position": "RB",
-      "projected": 8.95,
-      "actual": 3.6,
-      "absolute_error": 5.35,
-      "signed_error": 5.35
-    },
-    {
-      "player": "Kevin Coleman Jr.",
-      "team": "MIA",
-      "position": "WR",
-      "projected": 5.35,
-      "actual": 0.0,
-      "absolute_error": 5.35,
-      "signed_error": 5.35
-    },
-    {
-      "player": "Rashid Shaheed",
-      "team": "SEA",
-      "position": "WR",
-      "projected": 7.43,
-      "actual": 2.1,
-      "absolute_error": 5.33,
-      "signed_error": 5.33
-    },
-    {
-      "player": "Dohnte Meyers",
+      "player": "Joe Burrow",
       "team": "CIN",
-      "position": "WR",
-      "projected": 5.3,
-      "actual": 0.0,
-      "absolute_error": 5.3,
-      "signed_error": 5.3
-    },
-    {
-      "player": "Josh Downs",
-      "team": "IND",
-      "position": "WR",
-      "projected": 9.06,
-      "actual": 3.8,
-      "absolute_error": 5.26,
-      "signed_error": 5.26
-    },
-    {
-      "player": "Aaron Rodgers",
-      "team": "PIT",
       "position": "QB",
-      "projected": 18.32,
-      "actual": 13.08,
-      "absolute_error": 5.24,
-      "signed_error": 5.24
+      "projected": 24.98,
+      "actual": 39.48,
+      "absolute_error": 14.5,
+      "signed_error": -14.5
     },
     {
-      "player": "Dallas Goedert",
-      "team": "PHI",
-      "position": "TE",
-      "projected": 15.03,
-      "actual": 9.8,
-      "absolute_error": 5.23,
-      "signed_error": 5.23
-    },
-    {
-      "player": "Jordan Mason",
-      "team": "MIN",
-      "position": "RB",
-      "projected": 11.93,
-      "actual": 6.8,
-      "absolute_error": 5.13,
-      "signed_error": 5.13
-    },
-    {
-      "player": "Kendrick Bourne",
-      "team": "ARI",
+      "player": "Zay Flowers",
+      "team": "BAL",
       "position": "WR",
-      "projected": 9.01,
-      "actual": 3.9,
-      "absolute_error": 5.11,
-      "signed_error": 5.11
+      "projected": 14.08,
+      "actual": 0.0,
+      "absolute_error": 14.08,
+      "signed_error": 14.08
     },
     {
       "player": "Drake London",
       "team": "ATL",
       "position": "WR",
-      "projected": 14.5,
-      "actual": 19.6,
-      "absolute_error": 5.1,
-      "signed_error": -5.1
+      "projected": 15.75,
+      "actual": 1.8,
+      "absolute_error": 13.95,
+      "signed_error": 13.95
     },
     {
-      "player": "Xavier Hutchinson",
-      "team": "HOU",
-      "position": "WR",
-      "projected": 6.82,
-      "actual": 11.9,
-      "absolute_error": 5.08,
-      "signed_error": -5.08
+      "player": "Patrick Mahomes",
+      "team": "KC",
+      "position": "QB",
+      "projected": 11.6,
+      "actual": 25.44,
+      "absolute_error": 13.84,
+      "signed_error": -13.84
     },
     {
-      "player": "RJ Harvey",
-      "team": "DEN",
+      "player": "Javonte Williams",
+      "team": "DAL",
       "position": "RB",
-      "projected": 8.93,
-      "actual": 14.0,
-      "absolute_error": 5.07,
-      "signed_error": -5.07
+      "projected": 20.16,
+      "actual": 6.7,
+      "absolute_error": 13.46,
+      "signed_error": 13.46
+    },
+    {
+      "player": "Ja'Marr Chase",
+      "team": "CIN",
+      "position": "WR",
+      "projected": 17.73,
+      "actual": 31.1,
+      "absolute_error": 13.37,
+      "signed_error": -13.37
+    },
+    {
+      "player": "Bhayshul Tuten",
+      "team": "JAX",
+      "position": "RB",
+      "projected": 16.88,
+      "actual": 29.9,
+      "absolute_error": 13.02,
+      "signed_error": -13.02
+    },
+    {
+      "player": "Jared Goff",
+      "team": "DET",
+      "position": "QB",
+      "projected": 21.37,
+      "actual": 9.04,
+      "absolute_error": 12.33,
+      "signed_error": 12.33
+    },
+    {
+      "player": "Dalton Kincaid",
+      "team": "BUF",
+      "position": "TE",
+      "projected": 6.29,
+      "actual": 18.6,
+      "absolute_error": 12.31,
+      "signed_error": -12.31
+    },
+    {
+      "player": "Omar Cooper Jr.",
+      "team": "NYJ",
+      "position": "WR",
+      "projected": 12.31,
+      "actual": 0.0,
+      "absolute_error": 12.31,
+      "signed_error": 12.31
+    },
+    {
+      "player": "Jacoby Brissett",
+      "team": "ARI",
+      "position": "QB",
+      "projected": 15.74,
+      "actual": 3.46,
+      "absolute_error": 12.28,
+      "signed_error": 12.28
+    },
+    {
+      "player": "Tony Pollard",
+      "team": "TEN",
+      "position": "RB",
+      "projected": 16.72,
+      "actual": 28.7,
+      "absolute_error": 11.98,
+      "signed_error": -11.98
+    },
+    {
+      "player": "Brock Bowers",
+      "team": "LV",
+      "position": "TE",
+      "projected": 16.3,
+      "actual": 28.2,
+      "absolute_error": 11.9,
+      "signed_error": -11.9
+    },
+    {
+      "player": "Parker Washington",
+      "team": "JAX",
+      "position": "WR",
+      "projected": 15.44,
+      "actual": 3.6,
+      "absolute_error": 11.84,
+      "signed_error": 11.84
+    },
+    {
+      "player": "Gunnar Helm",
+      "team": "TEN",
+      "position": "TE",
+      "projected": 2.88,
+      "actual": 14.6,
+      "absolute_error": 11.72,
+      "signed_error": -11.72
+    },
+    {
+      "player": "Mike Gesicki",
+      "team": "CIN",
+      "position": "TE",
+      "projected": 6.05,
+      "actual": 17.6,
+      "absolute_error": 11.55,
+      "signed_error": -11.55
+    },
+    {
+      "player": "Aaron Rodgers",
+      "team": "PIT",
+      "position": "QB",
+      "projected": 16.06,
+      "actual": 4.88,
+      "absolute_error": 11.18,
+      "signed_error": 11.18
+    },
+    {
+      "player": "Jalen Nailor",
+      "team": "LV",
+      "position": "WR",
+      "projected": 3.09,
+      "actual": 13.8,
+      "absolute_error": 10.71,
+      "signed_error": -10.71
     },
     {
       "player": "Ollie Gordon II",
       "team": "MIA",
       "position": "RB",
-      "projected": 12.25,
+      "projected": 17.6,
+      "actual": 6.9,
+      "absolute_error": 10.7,
+      "signed_error": 10.7
+    },
+    {
+      "player": "Matthew Stafford",
+      "team": "LA",
+      "position": "QB",
+      "projected": 18.8,
+      "actual": 8.28,
+      "absolute_error": 10.52,
+      "signed_error": 10.52
+    },
+    {
+      "player": "Bijan Robinson",
+      "team": "ATL",
+      "position": "RB",
+      "projected": 17.75,
+      "actual": 7.6,
+      "absolute_error": 10.15,
+      "signed_error": 10.15
+    },
+    {
+      "player": "Jonathan Taylor",
+      "team": "IND",
+      "position": "RB",
+      "projected": 16.57,
+      "actual": 6.7,
+      "absolute_error": 9.87,
+      "signed_error": 9.87
+    },
+    {
+      "player": "Kevin Coleman Jr.",
+      "team": "MIA",
+      "position": "WR",
+      "projected": 3.76,
+      "actual": 13.6,
+      "absolute_error": 9.84,
+      "signed_error": -9.84
+    },
+    {
+      "player": "Wan'Dale Robinson",
+      "team": "TEN",
+      "position": "WR",
+      "projected": 5.99,
+      "actual": 15.7,
+      "absolute_error": 9.71,
+      "signed_error": -9.71
+    },
+    {
+      "player": "DK Metcalf",
+      "team": "PIT",
+      "position": "WR",
+      "projected": 11.01,
+      "actual": 1.4,
+      "absolute_error": 9.61,
+      "signed_error": 9.61
+    },
+    {
+      "player": "DJ Moore",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 7.08,
+      "actual": 16.6,
+      "absolute_error": 9.52,
+      "signed_error": -9.52
+    },
+    {
+      "player": "Chuba Hubbard",
+      "team": "CAR",
+      "position": "RB",
+      "projected": 15.54,
+      "actual": 24.9,
+      "absolute_error": 9.36,
+      "signed_error": -9.36
+    },
+    {
+      "player": "Matthew Golden",
+      "team": "GB",
+      "position": "WR",
+      "projected": 11.72,
+      "actual": 20.9,
+      "absolute_error": 9.18,
+      "signed_error": -9.18
+    },
+    {
+      "player": "Keon Coleman",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 10.56,
+      "actual": 1.4,
+      "absolute_error": 9.16,
+      "signed_error": 9.16
+    },
+    {
+      "player": "Kirk Cousins",
+      "team": "LV",
+      "position": "QB",
+      "projected": 19.29,
+      "actual": 28.18,
+      "absolute_error": 8.89,
+      "signed_error": -8.89
+    },
+    {
+      "player": "Baker Mayfield",
+      "team": "TB",
+      "position": "QB",
+      "projected": 10.23,
+      "actual": 1.4,
+      "absolute_error": 8.83,
+      "signed_error": 8.83
+    },
+    {
+      "player": "George Pickens",
+      "team": "DAL",
+      "position": "WR",
+      "projected": 15.44,
+      "actual": 6.8,
+      "absolute_error": 8.64,
+      "signed_error": 8.64
+    },
+    {
+      "player": "Ladd McConkey",
+      "team": "LAC",
+      "position": "WR",
+      "projected": 4.15,
+      "actual": 12.6,
+      "absolute_error": 8.45,
+      "signed_error": -8.45
+    },
+    {
+      "player": "Kyle Pitts",
+      "team": "ATL",
+      "position": "TE",
+      "projected": 10.99,
+      "actual": 2.6,
+      "absolute_error": 8.39,
+      "signed_error": 8.39
+    },
+    {
+      "player": "Chris Rodriguez Jr.",
+      "team": "JAX",
+      "position": "RB",
+      "projected": 4.5,
+      "actual": 12.8,
+      "absolute_error": 8.3,
+      "signed_error": -8.3
+    },
+    {
+      "player": "Braelon Allen",
+      "team": "NYJ",
+      "position": "RB",
+      "projected": 15.06,
+      "actual": 23.3,
+      "absolute_error": 8.24,
+      "signed_error": -8.24
+    },
+    {
+      "player": "Kyle Williams",
+      "team": "NE",
+      "position": "WR",
+      "projected": 3.43,
+      "actual": 11.3,
+      "absolute_error": 7.87,
+      "signed_error": -7.87
+    },
+    {
+      "player": "Jaylen Waddle",
+      "team": "DEN",
+      "position": "WR",
+      "projected": 7.06,
+      "actual": 14.9,
+      "absolute_error": 7.84,
+      "signed_error": -7.84
+    },
+    {
+      "player": "Eli Stowers",
+      "team": "PHI",
+      "position": "TE",
+      "projected": 0.63,
+      "actual": 8.3,
+      "absolute_error": 7.67,
+      "signed_error": -7.67
+    },
+    {
+      "player": "J.K. Dobbins",
+      "team": "DEN",
+      "position": "RB",
+      "projected": 8.89,
+      "actual": 1.3,
+      "absolute_error": 7.59,
+      "signed_error": 7.59
+    },
+    {
+      "player": "Oronde Gadsden II",
+      "team": "LAC",
+      "position": "TE",
+      "projected": 2.61,
+      "actual": 10.2,
+      "absolute_error": 7.59,
+      "signed_error": -7.59
+    },
+    {
+      "player": "Bam Knight",
+      "team": "ARI",
+      "position": "RB",
+      "projected": 8.3,
+      "actual": 0.8,
+      "absolute_error": 7.5,
+      "signed_error": 7.5
+    },
+    {
+      "player": "Amon-Ra St. Brown",
+      "team": "DET",
+      "position": "WR",
+      "projected": 19.94,
+      "actual": 12.6,
+      "absolute_error": 7.34,
+      "signed_error": 7.34
+    },
+    {
+      "player": "Eli Raridon",
+      "team": "NE",
+      "position": "TE",
+      "projected": 8.8,
+      "actual": 1.5,
+      "absolute_error": 7.3,
+      "signed_error": 7.3
+    },
+    {
+      "player": "Pierre Strong",
+      "team": "GB",
+      "position": "RB",
+      "projected": 7.29,
+      "actual": 0.2,
+      "absolute_error": 7.09,
+      "signed_error": 7.09
+    },
+    {
+      "player": "Chris Godwin Jr.",
+      "team": "TB",
+      "position": "WR",
+      "projected": 7.07,
+      "actual": 0.0,
+      "absolute_error": 7.07,
+      "signed_error": 7.07
+    },
+    {
+      "player": "Tez Johnson",
+      "team": "TB",
+      "position": "WR",
+      "projected": 6.82,
+      "actual": 0.0,
+      "absolute_error": 6.82,
+      "signed_error": 6.82
+    },
+    {
+      "player": "Tucker Kraft",
+      "team": "GB",
+      "position": "TE",
+      "projected": 10.61,
       "actual": 17.3,
-      "absolute_error": 5.05,
-      "signed_error": -5.05
+      "absolute_error": 6.69,
+      "signed_error": -6.69
+    },
+    {
+      "player": "Jordan Mason",
+      "team": "MIN",
+      "position": "RB",
+      "projected": 8.52,
+      "actual": 2.0,
+      "absolute_error": 6.52,
+      "signed_error": 6.52
+    },
+    {
+      "player": "Josh Downs",
+      "team": "IND",
+      "position": "WR",
+      "projected": 5.82,
+      "actual": 12.3,
+      "absolute_error": 6.48,
+      "signed_error": -6.48
+    },
+    {
+      "player": "T.J. Hockenson",
+      "team": "MIN",
+      "position": "TE",
+      "projected": 9.33,
+      "actual": 15.8,
+      "absolute_error": 6.47,
+      "signed_error": -6.47
+    },
+    {
+      "player": "Chig Okonkwo",
+      "team": "WAS",
+      "position": "TE",
+      "projected": 9.56,
+      "actual": 3.2,
+      "absolute_error": 6.36,
+      "signed_error": 6.36
+    },
+    {
+      "player": "Nate Adkins",
+      "team": "DEN",
+      "position": "TE",
+      "projected": 2.06,
+      "actual": 8.4,
+      "absolute_error": 6.34,
+      "signed_error": -6.34
+    },
+    {
+      "player": "Jerry Jeudy",
+      "team": "CLE",
+      "position": "WR",
+      "projected": 6.34,
+      "actual": 0.0,
+      "absolute_error": 6.34,
+      "signed_error": 6.34
+    },
+    {
+      "player": "Dylan Sampson",
+      "team": "CLE",
+      "position": "RB",
+      "projected": 6.58,
+      "actual": 12.9,
+      "absolute_error": 6.32,
+      "signed_error": -6.32
+    },
+    {
+      "player": "Malik Washington",
+      "team": "MIA",
+      "position": "WR",
+      "projected": 8.71,
+      "actual": 15.0,
+      "absolute_error": 6.29,
+      "signed_error": -6.29
     },
     {
       "player": "Isaiah Williams",
       "team": "NYJ",
+      "position": "WR",
+      "projected": 2.54,
+      "actual": 8.8,
+      "absolute_error": 6.26,
+      "signed_error": -6.26
+    },
+    {
+      "player": "Sione Vaki",
+      "team": "DET",
+      "position": "RB",
+      "projected": 1.79,
+      "actual": 8.0,
+      "absolute_error": 6.21,
+      "signed_error": -6.21
+    },
+    {
+      "player": "Josh Jacobs",
+      "team": "GB",
+      "position": "RB",
+      "projected": 17.03,
+      "actual": 23.2,
+      "absolute_error": 6.17,
+      "signed_error": -6.17
+    },
+    {
+      "player": "Kyler Murray",
+      "team": "MIN",
+      "position": "QB",
+      "projected": 13.84,
+      "actual": 19.9,
+      "absolute_error": 6.06,
+      "signed_error": -6.06
+    },
+    {
+      "player": "Ashton Jeanty",
+      "team": "LV",
+      "position": "RB",
+      "projected": 16.34,
+      "actual": 10.3,
+      "absolute_error": 6.04,
+      "signed_error": 6.04
+    },
+    {
+      "player": "Hunter Henry",
+      "team": "NE",
+      "position": "TE",
+      "projected": 11.97,
+      "actual": 6.0,
+      "absolute_error": 5.97,
+      "signed_error": 5.97
+    },
+    {
+      "player": "Jayden Daniels",
+      "team": "WAS",
+      "position": "QB",
+      "projected": 20.91,
+      "actual": 14.98,
+      "absolute_error": 5.93,
+      "signed_error": 5.93
+    },
+    {
+      "player": "CeeDee Lamb",
+      "team": "DAL",
+      "position": "WR",
+      "projected": 18.59,
+      "actual": 12.8,
+      "absolute_error": 5.79,
+      "signed_error": 5.79
+    },
+    {
+      "player": "Jakobi Meyers",
+      "team": "JAX",
+      "position": "WR",
+      "projected": 10.1,
+      "actual": 4.4,
+      "absolute_error": 5.7,
+      "signed_error": 5.7
+    },
+    {
+      "player": "Kenny Gainwell",
+      "team": "TB",
+      "position": "RB",
+      "projected": 8.4,
+      "actual": 14.0,
+      "absolute_error": 5.6,
+      "signed_error": -5.6
+    },
+    {
+      "player": "Darnell Washington",
+      "team": "PIT",
+      "position": "TE",
+      "projected": 6.86,
+      "actual": 12.4,
+      "absolute_error": 5.54,
+      "signed_error": -5.54
+    },
+    {
+      "player": "Garrett Wilson",
+      "team": "NYJ",
+      "position": "WR",
+      "projected": 8.82,
+      "actual": 14.3,
+      "absolute_error": 5.48,
+      "signed_error": -5.48
+    },
+    {
+      "player": "Daniel Bellinger",
+      "team": "TEN",
+      "position": "TE",
+      "projected": 1.17,
+      "actual": 6.6,
+      "absolute_error": 5.43,
+      "signed_error": -5.43
+    },
+    {
+      "player": "Josh Cameron",
+      "team": "JAX",
+      "position": "WR",
+      "projected": 5.33,
+      "actual": 0.0,
+      "absolute_error": 5.33,
+      "signed_error": 5.33
+    },
+    {
+      "player": "Nate Boerkircher",
+      "team": "JAX",
+      "position": "TE",
+      "projected": 4.8,
+      "actual": 10.1,
+      "absolute_error": 5.3,
+      "signed_error": -5.3
+    },
+    {
+      "player": "Samaje Perine",
+      "team": "CIN",
+      "position": "RB",
+      "projected": 8.16,
+      "actual": 2.9,
+      "absolute_error": 5.26,
+      "signed_error": 5.26
+    },
+    {
+      "player": "Tyler Higbee",
+      "team": "LA",
+      "position": "TE",
+      "projected": 7.63,
+      "actual": 2.4,
+      "absolute_error": 5.23,
+      "signed_error": 5.23
+    },
+    {
+      "player": "Kyren Williams",
+      "team": "LA",
+      "position": "RB",
+      "projected": 18.12,
+      "actual": 12.9,
+      "absolute_error": 5.22,
+      "signed_error": 5.22
+    },
+    {
+      "player": "Sam LaPorta",
+      "team": "DET",
+      "position": "TE",
+      "projected": 11.66,
+      "actual": 6.5,
+      "absolute_error": 5.16,
+      "signed_error": 5.16
+    },
+    {
+      "player": "Josh Palmer",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 5.15,
+      "actual": 0.0,
+      "absolute_error": 5.15,
+      "signed_error": 5.15
+    },
+    {
+      "player": "Darren Waller",
+      "team": "CAR",
+      "position": "TE",
+      "projected": 7.23,
+      "actual": 2.1,
+      "absolute_error": 5.13,
+      "signed_error": 5.13
+    },
+    {
+      "player": "Tanner McKee",
+      "team": "PHI",
+      "position": "QB",
+      "projected": 12.1,
+      "actual": 6.98,
+      "absolute_error": 5.12,
+      "signed_error": 5.12
+    },
+    {
+      "player": "Keenan Allen",
+      "team": "IND",
+      "position": "WR",
+      "projected": 8.58,
+      "actual": 13.7,
+      "absolute_error": 5.12,
+      "signed_error": -5.12
+    },
+    {
+      "player": "Jordan Addison",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 6.49,
+      "actual": 11.6,
+      "absolute_error": 5.11,
+      "signed_error": -5.11
+    },
+    {
+      "player": "Drew Sample",
+      "team": "CIN",
+      "position": "TE",
+      "projected": 5.06,
+      "actual": 0.0,
+      "absolute_error": 5.06,
+      "signed_error": 5.06
+    },
+    {
+      "player": "DeMario Douglas",
+      "team": "NE",
+      "position": "WR",
+      "projected": 11.57,
+      "actual": 16.6,
+      "absolute_error": 5.03,
+      "signed_error": -5.03
+    },
+    {
+      "player": "KeAndre Lambert-Smith",
+      "team": "LAC",
       "position": "WR",
       "projected": 5.02,
       "actual": 0.0,
@@ -880,535 +898,526 @@
       "signed_error": 5.02
     },
     {
-      "player": "Carnell Tate",
-      "team": "TEN",
-      "position": "WR",
-      "projected": 14.84,
-      "actual": 9.9,
-      "absolute_error": 4.94,
-      "signed_error": 4.94
+      "player": "Kenneth Walker III",
+      "team": "KC",
+      "position": "RB",
+      "projected": 17.31,
+      "actual": 12.4,
+      "absolute_error": 4.91,
+      "signed_error": 4.91
     },
     {
-      "player": "Juwan Johnson",
-      "team": "NO",
-      "position": "TE",
-      "projected": 6.63,
-      "actual": 1.7,
-      "absolute_error": 4.93,
-      "signed_error": 4.93
-    },
-    {
-      "player": "Matthew Golden",
-      "team": "GB",
-      "position": "WR",
-      "projected": 14.8,
-      "actual": 9.9,
-      "absolute_error": 4.9,
-      "signed_error": 4.9
-    },
-    {
-      "player": "Marvin Mims Jr.",
-      "team": "DEN",
-      "position": "WR",
-      "projected": 2.7,
-      "actual": 7.6,
-      "absolute_error": 4.9,
-      "signed_error": -4.9
-    },
-    {
-      "player": "Deshaun Watson",
+      "player": "Quinshon Judkins",
       "team": "CLE",
-      "position": "QB",
-      "projected": 13.36,
-      "actual": 18.22,
-      "absolute_error": 4.86,
-      "signed_error": -4.86
-    },
-    {
-      "player": "Mark Redman",
-      "team": "GB",
-      "position": "TE",
-      "projected": 4.84,
-      "actual": 0.0,
-      "absolute_error": 4.84,
-      "signed_error": 4.84
-    },
-    {
-      "player": "Nate Adkins",
-      "team": "DEN",
-      "position": "TE",
-      "projected": 4.78,
-      "actual": 0.0,
-      "absolute_error": 4.78,
-      "signed_error": 4.78
-    },
-    {
-      "player": "Kyle Williams",
-      "team": "NE",
-      "position": "WR",
-      "projected": 4.77,
-      "actual": 0.0,
-      "absolute_error": 4.77,
-      "signed_error": 4.77
+      "position": "RB",
+      "projected": 11.65,
+      "actual": 6.9,
+      "absolute_error": 4.75,
+      "signed_error": 4.75
     },
     {
       "player": "Isaiah Bond",
       "team": "CLE",
       "position": "WR",
-      "projected": 4.71,
+      "projected": 4.74,
       "actual": 0.0,
-      "absolute_error": 4.71,
-      "signed_error": 4.71
+      "absolute_error": 4.74,
+      "signed_error": 4.74
     },
     {
-      "player": "Jaleel McLaughlin",
-      "team": "CLE",
-      "position": "RB",
-      "projected": 4.61,
-      "actual": 0.0,
-      "absolute_error": 4.61,
-      "signed_error": 4.61
+      "player": "Bryce Young",
+      "team": "CAR",
+      "position": "QB",
+      "projected": 15.09,
+      "actual": 10.36,
+      "absolute_error": 4.73,
+      "signed_error": 4.73
     },
     {
-      "player": "Will Mallory",
-      "team": "IND",
-      "position": "TE",
-      "projected": 4.59,
-      "actual": 0.0,
-      "absolute_error": 4.59,
-      "signed_error": 4.59
-    },
-    {
-      "player": "Jordan Addison",
-      "team": "MIN",
+      "player": "Brian Thomas Jr.",
+      "team": "JAX",
       "position": "WR",
-      "projected": 8.75,
-      "actual": 4.3,
-      "absolute_error": 4.45,
-      "signed_error": 4.45
+      "projected": 3.5,
+      "actual": 8.2,
+      "absolute_error": 4.7,
+      "signed_error": -4.7
     },
     {
       "player": "Christian Watson",
       "team": "GB",
       "position": "WR",
-      "projected": 15.14,
-      "actual": 10.7,
-      "absolute_error": 4.44,
-      "signed_error": 4.44
+      "projected": 12.63,
+      "actual": 17.3,
+      "absolute_error": 4.67,
+      "signed_error": -4.67
     },
     {
-      "player": "Marquise Brown",
-      "team": "PHI",
+      "player": "KC Concepcion",
+      "team": "CLE",
       "position": "WR",
-      "projected": 0.6,
-      "actual": 5.0,
-      "absolute_error": 4.4,
-      "signed_error": -4.4
-    },
-    {
-      "player": "Foster Moreau",
-      "team": "HOU",
-      "position": "TE",
-      "projected": 4.39,
-      "actual": 0.0,
-      "absolute_error": 4.39,
-      "signed_error": 4.39
-    },
-    {
-      "player": "Braelon Allen",
-      "team": "NYJ",
-      "position": "RB",
-      "projected": 15.02,
-      "actual": 19.4,
-      "absolute_error": 4.38,
-      "signed_error": -4.38
-    },
-    {
-      "player": "Elic Ayomanor",
-      "team": "TEN",
-      "position": "WR",
-      "projected": 3.05,
-      "actual": 7.4,
-      "absolute_error": 4.35,
-      "signed_error": -4.35
-    },
-    {
-      "player": "Trevor Etienne",
-      "team": "CAR",
-      "position": "RB",
-      "projected": 0.17,
-      "actual": 4.5,
-      "absolute_error": 4.33,
-      "signed_error": -4.33
-    },
-    {
-      "player": "Tyrone Tracy Jr.",
-      "team": "NYG",
-      "position": "RB",
-      "projected": 4.49,
-      "actual": 8.7,
-      "absolute_error": 4.21,
-      "signed_error": -4.21
+      "projected": 11.31,
+      "actual": 6.7,
+      "absolute_error": 4.61,
+      "signed_error": 4.61
     },
     {
       "player": "Teagan Quitoriano",
       "team": "ARI",
       "position": "TE",
-      "projected": 4.19,
+      "projected": 4.58,
       "actual": 0.0,
-      "absolute_error": 4.19,
-      "signed_error": 4.19
+      "absolute_error": 4.58,
+      "signed_error": 4.58
     },
     {
-      "player": "Tory Horton",
-      "team": "SEA",
-      "position": "WR",
-      "projected": 4.18,
-      "actual": 0.0,
-      "absolute_error": 4.18,
-      "signed_error": 4.18
-    },
-    {
-      "player": "Mitchell Evans",
-      "team": "CAR",
-      "position": "TE",
-      "projected": 1.78,
-      "actual": 5.9,
-      "absolute_error": 4.12,
-      "signed_error": -4.12
-    },
-    {
-      "player": "CJ Donaldson",
-      "team": "NO",
+      "player": "Jaleel McLaughlin",
+      "team": "CLE",
       "position": "RB",
-      "projected": 4.08,
+      "projected": 4.51,
       "actual": 0.0,
-      "absolute_error": 4.08,
-      "signed_error": 4.08
+      "absolute_error": 4.51,
+      "signed_error": 4.51
     },
     {
-      "player": "Jeremy Ruckert",
-      "team": "NYJ",
+      "player": "Brenton Strange",
+      "team": "JAX",
       "position": "TE",
-      "projected": 4.08,
-      "actual": 0.0,
-      "absolute_error": 4.08,
-      "signed_error": 4.08
+      "projected": 11.9,
+      "actual": 7.5,
+      "absolute_error": 4.4,
+      "signed_error": 4.4
     },
     {
-      "player": "Brycen Tremayne",
-      "team": "CAR",
-      "position": "WR",
-      "projected": 4.03,
-      "actual": 0.0,
-      "absolute_error": 4.03,
-      "signed_error": 4.03
-    },
-    {
-      "player": "C.J. Stroud",
-      "team": "HOU",
-      "position": "QB",
-      "projected": 20.53,
-      "actual": 16.52,
-      "absolute_error": 4.01,
-      "signed_error": 4.01
-    },
-    {
-      "player": "Brock Bowers",
+      "player": "Mike Washington Jr.",
       "team": "LV",
-      "position": "TE",
-      "projected": 17.14,
-      "actual": 13.3,
-      "absolute_error": 3.84,
-      "signed_error": 3.84
-    },
-    {
-      "player": "Jared Goff",
-      "team": "DET",
-      "position": "QB",
-      "projected": 21.85,
-      "actual": 18.02,
-      "absolute_error": 3.83,
-      "signed_error": 3.83
-    },
-    {
-      "player": "MarShawn Lloyd",
-      "team": "GB",
       "position": "RB",
-      "projected": 1.69,
-      "actual": 5.5,
-      "absolute_error": 3.81,
-      "signed_error": -3.81
+      "projected": 3.98,
+      "actual": 8.3,
+      "absolute_error": 4.32,
+      "signed_error": -4.32
     },
     {
-      "player": "D'Andre Swift",
-      "team": "CHI",
-      "position": "RB",
-      "projected": 15.32,
-      "actual": 19.0,
-      "absolute_error": 3.68,
-      "signed_error": -3.68
-    },
-    {
-      "player": "Sam Darnold",
-      "team": "SEA",
-      "position": "QB",
-      "projected": 10.33,
-      "actual": 13.98,
-      "absolute_error": 3.65,
-      "signed_error": -3.65
-    },
-    {
-      "player": "Cole Kmet",
-      "team": "CHI",
+      "player": "Tyler Warren",
+      "team": "IND",
       "position": "TE",
-      "projected": 2.18,
+      "projected": 10.11,
       "actual": 5.8,
-      "absolute_error": 3.62,
-      "signed_error": -3.62
+      "absolute_error": 4.31,
+      "signed_error": 4.31
     },
     {
-      "player": "Chris Olave",
-      "team": "NO",
-      "position": "WR",
-      "projected": 15.18,
-      "actual": 11.6,
-      "absolute_error": 3.58,
-      "signed_error": 3.58
-    },
-    {
-      "player": "AJ Barner",
-      "team": "SEA",
-      "position": "TE",
-      "projected": 5.04,
-      "actual": 8.6,
-      "absolute_error": 3.56,
-      "signed_error": -3.56
-    },
-    {
-      "player": "Mitchell Tinsley",
-      "team": "CIN",
-      "position": "WR",
-      "projected": 5.24,
-      "actual": 1.7,
-      "absolute_error": 3.54,
-      "signed_error": 3.54
-    },
-    {
-      "player": "Bijan Robinson",
-      "team": "ATL",
-      "position": "RB",
-      "projected": 20.61,
-      "actual": 17.2,
-      "absolute_error": 3.41,
-      "signed_error": 3.41
-    },
-    {
-      "player": "Woody Marks",
-      "team": "HOU",
-      "position": "RB",
-      "projected": 12.51,
-      "actual": 9.1,
-      "absolute_error": 3.41,
-      "signed_error": 3.41
-    },
-    {
-      "player": "Gunnar Helm",
-      "team": "TEN",
-      "position": "TE",
-      "projected": 1.99,
-      "actual": 5.4,
-      "absolute_error": 3.41,
-      "signed_error": -3.41
-    },
-    {
-      "player": "Wan'Dale Robinson",
-      "team": "TEN",
-      "position": "WR",
-      "projected": 8.09,
-      "actual": 4.7,
-      "absolute_error": 3.39,
-      "signed_error": 3.39
-    },
-    {
-      "player": "Evan Engram",
+      "player": "Adam Trautman",
       "team": "DEN",
       "position": "TE",
-      "projected": 4.58,
-      "actual": 1.2,
-      "absolute_error": 3.38,
-      "signed_error": 3.38
+      "projected": 0.79,
+      "actual": 5.0,
+      "absolute_error": 4.21,
+      "signed_error": -4.21
     },
     {
-      "player": "Jalen Royals",
-      "team": "KC",
-      "position": "WR",
-      "projected": 3.28,
-      "actual": 0.0,
-      "absolute_error": 3.28,
-      "signed_error": 3.28
-    },
-    {
-      "player": "Dalton Schultz",
-      "team": "HOU",
-      "position": "TE",
-      "projected": 6.25,
-      "actual": 9.5,
-      "absolute_error": 3.25,
-      "signed_error": -3.25
-    },
-    {
-      "player": "Michael Penix Jr.",
-      "team": "ATL",
-      "position": "QB",
-      "projected": 17.19,
-      "actual": 20.42,
-      "absolute_error": 3.23,
-      "signed_error": -3.23
-    },
-    {
-      "player": "Cam Ward",
-      "team": "TEN",
-      "position": "QB",
-      "projected": 8.97,
-      "actual": 5.74,
-      "absolute_error": 3.23,
-      "signed_error": 3.23
-    },
-    {
-      "player": "Saquon Barkley",
-      "team": "PHI",
-      "position": "RB",
-      "projected": 11.9,
-      "actual": 15.1,
-      "absolute_error": 3.2,
-      "signed_error": -3.2
-    },
-    {
-      "player": "George Holani",
-      "team": "SEA",
-      "position": "RB",
-      "projected": 6.48,
-      "actual": 3.3,
-      "absolute_error": 3.18,
-      "signed_error": 3.18
-    },
-    {
-      "player": "Chris Bell",
-      "team": "MIA",
-      "position": "WR",
-      "projected": 2.34,
-      "actual": 5.5,
-      "absolute_error": 3.16,
-      "signed_error": -3.16
-    },
-    {
-      "player": "Javonte Williams",
+      "player": "Brevyn Spann-Ford",
       "team": "DAL",
-      "position": "RB",
-      "projected": 18.37,
-      "actual": 21.5,
-      "absolute_error": 3.13,
-      "signed_error": -3.13
-    },
-    {
-      "player": "Pierre Strong",
-      "team": "GB",
-      "position": "RB",
-      "projected": 3.11,
-      "actual": 0.0,
-      "absolute_error": 3.11,
-      "signed_error": 3.11
-    },
-    {
-      "player": "Michael Mayer",
-      "team": "LV",
       "position": "TE",
-      "projected": 9.28,
-      "actual": 6.2,
-      "absolute_error": 3.08,
-      "signed_error": 3.08
+      "projected": 2.91,
+      "actual": 7.1,
+      "absolute_error": 4.19,
+      "signed_error": -4.19
+    },
+    {
+      "player": "Chase Brown",
+      "team": "CIN",
+      "position": "RB",
+      "projected": 11.93,
+      "actual": 16.1,
+      "absolute_error": 4.17,
+      "signed_error": -4.17
+    },
+    {
+      "player": "Jordan Love",
+      "team": "GB",
+      "position": "QB",
+      "projected": 17.44,
+      "actual": 21.52,
+      "absolute_error": 4.08,
+      "signed_error": -4.08
+    },
+    {
+      "player": "Treylon Burks",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 7.09,
+      "actual": 11.1,
+      "absolute_error": 4.01,
+      "signed_error": -4.01
+    },
+    {
+      "player": "Makai Lemon",
+      "team": "PHI",
+      "position": "WR",
+      "projected": 7.72,
+      "actual": 11.7,
+      "absolute_error": 3.98,
+      "signed_error": -3.98
+    },
+    {
+      "player": "Konata Mumpfield",
+      "team": "LA",
+      "position": "WR",
+      "projected": 3.97,
+      "actual": 0.0,
+      "absolute_error": 3.97,
+      "signed_error": 3.97
     },
     {
       "player": "Isaac TeSlaa",
       "team": "DET",
       "position": "WR",
-      "projected": 5.08,
-      "actual": 2.0,
-      "absolute_error": 3.08,
-      "signed_error": 3.08
-    },
-    {
-      "player": "Tyler Shough",
-      "team": "NO",
-      "position": "QB",
-      "projected": 16.89,
-      "actual": 13.82,
-      "absolute_error": 3.07,
-      "signed_error": 3.07
-    },
-    {
-      "player": "Christian McCaffrey",
-      "team": "SF",
-      "position": "RB",
-      "projected": 25.07,
-      "actual": 22.0,
-      "absolute_error": 3.07,
-      "signed_error": 3.07
-    },
-    {
-      "player": "Tim Patrick",
-      "team": "NYJ",
-      "position": "WR",
-      "projected": 3.04,
+      "projected": 3.96,
       "actual": 0.0,
-      "absolute_error": 3.04,
-      "signed_error": 3.04
+      "absolute_error": 3.96,
+      "signed_error": 3.96
     },
     {
-      "player": "Justice Hill",
-      "team": "BAL",
-      "position": "RB",
-      "projected": 3.28,
-      "actual": 6.3,
-      "absolute_error": 3.02,
-      "signed_error": -3.02
+      "player": "Bo Nix",
+      "team": "DEN",
+      "position": "QB",
+      "projected": 15.42,
+      "actual": 19.28,
+      "absolute_error": 3.86,
+      "signed_error": -3.86
     },
     {
-      "player": "Rome Odunze",
-      "team": "CHI",
+      "player": "Jahan Dotson",
+      "team": "ATL",
       "position": "WR",
-      "projected": 7.94,
-      "actual": 10.9,
-      "absolute_error": 2.96,
-      "signed_error": -2.96
+      "projected": 7.7,
+      "actual": 11.5,
+      "absolute_error": 3.8,
+      "signed_error": -3.8
+    },
+    {
+      "player": "Mason Taylor",
+      "team": "NYJ",
+      "position": "TE",
+      "projected": 8.66,
+      "actual": 4.9,
+      "absolute_error": 3.76,
+      "signed_error": 3.76
+    },
+    {
+      "player": "Josh Allen",
+      "team": "BUF",
+      "position": "QB",
+      "projected": 22.91,
+      "actual": 26.56,
+      "absolute_error": 3.65,
+      "signed_error": -3.65
+    },
+    {
+      "player": "Justin Jefferson",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 10.65,
+      "actual": 14.3,
+      "absolute_error": 3.65,
+      "signed_error": -3.65
     },
     {
       "player": "Travis Kelce",
       "team": "KC",
       "position": "TE",
-      "projected": 11.27,
-      "actual": 8.4,
-      "absolute_error": 2.87,
-      "signed_error": 2.87
+      "projected": 8.06,
+      "actual": 11.7,
+      "absolute_error": 3.64,
+      "signed_error": -3.64
     },
     {
-      "player": "Corey Kiner",
+      "player": "Efton Chism III",
+      "team": "NE",
+      "position": "WR",
+      "projected": 3.07,
+      "actual": 6.7,
+      "absolute_error": 3.63,
+      "signed_error": -3.63
+    },
+    {
+      "player": "Chris Bell",
+      "team": "MIA",
+      "position": "WR",
+      "projected": 3.28,
+      "actual": 6.9,
+      "absolute_error": 3.62,
+      "signed_error": -3.62
+    },
+    {
+      "player": "Tommy Tremble",
+      "team": "CAR",
+      "position": "TE",
+      "projected": 6.5,
+      "actual": 2.9,
+      "absolute_error": 3.6,
+      "signed_error": 3.6
+    },
+    {
+      "player": "Trevor Lawrence",
+      "team": "JAX",
+      "position": "QB",
+      "projected": 22.96,
+      "actual": 19.4,
+      "absolute_error": 3.56,
+      "signed_error": 3.56
+    },
+    {
+      "player": "Pat Freiermuth",
+      "team": "PIT",
+      "position": "TE",
+      "projected": 8.04,
+      "actual": 11.6,
+      "absolute_error": 3.56,
+      "signed_error": -3.56
+    },
+    {
+      "player": "Denzel Boston",
+      "team": "CLE",
+      "position": "WR",
+      "projected": 6.15,
+      "actual": 9.7,
+      "absolute_error": 3.55,
+      "signed_error": -3.55
+    },
+    {
+      "player": "Ted Hurst III",
+      "team": "TB",
+      "position": "WR",
+      "projected": 3.55,
+      "actual": 0.0,
+      "absolute_error": 3.55,
+      "signed_error": 3.55
+    },
+    {
+      "player": "Courtland Sutton",
+      "team": "DEN",
+      "position": "WR",
+      "projected": 5.78,
+      "actual": 9.3,
+      "absolute_error": 3.52,
+      "signed_error": -3.52
+    },
+    {
+      "player": "Dyami Brown",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 3.49,
+      "actual": 0.0,
+      "absolute_error": 3.49,
+      "signed_error": 3.49
+    },
+    {
+      "player": "Kendrick Bourne",
+      "team": "ARI",
+      "position": "WR",
+      "projected": 7.38,
+      "actual": 3.9,
+      "absolute_error": 3.48,
+      "signed_error": 3.48
+    },
+    {
+      "player": "Rashee Rice",
+      "team": "KC",
+      "position": "WR",
+      "projected": 14.86,
+      "actual": 18.3,
+      "absolute_error": 3.44,
+      "signed_error": -3.44
+    },
+    {
+      "player": "Rhamondre Stevenson",
       "team": "NE",
       "position": "RB",
-      "projected": 4.15,
-      "actual": 1.3,
+      "projected": 15.35,
+      "actual": 12.0,
+      "absolute_error": 3.35,
+      "signed_error": 3.35
+    },
+    {
+      "player": "Justin Herbert",
+      "team": "LAC",
+      "position": "QB",
+      "projected": 11.07,
+      "actual": 7.78,
+      "absolute_error": 3.29,
+      "signed_error": 3.29
+    },
+    {
+      "player": "Noah Gray",
+      "team": "KC",
+      "position": "TE",
+      "projected": 6.21,
+      "actual": 9.5,
+      "absolute_error": 3.29,
+      "signed_error": -3.29
+    },
+    {
+      "player": "Jake Ferguson",
+      "team": "DAL",
+      "position": "TE",
+      "projected": 3.25,
+      "actual": 0.0,
+      "absolute_error": 3.25,
+      "signed_error": 3.25
+    },
+    {
+      "player": "Gavin Bartholomew",
+      "team": "MIN",
+      "position": "TE",
+      "projected": 3.25,
+      "actual": 0.0,
+      "absolute_error": 3.25,
+      "signed_error": 3.25
+    },
+    {
+      "player": "Justice Hill",
+      "team": "BAL",
+      "position": "RB",
+      "projected": 4.28,
+      "actual": 7.5,
+      "absolute_error": 3.22,
+      "signed_error": -3.22
+    },
+    {
+      "player": "Isaiah Davis",
+      "team": "NYJ",
+      "position": "RB",
+      "projected": 4.67,
+      "actual": 1.5,
+      "absolute_error": 3.17,
+      "signed_error": 3.17
+    },
+    {
+      "player": "Malik Willis",
+      "team": "MIA",
+      "position": "QB",
+      "projected": 17.8,
+      "actual": 14.64,
+      "absolute_error": 3.16,
+      "signed_error": 3.16
+    },
+    {
+      "player": "Cade Otton",
+      "team": "TB",
+      "position": "TE",
+      "projected": 3.13,
+      "actual": 0.0,
+      "absolute_error": 3.13,
+      "signed_error": 3.13
+    },
+    {
+      "player": "Trevor Etienne",
+      "team": "CAR",
+      "position": "RB",
+      "projected": 3.16,
+      "actual": 0.1,
+      "absolute_error": 3.06,
+      "signed_error": 3.06
+    },
+    {
+      "player": "Jeremiyah Love",
+      "team": "ARI",
+      "position": "RB",
+      "projected": 5.35,
+      "actual": 2.3,
+      "absolute_error": 3.05,
+      "signed_error": 3.05
+    },
+    {
+      "player": "Elic Ayomanor",
+      "team": "TEN",
+      "position": "WR",
+      "projected": 3.36,
+      "actual": 6.4,
+      "absolute_error": 3.04,
+      "signed_error": -3.04
+    },
+    {
+      "player": "Quentin Johnston",
+      "team": "LAC",
+      "position": "WR",
+      "projected": 4.69,
+      "actual": 7.7,
+      "absolute_error": 3.01,
+      "signed_error": -3.01
+    },
+    {
+      "player": "Evan Engram",
+      "team": "DEN",
+      "position": "TE",
+      "projected": 2.98,
+      "actual": 0.0,
+      "absolute_error": 2.98,
+      "signed_error": 2.98
+    },
+    {
+      "player": "Daniel Jones",
+      "team": "IND",
+      "position": "QB",
+      "projected": 9.43,
+      "actual": 6.46,
+      "absolute_error": 2.97,
+      "signed_error": 2.97
+    },
+    {
+      "player": "Germie Bernard",
+      "team": "PIT",
+      "position": "WR",
+      "projected": 10.91,
+      "actual": 8.0,
+      "absolute_error": 2.91,
+      "signed_error": 2.91
+    },
+    {
+      "player": "Dohnte Meyers",
+      "team": "CIN",
+      "position": "WR",
+      "projected": 3.52,
+      "actual": 6.4,
+      "absolute_error": 2.88,
+      "signed_error": -2.88
+    },
+    {
+      "player": "Dylan Laube",
+      "team": "LV",
+      "position": "RB",
+      "projected": 2.85,
+      "actual": 0.0,
       "absolute_error": 2.85,
       "signed_error": 2.85
     },
     {
-      "player": "Jacoby Brissett",
-      "team": "ARI",
-      "position": "QB",
-      "projected": 13.64,
-      "actual": 16.48,
+      "player": "Will Mallory",
+      "team": "IND",
+      "position": "TE",
+      "projected": 2.84,
+      "actual": 0.0,
       "absolute_error": 2.84,
-      "signed_error": -2.84
+      "signed_error": 2.84
+    },
+    {
+      "player": "Puka Nacua",
+      "team": "LA",
+      "position": "WR",
+      "projected": 22.2,
+      "actual": 25.0,
+      "absolute_error": 2.8,
+      "signed_error": -2.8
+    },
+    {
+      "player": "Zachariah Branch",
+      "team": "ATL",
+      "position": "WR",
+      "projected": 2.79,
+      "actual": 0.0,
+      "absolute_error": 2.79,
+      "signed_error": 2.79
     },
     {
       "player": "DJ Herman",
@@ -1420,215 +1429,152 @@
       "signed_error": 2.78
     },
     {
-      "player": "Malik Washington",
-      "team": "MIA",
-      "position": "WR",
-      "projected": 9.2,
-      "actual": 6.5,
-      "absolute_error": 2.7,
-      "signed_error": 2.7
-    },
-    {
-      "player": "Myles Price",
-      "team": "MIN",
-      "position": "WR",
-      "projected": 2.66,
-      "actual": 0.0,
-      "absolute_error": 2.66,
-      "signed_error": 2.66
-    },
-    {
-      "player": "Alvin Kamara",
-      "team": "NO",
+      "player": "Derrick Henry",
+      "team": "BAL",
       "position": "RB",
-      "projected": 10.57,
-      "actual": 13.2,
-      "absolute_error": 2.63,
-      "signed_error": -2.63
-    },
-    {
-      "player": "Dylan Laube",
-      "team": "LV",
-      "position": "RB",
-      "projected": 2.59,
-      "actual": 0.0,
-      "absolute_error": 2.59,
-      "signed_error": 2.59
-    },
-    {
-      "player": "Ashton Dulin",
-      "team": "IND",
-      "position": "WR",
-      "projected": 2.56,
-      "actual": 0.0,
-      "absolute_error": 2.56,
-      "signed_error": 2.56
-    },
-    {
-      "player": "Tanner McKee",
-      "team": "PHI",
-      "position": "QB",
-      "projected": 13.09,
-      "actual": 10.54,
-      "absolute_error": 2.55,
-      "signed_error": 2.55
-    },
-    {
-      "player": "Kirk Cousins",
-      "team": "LV",
-      "position": "QB",
-      "projected": 17.88,
-      "actual": 20.4,
-      "absolute_error": 2.52,
-      "signed_error": -2.52
-    },
-    {
-      "player": "Colby Parkinson",
-      "team": "LA",
-      "position": "TE",
-      "projected": 7.28,
-      "actual": 9.8,
-      "absolute_error": 2.52,
-      "signed_error": -2.52
-    },
-    {
-      "player": "Kendre Miller",
-      "team": "NO",
-      "position": "RB",
-      "projected": 8.2,
-      "actual": 5.8,
-      "absolute_error": 2.4,
-      "signed_error": 2.4
-    },
-    {
-      "player": "Caleb Williams",
-      "team": "CHI",
-      "position": "QB",
-      "projected": 19.76,
-      "actual": 22.12,
-      "absolute_error": 2.36,
-      "signed_error": -2.36
-    },
-    {
-      "player": "Troy Franklin",
-      "team": "DEN",
-      "position": "WR",
-      "projected": 2.35,
-      "actual": 0.0,
-      "absolute_error": 2.35,
-      "signed_error": 2.35
+      "projected": 11.23,
+      "actual": 14.0,
+      "absolute_error": 2.77,
+      "signed_error": -2.77
     },
     {
       "player": "Savion Williams",
       "team": "GB",
       "position": "WR",
-      "projected": 5.76,
-      "actual": 8.1,
-      "absolute_error": 2.34,
-      "signed_error": -2.34
-    },
-    {
-      "player": "Zavion Thomas",
-      "team": "CHI",
-      "position": "WR",
-      "projected": 2.34,
-      "actual": 0.0,
-      "absolute_error": 2.34,
-      "signed_error": 2.34
-    },
-    {
-      "player": "Drake Maye",
-      "team": "NE",
-      "position": "QB",
-      "projected": 25.12,
-      "actual": 27.44,
-      "absolute_error": 2.32,
-      "signed_error": -2.32
-    },
-    {
-      "player": "Denzel Boston",
-      "team": "CLE",
-      "position": "WR",
-      "projected": 8.01,
-      "actual": 5.7,
-      "absolute_error": 2.31,
-      "signed_error": 2.31
-    },
-    {
-      "player": "Konata Mumpfield",
-      "team": "LA",
-      "position": "WR",
-      "projected": 4.78,
-      "actual": 2.5,
-      "absolute_error": 2.28,
-      "signed_error": 2.28
-    },
-    {
-      "player": "Mike Washington Jr.",
-      "team": "LV",
-      "position": "RB",
-      "projected": 4.94,
-      "actual": 2.7,
-      "absolute_error": 2.24,
-      "signed_error": 2.24
+      "projected": 6.01,
+      "actual": 3.3,
+      "absolute_error": 2.71,
+      "signed_error": 2.71
     },
     {
       "player": "Cody White",
       "team": "LV",
       "position": "WR",
-      "projected": 3.62,
-      "actual": 1.4,
+      "projected": 2.71,
+      "actual": 0.0,
+      "absolute_error": 2.71,
+      "signed_error": 2.71
+    },
+    {
+      "player": "Jalen Coker",
+      "team": "CAR",
+      "position": "WR",
+      "projected": 8.9,
+      "actual": 11.6,
+      "absolute_error": 2.7,
+      "signed_error": -2.7
+    },
+    {
+      "player": "Deshaun Watson",
+      "team": "CLE",
+      "position": "QB",
+      "projected": 13.85,
+      "actual": 11.16,
+      "absolute_error": 2.69,
+      "signed_error": 2.69
+    },
+    {
+      "player": "Antonio Williams",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 7.75,
+      "actual": 10.4,
+      "absolute_error": 2.65,
+      "signed_error": -2.65
+    },
+    {
+      "player": "Elijah Higgins",
+      "team": "ARI",
+      "position": "TE",
+      "projected": 5.6,
+      "actual": 3.0,
+      "absolute_error": 2.6,
+      "signed_error": 2.6
+    },
+    {
+      "player": "Xavier Worthy",
+      "team": "KC",
+      "position": "WR",
+      "projected": 6.86,
+      "actual": 4.3,
+      "absolute_error": 2.56,
+      "signed_error": 2.56
+    },
+    {
+      "player": "Kimani Vidal",
+      "team": "LAC",
+      "position": "RB",
+      "projected": 7.47,
+      "actual": 5.0,
+      "absolute_error": 2.47,
+      "signed_error": 2.47
+    },
+    {
+      "player": "Tyler Goodson",
+      "team": "DAL",
+      "position": "RB",
+      "projected": 2.87,
+      "actual": 5.3,
+      "absolute_error": 2.43,
+      "signed_error": -2.43
+    },
+    {
+      "player": "MarShawn Lloyd",
+      "team": "GB",
+      "position": "RB",
+      "projected": 5.02,
+      "actual": 2.6,
+      "absolute_error": 2.42,
+      "signed_error": 2.42
+    },
+    {
+      "player": "Jeremy Ruckert",
+      "team": "NYJ",
+      "position": "TE",
+      "projected": 2.37,
+      "actual": 0.0,
+      "absolute_error": 2.37,
+      "signed_error": 2.37
+    },
+    {
+      "player": "Dak Prescott",
+      "team": "DAL",
+      "position": "QB",
+      "projected": 17.56,
+      "actual": 19.8,
+      "absolute_error": 2.24,
+      "signed_error": -2.24
+    },
+    {
+      "player": "Josh Cuevas",
+      "team": "BAL",
+      "position": "TE",
+      "projected": 4.74,
+      "actual": 2.5,
+      "absolute_error": 2.24,
+      "signed_error": 2.24
+    },
+    {
+      "player": "Davis Allen",
+      "team": "LA",
+      "position": "TE",
+      "projected": 5.02,
+      "actual": 2.8,
       "absolute_error": 2.22,
       "signed_error": 2.22
     },
     {
-      "player": "Jaylen Waddle",
-      "team": "DEN",
-      "position": "WR",
-      "projected": 6.59,
-      "actual": 8.8,
-      "absolute_error": 2.21,
-      "signed_error": -2.21
-    },
-    {
-      "player": "Kyle Pitts",
-      "team": "ATL",
-      "position": "TE",
-      "projected": 11.02,
-      "actual": 13.2,
-      "absolute_error": 2.18,
-      "signed_error": -2.18
-    },
-    {
-      "player": "Courtland Sutton",
-      "team": "DEN",
-      "position": "WR",
-      "projected": 5.33,
-      "actual": 7.5,
-      "absolute_error": 2.17,
-      "signed_error": -2.17
-    },
-    {
-      "player": "Chase Brown",
-      "team": "CIN",
+      "player": "Lan Larison",
+      "team": "NE",
       "position": "RB",
-      "projected": 11.96,
-      "actual": 9.8,
-      "absolute_error": 2.16,
-      "signed_error": 2.16
+      "projected": 2.78,
+      "actual": 0.6,
+      "absolute_error": 2.18,
+      "signed_error": 2.18
     },
     {
       "player": "Devontez Walker",
       "team": "BAL",
-      "position": "WR",
-      "projected": 2.16,
-      "actual": 0.0,
-      "absolute_error": 2.16,
-      "signed_error": 2.16
-    },
-    {
-      "player": "Tai Felton",
-      "team": "MIN",
       "position": "WR",
       "projected": 2.12,
       "actual": 0.0,
@@ -1636,629 +1582,569 @@
       "signed_error": 2.12
     },
     {
-      "player": "TreVeyon Henderson",
-      "team": "NE",
-      "position": "RB",
-      "projected": 6.38,
-      "actual": 4.3,
-      "absolute_error": 2.08,
-      "signed_error": 2.08
-    },
-    {
-      "player": "Seth McGowan",
-      "team": "IND",
-      "position": "RB",
-      "projected": 3.75,
-      "actual": 5.8,
-      "absolute_error": 2.05,
-      "signed_error": -2.05
-    },
-    {
-      "player": "Chimere Dike",
-      "team": "TEN",
-      "position": "WR",
-      "projected": 2.0,
-      "actual": 0.0,
-      "absolute_error": 2.0,
-      "signed_error": 2.0
-    },
-    {
-      "player": "Tyler Huntley",
-      "team": "BAL",
-      "position": "QB",
-      "projected": 13.16,
-      "actual": 15.12,
-      "absolute_error": 1.96,
-      "signed_error": -1.96
-    },
-    {
-      "player": "Tyler Goodson",
-      "team": "DAL",
-      "position": "RB",
-      "projected": 1.89,
-      "actual": 3.8,
-      "absolute_error": 1.91,
-      "signed_error": -1.91
-    },
-    {
-      "player": "Charlie Jones",
-      "team": "NYG",
-      "position": "WR",
-      "projected": 1.9,
-      "actual": 0.0,
-      "absolute_error": 1.9,
-      "signed_error": 1.9
-    },
-    {
-      "player": "Jonathan Mingo",
-      "team": "DAL",
-      "position": "WR",
-      "projected": 1.9,
-      "actual": 0.0,
-      "absolute_error": 1.9,
-      "signed_error": 1.9
-    },
-    {
-      "player": "Jonah Coleman",
-      "team": "DEN",
-      "position": "RB",
-      "projected": 7.03,
-      "actual": 8.9,
-      "absolute_error": 1.87,
-      "signed_error": -1.87
-    },
-    {
-      "player": "Sione Vaki",
-      "team": "DET",
-      "position": "RB",
-      "projected": 2.35,
-      "actual": 0.5,
-      "absolute_error": 1.85,
-      "signed_error": 1.85
-    },
-    {
-      "player": "Elijah Moore",
+      "player": "Marquise Brown",
       "team": "PHI",
       "position": "WR",
-      "projected": 1.76,
-      "actual": 3.6,
-      "absolute_error": 1.84,
-      "signed_error": -1.84
+      "projected": 1.61,
+      "actual": 3.7,
+      "absolute_error": 2.09,
+      "signed_error": -2.09
     },
     {
-      "player": "Chris Godwin Jr.",
+      "player": "Bucky Irving",
       "team": "TB",
-      "position": "WR",
-      "projected": 8.5,
-      "actual": 6.7,
-      "absolute_error": 1.8,
-      "signed_error": 1.8
+      "position": "RB",
+      "projected": 18.94,
+      "actual": 21.0,
+      "absolute_error": 2.06,
+      "signed_error": -2.06
     },
     {
-      "player": "Ja'Kobi Lane",
-      "team": "BAL",
-      "position": "WR",
-      "projected": 3.79,
-      "actual": 5.5,
-      "absolute_error": 1.71,
-      "signed_error": -1.71
-    },
-    {
-      "player": "John Metchie III",
-      "team": "CAR",
-      "position": "WR",
-      "projected": 5.68,
-      "actual": 4.0,
-      "absolute_error": 1.68,
-      "signed_error": 1.68
-    },
-    {
-      "player": "Elijah Higgins",
-      "team": "ARI",
-      "position": "TE",
-      "projected": 6.34,
-      "actual": 4.7,
-      "absolute_error": 1.64,
-      "signed_error": 1.64
-    },
-    {
-      "player": "Marvin Harrison Jr.",
-      "team": "HOU",
-      "position": "WR",
-      "projected": 5.96,
-      "actual": 7.6,
-      "absolute_error": 1.64,
-      "signed_error": -1.64
-    },
-    {
-      "player": "Pharaoh Brown",
-      "team": "IND",
-      "position": "TE",
-      "projected": 1.63,
-      "actual": 0.0,
-      "absolute_error": 1.63,
-      "signed_error": 1.63
-    },
-    {
-      "player": "Jalen Brooks",
-      "team": "ARI",
-      "position": "WR",
-      "projected": 2.89,
-      "actual": 4.5,
-      "absolute_error": 1.61,
-      "signed_error": -1.61
-    },
-    {
-      "player": "Andrew Armstrong",
-      "team": "KC",
-      "position": "WR",
-      "projected": 2.84,
-      "actual": 1.3,
-      "absolute_error": 1.54,
-      "signed_error": 1.54
-    },
-    {
-      "player": "Bryce Lance",
-      "team": "NO",
-      "position": "WR",
-      "projected": 4.73,
-      "actual": 3.2,
-      "absolute_error": 1.53,
-      "signed_error": 1.53
-    },
-    {
-      "player": "Deion Burks",
-      "team": "IND",
-      "position": "WR",
-      "projected": 3.62,
-      "actual": 2.1,
-      "absolute_error": 1.52,
-      "signed_error": 1.52
+      "player": "Jeremy McNichols",
+      "team": "WAS",
+      "position": "RB",
+      "projected": 1.74,
+      "actual": 3.8,
+      "absolute_error": 2.06,
+      "signed_error": -2.06
     },
     {
       "player": "Ben Yurosek",
       "team": "MIN",
       "position": "TE",
-      "projected": 1.5,
-      "actual": 0.0,
-      "absolute_error": 1.5,
-      "signed_error": 1.5
+      "projected": 1.42,
+      "actual": 3.4,
+      "absolute_error": 1.98,
+      "signed_error": -1.98
     },
     {
-      "player": "Kenyon Sadiq",
-      "team": "NYJ",
-      "position": "TE",
-      "projected": 3.07,
-      "actual": 1.6,
-      "absolute_error": 1.47,
-      "signed_error": 1.47
-    },
-    {
-      "player": "Kenny Gainwell",
-      "team": "TB",
+      "player": "Omarion Hampton",
+      "team": "LAC",
       "position": "RB",
-      "projected": 7.34,
-      "actual": 8.8,
-      "absolute_error": 1.46,
-      "signed_error": -1.46
+      "projected": 6.6,
+      "actual": 4.7,
+      "absolute_error": 1.9,
+      "signed_error": 1.9
     },
     {
-      "player": "Hunter Henry",
+      "player": "Drake Maye",
       "team": "NE",
-      "position": "TE",
-      "projected": 12.66,
-      "actual": 14.1,
-      "absolute_error": 1.44,
-      "signed_error": -1.44
-    },
-    {
-      "player": "Jaylen Wright",
-      "team": "MIA",
-      "position": "RB",
-      "projected": 2.19,
-      "actual": 0.8,
-      "absolute_error": 1.39,
-      "signed_error": 1.39
-    },
-    {
-      "player": "Ja'Marr Chase",
-      "team": "CIN",
-      "position": "WR",
-      "projected": 15.83,
-      "actual": 17.2,
-      "absolute_error": 1.37,
-      "signed_error": -1.37
-    },
-    {
-      "player": "Johnny Mundt",
-      "team": "PHI",
-      "position": "TE",
-      "projected": 1.36,
-      "actual": 0.0,
-      "absolute_error": 1.36,
-      "signed_error": 1.36
-    },
-    {
-      "player": "Jonnu Smith",
-      "team": "GB",
-      "position": "TE",
-      "projected": 3.25,
-      "actual": 1.9,
-      "absolute_error": 1.35,
-      "signed_error": 1.35
-    },
-    {
-      "player": "Gavin Bartholomew",
-      "team": "MIN",
-      "position": "TE",
-      "projected": 4.04,
-      "actual": 2.7,
-      "absolute_error": 1.34,
-      "signed_error": 1.34
-    },
-    {
-      "player": "Samaje Perine",
-      "team": "CIN",
-      "position": "RB",
-      "projected": 8.9,
-      "actual": 7.6,
-      "absolute_error": 1.3,
-      "signed_error": 1.3
-    },
-    {
-      "player": "Erick All",
-      "team": "CIN",
-      "position": "TE",
-      "projected": 4.3,
-      "actual": 5.6,
-      "absolute_error": 1.3,
-      "signed_error": -1.3
-    },
-    {
-      "player": "Cooper Kupp",
-      "team": "SEA",
-      "position": "WR",
-      "projected": 5.3,
-      "actual": 4.0,
-      "absolute_error": 1.3,
-      "signed_error": 1.3
-    },
-    {
-      "player": "Darnell Washington",
-      "team": "PIT",
-      "position": "TE",
-      "projected": 8.69,
-      "actual": 7.4,
-      "absolute_error": 1.29,
-      "signed_error": 1.29
-    },
-    {
-      "player": "Matthew Stafford",
-      "team": "LA",
       "position": "QB",
-      "projected": 18.78,
-      "actual": 17.5,
-      "absolute_error": 1.28,
-      "signed_error": 1.28
+      "projected": 24.33,
+      "actual": 22.46,
+      "absolute_error": 1.87,
+      "signed_error": 1.87
     },
     {
-      "player": "Josh Cuevas",
-      "team": "BAL",
-      "position": "TE",
-      "projected": 4.29,
-      "actual": 5.5,
-      "absolute_error": 1.21,
-      "signed_error": -1.21
-    },
-    {
-      "player": "Puka Nacua",
-      "team": "LA",
-      "position": "WR",
-      "projected": 23.01,
-      "actual": 21.8,
-      "absolute_error": 1.21,
-      "signed_error": 1.21
-    },
-    {
-      "player": "Kayshon Boutte",
-      "team": "HOU",
-      "position": "WR",
-      "projected": 4.7,
-      "actual": 3.5,
-      "absolute_error": 1.2,
-      "signed_error": 1.2
-    },
-    {
-      "player": "Ryan Flournoy",
-      "team": "DAL",
-      "position": "WR",
-      "projected": 12.18,
-      "actual": 11.0,
-      "absolute_error": 1.18,
-      "signed_error": 1.18
-    },
-    {
-      "player": "Bam Knight",
-      "team": "ARI",
+      "player": "Ty Johnson",
+      "team": "BUF",
       "position": "RB",
-      "projected": 8.13,
-      "actual": 9.3,
-      "absolute_error": 1.17,
-      "signed_error": -1.17
-    },
-    {
-      "player": "Tyler Allgeier",
-      "team": "ARI",
-      "position": "RB",
-      "projected": 9.06,
-      "actual": 7.9,
-      "absolute_error": 1.16,
-      "signed_error": 1.16
-    },
-    {
-      "player": "Jordan Love",
-      "team": "GB",
-      "position": "QB",
-      "projected": 18.06,
-      "actual": 16.96,
-      "absolute_error": 1.1,
-      "signed_error": 1.1
-    },
-    {
-      "player": "Jonathan Taylor",
-      "team": "IND",
-      "position": "RB",
-      "projected": 17.9,
-      "actual": 19.0,
-      "absolute_error": 1.1,
-      "signed_error": -1.1
-    },
-    {
-      "player": "Adam Trautman",
-      "team": "DEN",
-      "position": "TE",
-      "projected": 1.06,
-      "actual": 0.0,
-      "absolute_error": 1.06,
-      "signed_error": 1.06
-    },
-    {
-      "player": "Rashod Bateman",
-      "team": "BAL",
-      "position": "WR",
-      "projected": 4.24,
+      "projected": 7.17,
       "actual": 5.3,
-      "absolute_error": 1.06,
-      "signed_error": -1.06
-    },
-    {
-      "player": "Malik Benson",
-      "team": "LV",
-      "position": "WR",
-      "projected": 0.97,
-      "actual": 0.0,
-      "absolute_error": 0.97,
-      "signed_error": 0.97
-    },
-    {
-      "player": "Jerry Jeudy",
-      "team": "CLE",
-      "position": "WR",
-      "projected": 6.96,
-      "actual": 6.1,
-      "absolute_error": 0.86,
-      "signed_error": 0.86
-    },
-    {
-      "player": "Noah Fant",
-      "team": "NO",
-      "position": "TE",
-      "projected": 3.95,
-      "actual": 3.1,
-      "absolute_error": 0.85,
-      "signed_error": 0.85
-    },
-    {
-      "player": "Kyren Williams",
-      "team": "LA",
-      "position": "RB",
-      "projected": 17.26,
-      "actual": 18.1,
-      "absolute_error": 0.84,
-      "signed_error": -0.84
-    },
-    {
-      "player": "Laquon Treadwell",
-      "team": "IND",
-      "position": "WR",
-      "projected": 4.7,
-      "actual": 3.9,
-      "absolute_error": 0.8,
-      "signed_error": 0.8
-    },
-    {
-      "player": "Mark Andrews",
-      "team": "BAL",
-      "position": "TE",
-      "projected": 4.52,
-      "actual": 5.3,
-      "absolute_error": 0.78,
-      "signed_error": -0.78
-    },
-    {
-      "player": "A.J. Brown",
-      "team": "NE",
-      "position": "WR",
-      "projected": 8.53,
-      "actual": 7.8,
-      "absolute_error": 0.73,
-      "signed_error": 0.73
-    },
-    {
-      "player": "Josh Jacobs",
-      "team": "GB",
-      "position": "RB",
-      "projected": 19.43,
-      "actual": 20.1,
-      "absolute_error": 0.67,
-      "signed_error": -0.67
+      "absolute_error": 1.87,
+      "signed_error": 1.87
     },
     {
       "player": "Austin Hooper",
       "team": "ATL",
       "position": "TE",
-      "projected": 3.51,
-      "actual": 4.1,
-      "absolute_error": 0.59,
-      "signed_error": -0.59
+      "projected": 3.69,
+      "actual": 1.9,
+      "absolute_error": 1.79,
+      "signed_error": 1.79
     },
     {
-      "player": "Kyler Murray",
-      "team": "MIN",
-      "position": "QB",
-      "projected": 13.35,
-      "actual": 13.9,
-      "absolute_error": 0.55,
-      "signed_error": -0.55
-    },
-    {
-      "player": "Zachariah Branch",
-      "team": "ATL",
-      "position": "WR",
-      "projected": 3.24,
-      "actual": 2.7,
-      "absolute_error": 0.54,
-      "signed_error": 0.54
-    },
-    {
-      "player": "J.J. McCarthy",
-      "team": "NYG",
-      "position": "QB",
-      "projected": 10.66,
-      "actual": 10.18,
-      "absolute_error": 0.48,
-      "signed_error": 0.48
-    },
-    {
-      "player": "Noah Gray",
-      "team": "KC",
-      "position": "TE",
-      "projected": 6.97,
-      "actual": 7.4,
-      "absolute_error": 0.43,
-      "signed_error": -0.43
-    },
-    {
-      "player": "Jalen Nailor",
-      "team": "LV",
-      "position": "WR",
-      "projected": 3.0,
-      "actual": 3.4,
-      "absolute_error": 0.4,
-      "signed_error": -0.4
-    },
-    {
-      "player": "Michael Wilson",
-      "team": "ARI",
-      "position": "WR",
-      "projected": 10.92,
-      "actual": 10.6,
-      "absolute_error": 0.32,
-      "signed_error": 0.32
-    },
-    {
-      "player": "Efton Chism III",
-      "team": "NE",
-      "position": "WR",
-      "projected": 2.89,
-      "actual": 2.6,
-      "absolute_error": 0.29,
-      "signed_error": 0.29
-    },
-    {
-      "player": "Daniel Bellinger",
+      "player": "Michael Carter",
       "team": "TEN",
-      "position": "TE",
-      "projected": 1.22,
-      "actual": 1.4,
-      "absolute_error": 0.18,
-      "signed_error": -0.18
+      "position": "RB",
+      "projected": 1.77,
+      "actual": 0.0,
+      "absolute_error": 1.77,
+      "signed_error": 1.77
     },
     {
-      "player": "Mike Gesicki",
-      "team": "CIN",
-      "position": "TE",
-      "projected": 7.47,
-      "actual": 7.6,
-      "absolute_error": 0.13,
-      "signed_error": -0.13
+      "player": "Seth McGowan",
+      "team": "IND",
+      "position": "RB",
+      "projected": 4.64,
+      "actual": 2.9,
+      "absolute_error": 1.74,
+      "signed_error": 1.74
     },
     {
-      "player": "Darnell Mooney",
-      "team": "NYG",
+      "player": "John Bates",
+      "team": "WAS",
+      "position": "TE",
+      "projected": 1.74,
+      "actual": 0.0,
+      "absolute_error": 1.74,
+      "signed_error": 1.74
+    },
+    {
+      "player": "Ryan Flournoy",
+      "team": "DAL",
       "position": "WR",
-      "projected": 1.59,
-      "actual": 1.7,
-      "absolute_error": 0.11,
-      "signed_error": -0.11
+      "projected": 11.48,
+      "actual": 13.1,
+      "absolute_error": 1.62,
+      "signed_error": -1.62
     },
     {
-      "player": "Emmett Johnson",
-      "team": "KC",
-      "position": "RB",
-      "projected": 3.8,
-      "actual": 3.7,
-      "absolute_error": 0.1,
-      "signed_error": 0.1
-    },
-    {
-      "player": "J.K. Dobbins",
-      "team": "DEN",
-      "position": "RB",
-      "projected": 8.22,
+      "player": "Caleb Douglas",
+      "team": "MIA",
+      "position": "WR",
+      "projected": 9.92,
       "actual": 8.3,
-      "absolute_error": 0.08,
-      "signed_error": -0.08
+      "absolute_error": 1.62,
+      "signed_error": 1.62
+    },
+    {
+      "player": "Tetairoa McMillan",
+      "team": "CAR",
+      "position": "WR",
+      "projected": 13.38,
+      "actual": 11.8,
+      "absolute_error": 1.58,
+      "signed_error": 1.58
+    },
+    {
+      "player": "Myles Price",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 1.58,
+      "actual": 0.0,
+      "absolute_error": 1.58,
+      "signed_error": 1.58
+    },
+    {
+      "player": "Ja'Kobi Lane",
+      "team": "BAL",
+      "position": "WR",
+      "projected": 3.77,
+      "actual": 2.3,
+      "absolute_error": 1.47,
+      "signed_error": 1.47
+    },
+    {
+      "player": "Rico Dowdle",
+      "team": "PIT",
+      "position": "RB",
+      "projected": 10.19,
+      "actual": 11.6,
+      "absolute_error": 1.41,
+      "signed_error": -1.41
+    },
+    {
+      "player": "Ashton Dulin",
+      "team": "IND",
+      "position": "WR",
+      "projected": 1.69,
+      "actual": 0.3,
+      "absolute_error": 1.39,
+      "signed_error": 1.39
     },
     {
       "player": "Bo Melton",
       "team": "GB",
       "position": "WR",
-      "projected": 1.48,
-      "actual": 1.4,
-      "absolute_error": 0.08,
-      "signed_error": 0.08
+      "projected": 1.33,
+      "actual": 0.0,
+      "absolute_error": 1.33,
+      "signed_error": 1.33
     },
     {
-      "player": "Brevyn Spann-Ford",
-      "team": "DAL",
+      "player": "Aaron Jones",
+      "team": "MIN",
+      "position": "RB",
+      "projected": 7.32,
+      "actual": 6.0,
+      "absolute_error": 1.32,
+      "signed_error": 1.32
+    },
+    {
+      "player": "Saquon Barkley",
+      "team": "PHI",
+      "position": "RB",
+      "projected": 13.68,
+      "actual": 12.4,
+      "absolute_error": 1.28,
+      "signed_error": 1.28
+    },
+    {
+      "player": "Tai Felton",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 1.28,
+      "actual": 0.0,
+      "absolute_error": 1.28,
+      "signed_error": 1.28
+    },
+    {
+      "player": "Trey McBride",
+      "team": "ARI",
       "position": "TE",
-      "projected": 3.03,
-      "actual": 3.1,
-      "absolute_error": 0.07,
-      "signed_error": -0.07
+      "projected": 21.46,
+      "actual": 20.2,
+      "absolute_error": 1.26,
+      "signed_error": 1.26
     },
     {
-      "player": "George Pickens",
+      "player": "Michael Mayer",
+      "team": "LV",
+      "position": "TE",
+      "projected": 9.1,
+      "actual": 10.3,
+      "absolute_error": 1.2,
+      "signed_error": -1.2
+    },
+    {
+      "player": "Laquon Treadwell",
+      "team": "IND",
+      "position": "WR",
+      "projected": 3.98,
+      "actual": 2.8,
+      "absolute_error": 1.18,
+      "signed_error": 1.18
+    },
+    {
+      "player": "Jonathan Mingo",
       "team": "DAL",
       "position": "WR",
-      "projected": 15.76,
-      "actual": 15.7,
+      "projected": 1.15,
+      "actual": 0.0,
+      "absolute_error": 1.15,
+      "signed_error": 1.15
+    },
+    {
+      "player": "Mitchell Evans",
+      "team": "CAR",
+      "position": "TE",
+      "projected": 3.08,
+      "actual": 4.2,
+      "absolute_error": 1.12,
+      "signed_error": -1.12
+    },
+    {
+      "player": "Johnny Mundt",
+      "team": "PHI",
+      "position": "TE",
+      "projected": 1.08,
+      "actual": 0.0,
+      "absolute_error": 1.08,
+      "signed_error": 1.08
+    },
+    {
+      "player": "Charlie Kolar",
+      "team": "LAC",
+      "position": "TE",
+      "projected": 4.05,
+      "actual": 3.0,
+      "absolute_error": 1.05,
+      "signed_error": 1.05
+    },
+    {
+      "player": "Keaton Mitchell",
+      "team": "LAC",
+      "position": "RB",
+      "projected": 4.28,
+      "actual": 5.3,
+      "absolute_error": 1.02,
+      "signed_error": -1.02
+    },
+    {
+      "player": "James Cook",
+      "team": "BUF",
+      "position": "RB",
+      "projected": 19.09,
+      "actual": 18.1,
+      "absolute_error": 0.99,
+      "signed_error": 0.99
+    },
+    {
+      "player": "Hunter Luepke",
+      "team": "DAL",
+      "position": "RB",
+      "projected": 0.96,
+      "actual": 0.0,
+      "absolute_error": 0.96,
+      "signed_error": 0.96
+    },
+    {
+      "player": "Rachaad White",
+      "team": "WAS",
+      "position": "RB",
+      "projected": 13.06,
+      "actual": 14.0,
+      "absolute_error": 0.94,
+      "signed_error": -0.94
+    },
+    {
+      "player": "Jauan Jennings",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 2.17,
+      "actual": 3.1,
+      "absolute_error": 0.93,
+      "signed_error": -0.93
+    },
+    {
+      "player": "Jameson Williams",
+      "team": "DET",
+      "position": "WR",
+      "projected": 16.13,
+      "actual": 17.0,
+      "absolute_error": 0.87,
+      "signed_error": -0.87
+    },
+    {
+      "player": "Rashod Bateman",
+      "team": "BAL",
+      "position": "WR",
+      "projected": 4.07,
+      "actual": 3.2,
+      "absolute_error": 0.87,
+      "signed_error": 0.87
+    },
+    {
+      "player": "Jaylen Warren",
+      "team": "PIT",
+      "position": "RB",
+      "projected": 20.47,
+      "actual": 21.3,
+      "absolute_error": 0.83,
+      "signed_error": -0.83
+    },
+    {
+      "player": "Darius Cooper",
+      "team": "PHI",
+      "position": "WR",
+      "projected": 4.72,
+      "actual": 3.9,
+      "absolute_error": 0.82,
+      "signed_error": 0.82
+    },
+    {
+      "player": "Blake Corum",
+      "team": "LA",
+      "position": "RB",
+      "projected": 12.59,
+      "actual": 13.3,
+      "absolute_error": 0.71,
+      "signed_error": -0.71
+    },
+    {
+      "player": "Khalil Shakir",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 10.71,
+      "actual": 11.4,
+      "absolute_error": 0.69,
+      "signed_error": -0.69
+    },
+    {
+      "player": "Geno Smith",
+      "team": "NYJ",
+      "position": "QB",
+      "projected": 17.32,
+      "actual": 18.0,
+      "absolute_error": 0.68,
+      "signed_error": -0.68
+    },
+    {
+      "player": "Dallas Goedert",
+      "team": "PHI",
+      "position": "TE",
+      "projected": 7.81,
+      "actual": 7.2,
+      "absolute_error": 0.61,
+      "signed_error": 0.61
+    },
+    {
+      "player": "Dawson Knox",
+      "team": "BUF",
+      "position": "TE",
+      "projected": 2.14,
+      "actual": 1.6,
+      "absolute_error": 0.54,
+      "signed_error": 0.54
+    },
+    {
+      "player": "Jalen Royals",
+      "team": "KC",
+      "position": "WR",
+      "projected": 1.92,
+      "actual": 1.4,
+      "absolute_error": 0.52,
+      "signed_error": 0.52
+    },
+    {
+      "player": "Tre Harris",
+      "team": "LAC",
+      "position": "WR",
+      "projected": 5.62,
+      "actual": 6.1,
+      "absolute_error": 0.48,
+      "signed_error": -0.48
+    },
+    {
+      "player": "Corey Kiner",
+      "team": "NE",
+      "position": "RB",
+      "projected": 4.16,
+      "actual": 3.8,
+      "absolute_error": 0.36,
+      "signed_error": 0.36
+    },
+    {
+      "player": "Jahmyr Gibbs",
+      "team": "DET",
+      "position": "RB",
+      "projected": 25.07,
+      "actual": 24.8,
+      "absolute_error": 0.27,
+      "signed_error": 0.27
+    },
+    {
+      "player": "Elijah Mitchell",
+      "team": "PHI",
+      "position": "RB",
+      "projected": 7.43,
+      "actual": 7.7,
+      "absolute_error": 0.27,
+      "signed_error": -0.27
+    },
+    {
+      "player": "Kenyon Sadiq",
+      "team": "NYJ",
+      "position": "TE",
+      "projected": 2.98,
+      "actual": 3.2,
+      "absolute_error": 0.22,
+      "signed_error": -0.22
+    },
+    {
+      "player": "Marvin Mims Jr.",
+      "team": "DEN",
+      "position": "WR",
+      "projected": 5.07,
+      "actual": 4.9,
+      "absolute_error": 0.17,
+      "signed_error": 0.17
+    },
+    {
+      "player": "Brycen Tremayne",
+      "team": "CAR",
+      "position": "WR",
+      "projected": 1.94,
+      "actual": 2.1,
+      "absolute_error": 0.16,
+      "signed_error": -0.16
+    },
+    {
+      "player": "Troy Franklin",
+      "team": "DEN",
+      "position": "WR",
+      "projected": 1.18,
+      "actual": 1.3,
+      "absolute_error": 0.12,
+      "signed_error": -0.12
+    },
+    {
+      "player": "Calvin Ridley",
+      "team": "TEN",
+      "position": "WR",
+      "projected": 2.11,
+      "actual": 2.0,
+      "absolute_error": 0.11,
+      "signed_error": 0.11
+    },
+    {
+      "player": "Olamide Zaccheaus",
+      "team": "ATL",
+      "position": "WR",
+      "projected": 1.51,
+      "actual": 1.4,
+      "absolute_error": 0.11,
+      "signed_error": 0.11
+    },
+    {
+      "player": "Khalil Herbert",
+      "team": "ATL",
+      "position": "RB",
+      "projected": 2.59,
+      "actual": 2.5,
+      "absolute_error": 0.09,
+      "signed_error": 0.09
+    },
+    {
+      "player": "Stefon Diggs",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 12.74,
+      "actual": 12.8,
       "absolute_error": 0.06,
-      "signed_error": 0.06
+      "signed_error": -0.06
+    },
+    {
+      "player": "John Metchie III",
+      "team": "CAR",
+      "position": "WR",
+      "projected": 4.36,
+      "actual": 4.4,
+      "absolute_error": 0.04,
+      "signed_error": -0.04
+    },
+    {
+      "player": "Greg Dulcich",
+      "team": "MIA",
+      "position": "TE",
+      "projected": 8.33,
+      "actual": 8.3,
+      "absolute_error": 0.03,
+      "signed_error": 0.03
+    },
+    {
+      "player": "Mark Andrews",
+      "team": "BAL",
+      "position": "TE",
+      "projected": 4.39,
+      "actual": 4.4,
+      "absolute_error": 0.01,
+      "signed_error": -0.01
     }
   ],
   "unmatched": [
     {
-      "player": "Jawhar Jordan",
-      "team": "HOU",
+      "player": "RJ Harvey",
+      "team": "DEN",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
     },
     {
-      "player": "Lan Larison",
+      "player": "TreVeyon Henderson",
       "team": "NE",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Breece Hall",
+      "team": "NYJ",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Tyjae Spears",
+      "team": "TEN",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Brian Robinson",
+      "team": "ATL",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2278,23 +2164,44 @@
       "snap_count_rows": 0
     },
     {
-      "player": "Kaleb Johnson",
-      "team": "GB",
+      "player": "Demond Claiborne",
+      "team": "MIN",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
     },
     {
-      "player": "Kalel Mullings",
+      "player": "Nicholas Singleton",
       "team": "TEN",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 1
     },
     {
-      "player": "Emari Demercado",
-      "team": "DAL",
+      "player": "Craig Reynolds",
+      "team": "WAS",
       "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Frank Gore Jr.",
+      "team": "BUF",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Colby Parkinson",
+      "team": "LA",
+      "position": "TE",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Jonnu Smith",
+      "team": "GB",
+      "position": "TE",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
     },
@@ -2306,9 +2213,58 @@
       "snap_count_rows": 0
     },
     {
-      "player": "Marlin Klein",
-      "team": "HOU",
+      "player": "Jackson Meeks",
+      "team": "DET",
       "position": "TE",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Pharaoh Brown",
+      "team": "IND",
+      "position": "TE",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Kylen Granson",
+      "team": "TEN",
+      "position": "TE",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "DeVonta Smith",
+      "team": "PHI",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Carnell Tate",
+      "team": "TEN",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "A.J. Brown",
+      "team": "NE",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Emeka Egbuka",
+      "team": "TB",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Dontayvion Wicks",
+      "team": "PHI",
+      "position": "WR",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
     },
@@ -2320,15 +2276,43 @@
       "snap_count_rows": 0
     },
     {
-      "player": "Jackson Meeks",
-      "team": "DET",
+      "player": "Mitchell Tinsley",
+      "team": "CIN",
       "position": "WR",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
     },
     {
-      "player": "Kevin Austin Jr.",
-      "team": "NO",
+      "player": "Tim Patrick",
+      "team": "NYJ",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Theo Wease Jr.",
+      "team": "LAC",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "KaVontae Turpin",
+      "team": "DAL",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Brenen Thompson",
+      "team": "LAC",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Elijah Sarratt",
+      "team": "BAL",
       "position": "WR",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2341,8 +2325,8 @@
       "snap_count_rows": 0
     },
     {
-      "player": "Lewis Bond",
-      "team": "HOU",
+      "player": "Malik Benson",
+      "team": "LV",
       "position": "WR",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2358,155 +2342,206 @@
   "ambiguous": [],
   "verified_zero_point_players": [
     {
-      "player": "CJ Donaldson",
-      "team": "NO",
+      "player": "Jaleel McLaughlin",
+      "team": "CLE",
       "position": "RB",
-      "offense_snaps": 4,
-      "projected": 4.08,
+      "offense_snaps": 2,
+      "projected": 4.51,
       "actual": 0.0,
-      "absolute_error": 4.08,
-      "signed_error": 4.08
-    },
-    {
-      "player": "Pierre Strong",
-      "team": "GB",
-      "position": "RB",
-      "offense_snaps": 8,
-      "projected": 3.11,
-      "actual": 0.0,
-      "absolute_error": 3.11,
-      "signed_error": 3.11
+      "absolute_error": 4.51,
+      "signed_error": 4.51
     },
     {
       "player": "DJ Herman",
       "team": "MIA",
       "position": "RB",
-      "offense_snaps": 29,
+      "offense_snaps": 20,
       "projected": 2.78,
       "actual": 0.0,
       "absolute_error": 2.78,
       "signed_error": 2.78
     },
     {
-      "player": "Foster Moreau",
-      "team": "HOU",
-      "position": "TE",
-      "offense_snaps": 21,
-      "projected": 4.39,
+      "player": "Michael Carter",
+      "team": "TEN",
+      "position": "RB",
+      "offense_snaps": 13,
+      "projected": 1.77,
       "actual": 0.0,
-      "absolute_error": 4.39,
-      "signed_error": 4.39
+      "absolute_error": 1.77,
+      "signed_error": 1.77
+    },
+    {
+      "player": "Drew Sample",
+      "team": "CIN",
+      "position": "TE",
+      "offense_snaps": 29,
+      "projected": 5.06,
+      "actual": 0.0,
+      "absolute_error": 5.06,
+      "signed_error": 5.06
     },
     {
       "player": "Teagan Quitoriano",
       "team": "ARI",
       "position": "TE",
-      "offense_snaps": 29,
-      "projected": 4.19,
+      "offense_snaps": 20,
+      "projected": 4.58,
       "actual": 0.0,
-      "absolute_error": 4.19,
-      "signed_error": 4.19
+      "absolute_error": 4.58,
+      "signed_error": 4.58
     },
     {
-      "player": "Pharaoh Brown",
-      "team": "IND",
+      "player": "Jake Ferguson",
+      "team": "DAL",
       "position": "TE",
-      "offense_snaps": 14,
-      "projected": 1.63,
+      "offense_snaps": 4,
+      "projected": 3.25,
       "actual": 0.0,
-      "absolute_error": 1.63,
-      "signed_error": 1.63
+      "absolute_error": 3.25,
+      "signed_error": 3.25
     },
     {
-      "player": "Ben Yurosek",
+      "player": "Gavin Bartholomew",
       "team": "MIN",
       "position": "TE",
-      "offense_snaps": 30,
-      "projected": 1.5,
+      "offense_snaps": 2,
+      "projected": 3.25,
       "actual": 0.0,
-      "absolute_error": 1.5,
-      "signed_error": 1.5
+      "absolute_error": 3.25,
+      "signed_error": 3.25
+    },
+    {
+      "player": "Cade Otton",
+      "team": "TB",
+      "position": "TE",
+      "offense_snaps": 57,
+      "projected": 3.13,
+      "actual": 0.0,
+      "absolute_error": 3.13,
+      "signed_error": 3.13
+    },
+    {
+      "player": "Will Mallory",
+      "team": "IND",
+      "position": "TE",
+      "offense_snaps": 9,
+      "projected": 2.84,
+      "actual": 0.0,
+      "absolute_error": 2.84,
+      "signed_error": 2.84
+    },
+    {
+      "player": "Jeremy Ruckert",
+      "team": "NYJ",
+      "position": "TE",
+      "offense_snaps": 17,
+      "projected": 2.37,
+      "actual": 0.0,
+      "absolute_error": 2.37,
+      "signed_error": 2.37
     },
     {
       "player": "Johnny Mundt",
       "team": "PHI",
       "position": "TE",
-      "offense_snaps": 16,
-      "projected": 1.36,
+      "offense_snaps": 13,
+      "projected": 1.08,
       "actual": 0.0,
-      "absolute_error": 1.36,
-      "signed_error": 1.36
+      "absolute_error": 1.08,
+      "signed_error": 1.08
     },
     {
-      "player": "Isaiah Bond",
-      "team": "CLE",
-      "position": "WR",
-      "offense_snaps": 6,
-      "projected": 4.71,
-      "actual": 0.0,
-      "absolute_error": 4.71,
-      "signed_error": 4.71
-    },
-    {
-      "player": "Tim Patrick",
+      "player": "Omar Cooper Jr.",
       "team": "NYJ",
       "position": "WR",
-      "offense_snaps": 7,
-      "projected": 3.04,
+      "offense_snaps": 50,
+      "projected": 12.31,
       "actual": 0.0,
-      "absolute_error": 3.04,
-      "signed_error": 3.04
+      "absolute_error": 12.31,
+      "signed_error": 12.31
+    },
+    {
+      "player": "Isaac TeSlaa",
+      "team": "DET",
+      "position": "WR",
+      "offense_snaps": 26,
+      "projected": 3.96,
+      "actual": 0.0,
+      "absolute_error": 3.96,
+      "signed_error": 3.96
+    },
+    {
+      "player": "Cody White",
+      "team": "LV",
+      "position": "WR",
+      "offense_snaps": 2,
+      "projected": 2.71,
+      "actual": 0.0,
+      "absolute_error": 2.71,
+      "signed_error": 2.71
     },
     {
       "player": "Devontez Walker",
       "team": "BAL",
       "position": "WR",
-      "offense_snaps": 20,
-      "projected": 2.16,
+      "offense_snaps": 8,
+      "projected": 2.12,
       "actual": 0.0,
-      "absolute_error": 2.16,
-      "signed_error": 2.16
+      "absolute_error": 2.12,
+      "signed_error": 2.12
+    },
+    {
+      "player": "Tai Felton",
+      "team": "MIN",
+      "position": "WR",
+      "offense_snaps": 2,
+      "projected": 1.28,
+      "actual": 0.0,
+      "absolute_error": 1.28,
+      "signed_error": 1.28
     }
   ],
   "snap_teams": [
     "ARI",
     "ATL",
     "BAL",
+    "BUF",
     "CAR",
-    "CHI",
     "CIN",
     "CLE",
     "DAL",
     "DEN",
     "DET",
     "GB",
-    "HOU",
     "IND",
+    "JAX",
     "KC",
     "LA",
+    "LAC",
     "LV",
     "MIA",
     "MIN",
     "NE",
-    "NO",
-    "NYG",
     "NYJ",
     "PHI",
     "PIT",
-    "SEA",
-    "SF",
     "TB",
-    "TEN"
+    "TEN",
+    "WAS"
   ],
   "season": 2026,
-  "week": 7,
-  "projection_source": "data/audits/snapshots/2026_week7.json",
+  "week": 8,
+  "projection_source": "data/audits/snapshots/2026_week8.json",
   "actuals_source": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv",
-  "source_rows": 959,
-  "snap_rows": 1310,
-  "eligible_projections": 260,
-  "coverage_pct": 94.23,
-  "generated_at": "2026-10-28T18:58:17.090837+00:00",
-  "missing_team_results": [],
-  "status": "all projected teams have game stats"
+  "source_rows": 916,
+  "snap_rows": 1218,
+  "eligible_projections": 262,
+  "coverage_pct": 87.79,
+  "generated_at": "2026-11-02T22:23:49.599444+00:00",
+  "missing_team_results": [
+    "CHI",
+    "SEA"
+  ],
+  "status": "partial"
 }
