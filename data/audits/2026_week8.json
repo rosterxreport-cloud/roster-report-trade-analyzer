@@ -1,44 +1,44 @@
 {
   "overall": {
-    "players": 230,
-    "mae": 5.3364,
-    "bias": -0.2824,
-    "within_1": 12.61,
-    "within_3": 36.96,
-    "within_5": 58.7
+    "players": 244,
+    "mae": 5.2509,
+    "bias": -0.309,
+    "within_1": 13.11,
+    "within_3": 37.7,
+    "within_5": 59.84
   },
   "by_position": {
     "QB": {
-      "players": 26,
-      "mae": 7.9088,
-      "bias": 2.0688,
-      "within_1": 3.85,
-      "within_3": 19.23,
-      "within_5": 46.15
+      "players": 28,
+      "mae": 7.7939,
+      "bias": 1.9975,
+      "within_1": 3.57,
+      "within_3": 17.86,
+      "within_5": 42.86
     },
     "RB": {
-      "players": 59,
-      "mae": 5.219,
-      "bias": -0.4241,
-      "within_1": 15.25,
-      "within_3": 44.07,
-      "within_5": 61.02
+      "players": 62,
+      "mae": 5.3113,
+      "bias": -0.4645,
+      "within_1": 14.52,
+      "within_3": 41.94,
+      "within_5": 61.29
     },
     "WR": {
-      "players": 92,
-      "mae": 5.1541,
-      "bias": -0.6363,
-      "within_1": 15.22,
-      "within_3": 38.04,
-      "within_5": 59.78
+      "players": 99,
+      "mae": 4.9605,
+      "bias": -0.71,
+      "within_1": 16.16,
+      "within_3": 40.4,
+      "within_5": 62.63
     },
     "TE": {
-      "players": 53,
-      "mae": 4.5217,
-      "bias": -0.664,
-      "within_1": 9.43,
-      "within_3": 35.85,
-      "within_5": 60.38
+      "players": 55,
+      "mae": 4.4109,
+      "bias": -0.5862,
+      "within_1": 10.91,
+      "within_3": 38.18,
+      "within_5": 61.82
     }
   },
   "matched": [
@@ -212,6 +212,15 @@
       "actual": 29.9,
       "absolute_error": 13.02,
       "signed_error": -13.02
+    },
+    {
+      "player": "D'Andre Swift",
+      "team": "CHI",
+      "position": "RB",
+      "projected": 15.32,
+      "actual": 27.9,
+      "absolute_error": 12.58,
+      "signed_error": -12.58
     },
     {
       "player": "Jared Goff",
@@ -529,6 +538,15 @@
       "signed_error": 7.5
     },
     {
+      "player": "Caleb Williams",
+      "team": "CHI",
+      "position": "QB",
+      "projected": 21.35,
+      "actual": 13.98,
+      "absolute_error": 7.37,
+      "signed_error": 7.37
+    },
+    {
       "player": "Amon-Ra St. Brown",
       "team": "DET",
       "position": "WR",
@@ -799,6 +817,15 @@
       "signed_error": 5.26
     },
     {
+      "player": "Sam Darnold",
+      "team": "SEA",
+      "position": "QB",
+      "projected": 12.29,
+      "actual": 17.52,
+      "absolute_error": 5.23,
+      "signed_error": -5.23
+    },
+    {
       "player": "Tyler Higbee",
       "team": "LA",
       "position": "TE",
@@ -898,6 +925,15 @@
       "signed_error": 5.02
     },
     {
+      "player": "Tory Horton",
+      "team": "SEA",
+      "position": "WR",
+      "projected": 2.66,
+      "actual": 7.6,
+      "absolute_error": 4.94,
+      "signed_error": -4.94
+    },
+    {
       "player": "Kenneth Walker III",
       "team": "KC",
       "position": "RB",
@@ -961,6 +997,15 @@
       "signed_error": 4.61
     },
     {
+      "player": "George Holani",
+      "team": "SEA",
+      "position": "RB",
+      "projected": 5.5,
+      "actual": 0.9,
+      "absolute_error": 4.6,
+      "signed_error": 4.6
+    },
+    {
       "player": "Teagan Quitoriano",
       "team": "ARI",
       "position": "TE",
@@ -1013,6 +1058,15 @@
       "actual": 5.0,
       "absolute_error": 4.21,
       "signed_error": -4.21
+    },
+    {
+      "player": "Roschon Johnson",
+      "team": "CHI",
+      "position": "RB",
+      "projected": 8.0,
+      "actual": 3.8,
+      "absolute_error": 4.2,
+      "signed_error": 4.2
     },
     {
       "player": "Brevyn Spann-Ford",
@@ -1276,6 +1330,15 @@
       "signed_error": 3.25
     },
     {
+      "player": "Kalif Raymond",
+      "team": "CHI",
+      "position": "WR",
+      "projected": 4.05,
+      "actual": 7.3,
+      "absolute_error": 3.25,
+      "signed_error": -3.25
+    },
+    {
       "player": "Justice Hill",
       "team": "BAL",
       "position": "RB",
@@ -1364,6 +1427,15 @@
       "actual": 6.46,
       "absolute_error": 2.97,
       "signed_error": 2.97
+    },
+    {
+      "player": "Rome Odunze",
+      "team": "CHI",
+      "position": "WR",
+      "projected": 9.76,
+      "actual": 12.7,
+      "absolute_error": 2.94,
+      "signed_error": -2.94
     },
     {
       "player": "Germie Bernard",
@@ -1492,6 +1564,15 @@
       "signed_error": 2.6
     },
     {
+      "player": "Cooper Kupp",
+      "team": "SEA",
+      "position": "WR",
+      "projected": 5.13,
+      "actual": 7.7,
+      "absolute_error": 2.57,
+      "signed_error": -2.57
+    },
+    {
       "player": "Xavier Worthy",
       "team": "KC",
       "position": "WR",
@@ -1535,6 +1616,15 @@
       "actual": 0.0,
       "absolute_error": 2.37,
       "signed_error": 2.37
+    },
+    {
+      "player": "AJ Barner",
+      "team": "SEA",
+      "position": "TE",
+      "projected": 6.63,
+      "actual": 4.3,
+      "absolute_error": 2.33,
+      "signed_error": 2.33
     },
     {
       "player": "Dak Prescott",
@@ -1607,6 +1697,15 @@
       "actual": 3.8,
       "absolute_error": 2.06,
       "signed_error": -2.06
+    },
+    {
+      "player": "Jaxon Smith-Njigba",
+      "team": "SEA",
+      "position": "WR",
+      "projected": 25.8,
+      "actual": 23.8,
+      "absolute_error": 2.0,
+      "signed_error": 2.0
     },
     {
       "player": "Ben Yurosek",
@@ -1951,6 +2050,24 @@
       "signed_error": -0.68
     },
     {
+      "player": "Luther Burden III",
+      "team": "CHI",
+      "position": "WR",
+      "projected": 17.97,
+      "actual": 18.6,
+      "absolute_error": 0.63,
+      "signed_error": -0.63
+    },
+    {
+      "player": "Colston Loveland",
+      "team": "CHI",
+      "position": "TE",
+      "projected": 12.12,
+      "actual": 11.5,
+      "absolute_error": 0.62,
+      "signed_error": 0.62
+    },
+    {
       "player": "Dallas Goedert",
       "team": "PHI",
       "position": "TE",
@@ -1958,6 +2075,15 @@
       "actual": 7.2,
       "absolute_error": 0.61,
       "signed_error": 0.61
+    },
+    {
+      "player": "Zavion Thomas",
+      "team": "CHI",
+      "position": "WR",
+      "projected": 1.98,
+      "actual": 1.4,
+      "absolute_error": 0.58,
+      "signed_error": 0.58
     },
     {
       "player": "Dawson Knox",
@@ -2115,6 +2241,13 @@
   ],
   "unmatched": [
     {
+      "player": "Emanuel Wilson",
+      "team": "SEA",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 1
+    },
+    {
       "player": "RJ Harvey",
       "team": "DEN",
       "position": "RB",
@@ -2145,6 +2278,13 @@
     {
       "player": "Brian Robinson",
       "team": "ATL",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Kyle Monangai",
+      "team": "CHI",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2264,6 +2404,13 @@
     {
       "player": "Dontayvion Wicks",
       "team": "PHI",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Rashid Shaheed",
+      "team": "SEA",
       "position": "WR",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2508,6 +2655,7 @@
     "BAL",
     "BUF",
     "CAR",
+    "CHI",
     "CIN",
     "CLE",
     "DAL",
@@ -2526,6 +2674,7 @@
     "NYJ",
     "PHI",
     "PIT",
+    "SEA",
     "TB",
     "TEN",
     "WAS"
@@ -2534,14 +2683,11 @@
   "week": 8,
   "projection_source": "data/audits/snapshots/2026_week8.json",
   "actuals_source": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv",
-  "source_rows": 916,
-  "snap_rows": 1218,
-  "eligible_projections": 262,
-  "coverage_pct": 87.79,
-  "generated_at": "2026-11-02T22:23:49.599444+00:00",
-  "missing_team_results": [
-    "CHI",
-    "SEA"
-  ],
-  "status": "partial"
+  "source_rows": 981,
+  "snap_rows": 1311,
+  "eligible_projections": 279,
+  "coverage_pct": 87.46,
+  "generated_at": "2026-11-03T20:12:32.678750+00:00",
+  "missing_team_results": [],
+  "status": "all projected teams have game stats"
 }

@@ -1,14 +1,14 @@
-# Week 8, 2026 projection accuracy (partial)
+# Week 8, 2026 projection accuracy (all projected teams have game stats)
 
-**MAE: 5.3364** | matched: 230 | coverage: 87.79%
+**MAE: 5.2509** | matched: 244 | coverage: 87.46%
 
 | Position | Players | MAE | Bias | ±1 | ±3 | ±5 |
 |---|---:|---:|---:|---:|---:|---:|
-| ALL | 230 | 5.3364 | -0.2824 | 12.61% | 36.96% | 58.7% |
-| QB | 26 | 7.9088 | 2.0688 | 3.85% | 19.23% | 46.15% |
-| RB | 59 | 5.219 | -0.4241 | 15.25% | 44.07% | 61.02% |
-| WR | 92 | 5.1541 | -0.6363 | 15.22% | 38.04% | 59.78% |
-| TE | 53 | 4.5217 | -0.664 | 9.43% | 35.85% | 60.38% |
+| ALL | 244 | 5.2509 | -0.309 | 13.11% | 37.7% | 59.84% |
+| QB | 28 | 7.7939 | 1.9975 | 3.57% | 17.86% | 42.86% |
+| RB | 62 | 5.3113 | -0.4645 | 14.52% | 41.94% | 61.29% |
+| WR | 99 | 4.9605 | -0.71 | 16.16% | 40.4% | 62.63% |
+| TE | 55 | 4.4109 | -0.5862 | 10.91% | 38.18% | 61.82% |
 
 ## Largest misses
 
@@ -33,21 +33,23 @@
 | Javonte Williams | RB | 20.16 | 6.7 | 13.46 |
 | Ja'Marr Chase | WR | 17.73 | 31.1 | 13.37 |
 | Bhayshul Tuten | RB | 16.88 | 29.9 | 13.02 |
-| Jared Goff | QB | 21.37 | 9.04 | 12.33 |
+| D'Andre Swift | RB | 15.32 | 27.9 | 12.58 |
 
 Verified zero-point offensive appearances: 16.
-Unresolved (no stat row and participation not verified): 32; ambiguous: 0.
-Snap-count data covers teams: ARI, ATL, BAL, BUF, CAR, CIN, CLE, DAL, DEN, DET, GB, IND, JAX, KC, LA, LAC, LV, MIA, MIN, NE, NYJ, PHI, PIT, TB, TEN, WAS.
+Unresolved (no stat row and participation not verified): 35; ambiguous: 0.
+Snap-count data covers teams: ARI, ATL, BAL, BUF, CAR, CHI, CIN, CLE, DAL, DEN, DET, GB, IND, JAX, KC, LA, LAC, LV, MIA, MIN, NE, NYJ, PHI, PIT, SEA, TB, TEN, WAS.
 
 ## Unresolved players
 
 | Player | Team | Position | Why unresolved |
 |---|---|---|---|
+| Emanuel Wilson | SEA | RB | No offensive stats; participation unverified |
 | RJ Harvey | DEN | RB | No offensive stats; participation unverified |
 | TreVeyon Henderson | NE | RB | No offensive stats; participation unverified |
 | Breece Hall | NYJ | RB | No offensive stats; participation unverified |
 | Tyjae Spears | TEN | RB | No offensive stats; participation unverified |
 | Brian Robinson | ATL | RB | No offensive stats; participation unverified |
+| Kyle Monangai | CHI | RB | No offensive stats; participation unverified |
 | Audric Estimé | CLE | RB | No offensive stats; participation unverified |
 | AJ Dillon | CAR | RB | No offensive stats; participation unverified |
 | Demond Claiborne | MIN | RB | No offensive stats; participation unverified |
@@ -65,6 +67,7 @@ Snap-count data covers teams: ARI, ATL, BAL, BUF, CAR, CIN, CLE, DAL, DEN, DET, 
 | A.J. Brown | NE | WR | No offensive stats; participation unverified |
 | Emeka Egbuka | TB | WR | No offensive stats; participation unverified |
 | Dontayvion Wicks | PHI | WR | No offensive stats; participation unverified |
+| Rashid Shaheed | SEA | WR | No offensive stats; participation unverified |
 | Chris Moore | BAL | WR | No offensive stats; participation unverified |
 | Mitchell Tinsley | CIN | WR | No offensive stats; participation unverified |
 | Tim Patrick | NYJ | WR | No offensive stats; participation unverified |
@@ -77,5 +80,5 @@ Snap-count data covers teams: ARI, ATL, BAL, BUF, CAR, CIN, CLE, DAL, DEN, DET, 
 | Ja'Seem Reed | CAR | WR | No offensive stats; participation unverified |
 
 This report never assumes unavailable games or missing player rows scored zero.
-Missing team results: CHI, SEA.
+Missing team results: none.
 A final label still requires all expected team games and player matches to be reconciled.
