@@ -1,0 +1,56 @@
+{
+  "as_of": "2026-11-04T21:02:00.630389+00:00",
+  "forecast_week": 9,
+  "input_weeks": [
+    1,
+    8
+  ],
+  "snap_weeks": [
+    6,
+    8
+  ],
+  "model_base": "Established structural v4 model, advanced from Week 8 with fresh frozen inputs; target-share, volume, touchdown and matchup formulas retained.",
+  "returning_player_profiles": [],
+  "verified_out_overrides": {
+    "00-0034796": "Lamar Jackson",
+    "00-0035993": "Tyler Huntley"
+  },
+  "counts": {
+    "WR": 130,
+    "RB": 85,
+    "TE": 66,
+    "QB": 30
+  },
+  "conditional_starters": {
+    "PHI": "Joe Milton III: reported new starter; no 2026 regular-season usage. Historical NFL efficiency fallback; high uncertainty.",
+    "BAL": "Joe Fagnano: announced starter, one partial NFL game; ankle monitored."
+  },
+  "sources": {
+    "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+    "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
+    "roster.parquet": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
+    "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet",
+    "games.csv": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+  },
+  "availability_sources": [
+    "https://www.nfl.com/news/nfl-week-9-injury-report-2026-season",
+    "https://www.baltimoreravens.com/news/joe-fagnano-ravens-quarterbacks-practice-report-tyler-huntley",
+    "https://www.azcardinals.com/news/gardner-minshew-named-cardinals-starting-quarterback-carson-beck-made-backup",
+    "https://fantasy-www.nfl.com/news/eagles-starting-qb-joe-milton-tanner-mckee-week-9-vs-giants",
+    "https://www.colts.com/news/5-colts-things-daniel-jones-remains-starting-quarterback-shane-steichen-sees-execution-as-more-an-issue-than-effort-several-rookies-get-valuable-experience-in-week-8-loss-to-jaguars"
+  ],
+  "sha256": {
+    "gameday_availability.json": "520614d1559016103dede4bcc3f2d2fdbea6d7bc786005e84508ed7cbc787747",
+    "games.csv": "239ad19b914eeff0c44f7ca51ada1d137b90b7f7c2b56106fb02b40f1b4e7506",
+    "injuries.parquet": "e6c59bf83260e1c48c2ed5a331a9d3d05b2025e2b3d09d8de02c28f81e198b5a",
+    "published_pregame_forecasts.csv": "8eb5e86ddac6c731a7e328e0de166603ed368cef4b864c63ebfd692172fa3e18",
+    "returning_player_profiles.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "snaps.parquet": "b4d07406ab7fff2b34ea2c5244196039836bd81455981b13cf81357e56ab22a7",
+    "roster.parquet": "8c9174325cfe4954bf546d5e35bd0c645f9826ddb332de930a1dd45a4bb03ff0",
+    "player_stats.parquet": "fdcab14b56278141d4afd6cd25da7bfb5b963118750521de5e3118db063220d4"
+  },
+  "model_sha256": "4462f908b0618ecea6a842176cba1aa8a8b0aeb51b243ea976621ac392203b5e",
+  "update_note": "Week 9 preliminary forecast using Weeks 1-8 results and current roster designations. Announced BAL/ARI/PHI quarterback changes incorporated. Sunday and Monday practice/game statuses remain pending; no prior-week Out designations inherited.",
+  "validation": "30 unique starting QBs; all 30 scheduled teams; no duplicate or current reserve/Out players; team targets <= QB attempts; receiving yards match QB yards within rounding; observed target shares never inflated.",
+  "review": "Preliminary Thursday forecast. Practice absence alone is not an Out designation. Unmatched recent snap records retained in review_flags; no missing player forecasts invented. Prior-week gameday exclusions and workload overrides not inherited. Joe Milton uses an explicit historical small-sample QB fallback; Joe Fagnano has one partial NFL appearance."
+}

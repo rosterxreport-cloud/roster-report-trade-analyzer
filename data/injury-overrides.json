@@ -1,0 +1,21 @@
+{
+  "expiresAt": "2026-11-10T00:00:00Z",
+  "players": {
+    "Lamar Jackson": {
+      "availability": 0.15,
+      "workload": 0.2,
+      "longTermRisk": 0.55,
+      "status": "Week 9: Out (right thumb); surgery and IR announced",
+      "expectedReturn": "Unconfirmed",
+      "note": "Confirmed November 1 thumb surgery and planned IR; not treated as season-ending. Source: https://www.baltimoreravens.com/news/joe-fagnano-ravens-quarterbacks-practice-report-tyler-huntley"
+    },
+    "Tyler Huntley": {
+      "availability": 0.15,
+      "workload": 0.2,
+      "longTermRisk": 0.55,
+      "status": "Week 9: Out (toe)",
+      "expectedReturn": "Unconfirmed",
+      "note": "Official Week 9 Out designation. Source: https://www.nfl.com/news/nfl-week-9-injury-report-2026-season"
+    }
+  }
+}

@@ -1,1267 +1,979 @@
 {
-  "updatedAt": "2026-11-03T17:01:58.715491Z",
+  "updatedAt": "2026-11-04T21:00:08.436616Z",
   "players": {
-    "A.J. Brown": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Ankle)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
     "Adam Randall": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Alec Ingold": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Alec Pierce": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Andrei Iosivas": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Andrew Ogletree": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Knee)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Anthony Gould": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Concussion)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Arian Smith": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Beaux Collins": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Ben Skowronek": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Calf)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Brashard Smith": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Braxton Berrios": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Breece Hall": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Quadricep)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Brenen Thompson": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Quadricep)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Brian Robinson": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Hamstring)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Britain Covey": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Knee)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "British Brooks": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Brittain Brown": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Caleb Lohner": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Calvin Austin III": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Calvin Ridley": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Hip)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Carnell Tate": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Shoulder)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Carson Towt": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Carter Bradley": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Carter Runyon": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Chase Roberts": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Chip Trayanum": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Chris Brazzell II": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Chris Brooks": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Chris Collier": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Chris Oladokun": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Colby Parkinson": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Rib)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Cole Burgess": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Cole Kmet": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Cole Turner": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Connor Hulstein": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "D.J. Montgomery": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "DJ Moore": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Shoulder)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Dalton Kincaid": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Chest)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Dameon Pierce": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Davante Adams": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "David Njoku": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "De'Von Achane": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "De'Zhaun Stribling": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "DeVonta Smith": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Hamstring)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Demarcus Robinson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Dominic Richardson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Dontayvion Wicks": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Ankle)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Drew Lock": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Elbow)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Durham Smythe": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "EJ Smith": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Elijah Arroyo": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Emeka Egbuka": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Foot)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Erick All": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "George Pickens": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Shoulder)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Graham Mertz": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Gunner Olszewski": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Hayden Large": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Hunter Long": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Isaac Guerendo": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Isiah Pacheco": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Jack Bech": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Forearm)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jacory Croskey-Merritt": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jake Bobo": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jake Tonges": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Jakobi Meyers": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Hamstring)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jalen Brooks": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jalen Hurts": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jalen McMillan": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "James Conner": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jaren Kanak": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jaxson Dart": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jayden Higgins": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jayden Reed": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Jaylen Waddle": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Chest)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jaylin Lane": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jeff Caldwell": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jimmy Holiday": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Joe Royer": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "John Bates": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Shoulder)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "John Michael Gyllenborg": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Johnny Wilson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jonathon Brooks": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Jordan Whittington": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Back)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Jordyn Tyson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Josh Oliver": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Julian Hill": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "KaVontae Turpin": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Ribs)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Kendrick Law": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Kenny Gainwell": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Hip)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Kyle Monangai": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Thumb)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Luke Musgrave": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Luke Schoonmaker": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Groin)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Mack Hollins": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Malik Davis": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Mason Tipton": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Matthew Caldwell": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Matthew Golden": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Shoulder)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "McCallan Castles": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Michael Pittman Jr.": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Moliki Matavao": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Myles Montgomery": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Nikola Kalinic": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Olamide Zaccheaus": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Shoulder)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Pat Bryant": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Princeton Fant": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "RJ Harvey": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Raheim Sanders": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Rashid Shaheed": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Knee)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Ray-Ray McCloud": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Reggie Gilliam": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Ricky Pearsall": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Robbie Ouzts": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Roman Wilson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Romeo Doubs": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Ronnie Rivers": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Sincere Brown": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Skylar Thompson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Skyy Moore": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tank Bigsby": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tanner Hudson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Terrance Ferguson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Terry McLaurin": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Thomas Yassmin": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tip Reiman": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tom Kennedy": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Travis Etienne Jr.": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "TreVeyon Henderson": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Illness)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Trey Benson": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Trey Lance": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Trey Sermon": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Treylon Burks": {
-      "availability": 0.85,
-      "workload": 0.9,
-      "longTermRisk": 0.97,
-      "status": "Week 8: questionable (Foot)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Ty Chandler": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Tyjae Spears": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Knee)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tyler Badie": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tyquan Thornton": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Tyrell Shavers": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
-    },
-    "Velus Jones Jr.": {
-      "availability": 0.35,
-      "workload": 0.6,
-      "longTermRisk": 0.85,
-      "status": "Week 8: out (Hamstring)",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
-      "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Will Shipley": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     },
     "Xavier Legette": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
       "status": "Roster reserve status: RES",
-      "note": "Automated nflverse roster and official weekly injury report; latest report week 8. This is not a season-ending prognosis.",
+      "note": "Automated nflverse roster and official weekly injury report; latest report week 9. This is not a season-ending prognosis.",
       "expectedReturn": "Unconfirmed",
-      "updatedAt": "2026-11-03T17:01:58.715491Z"
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
+    },
+    "Lamar Jackson": {
+      "availability": 0.15,
+      "workload": 0.2,
+      "longTermRisk": 0.55,
+      "status": "Week 9: Out (right thumb); surgery and IR announced",
+      "expectedReturn": "Unconfirmed",
+      "note": "Confirmed November 1 thumb surgery and planned IR; not treated as season-ending. Source: https://www.baltimoreravens.com/news/joe-fagnano-ravens-quarterbacks-practice-report-tyler-huntley",
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
+    },
+    "Tyler Huntley": {
+      "availability": 0.15,
+      "workload": 0.2,
+      "longTermRisk": 0.55,
+      "status": "Week 9: Out (toe)",
+      "expectedReturn": "Unconfirmed",
+      "note": "Official Week 9 Out designation. Source: https://www.nfl.com/news/nfl-week-9-injury-report-2026-season",
+      "updatedAt": "2026-11-04T21:00:08.436616Z"
     }
   },
   "source": "nflverse 2026 rosters + weekly official injury reports",
-  "sourceWeek": 8
+  "sourceWeek": 9
 }

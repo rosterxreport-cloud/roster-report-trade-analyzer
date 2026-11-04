@@ -1,0 +1,24 @@
+{
+  "out": {
+    "00-0034796": "Lamar Jackson",
+    "00-0035993": "Tyler Huntley"
+  },
+  "active": {},
+  "starters": {
+    "BAL": "Joe Fagnano",
+    "ARI": "Gardner Minshew",
+    "PHI": "Joe Milton III",
+    "IND": "Daniel Jones"
+  },
+  "conditional_starters": {
+    "PHI": "Joe Milton III: reported new starter; no 2026 regular-season usage. Historical NFL efficiency fallback; high uncertainty.",
+    "BAL": "Joe Fagnano: announced starter, one partial NFL game; ankle monitored."
+  },
+  "sources": [
+    "https://www.nfl.com/news/nfl-week-9-injury-report-2026-season",
+    "https://www.baltimoreravens.com/news/joe-fagnano-ravens-quarterbacks-practice-report-tyler-huntley",
+    "https://www.azcardinals.com/news/gardner-minshew-named-cardinals-starting-quarterback-carson-beck-made-backup",
+    "https://fantasy-www.nfl.com/news/eagles-starting-qb-joe-milton-tanner-mckee-week-9-vs-giants",
+    "https://www.colts.com/news/5-colts-things-daniel-jones-remains-starting-quarterback-shane-steichen-sees-execution-as-more-an-issue-than-effort-several-rookies-get-valuable-experience-in-week-8-loss-to-jaguars"
+  ]
+}

@@ -99,6 +99,14 @@ def main():
         players[name] = {"availability": a, "workload": w, "longTermRisk": risk,
                          "status": label, "note": f"Automated nflverse roster and official weekly injury report; latest report week {week}. This is not a season-ending prognosis.",
                          "expectedReturn": "Unconfirmed", "updatedAt": now}
+    # Apply dated, sourced availability news while upstream reports catch up.
+    override_path = TARGET.parent / "data/injury-overrides.json"
+    if override_path.exists():
+        overrides = json.loads(override_path.read_text())
+        expiry = datetime.fromisoformat(overrides["expiresAt"].replace("Z", "+00:00"))
+        if datetime.now(timezone.utc) < expiry:
+            for name, adjustment in overrides["players"].items():
+                players[name] = {**adjustment, "updatedAt": now}
     if not players:
         raise RuntimeError("No injury adjustments generated; refusing to overwrite")
     # Do not silently discard manually curated confirmed long-term/season-ending cases.
