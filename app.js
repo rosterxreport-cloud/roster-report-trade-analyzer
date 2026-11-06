@@ -332,6 +332,8 @@ function initTeam(){
     <form class="team-add" id="teamAdd"><input id="rosterSearch" list="rosterOptions" autocomplete="off" placeholder="Search a roster player…" aria-label="Player to add to My Team" required><datalist id="rosterOptions"></datalist><button class="team-action" type="submit">Add player</button></form>
     <p class="team-note">Players are limited to the current Top 250 database. Add your full available roster. Click a saved player to remove them.</p><div id="teamRoster" class="team-roster"></div><p id="teamStatus" class="team-note" role="status"></p>`;
   document.querySelector('.trade-grid').before(section);
+  const subscribe=document.querySelector('.subscribe-banner');
+  if(subscribe)section.after(subscribe);
   document.querySelector('.section-nav').insertAdjacentHTML('beforeend','<a href="#my-team">My Team</a>');
   const fit=document.createElement('section');fit.id='teamFit';fit.className='team-section team-fit';fit.setAttribute('aria-label','Roster fit analysis');$('resultPanel').after(fit);
   if(team){$('teamLeague').value=team.leagueSize;$('teamBench').value=team.bench;for(const p of Object.keys(SLOT_DEFAULTS))$('slot'+p).value=team.slots[p];}
