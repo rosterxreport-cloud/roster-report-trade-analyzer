@@ -82,7 +82,7 @@ home=home.replace(/Veteran analytics use 2023–2025 data[\s\S]*?five bench asse
 home=home.replace(/<footer>[\s\S]*?<\/footer>/,footer);
 home=meta(home,origin+'/','Fantasy Football Toolkit: Trade Analyzer, Rankings & Projections | The Roster Report','The Roster Report Fantasy Football Toolkit brings together a trade analyzer, PPR, Half-PPR and Standard rankings, weekly projections, player profiles and roster tools.');
 home=home.replace('</body>',`<script type="application/json" id="playerProfileSlugs">${JSON.stringify(Object.fromEntries(profileSlugs)).replace(/</g,'\\u003c')}</script><script defer src="/player-profile-links.js"></script></body>`);
-home=home.replace('<section class="hero" id="analyzer">',subscribeBanner+'<section class="hero" id="analyzer">');
+home=home.replace('<section class="trade-grid">',subscribeBanner+'<section class="trade-grid">');
 home=home.replace('</main>',supportBanner+'</main>');
 write('index.html',home);pages.unshift({url:origin+'/',lastmod:rankDate});
 let proj=read('projections/index.html').replace('<h1>Weekly Projections</h1>','<h1>Weekly Fantasy Football Projections</h1>').replace('<body>','<body><a class="skip-link" href="#mainContent">Skip to content</a>').replace('<main class="shell">','<main class="shell" id="mainContent">');
