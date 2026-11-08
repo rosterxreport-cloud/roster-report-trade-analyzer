@@ -16,6 +16,7 @@ on:
       - 'scripts/validate-live-player-data.py'
       - 'scripts/create-refresh-baseline.py'
       - 'scripts/build-scoring-profiles.py'
+      - 'tests/test-scoring-profiles.py'
       - 'scoring-settings.js'
       - 'injury-adjustments.json'
   schedule:
