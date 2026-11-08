@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {analysis,makeRelease,hash,renderProfiles,weeklyStatProjection} from '../scripts/player-profiles.mjs';
+import {analysis,makeRelease,hash,renderProfiles,seasonStatLine,weeklyStatProjection} from '../scripts/player-profiles.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=f=>fs.readFileSync(path.join(root,f),'utf8'),load=f=>JSON.parse(read(f));
 const saved=load('data/player-profiles.json');
@@ -62,7 +62,7 @@ test('invalid identities and stale evidence fail without changing the last good 
 });
 test('retained snapshots display a clear stale banner and all profiles render without JavaScript',()=>{
  const pages=[];renderProfiles({release:saved,stale:true,page:(slug,title,desc,body)=>pages.push({slug,title,desc,body}),esc:s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('"','&quot;'),write:()=>{},dateLabel:s=>s});
- assert.equal(pages.length,saved.profiles.length+1);for(const p of saved.profiles){const page=pages.find(x=>x.slug==='players/'+p.slug);assert(page.body.includes('last validated profile snapshot'));assert(page.body.includes(p.paragraphs[0].text));assert(page.body.includes('href="/#analyzer"'));}
+ assert.equal(pages.length,saved.profiles.length+1);for(const p of saved.profiles){const page=pages.find(x=>x.slug==='players/'+p.slug);assert(page.body.includes('last validated profile snapshot'));assert(page.body.includes(p.paragraphs[0].text));assert(page.body.includes('href="/#analyzer"'));assert(page.body.includes(p.season+' season stats'));}
 });
 
 test('weekly stat cards preserve published statlines, all scoring formats and availability safeguards',()=>{
@@ -77,4 +77,26 @@ test('weekly stat cards preserve published statlines, all scoring formats and av
   p.editorial={out:{reason:'out'}};assert(!weeklyStatProjection(p,esc,date).includes('weekly-stat-projections'));
   p.editorial={};p.projection=null;assert(weeklyStatProjection(p,esc,date).includes('not a zero-point forecast'));
  }
+});
+
+test('season stats show recorded totals, signed yardage and missing data without inventing zeros',()=>{
+ const esc=String;
+ const p={season:2026,throughWeek:8,position:'RB',weekly:[
+  {week:6,attempts:1,passing_yards:-3,carries:10,targets:2,fantasy_points:9,fantasy_points_ppr:11},
+  {week:7,carries:12,targets:4,fantasy_points:8,fantasy_points_ppr:11},
+  {week:8,statsMissing:true}
+ ]};
+ // A recorded zero is distinct from a missing field.
+ p.weekly[1].attempts=0;
+ p.weekly[1].passing_yards=0;
+ const html=seasonStatLine(p,esc);
+ assert.match(html,/2026 season stats/);
+ assert.match(html,/Counting stats available for 2 of 3 recorded games/);
+ assert.match(html,/<dt>Passing yards<\/dt><dd>-3<\/dd>/);
+ assert.match(html,/<dt>Carries<\/dt><dd>22<\/dd>/);
+ assert.match(html,/<dt>Rushing yards<\/dt><dd>Unavailable<\/dd>/);
+ assert.match(html,/<dt>Standard points<\/dt><dd>17.0<\/dd>/);
+ assert.match(html,/<dt>Half-PPR points<\/dt><dd>19.5<\/dd>/);
+ assert.match(html,/<dt>PPR points<\/dt><dd>22.0<\/dd>/);
+ assert.match(seasonStatLine({...p,weekly:[{week:8,statsMissing:true}]},esc),/No verified offensive stat line/);
 });
