@@ -312,6 +312,13 @@ def live_skill_records(records, scoring, p26, snaps26, baseline, evidence=None):
                 "priorValue":prior["value"],"priorAnalytics":prior["analyticsScore"]}
     return result
 
+def midseason_weights(season_weight, preseason_weight, current_week, games, has_live_signal):
+    if current_week < 9 or games < 6 or not has_live_signal:
+        return season_weight, preseason_weight
+    # Preserve the existing split of the remaining weight between preseason and context.
+    preseason_share = preseason_weight / (1 - season_weight)
+    return .90, .10 * preseason_share
+
 def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline,injuries,current_week,evidence=None):
     # Defensive players can share an offensive player's full name. Only the
     # correct fantasy position may supply that player's role/sample inputs.
@@ -348,6 +355,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             # Preserve the smaller-sample injury/returnee weighting unchanged.
             if p["pos"]=="WR" and games>=4:
                 season_w=.75;pre_w=.15
+            season_w,pre_w=midseason_weights(season_w,pre_w,current_week,games,has_live)
             ctx_w=1-season_w-pre_w;sample_reliability=100.0;ctx_adj=context;new=pre_w*prior+season_w*live+ctx_w*ctx_adj;raw_value=season_w*live+pre_w*preseason+ctx_w*ctx_adj
             # Early-season downside guardrail: through two games, performance alone
             # cannot erase more than 12 value points from the preseason prior.
@@ -414,6 +422,7 @@ def update(records,scoring,kickers,kvals,dvals,p26,snaps26,special_only,baseline
             total_snaps=float(sr.iloc[0].offense_snaps)
             if total_snaps>=100:
                 season_w=.65;pre_w=.20
+            season_w,pre_w=midseason_weights(season_w,pre_w,current_week,games,nk in scores)
             ctx_w=1-season_w-pre_w
             val=season_w*live+pre_w*preseason+ctx_w*prior
             tm=team(str(row.get("recent_team") or row.get("team") or ""))
