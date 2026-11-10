@@ -1,14 +1,14 @@
-# Week 9, 2026 projection accuracy (partial)
+# Week 9, 2026 projection accuracy (all projected teams have game stats)
 
-**MAE: 4.7615** | matched: 243 | coverage: 83.22%
+**MAE: 4.7187** | matched: 257 | coverage: 82.64%
 
 | Position | Players | MAE | Bias | ±1 | ±3 | ±5 |
 |---|---:|---:|---:|---:|---:|---:|
-| ALL | 243 | 4.7615 | -0.3973 | 15.23% | 44.03% | 66.67% |
-| QB | 26 | 5.7254 | 0.8831 | 11.54% | 42.31% | 53.85% |
-| RB | 59 | 5.17 | 0.6385 | 18.64% | 38.98% | 57.63% |
-| WR | 99 | 4.9663 | -1.5242 | 11.11% | 41.41% | 69.7% |
-| TE | 59 | 3.5846 | -0.1063 | 20.34% | 54.24% | 76.27% |
+| ALL | 257 | 4.7187 | -0.2041 | 15.18% | 43.58% | 67.32% |
+| QB | 27 | 5.9167 | 1.2537 | 11.11% | 40.74% | 51.85% |
+| RB | 64 | 4.9298 | 0.7523 | 20.31% | 42.19% | 60.94% |
+| WR | 104 | 4.8901 | -1.2884 | 10.58% | 40.38% | 71.15% |
+| TE | 62 | 3.6916 | -0.0074 | 19.35% | 51.61% | 74.19% |
 
 ## Largest misses
 
@@ -36,13 +36,14 @@
 | Ashton Dulin | WR | 1.02 | 12.8 | 11.78 |
 
 Verified zero-point offensive appearances: 15.
-Unresolved (no stat row and participation not verified): 49; ambiguous: 0.
-Snap-count data covers teams: ARI, ATL, BAL, CAR, CHI, CIN, CLE, DAL, DEN, DET, GB, HOU, IND, JAX, KC, LA, LAC, LV, MIA, NE, NO, NYG, NYJ, PHI, SEA, SF, TB, WAS.
+Unresolved (no stat row and participation not verified): 54; ambiguous: 0.
+Snap-count data covers teams: ARI, ATL, BAL, BUF, CAR, CHI, CIN, CLE, DAL, DEN, DET, GB, HOU, IND, JAX, KC, LA, LAC, LV, MIA, MIN, NE, NO, NYG, NYJ, PHI, SEA, SF, TB, WAS.
 
 ## Unresolved players
 
 | Player | Team | Position | Why unresolved |
 |---|---|---|---|
+| Kyler Murray | MIN | QB | No offensive stats; participation unverified |
 | Deshaun Watson | CLE | QB | No offensive stats; participation unverified |
 | Sam Darnold | SEA | QB | No offensive stats; participation unverified |
 | Emanuel Wilson | SEA | RB | No offensive stats; participation unverified |
@@ -63,7 +64,9 @@ Snap-count data covers teams: ARI, ATL, BAL, CAR, CHI, CIN, CLE, DAL, DEN, DET, 
 | DJ Giddens | IND | RB | No offensive stats; participation unverified |
 | Audric Estimé | CLE | RB | No offensive stats; participation unverified |
 | AJ Dillon | CAR | RB | No offensive stats; participation unverified |
+| Demond Claiborne | MIN | RB | No offensive stats; participation unverified |
 | Craig Reynolds | WAS | RB | No offensive stats; participation unverified |
+| Frank Gore Jr. | BUF | RB | No offensive stats; participation unverified |
 | Will Mallory | IND | TE | No offensive stats; participation unverified |
 | Zach Ertz | PHI | TE | No offensive stats; participation unverified |
 | Jackson Meeks | DET | TE | No offensive stats; participation unverified |
@@ -80,7 +83,9 @@ Snap-count data covers teams: ARI, ATL, BAL, CAR, CHI, CIN, CLE, DAL, DEN, DET, 
 | Ladd McConkey | LAC | WR | No offensive stats; participation unverified |
 | Rashid Shaheed | SEA | WR | No offensive stats; participation unverified |
 | Kendrick Bourne | ARI | WR | No offensive stats; participation unverified |
+| Josh Palmer | BUF | WR | No offensive stats; participation unverified |
 | Chris Moore | BAL | WR | No offensive stats; participation unverified |
+| Jauan Jennings | MIN | WR | No offensive stats; participation unverified |
 | Theo Wease Jr. | LAC | WR | No offensive stats; participation unverified |
 | Tim Patrick | NYJ | WR | No offensive stats; participation unverified |
 | Brenen Thompson | LAC | WR | No offensive stats; participation unverified |
@@ -94,5 +99,5 @@ Snap-count data covers teams: ARI, ATL, BAL, CAR, CHI, CIN, CLE, DAL, DEN, DET, 
 | Ja'Seem Reed | CAR | WR | No offensive stats; participation unverified |
 
 This report never assumes unavailable games or missing player rows scored zero.
-Missing team results: BUF, MIN.
+Missing team results: none.
 A final label still requires all expected team games and player matches to be reconciled.

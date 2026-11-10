@@ -1,44 +1,44 @@
 {
   "overall": {
-    "players": 243,
-    "mae": 4.7615,
-    "bias": -0.3973,
-    "within_1": 15.23,
-    "within_3": 44.03,
-    "within_5": 66.67
+    "players": 257,
+    "mae": 4.7187,
+    "bias": -0.2041,
+    "within_1": 15.18,
+    "within_3": 43.58,
+    "within_5": 67.32
   },
   "by_position": {
     "QB": {
-      "players": 26,
-      "mae": 5.7254,
-      "bias": 0.8831,
-      "within_1": 11.54,
-      "within_3": 42.31,
-      "within_5": 53.85
+      "players": 27,
+      "mae": 5.9167,
+      "bias": 1.2537,
+      "within_1": 11.11,
+      "within_3": 40.74,
+      "within_5": 51.85
     },
     "RB": {
-      "players": 59,
-      "mae": 5.17,
-      "bias": 0.6385,
-      "within_1": 18.64,
-      "within_3": 38.98,
-      "within_5": 57.63
+      "players": 64,
+      "mae": 4.9298,
+      "bias": 0.7523,
+      "within_1": 20.31,
+      "within_3": 42.19,
+      "within_5": 60.94
     },
     "WR": {
-      "players": 99,
-      "mae": 4.9663,
-      "bias": -1.5242,
-      "within_1": 11.11,
-      "within_3": 41.41,
-      "within_5": 69.7
+      "players": 104,
+      "mae": 4.8901,
+      "bias": -1.2884,
+      "within_1": 10.58,
+      "within_3": 40.38,
+      "within_5": 71.15
     },
     "TE": {
-      "players": 59,
-      "mae": 3.5846,
-      "bias": -0.1063,
-      "within_1": 20.34,
-      "within_3": 54.24,
-      "within_5": 76.27
+      "players": 62,
+      "mae": 3.6916,
+      "bias": -0.0074,
+      "within_1": 19.35,
+      "within_3": 51.61,
+      "within_5": 74.19
     }
   },
   "matched": [
@@ -257,6 +257,15 @@
       "actual": 13.4,
       "absolute_error": 11.49,
       "signed_error": 11.49
+    },
+    {
+      "player": "Josh Allen",
+      "team": "BUF",
+      "position": "QB",
+      "projected": 23.75,
+      "actual": 12.86,
+      "absolute_error": 10.89,
+      "signed_error": 10.89
     },
     {
       "player": "Ja'Marr Chase",
@@ -583,6 +592,15 @@
       "signed_error": -6.65
     },
     {
+      "player": "T.J. Hockenson",
+      "team": "MIN",
+      "position": "TE",
+      "projected": 13.91,
+      "actual": 7.3,
+      "absolute_error": 6.61,
+      "signed_error": 6.61
+    },
+    {
       "player": "Trevor Lawrence",
       "team": "JAX",
       "position": "QB",
@@ -671,6 +689,15 @@
       "actual": 0.0,
       "absolute_error": 5.87,
       "signed_error": 5.87
+    },
+    {
+      "player": "Dawson Knox",
+      "team": "BUF",
+      "position": "TE",
+      "projected": 1.91,
+      "actual": 7.7,
+      "absolute_error": 5.79,
+      "signed_error": -5.79
     },
     {
       "player": "Derrick Henry",
@@ -772,6 +799,15 @@
       "signed_error": -5.03
     },
     {
+      "player": "Dalton Kincaid",
+      "team": "BUF",
+      "position": "TE",
+      "projected": 10.79,
+      "actual": 5.8,
+      "absolute_error": 4.99,
+      "signed_error": 4.99
+    },
+    {
       "player": "Evan Engram",
       "team": "DEN",
       "position": "TE",
@@ -817,6 +853,15 @@
       "signed_error": 4.78
     },
     {
+      "player": "DJ Moore",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 11.36,
+      "actual": 6.6,
+      "absolute_error": 4.76,
+      "signed_error": 4.76
+    },
+    {
       "player": "Parker Washington",
       "team": "JAX",
       "position": "WR",
@@ -824,6 +869,15 @@
       "actual": 14.1,
       "absolute_error": 4.76,
       "signed_error": -4.76
+    },
+    {
+      "player": "Aaron Jones",
+      "team": "MIN",
+      "position": "RB",
+      "projected": 7.85,
+      "actual": 3.1,
+      "absolute_error": 4.75,
+      "signed_error": 4.75
     },
     {
       "player": "Troy Franklin",
@@ -932,6 +986,15 @@
       "actual": 0.0,
       "absolute_error": 4.3,
       "signed_error": 4.3
+    },
+    {
+      "player": "Justin Jefferson",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 13.08,
+      "actual": 8.8,
+      "absolute_error": 4.28,
+      "signed_error": 4.28
     },
     {
       "player": "Bryce Lance",
@@ -1049,6 +1112,15 @@
       "actual": 14.52,
       "absolute_error": 3.63,
       "signed_error": 3.63
+    },
+    {
+      "player": "Jordan Addison",
+      "team": "MIN",
+      "position": "WR",
+      "projected": 8.37,
+      "actual": 4.8,
+      "absolute_error": 3.57,
+      "signed_error": 3.57
     },
     {
       "player": "Caleb Douglas",
@@ -1184,6 +1256,15 @@
       "actual": 20.7,
       "absolute_error": 3.28,
       "signed_error": -3.28
+    },
+    {
+      "player": "Keon Coleman",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 7.92,
+      "actual": 4.7,
+      "absolute_error": 3.22,
+      "signed_error": 3.22
     },
     {
       "player": "Woody Marks",
@@ -1436,6 +1517,15 @@
       "actual": 7.9,
       "absolute_error": 2.58,
       "signed_error": 2.58
+    },
+    {
+      "player": "Ray Davis",
+      "team": "BUF",
+      "position": "RB",
+      "projected": 2.75,
+      "actual": 0.2,
+      "absolute_error": 2.55,
+      "signed_error": 2.55
     },
     {
       "player": "Keenan Allen",
@@ -1780,6 +1870,15 @@
       "signed_error": -1.45
     },
     {
+      "player": "Ty Johnson",
+      "team": "BUF",
+      "position": "RB",
+      "projected": 7.09,
+      "actual": 5.7,
+      "absolute_error": 1.39,
+      "signed_error": 1.39
+    },
+    {
       "player": "Samaje Perine",
       "team": "CIN",
       "position": "RB",
@@ -1861,6 +1960,15 @@
       "signed_error": 1.19
     },
     {
+      "player": "Khalil Shakir",
+      "team": "BUF",
+      "position": "WR",
+      "projected": 10.88,
+      "actual": 9.8,
+      "absolute_error": 1.08,
+      "signed_error": 1.08
+    },
+    {
       "player": "Bo Melton",
       "team": "GB",
       "position": "WR",
@@ -1924,6 +2032,15 @@
       "signed_error": 1.0
     },
     {
+      "player": "Jordan Mason",
+      "team": "MIN",
+      "position": "RB",
+      "projected": 7.17,
+      "actual": 6.2,
+      "absolute_error": 0.97,
+      "signed_error": 0.97
+    },
+    {
       "player": "Josh Cameron",
       "team": "JAX",
       "position": "WR",
@@ -1949,6 +2066,15 @@
       "actual": 14.8,
       "absolute_error": 0.83,
       "signed_error": -0.83
+    },
+    {
+      "player": "James Cook",
+      "team": "BUF",
+      "position": "RB",
+      "projected": 17.52,
+      "actual": 16.7,
+      "absolute_error": 0.82,
+      "signed_error": 0.82
     },
     {
       "player": "Tanner Koziol",
@@ -2232,6 +2358,13 @@
   ],
   "unmatched": [
     {
+      "player": "Kyler Murray",
+      "team": "MIN",
+      "position": "QB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
       "player": "Deshaun Watson",
       "team": "CLE",
       "position": "QB",
@@ -2372,8 +2505,22 @@
       "snap_count_rows": 0
     },
     {
+      "player": "Demond Claiborne",
+      "team": "MIN",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
       "player": "Craig Reynolds",
       "team": "WAS",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Frank Gore Jr.",
+      "team": "BUF",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2491,8 +2638,22 @@
       "snap_count_rows": 0
     },
     {
+      "player": "Josh Palmer",
+      "team": "BUF",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
       "player": "Chris Moore",
       "team": "BAL",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Jauan Jennings",
+      "team": "MIN",
       "position": "WR",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2732,6 +2893,7 @@
     "ARI",
     "ATL",
     "BAL",
+    "BUF",
     "CAR",
     "CHI",
     "CIN",
@@ -2748,6 +2910,7 @@
     "LAC",
     "LV",
     "MIA",
+    "MIN",
     "NE",
     "NO",
     "NYG",
@@ -2762,14 +2925,11 @@
   "week": 9,
   "projection_source": "data/audits/snapshots/2026_week9.json",
   "actuals_source": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv",
-  "source_rows": 965,
-  "snap_rows": 1305,
-  "eligible_projections": 292,
-  "coverage_pct": 83.22,
-  "generated_at": "2026-11-09T23:04:27.055269+00:00",
-  "missing_team_results": [
-    "BUF",
-    "MIN"
-  ],
-  "status": "partial"
+  "source_rows": 1036,
+  "snap_rows": 1401,
+  "eligible_projections": 311,
+  "coverage_pct": 82.64,
+  "generated_at": "2026-11-10T20:31:54.720145+00:00",
+  "missing_team_results": [],
+  "status": "all projected teams have game stats"
 }
