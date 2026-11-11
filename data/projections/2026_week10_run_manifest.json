@@ -1,0 +1,57 @@
+{
+  "as_of": "2026-11-11T03:02:00.806956+00:00",
+  "forecast_week": 10,
+  "input_weeks": [
+    1,
+    9
+  ],
+  "snap_weeks": [
+    7,
+    9
+  ],
+  "model_base": "Established structural v4 model, advanced from Week 9 with fresh frozen inputs; target-share, volume, touchdown and matchup formulas retained.",
+  "returning_player_profiles": [],
+  "verified_out_overrides": {
+    "00-0039075": "Puka Nacua",
+    "00-0038559": "Michael Wilson",
+    "00-0035289": "Gardner Minshew",
+    "00-0034869": "Sam Darnold"
+  },
+  "counts": {
+    "WR": 122,
+    "RB": 82,
+    "TE": 59,
+    "QB": 28
+  },
+  "conditional_starters": {
+    "MIN": "Carson Wentz assumed pending Kyler Murray hamstring update",
+    "BAL": "Joe Fagnano assumed; monitor Jacoby Brissett depth chart",
+    "ARI": "Carson Beck debut; team passing baseline, high uncertainty",
+    "SEA": "Drew Lock expected starter; monitor oblique injury"
+  },
+  "sources": {
+    "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+    "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
+    "roster.parquet": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
+    "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet",
+    "games.csv": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv"
+  },
+  "availability_sources": [
+    "https://www.azcardinals.com/news/cardinals-place-gardner-minshew-michael-wilson-on-ir",
+    "https://www.therams.com/news/rams-injury-updates-puka-nacua-likely-going-on-injured-reserve-after-sustaining-mcl-and-pcl-sprain-and-turf-toe-against-commanders-latest-on-steve-avila-and-trent-mcduffie",
+    "https://www.seahawks.com/news/mike-macdonald-on-seattle-sports-710am-drew-lock-expected-to-start-again-in-week-10"
+  ],
+  "sha256": {
+    "games.csv": "3307bc578d2892b11133e80f18893c3fda6cb51e79a508c4173135d5ce06efab",
+    "gameday_availability.json": "57aa0aa42dd2cb313ec0c711938d0aeb9f7c3a6b1aa3091c61fdd984eb8ad18d",
+    "snaps.parquet": "78c013d97bde36622c435c878cacf48e1c8b3f58d02967c9e0ed2fc884f449e9",
+    "returning_player_profiles.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "injuries.parquet": "2b819f8abfce97eff6d4d772704ef694bf52770be8274de5879973995280093c",
+    "roster.parquet": "5363efa97ce43215d835d3e23604033546c65818fff1a79de491b963d2b2304c",
+    "player_stats.parquet": "d60ee09dc3349f9348b4ecac6a299689fc6166c2360e2b86ed290d09bbec752c"
+  },
+  "model_sha256": "c95ac28e53c2c9550827391269dcaff95127ee8397730b33072bc81d00441d6d",
+  "update_note": "Preliminary Week 10 forecast through Week 9 results and Weeks 7-9 snaps. Current-week official injury reports are not yet available. Team-confirmed Nacua, Wilson, Minshew and Darnold absences included; other workloads conditional on availability. Beck uses an explicitly flagged Arizona team baseline.",
+  "validation": "28 unique starting QBs; all 28 scheduled teams; no duplicate or current reserve/Out players; team targets <= QB attempts; receiving yards match QB yards within rounding; observed target shares never inflated.",
+  "review": "Preliminary Tuesday forecast. Practice absence alone is not an Out designation. Unmatched recent snap records retained in review_flags; no missing player forecasts invented. Prior-week gameday exclusions and workload overrides not inherited. Carson Beck uses the observed Arizona team baseline with no player-specific NFL efficiency claimed; Baltimore and Minnesota starters remain conditional."
+}

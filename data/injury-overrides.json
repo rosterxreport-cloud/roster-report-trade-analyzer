@@ -1,21 +1,37 @@
 {
-  "expiresAt": "2026-11-10T00:00:00Z",
+  "expiresAt": "2026-11-17T08:00:00Z",
   "players": {
-    "Lamar Jackson": {
+    "Puka Nacua": {
       "availability": 0.15,
       "workload": 0.2,
       "longTermRisk": 0.55,
-      "status": "Week 9: Out (right thumb); surgery and IR announced",
+      "status": "Week 10: unavailable; confirmed team injury update",
       "expectedReturn": "Unconfirmed",
-      "note": "Confirmed November 1 thumb surgery and planned IR; not treated as season-ending. Source: https://www.baltimoreravens.com/news/joe-fagnano-ravens-quarterbacks-practice-report-tyler-huntley"
+      "note": "Verified November 9\u201310 team update. Source: https://www.therams.com/news/rams-injury-updates-puka-nacua-likely-going-on-injured-reserve-after-sustaining-mcl-and-pcl-sprain-and-turf-toe-against-commanders-latest-on-steve-avila-and-trent-mcduffie"
     },
-    "Tyler Huntley": {
-      "availability": 0.15,
-      "workload": 0.2,
-      "longTermRisk": 0.55,
-      "status": "Week 9: Out (toe)",
+    "Michael Wilson": {
+      "availability": 0.01,
+      "workload": 0.01,
+      "longTermRisk": 0.1,
+      "status": "Week 10: unavailable; confirmed team injury update",
+      "expectedReturn": "Season-ending",
+      "note": "Verified November 9\u201310 team update. Source: https://www.azcardinals.com/news/cardinals-place-gardner-minshew-michael-wilson-on-ir"
+    },
+    "Gardner Minshew": {
+      "availability": 0.01,
+      "workload": 0.01,
+      "longTermRisk": 0.1,
+      "status": "Week 10: unavailable; confirmed team injury update",
+      "expectedReturn": "Season-ending",
+      "note": "Verified November 9\u201310 team update. Source: https://www.azcardinals.com/news/cardinals-place-gardner-minshew-michael-wilson-on-ir"
+    },
+    "Sam Darnold": {
+      "availability": 0.35,
+      "workload": 0.6,
+      "longTermRisk": 0.85,
+      "status": "Week 10: unavailable; confirmed team injury update",
       "expectedReturn": "Unconfirmed",
-      "note": "Official Week 9 Out designation. Source: https://www.nfl.com/news/nfl-week-9-injury-report-2026-season"
+      "note": "Verified November 9\u201310 team update. Source: https://www.seahawks.com/news/mike-macdonald-on-seattle-sports-710am-drew-lock-expected-to-start-again-in-week-10"
     }
   }
 }

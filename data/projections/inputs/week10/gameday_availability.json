@@ -1,0 +1,24 @@
+{
+  "out": {
+    "00-0039075": "Puka Nacua",
+    "00-0038559": "Michael Wilson",
+    "00-0035289": "Gardner Minshew",
+    "00-0034869": "Sam Darnold"
+  },
+  "active": {},
+  "starters": {
+    "ARI": "Carson Beck",
+    "SEA": "Drew Lock"
+  },
+  "conditional_starters": {
+    "MIN": "Carson Wentz assumed pending Kyler Murray hamstring update",
+    "BAL": "Joe Fagnano assumed; monitor Jacoby Brissett depth chart",
+    "ARI": "Carson Beck debut; team passing baseline, high uncertainty",
+    "SEA": "Drew Lock expected starter; monitor oblique injury"
+  },
+  "sources": [
+    "https://www.azcardinals.com/news/cardinals-place-gardner-minshew-michael-wilson-on-ir",
+    "https://www.therams.com/news/rams-injury-updates-puka-nacua-likely-going-on-injured-reserve-after-sustaining-mcl-and-pcl-sprain-and-turf-toe-against-commanders-latest-on-steve-avila-and-trent-mcduffie",
+    "https://www.seahawks.com/news/mike-macdonald-on-seattle-sports-710am-drew-lock-expected-to-start-again-in-week-10"
+  ]
+}

@@ -1508,5 +1508,30 @@
     "id": "00-0041503",
     "name": "Nate Boerkircher",
     "slug": "nate-boerkircher"
+  },
+  "00-0040172": {
+    "id": "00-0040172",
+    "name": "Jordan Watkins",
+    "slug": "jordan-watkins"
+  },
+  "00-0040009": {
+    "id": "00-0040009",
+    "name": "Savion Williams",
+    "slug": "savion-williams"
+  },
+  "00-0035250": {
+    "id": "00-0035250",
+    "name": "Devin Singletary",
+    "slug": "devin-singletary"
+  },
+  "00-0040184": {
+    "id": "00-0040184",
+    "name": "KeAndre Lambert-Smith",
+    "slug": "keandre-lambert-smith"
+  },
+  "00-0036422": {
+    "id": "00-0036422",
+    "name": "Adam Trautman",
+    "slug": "adam-trautman"
   }
 }

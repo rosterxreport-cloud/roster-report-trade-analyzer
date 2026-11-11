@@ -46,6 +46,8 @@ def main():
         missing = cols - set(df.columns)
         if missing:
             raise RuntimeError(f"Unexpected injury feed schema: {sorted(missing)}")
+    current_week = int(roster.week.max())
+    roster = roster.sort_values("week").drop_duplicates("gsis_id", keep="last")
     roster = roster[roster.position.isin(POSITIONS)].copy()
     roster["match"] = roster.full_name.map(key)
     roster = roster.dropna(subset=["match"])
@@ -80,7 +82,7 @@ def main():
     previous = {key(n): (n, adj) for n, adj in prior_players.items()}
     now = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
     players = {}
-    report_by_key = {r["match"]: r for _, r in reports.iterrows()}
+    report_by_key = {r["match"]: r for _, r in reports.iterrows() if int(r["week"]) == current_week}
     for _, player in roster.iterrows():
         match = player["match"]
         name = previous.get(match, (str(player.full_name), {}))[0]
