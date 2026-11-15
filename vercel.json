@@ -29,10 +29,7 @@
   "functions": {
     "api/pro.mjs": {
       "maxDuration": 60,
-      "includeFiles": [
-        "players.json",
-        "data/weekly-projections.json"
-      ]
+      "includeFiles": "{players.json,data/weekly-projections.json}"
     }
   },
   "crons": [
