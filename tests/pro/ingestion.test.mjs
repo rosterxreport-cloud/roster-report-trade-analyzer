@@ -15,3 +15,11 @@ test('slate refresh cannot extend or revive the underlying projection lifetime',
  }
  a.model.validUntil='2026-11-15T02:00:00Z';a.model.schemaVersion=2;assert.throws(()=>buildSlate(a));
 });
+test('official bulk lineup templates extract only the indented salary table',()=>{
+ for(const slots of [['PG','SG','SF','PF','C','G','F','UTIL'],['QB','RB','RB','WR','WR','WR','TE','FLEX','DST']]){
+  const prefix=','.repeat(slots.length+1),text=slots.join(',')+',,Instructions\n'+prefix+'Example instructions\n \n'+prefix+'Position,Name,ID,Salary,TeamAbbrev\n'+prefix+'PG,QA Player,123,5000,ATL\n';
+  assert.equal(parseCsv(text)[0].ID,'123');assert.equal(parseCsv(text).length,1);
+  assert.throws(()=>parseCsv(text+prefix+'Position,Name,ID,Salary,TeamAbbrev\n'));
+ }
+ assert.throws(()=>parseCsv('unrecognized preamble\nPosition,Name,ID,Salary,TeamAbbrev\nPG,QA,1,5000,ATL'));
+});

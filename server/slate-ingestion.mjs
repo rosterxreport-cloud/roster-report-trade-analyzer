@@ -9,9 +9,23 @@ export function parseCsv(text){
  text=String(text).replace(/^\uFEFF/,'');
  for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quoted&&text[i+1]==='"'){cell+='"';i++;}else if(!cell||quoted)quoted=!quoted;else fail(400,'Malformed CSV quoting.');}else if(!quoted&&(c===','||c==='\n')){row.push(cell.replace(/\r$/,''));cell='';if(c==='\n'){if(row.some(x=>x!==''))rows.push(row);row=[];}}else cell+=c;}
  if(quoted)fail(400,'Unclosed CSV quote.');if(cell||row.length){row.push(cell.replace(/\r$/,''));rows.push(row);}if(rows.length<2)fail(400,'Salary CSV contains no player rows.');
- const [headers,...data]=rows;if(new Set(headers).size!==headers.length)fail(400,'Duplicate salary CSV headers.');
+ const required=['ID','Name','Position','Salary','TeamAbbrev'];
+ let offset=0,headerIndex=0;
+ if(!required.every(h=>rows[0].includes(h))){
+  // Official bulk exports include a blank lineup-entry grid and instructions
+  // before an indented salary table. Recognize only Classic roster templates.
+  const first=rows[0],templates=[['PG','SG','SF','PF','C','G','F','UTIL'],['QB','RB','RB','WR','WR','WR','TE','FLEX','DST']];
+  const template=templates.find(t=>t.every((v,i)=>first[i]===v)&&first[t.length]===''&&first[t.length+1]==='Instructions');
+  if(!template)fail(400,'Missing salary CSV headers or unsupported export template.');
+  offset=template.length+1;
+  const matches=rows.map((r,i)=>i>0&&i<20&&r.slice(0,offset).every(v=>v==='')&&required.every(h=>r.slice(offset).includes(h))?i:-1).filter(i=>i>=0);
+  if(matches.length!==1)fail(400,'Official export needs one unambiguous salary table.');
+  headerIndex=matches[0];
+ }
+ const headers=rows[headerIndex].slice(offset),data=rows.slice(headerIndex+1).filter(r=>r.some(v=>v.trim()!==''));
+ if(new Set(headers).size!==headers.length)fail(400,'Duplicate salary CSV headers.');
  for(const h of ['ID','Name','Position','Salary','TeamAbbrev'])if(!headers.includes(h))fail(400,'Missing salary CSV column: '+h);
- return data.map(values=>{if(values.length!==headers.length)fail(400,'Salary CSV row width mismatch.');return Object.fromEntries(headers.map((h,i)=>[h,values[i]]));});
+ return data.map(values=>{if(values.length!==headers.length+offset)fail(400,'Salary CSV row width mismatch.');return Object.fromEntries(headers.map((h,i)=>[h,values[i+offset]]));});
 }
 export function buildSlate({salaryCsv,manifest,model,joint=null,decisionAt}){
  const now=time(decisionAt),sport=manifest.sport;
