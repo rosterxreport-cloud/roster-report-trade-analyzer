@@ -28,3 +28,4 @@ jobs:
           /tmp/rr-validation/bin/python scripts/pro/test-validate-nfl-archive.py
           /tmp/rr-validation/bin/python scripts/pro/test-grade-nba-candidate.py
           /tmp/rr-validation/bin/python scripts/pro/test-nfl-event-candidate.py
+          /tmp/rr-validation/bin/python scripts/pro/test-nfl-dst-model.py
