@@ -29,3 +29,4 @@ jobs:
           /tmp/rr-validation/bin/python scripts/pro/test-grade-nba-candidate.py
           /tmp/rr-validation/bin/python scripts/pro/test-nfl-event-candidate.py
           /tmp/rr-validation/bin/python scripts/pro/test-nfl-dst-model.py
+          OPENBLAS_NUM_THREADS=1 /tmp/rr-validation/bin/python scripts/pro/test-nfl-joint-research.py
