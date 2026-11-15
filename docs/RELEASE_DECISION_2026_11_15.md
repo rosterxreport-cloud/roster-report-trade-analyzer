@@ -22,3 +22,11 @@ No existing Stripe webhook endpoints were present at review. Do not enable a liv
 Billing code now refuses activation without a signing secret, nonempty price allowlist, valid account, explicit mode, and matching key mode. Status uses the same validation so setting the verification flag alone cannot report billing ready. Public publication metadata retrieval is attempted separately to resolve the mapping without asking the owner to gather subscriber files.
 
 For Substack Apple/gift/group/complimentary coverage, require an authoritative publisher-side reconciliation source. Do not infer that absent Stripe subscriptions mean no paid membership.
+
+## Follow-up evidence
+
+The three public Substack requests from the one-time GitHub capture returned HTTP 403 bot challenges. No publication mapping was accepted from those pages and automatic retries are disabled. Receipt artifact 14179686464, run 43759176834, digest f45c10261f6ffee72e5585f285aef406e96ddab0ac058323bfd75e70b57dd0e0 preserves that result.
+
+Read-only Stripe review confirms four active Substack-application subscriptions: three on monthly5_99usd and one on a legacy price. The three current-plan invoice records are paid but carry generic plan names and no publication-specific metadata. These facts establish visibility, not authoritative mapping of both plans to this publication or comprehensive subscriber coverage. No subscriber emails or invoice bodies were copied into Git.
+
+Latest local application suite: 100 passing checks. Preview status returns accountsConfigured=true, backendVerified=true, emailSignInReady=false and billingVerified=false, matching staged configuration. Production is unchanged.

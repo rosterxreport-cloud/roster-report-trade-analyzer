@@ -8,6 +8,9 @@ permissions:
   contents: read
 jobs:
   capture:
+    # One-time attempt completed; Substack returned a bot challenge. Preserve
+    # its artifact and do not automatically repeat blocked requests on later PRs.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 3
     steps:
