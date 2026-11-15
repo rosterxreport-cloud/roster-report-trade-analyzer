@@ -3,8 +3,9 @@ import {fail,normalizeEmail,subscriptionGrant} from './domain.mjs';
 import {supa,rpc} from './store.mjs';
 export function stripeConfig(){
  const e=process.env;
- if(e.STRIPE_SYNC_VERIFIED!=='true'||!e.STRIPE_SECRET_KEY||!e.STRIPE_ACCOUNT_ID||!e.STRIPE_PRICE_IDS)fail(503,'Substack billing coverage has not been verified for automatic activation.');
- return {secret:e.STRIPE_SECRET_KEY,account:e.STRIPE_ACCOUNT_ID,prices:e.STRIPE_PRICE_IDS.split(',').map(x=>x.trim()).filter(Boolean),live:e.STRIPE_LIVE_MODE==='true'};
+ const prices=(e.STRIPE_PRICE_IDS||'').split(',').map(x=>x.trim()).filter(Boolean),mode=e.STRIPE_LIVE_MODE==='true'?'live':'test';
+ if(e.STRIPE_SYNC_VERIFIED!=='true'||!new RegExp('^(rk|sk)_'+mode+'_').test(e.STRIPE_SECRET_KEY||'')||!/^whsec_\S+$/.test(e.STRIPE_WEBHOOK_SECRET||'')||!/^acct_[a-zA-Z0-9]+$/.test(e.STRIPE_ACCOUNT_ID||'')||!['true','false'].includes(e.STRIPE_LIVE_MODE)||!prices.length||prices.some(x=>!/^[a-zA-Z0-9_]+$/.test(x)))fail(503,'Substack billing coverage and runtime configuration have not been verified for automatic activation.');
+ return {secret:e.STRIPE_SECRET_KEY,account:e.STRIPE_ACCOUNT_ID,prices,live:e.STRIPE_LIVE_MODE==='true'};
 }
 async function stripe(path,c){
  const r=await fetch('https://api.stripe.com/v1/'+path,{headers:{Authorization:'Bearer '+c.secret,'Stripe-Version':'2026-09-30.endive'},signal:AbortSignal.timeout(10000)});

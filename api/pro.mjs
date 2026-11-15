@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import {fail,HttpError,normalizeEmail,activeMembership,pacificDay,stripeSignature,validateArtifact} from '../server/domain.mjs';
 import {config as serviceConfig,supa,rpc,modelArtifact,withBackendIdentity} from '../server/store.mjs';
-import {reconcileEvent,syncEmail,reconcileKnown} from '../server/membership.mjs';
+import {reconcileEvent,syncEmail,reconcileKnown,stripeConfig} from '../server/membership.mjs';
 import {optimize,validateSlate} from '../server/optimizer.mjs';
 import {tradeAnalysis} from '../server/trade.mjs';
 export const config={api:{bodyParser:false}};
@@ -38,7 +38,8 @@ async function handle(req,res){
   }else if(req.method==='GET'&&action==='status'){
    let serviceConfigured=true;try{serviceConfig();}catch{serviceConfigured=false;}
    let backendVerified=false;if(serviceConfigured){try{await rpc('pro_session_active',{p_user:'00000000-0000-0000-0000-000000000000',p_session:'00000000-0000-0000-0000-000000000000'});backendVerified=true;}catch{}}
-   result={accountsConfigured:serviceConfigured,backendVerified,emailSignInReady:process.env.AUTH_EMAIL_READY==='true',billingVerified:process.env.STRIPE_SYNC_VERIFIED==='true',upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
+   let billingConfigured=true;try{stripeConfig();}catch{billingConfigured=false;}
+   result={accountsConfigured:serviceConfigured,backendVerified,emailSignInReady:process.env.AUTH_EMAIL_READY==='true',billingVerified:billingConfigured,upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
   }else if(req.method==='GET'&&action==='nba-basic'){
    const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
    result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection})=>({id,name,team,opponent,minutes,statline,projection}))};

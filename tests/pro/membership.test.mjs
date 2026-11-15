@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {reconcileEvent,syncEmail,reconcileKnown} from '../../server/membership.mjs';
+import {reconcileEvent,syncEmail,reconcileKnown,stripeConfig} from '../../server/membership.mjs';
 function harness(t){
  const original=global.fetch,env={...process.env};t.after(()=>{global.fetch=original;for(const key of Object.keys(process.env))if(!(key in env))delete process.env[key];Object.assign(process.env,env);});
- Object.assign(process.env,{SUPABASE_URL:'https://db.example.test',SUPABASE_ANON_KEY:'publishable_fixture',SUPABASE_SERVICE_ROLE_KEY:'service_fixture',RATE_LIMIT_SECRET:'fixture',STRIPE_SYNC_VERIFIED:'true',STRIPE_SECRET_KEY:'sk_test_fixture',STRIPE_ACCOUNT_ID:'acct_fixture',STRIPE_PRICE_IDS:'price_pro,price_legacy',STRIPE_LIVE_MODE:'false'});delete process.env.SUPABASE_GATEWAY_URL;
+ Object.assign(process.env,{SUPABASE_URL:'https://db.example.test',SUPABASE_ANON_KEY:'publishable_fixture',SUPABASE_SERVICE_ROLE_KEY:'service_fixture',RATE_LIMIT_SECRET:'fixture',STRIPE_SYNC_VERIFIED:'true',STRIPE_SECRET_KEY:'sk_test_fixture',STRIPE_WEBHOOK_SECRET:'whsec_fixture',STRIPE_ACCOUNT_ID:'acct_fixture',STRIPE_PRICE_IDS:'price_pro,price_legacy',STRIPE_LIVE_MODE:'false'});delete process.env.SUPABASE_GATEWAY_URL;
  const customer={id:'cus_fixture',email:'paid@example.test',livemode:false};
  const subscription={id:'sub_fixture',customer:customer.id,livemode:false,status:'active',items:{data:[{price:{id:'price_legacy'},current_period_end:Math.floor(Date.now()/1000)+86400}]}};
  const state={customer,subscription,grants:new Map(),events:new Set(),calls:[],locked:false,failSubscription:false};
@@ -47,3 +47,9 @@ test('customer deletion and email changes reconcile existing subscription subjec
 test('expanded invoice subscription references use canonical state',async t=>{const s=harness(t);await reconcileEvent(event('evt_invoice','invoice.paid',{parent:{subscription_details:{subscription:{id:'sub_fixture',object:'subscription'}}}}));assert.equal(s.grants.get('sub_fixture').status,'active');});
 test('verified email sync backfills legacy paid plans and known reconciliation revokes failed payments',async t=>{const s=harness(t);const result=await syncEmail(' PAID@example.test ');assert.equal(result.customerCount,1);assert.equal(s.grants.get('sub_fixture').status,'active');s.subscription.status='past_due';assert.equal((await reconcileKnown()).checked,1);assert.equal(s.grants.get('sub_fixture').status,'inactive');});
 test('mode/account mismatches and busy reconciliation leases fail closed',async t=>{const s=harness(t);await assert.rejects(()=>reconcileEvent({...event(),livemode:true}),/scope mismatch/);await assert.rejects(()=>reconcileEvent({...event(),account:'acct_other'}),/scope mismatch/);s.locked=true;await assert.rejects(()=>reconcileEvent(event()),/busy/);assert.equal(s.grants.size,0);});
+
+test('billing activation requires complete scoped runtime configuration and signed webhooks',t=>{
+ harness(t);assert.equal(stripeConfig().live,false);
+ for(const [key,value] of [['STRIPE_WEBHOOK_SECRET',''],['STRIPE_PRICE_IDS',' , '],['STRIPE_ACCOUNT_ID','wrong'],['STRIPE_LIVE_MODE',''],['STRIPE_SECRET_KEY','rk_live_fixture'],['STRIPE_SYNC_VERIFIED','false']]){const old=process.env[key];process.env[key]=value;assert.throws(()=>stripeConfig(),/runtime configuration/);process.env[key]=old;}
+ process.env.STRIPE_SECRET_KEY='rk_test_fixture';assert.equal(stripeConfig().live,false);
+});
