@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "node scripts/build-seo.mjs",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "trailingSlash": true,
   "redirects": [
@@ -24,6 +24,21 @@
           "value": "nosniff"
         }
       ]
+    }
+  ],
+  "functions": {
+    "api/pro.mjs": {
+      "maxDuration": 60,
+      "includeFiles": [
+        "players.json",
+        "data/weekly-projections.json"
+      ]
+    }
+  },
+  "crons": [
+    {
+      "path": "/api/pro?action=reconcile",
+      "schedule": "*/15 * * * *"
     }
   ]
 }
