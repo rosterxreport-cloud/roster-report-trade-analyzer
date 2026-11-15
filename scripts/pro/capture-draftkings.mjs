@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import {parseCsv} from '../../server/slate-ingestion.mjs';
 const out=process.argv[2];if(!out)throw Error('Supply an output directory');await fs.mkdir(out,{recursive:true});
-const sources=[['nfl-lobby','https://www.draftkings.com/lobby/getcontests?sport=NFL'],['nba-lobby','https://www.draftkings.com/lobby/getcontests?sport=NBA'],['nfl-156416','https://api.draftkings.com/draftgroups/v1/draftgroups/156416/draftables'],['nba-156734','https://api.draftkings.com/draftgroups/v1/draftgroups/156734/draftables'],['nfl-156416-csv','https://www.draftkings.com/lineup/getcsv?draftGroupId=156416'],['nba-156734-csv','https://www.draftkings.com/lineup/getcsv?draftGroupId=156734']];
+const sources=[['nfl-lobby','https://www.draftkings.com/lobby/getcontests?sport=NFL'],['nba-lobby','https://www.draftkings.com/lobby/getcontests?sport=NBA'],['nfl-156416','https://api.draftkings.com/draftgroups/v1/draftgroups/156416/draftables'],['nba-156734','https://api.draftkings.com/draftgroups/v1/draftgroups/156734/draftables'],['nfl-156416-csv','https://www.draftkings.com/bulklineup/getdraftablecsv?draftGroupId=156416'],['nba-156734-csv','https://www.draftkings.com/bulklineup/getdraftablecsv?draftGroupId=156734'],['nfl-rules','https://api.draftkings.com/lineups/v1/gametypes/1/rules'],['nba-rules','https://api.draftkings.com/lineups/v1/gametypes/70/rules']];
 const report=[];
 for(const [name,url] of sources){
  const capturedAt=new Date().toISOString();
