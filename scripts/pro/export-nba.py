@@ -29,6 +29,7 @@ def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
                                 model=snapshot['model'], shootingPolicy='Recovered source policy; requires independent historical-percentage release audit',
                                 simulatorHash=hashlib.sha256((model_dir/'src/simulate_slate.py').read_bytes()).hexdigest(),
                                 seed=seed, researchOnly=True))
+    teams=dict(enumerate('ATL BOS NOP CHI CLE DAL DEN DET GSW HOU IND LAC LAL MIA MIL MIN BKN NYK ORL PHI PHX POR SAC SAS OKC UTA WAS TOR MEM CHA'.split(),1))
     basic, distributions, scores = [], [], {}
     for (game, player), (row, box) in forecasts.items():
         if len(box) != 10000 or not np.isfinite(box).all():
@@ -36,7 +37,7 @@ def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
         categories = sum(box[:, INDEX[k]] >= 10 for k in ('PTS','REB','AST','STL','BLK'))
         fantasy = sum(box[:, INDEX[k]] * weight for k, weight in DK.items()) + 1.5*(categories>=2) + 3*(categories>=3)
         scores[str(player)] = fantasy.tolist()
-        record = dict(id=str(player), name=row['name'], team=str(row['team']), gameId=str(game), opponent=str(row.get('opponent','')),
+        record = dict(id=str(player), name=row['name'], team=teams.get(int(row['team']),str(row['team'])), gameId=str(game), opponent=teams.get(row.get('tracking_applied',{}).get('opponent_defense',{}).get('opponent'),'Unavailable'),
                       minutes=row['model']['MIN'], statline=row['model'], projection=row['DraftKings'])
         basic.append(record)
         hist, edges = np.histogram(fantasy, bins=24)

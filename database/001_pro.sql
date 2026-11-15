@@ -18,7 +18,7 @@ alter table public.pro_stripe_events enable row level security;
 revoke all on public.pro_entitlements, public.pro_usage, public.pro_rate_limits, public.pro_stripe_events from anon, authenticated;
 grant all on public.pro_entitlements, public.pro_usage, public.pro_rate_limits, public.pro_stripe_events to service_role;
 create or replace function public.pro_rate_limit(p_key text,p_limit int,p_seconds int) returns boolean
-language plpgsql security definer set search_path=public as $$
+language plpgsql security invoker set search_path=public as $$
 declare v_hits int;
 begin
  insert into pro_rate_limits(key,window_start,hits) values(p_key,now(),1)
@@ -29,7 +29,7 @@ end $$;
 -- Generate before calling: a failed solver never consumes quota. First completed
 -- concurrent request wins. Return the stored response for a repeated request ID.
 create or replace function public.pro_save_free(p_user uuid,p_request uuid,p_result jsonb) returns jsonb
-language plpgsql security definer set search_path=public as $$
+language plpgsql security invoker set search_path=public as $$
 declare v_day date := (now() at time zone 'America/Los_Angeles')::date; v_row pro_usage;
 begin
  insert into pro_usage(user_id,day,request_id,result) values(p_user,v_day,p_request,p_result) on conflict do nothing;
@@ -43,20 +43,30 @@ create table if not exists public.pro_sync_lease (id int primary key check(id=1)
 alter table public.pro_sync_lease enable row level security;
 revoke all on public.pro_sync_lease from anon,authenticated;
 grant all on public.pro_sync_lease to service_role;
-create or replace function public.pro_lease(p_token uuid) returns boolean language plpgsql security definer set search_path=public as $$
+create or replace function public.pro_lease(p_token uuid) returns boolean language plpgsql security invoker set search_path=public as $$
 declare n int; begin
  insert into pro_sync_lease values(1,p_token,now()+interval '90 seconds') on conflict(id) do update set token=excluded.token,expires_at=excluded.expires_at where pro_sync_lease.expires_at<now();
  get diagnostics n=row_count; return n=1;
 end $$;
 revoke all on function public.pro_rate_limit(text,int,int),public.pro_save_free(uuid,uuid,jsonb),public.pro_lease(uuid) from public,anon,authenticated;
 grant execute on function public.pro_rate_limit(text,int,int),public.pro_save_free(uuid,uuid,jsonb),public.pro_lease(uuid) to service_role;
-commit;
 -- Atomic server-only idempotent entitlement upsert.
 create or replace function public.pro_set_entitlement(p_grant jsonb) returns void
-language sql security definer set search_path=public as $$
+language sql security invoker set search_path=public as $$
  insert into pro_entitlements(source,source_id,email,status,expires_at,evidence)
  values(p_grant->>'source',p_grant->>'source_id',p_grant->>'email',p_grant->>'status',(p_grant->>'expires_at')::timestamptz,p_grant->'evidence')
  on conflict(source,source_id) do update set email=excluded.email,status=excluded.status,expires_at=excluded.expires_at,evidence=excluded.evidence,updated_at=now();
 $$;
 revoke all on function public.pro_set_entitlement(jsonb) from public,anon,authenticated;
 grant execute on function public.pro_set_entitlement(jsonb) to service_role;
+
+-- Verify session revocation in addition to Auth's signed user lookup.
+grant usage on schema auth to service_role;
+grant select(id,user_id) on auth.sessions to service_role;
+create or replace function public.pro_session_active(p_user uuid,p_session uuid) returns boolean
+language sql security invoker set search_path='' as $$
+ select exists(select 1 from auth.sessions where id=p_session and user_id=p_user);
+$$;
+revoke all on function public.pro_session_active(uuid,uuid) from public,anon,authenticated;
+grant execute on function public.pro_session_active(uuid,uuid) to service_role;
+commit;

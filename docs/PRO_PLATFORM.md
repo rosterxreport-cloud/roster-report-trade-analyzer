@@ -26,3 +26,34 @@ Substack Apple IAP, gifts, comps and group billing require separate coverage inv
 
 ## Configuration and production gates
 See .env.example and database/001_pro.sql. Configure secrets directly in Vercel Preview environment, using a separate Supabase staging project; never paste them into chat. Run migration there, enable email OTP and set the email template to expose Token, configure provider email limits and delivery. Stripe requires canonical account ID, live/test mode, allowlisted prices, signed webhook endpoint, verified coverage and existing subscriber backfill. Private storage artifact must pass release, timestamps, slate and source checks. No fabricated current salaries, ownership or forecasts are shipped.
+
+## Live account investigation update
+The connected Stripe live account exposes Substack-managed subscriptions: subscription.application is populated, application_fee_percent=10, and item.price.metadata.substack=yes. Active subscriptions include a legacy plan, so filtering only the new monthly price would incorrectly exclude an existing subscriber. Product-name searches did not independently confirm publication identity; retain the integration gate until publication mapping is confirmed, all current prices are enumerated, signed webhooks are installed, and backfill is complete. There is no proof of full Apple/gift/comp coverage. No customer records, emails or payment methods are committed here.
+
+Supabase connection succeeded; it contains no projects. Its only organization was quoted $0/month for a project. Provisioning remains pending the provider-required cost acknowledgment. Runtime service-role and billing credentials have not been provisioned in Vercel. A ChatGPT connection does not automatically expose credentials to deployed functions.
+
+## Verification so far
+- Existing JavaScript suite: 37/37 passed, including all original SEO, player pages, published-input byte comparisons, scoring and projections.
+- Platform unit/route suite: 20/20 passed before final hardening; rerun after all edits.
+- Recovered private NBA model suite: 84/84 passed.
+- Recovered private NBA DFS suite: 7/7 passed.
+- Recovered joint simulation executed successfully: 145 players × 10,000 outcomes using the Nov 14 source. Source publication gate remains false. No generic forecast substituted.
+- Initial same-project Vercel preview reached READY. Live status endpoint returned 200 with private/no-store, accountsConfigured=false and billingVerified=false.
+- Desktop browser confirmed dashboard, NBA DFS unavailable-data state and account page. Embedded Substack was unavailable in the cloud browser; markup/links remain intact. Full mobile and authenticated end-to-end tests remain open.
+
+## Remaining production blockers
+1. Provision staging Supabase, apply/review migration, configure OTP email delivery, and put runtime secrets in sensitive Preview environment variables.
+2. Verify publication/price mapping, obtain least-privilege read-only Stripe runtime credential, register signed webhook, reconcile all existing subscribers and test lifecycle in a separate sandbox.
+3. Authoritative Substack reconciliation for Apple, gift, group and complimentary subscribers; implement coverage before claiming all paid subscribers activate automatically.
+4. NBA model release audit, including historical-shooting policy conflict, prospective minutes/per-minute validation and calibrated distributions. The existing research gate stays closed.
+5. Complete current DraftKings salary/eligibility pools, pre-lock injury/starter evidence, reliable ownership when available, and approved NFL joint simulation artifacts. No current slate is fabricated.
+6. Full historical backtesting of this new server optimizer on complete frozen pre-lock pools; contest payouts/ROI remain unverified. Recovered NFL Week 9 HTML is a fixed research tool with omitted DK bonuses/fumbles and external DST estimates, not an approved current-slate source.
+7. Live concurrency, authentication/renewal/cancellation/browser-mobile tests and final production review. Do not merge or promote until those pass.
+
+Advanced player comparisons use current-week projections and an existing value index; calibrated trade confidence, multi-week starting-lineup distributions, and dated consensus-disagreement feeds remain future work. The platform is a tested preview foundation, not a completed production launch.
+
+## Additional hardening
+Migration exercised twice against PGlite 0.5.16 PostgreSQL WASM: one free result across sports, idempotent retries, queued duplicate calls, rate-limit windows, direct-table and RPC denial for anon/authenticated, RLS and immediate session-revocation lookup all passed. This is not a live Supabase multi-connection test. Privileged RPCs use SECURITY INVOKER and service-role-only grants. Trade values are exported from the original injury-adjusted browser model build, so Pro uses the same value index as the free tool. Optimizer search is bounded and explicitly does not claim global optimality.
+
+## Final test and preview record
+Final local suites: 37 legacy JavaScript tests and 23 platform tests (including the PostgreSQL migration/security check). Recovered private suites: 84 model + 7 optimizer tests. The private simulator exported exactly 10,000 joint outcomes for each of 145 players. Website output contains 335 pages (326 original plus 9 routes), and no server code, private research or credentials in static output. Test success demonstrates implementation invariants, not model profitability or readiness of unconfigured external integrations.

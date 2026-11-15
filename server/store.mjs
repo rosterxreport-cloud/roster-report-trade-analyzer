@@ -1,7 +1,7 @@
 import {fail} from './domain.mjs';
 export function config(){
  const env=process.env;
- if(!env.SUPABASE_URL||!env.SUPABASE_SERVICE_ROLE_KEY||!env.SUPABASE_ANON_KEY||!env.RATE_LIMIT_SECRET)fail(503,'Account services are awaiting secure configuration.');
+ if(!env.SUPABASE_URL||!env.SUPABASE_SERVICE_ROLE_KEY||!env.SUPABASE_ANON_KEY||!env.RATE_LIMIT_SECRET)fail(503,'Account services are not available yet. Please check back shortly.');
  return env;
 }
 export async function supa(path,{method='GET',body,token,auth=false}={}){

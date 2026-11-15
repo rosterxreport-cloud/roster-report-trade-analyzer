@@ -41,17 +41,19 @@ export function optimize(artifact,options={},now=Date.now()){
  if(exposureMax<1||(locks.length&&exposureMax<count))fail(400,'Exposure cap conflicts with the requested lineup count or locks.');
  const used=new Map(),seen=new Set(),lineups=[];
  const samples=advanced?slate.simulations.scores:null;
- const cap=50000;
+ const cap=50000,deadline=Date.now()+25000;
  for(let n=0;n<count;n++){
   const available=pool.filter(p=>(used.get(p.id)||0)<exposureMax);
   const candidates=new Map();
   const attempts=advanced?12:1;
   for(let attempt=0;attempt<attempts;attempt++){
+   if(Date.now()>deadline)fail(422,'Search budget reached. Request fewer lineups or relax constraints.');
    const weight=p=>!advanced?p.projection:(.30*p.projection+.70*samples[p.id][(attempt*787+n*1237)%5000]);
    const weights=new Map(available.map(p=>[p.id,weight(p)]));
    let beam=[{players:[],ids:new Set(),salary:0,score:0}];
    for(const slot of SLOTS[sport]){
-    const choices=available.filter(p=>eligible(p,slot)).sort((a,b)=>weights.get(b.id)-weights.get(a.id));
+    const all=available.filter(p=>eligible(p,slot)).sort((a,b)=>weights.get(b.id)-weights.get(a.id));
+    const choices=[...new Map([...all.slice(0,45),...[...all].sort((a,b)=>a.salary-b.salary).slice(0,15),...all.filter(p=>locks.includes(p.id))].map(p=>[p.id,p])).values()];
     const next=[],unique=new Set();
     for(const b of beam)for(const p of choices){
      if(b.ids.has(p.id)||b.salary+p.salary>cap)continue;

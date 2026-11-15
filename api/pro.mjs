@@ -11,11 +11,11 @@ const cookieOptions='; HttpOnly; Secure; SameSite=Lax; Path=/';
 function cookies(req){return Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=')).filter(x=>x.length===2));}
 function session(res,data){res.setHeader('Set-Cookie',[`rr_access=${data.access_token}${cookieOptions}; Max-Age=${Math.min(data.expires_in||3600,3600)}`,`rr_refresh=${data.refresh_token}${cookieOptions}; Max-Age=2592000`]);}
 async function body(req,max=16384){
- if(req.body!==undefined){if(typeof req.body==='object')return req.body;return JSON.parse(req.body);}
+ if(req.body!==undefined){let parsed;try{parsed=typeof req.body==='object'?req.body:JSON.parse(req.body);}catch{fail(400,'Invalid request body.');}if(!parsed||Array.isArray(parsed)||typeof parsed!=='object')fail(400,'Invalid request body.');if(Buffer.byteLength(JSON.stringify(parsed))>max)fail(413,'Request too large.');return parsed;}
  let s='';for await(const chunk of req){s+=chunk;if(Buffer.byteLength(s)>max)fail(413,'Request too large.');}try{return JSON.parse(s||'{}');}catch{fail(400,'Invalid request body.');}
 }
 async function rate(key,limit,seconds=60){if(!await rpc('pro_rate_limit',{p_key:key,p_limit:limit,p_seconds:seconds}))fail(429,'Too many requests. Please try again shortly.');}
-async function identity(req){const token=cookies(req).rr_access;if(!token)fail(401,'Sign in to use this tool.');const user=await supa('user',{auth:true,token});if(!user.id||!user.email_confirmed_at)fail(401,'Verify your email before continuing.');return user;}
+async function identity(req){const token=cookies(req).rr_access;if(!token)fail(401,'Sign in to use this tool.');const user=await supa('user',{auth:true,token});if(!user.id||!user.email_confirmed_at)fail(401,'Verify your email before continuing.');let claims;try{claims=JSON.parse(Buffer.from(token.split('.')[1],'base64url'));}catch{fail(401,'Invalid session.');}if(!/^[0-9a-f-]{36}$/i.test(claims.session_id||'')||!await rpc('pro_session_active',{p_user:user.id,p_session:claims.session_id}))fail(401,'Your session has ended. Please sign in again.');return user;}
 async function membership(user){const rows=await supa('pro_entitlements?email=eq.'+encodeURIComponent(normalizeEmail(user.email))+'&select=status,expires_at,source');return {pro:activeMembership(rows),memberships:rows};}
 async function requirePro(req){const user=await identity(req),status=await membership(user);if(!status.pro)fail(403,'Roster Report Pro membership is required.');return user;}
 function origin(req){const e=process.env;const expected=e.APP_ORIGIN||(e.VERCEL_URL?'https://'+e.VERCEL_URL:null);if(!expected||req.headers.origin!==expected)fail(403,'Request origin could not be verified.');}
@@ -61,7 +61,7 @@ export default async function handler(req,res){
     await rate('verify:'+hash,10,900);
     if(!/^\d{6,8}$/.test(input.code||''))fail(400,'Enter the emailed verification code.');
     const data=await supa('verify',{auth:true,method:'POST',body:{email:normalizeEmail(input.email),token:input.code,type:'email'}});
-    if(!data.user?.email_confirmed_at||!data.access_token||!data.refresh_token)fail(401,'Email verification failed.');session(res,data);result={signedIn:true};
+    if(!data.user?.email_confirmed_at||!data.access_token||!data.refresh_token)fail(401,'Email verification failed.');session(res,data);let syncPending=false;if(process.env.STRIPE_SYNC_VERIFIED==='true'){try{await syncEmail(data.user.email);}catch{syncPending=true;}}result={signedIn:true,syncPending};
    }else if(action==='refresh'){
     const token=cookies(req).rr_refresh;if(!token)fail(401,'Sign in again.');
     const data=await supa('token?grant_type=refresh_token',{auth:true,method:'POST',body:{refresh_token:token}});session(res,data);result={refreshed:true};
@@ -87,7 +87,7 @@ export default async function handler(req,res){
     result={draws:a.draws,scoring:a.scoring,capturedAt:a.capturedAt,provenance:a.provenance,players:a.players,label:'Simulated outcomes; experimental distribution, not verified historical data'};
    }else if(action==='trade'){
     const u=await requirePro(req);await rate('trade:'+u.id,20);
-    result=tradeAnalysis(input,read('players.json'),read('data/weekly-projections.json'));
+    result=tradeAnalysis(input,read('server/published-trade-values.json'),read('data/weekly-projections.json'));
    }else fail(404,'Unknown action.');
   }
   res.status(200).json(result);

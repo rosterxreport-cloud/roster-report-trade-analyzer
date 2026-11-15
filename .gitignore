@@ -6,3 +6,4 @@ node_modules/
 !.env.example
 .vercel/
 private-artifacts/
+server/published-trade-values.json
