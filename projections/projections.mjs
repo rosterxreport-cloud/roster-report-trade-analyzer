@@ -1,4 +1,4 @@
-import {columns,points,selectPlayers,pageRows,statline} from './model.mjs';
+import {columns,points,selectPlayers,pageRows,statline,conditionalNotes} from './model.mjs';
 const $=id=>document.getElementById(id);const state={search:'',position:'',team:'',format:'ppr',passTD:4,sort:'points',direction:'desc',page:1,size:30,view:'all'};let data;
 const nf=new Intl.NumberFormat('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -17,8 +17,8 @@ async function init(){try{const res=await fetch('../data/weekly-projections.json
  const updated=new Intl.DateTimeFormat('en-US',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Los_Angeles'}).format(new Date(data.updatedAt));
  $('dataMeta').textContent=`${data.status} · Updated ${updated} PT · Includes games through Week ${data.throughWeek}`;
  $('download').href='../'+data.source;$('download').download=`roster-report-${data.season}-week${data.week}.csv`;$('download').hidden=false;
- const starters=Object.entries(data.conditionalStarters||{}).map(([team,name])=>`${team}: ${name}`);
- $('runNotes').innerHTML=`<strong>Published run: Week ${data.week}.</strong> Projections reflect the timestamp above.${data.updateNote?' '+esc(data.updateNote):''}${starters.length?' Conditional QB starters — '+esc(starters.join('; '))+'. Player details include availability notes.':''}`;$('runNotes').hidden=false;
+ const starters=conditionalNotes(data.conditionalStarters);
+ $('runNotes').innerHTML=`<strong>Published run: Week ${data.week}.</strong> Projections reflect the timestamp above.${data.updateNote?' '+esc(data.updateNote):''}${starters.length?'<details><summary>Conditional player assumptions ('+starters.length+')</summary><ul>'+starters.map(note=>'<li>'+esc(note)+'</li>').join('')+'</ul></details> Player details include availability notes.':''}`;$('runNotes').hidden=false;
  for(const t of [...new Set(data.players.map(p=>p.Team))].sort())$('team').add(new Option(t,t));render();
  }catch(e){$('error').hidden=false;$('error').textContent='The projections could not be loaded. Please refresh to try again.';$('resultCount').textContent='Projections unavailable';$('dataMeta').textContent='Latest published data is temporarily unavailable.';}}
 init();
