@@ -27,3 +27,13 @@ Still required before production approval:
 - Complete NBA historical review and prospective grading, resolve availability, and approve the model/slate artifacts.
 - Complete NFL DraftKings scoring/DST and approved joint simulation inputs; preserve the existing free projections in the meantime.
 - Verify the deployed preview and required CI checks. Request production approval only after release gates are satisfied.
+
+## Continuation with sign-in paused
+
+Owner requested continued work excluding sign-in setup. Email delivery and authentication readiness remain unchanged. All checks on commit b8cd535 passed, including the research-validation CI job.
+
+Added immutable candidate/control grading with official final-game evidence, explicit NBA/source ID crosswalk requirements, exact observed scoring, partial-result handling and separate played/DNP cohorts. The frozen November 15 bundle passed hash and pre-lock verification. Empirical results must wait for final games; no prospective accuracy is asserted. See [grading contract and limitations](NBA_PROSPECTIVE_GRADING.md).
+
+Added a pure NFL DraftKings scoring adapter and integrated it into the read-only feed audit. It requires RR-modeled event counts and yardage-threshold probabilities; it never derives bonuses by thresholding mean yards or assigns absent inputs zero. Missing or invalid rows retain null DK scores. DST modeling, feed integrity, availability and joint simulations remain separate release gates. Existing free forecast data is unchanged.
+
+Continuation validation: 99 application tests passed (38 legacy + 61 platform), plus 15 Python research checks (six candidate grading, four simulation, two historical shooting, three NFL archive). The unchanged 295-row NFL feed reconciles baseline scoring but all 295 DK scores remain withheld for missing modeled event inputs. No forecast values or membership settings were altered.

@@ -26,3 +26,4 @@ jobs:
           /tmp/rr-validation/bin/pip install -r scripts/pro/requirements-validation.txt
           /tmp/rr-validation/bin/python scripts/pro/test-validate-simulations.py
           /tmp/rr-validation/bin/python scripts/pro/test-validate-nfl-archive.py
+          /tmp/rr-validation/bin/python scripts/pro/test-grade-nba-candidate.py

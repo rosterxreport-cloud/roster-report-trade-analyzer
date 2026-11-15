@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {pathToFileURL} from 'node:url';
+import {scoreNFLProjection} from '../../server/nfl-scoring.mjs';
 export function auditNFL(data){
  const rows=data.players||[],issues=[],teams=new Map(),identities=new Map();
  const stats=['Pass_Att','Pass_Yds','Pass_TD','INT','Rush_Att','Rush_Yds','Rush_TD','Targets','Receptions','Rec_Yds','Rec_TD'];
@@ -20,8 +21,9 @@ export function auditNFL(data){
  const applies=(row,key)=>key==='Pass_300_Probability'?row.Pass_Att>0:key==='Rush_100_Probability'?row.Rush_Att>0:key==='Rec_100_Probability'?row.Targets>0:row.Pass_Att+row.Rush_Att+row.Targets>0;
  const missingDKInputs=Object.fromEntries(Object.entries(required).map(([name,key])=>[name,rows.filter(r=>r.Position!=='DST'&&applies(r,key)&&!Number.isFinite(r[key])).length]));
  const dst=rows.filter(r=>r.Position==='DST').length;
+ const dkScoring=rows.filter(r=>['QB','RB','WR','TE'].includes(r.Position)).map(row=>{try{return {player:row.Player,team:row.Team,...scoreNFLProjection(row)};}catch(e){return {player:row.Player,team:row.Team,projection:null,reason:e.message};}});
  const blockers=[...(issues.length?['Published statline integrity / identity / availability issues need review.']:[]),...(scoringFailures?['Published baseline scoring reconciliation failed.']:[]),...(Object.values(missingDKInputs).some(Boolean)?['Required DraftKings scoring inputs are not modeled in this feed.']:[]),...(!dst?['No Roster Report defense/special-teams projections are available.']:[]),'Complete official salaries, eligibility and pre-lock active status are not provided by this projection feed.','A release-approved correlated NFL simulation artifact is not supplied.'];
- return {publishApproved:false,season:data.season,week:data.week,updatedAt:data.updatedAt,players:rows.length,positions:Object.fromEntries([...new Set(rows.map(r=>r.Position))].map(p=>[p,rows.filter(r=>r.Position===p).length])),baselineScoringFailures:scoringFailures,missingDKInputs,dstProjections:dst,issues,blockers,limitations:['Read-only validation of the published RR model feed; no values or football assumptions were changed.','Rounding tolerance is 0.11 points across the rounded source statistics.','DraftKings uses -1 per interception plus nonlinear yardage bonuses and other events; generic PPR cannot stand in for DK scoring.','Missing inputs are not assigned zero and point projections are not converted into unsupported bonus probabilities.']};
+ return {publishApproved:false,season:data.season,week:data.week,updatedAt:data.updatedAt,players:rows.length,positions:Object.fromEntries([...new Set(rows.map(r=>r.Position))].map(p=>[p,rows.filter(r=>r.Position===p).length])),baselineScoringFailures:scoringFailures,missingDKInputs,dstProjections:dst,dkScoring,issues,blockers,limitations:['Read-only validation of the published RR model feed; no values or football assumptions were changed.','Rounding tolerance is 0.11 points across the rounded source statistics.','DraftKings uses -1 per interception plus nonlinear yardage bonuses and other events; generic PPR cannot stand in for DK scoring.','Missing inputs are not assigned zero and point projections are not converted into unsupported bonus probabilities.']};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){
  const [input,output]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node scripts/pro/audit-nfl-dfs.mjs INPUT_JSON OUTPUT_JSON');
