@@ -16,9 +16,11 @@ export function parseCsv(text){
 export function buildSlate({salaryCsv,manifest,model,joint=null,decisionAt}){
  const now=time(decisionAt),sport=manifest.sport;
  if(!positions[sport]||manifest.schemaVersion!==1||!/^[-a-zA-Z0-9_]{1,80}$/.test(manifest.slateId||'')||manifest.format!=='DraftKings Classic')fail(400,'Unsupported slate manifest.');
- if(model.sport!==sport||model.kind!=='projections'||model.scoring!=='DraftKings'||!model.provenance?.modelHash||!Array.isArray(model.players))fail(400,'A matching RR DraftKings projection artifact is required.');
+ if(model.schemaVersion!==1||model.sport!==sport||model.kind!=='projections'||model.scoring!=='DraftKings'||!model.provenance?.modelHash||!Array.isArray(model.players))fail(400,'A matching RR DraftKings projection artifact is required.');
  for(const key of ['salaryCapturedAt','injuryCapturedAt','scheduleCapturedAt'])if(time(manifest[key])>now)fail(400,'Evidence captured after the decision cannot enter this build.');
  if(time(model.capturedAt)>now)fail(400,'Projection snapshot was created after the decision.');
+ const modelExpiry=time(model.validUntil);
+ if(modelExpiry<=now)fail(400,'Projection snapshot expired before the decision; refresh the RR model first.');
  for(const key of ['salarySource','injurySource','scheduleSource'])if(!manifest[key])fail(400,'Missing '+key);
  if(!Array.isArray(manifest.gameIds)||new Set(manifest.gameIds).size<2||!Array.isArray(manifest.playerMappings))fail(400,'Slate games and explicit player mappings are required.');
  const models=new Map(model.players.map(p=>[String(p.id),p]));if(models.size!==model.players.length)fail(400,'Duplicate model IDs.');
@@ -48,7 +50,7 @@ export function buildSlate({salaryCsv,manifest,model,joint=null,decisionAt}){
   simulations={draws:10000,joint:true,scoring:'DraftKings',modelHash:joint.modelHash,scores};
  }
  const approved=model.publishApproved===true&&manifest.publishApproved===true&&(!joint||joint.publishApproved===true)&&!issues.length;
- const validUntil=new Date(Math.min(...(!players.length?[now]:[]),...players.map(p=>Date.parse(p.startsAt)),...players.map(p=>Date.parse(p.verifiedAt)+90*60000))).toISOString();
+ const validUntil=new Date(Math.min(modelExpiry,...(!players.length?[now]:[]),...players.map(p=>Date.parse(p.startsAt)),...players.map(p=>Date.parse(p.verifiedAt)+90*60000))).toISOString();
  const provenance={...model.provenance,salarySource:manifest.salarySource,injurySource:manifest.injurySource,eligibilitySource:manifest.salarySource,scheduleSource:manifest.scheduleSource,salaryHash:hash(salaryCsv),manifestHash:hash(JSON.stringify(manifest)),sourceHash:hash(JSON.stringify({projection:model.provenance.sourceHash,salary:hash(salaryCsv),manifest:hash(JSON.stringify(manifest))})),...(manifest.ownershipSource?{ownershipSource:manifest.ownershipSource}:{}),decisionAt};
  return {artifact:{schemaVersion:1,kind:'slate',sport,slateId:manifest.slateId,format:'DraftKings Classic',salaryCap:50000,publishApproved:approved,capturedAt:decisionAt,validUntil,provenance,players,...(simulations?{simulations}:{})},report:{slateId:manifest.slateId,salaryRows:rows.length,matchedActivePlayers:players.length,excludedAvailability:rows.length-players.length,releaseApproved:approved,advancedSimulationAvailable:!!simulations,issues}};
 }

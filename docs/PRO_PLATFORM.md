@@ -75,3 +75,17 @@ Added strict official salary CSV ingestion, explicit DraftKings-to-model ID join
 DFS pages now load a safe public player-pool view with name-based locks, exclusions, individual exposure caps and minimum lineup differences. The API enforces all controls and continues to require Pro for advanced runs. NBA pages now apply orange to the inherited brand accents. Dashboard labels distinguish fully free tools from Free + Pro optimizers.
 
 A read-only audit of the latest recovered NBA saved forecasts found 2,833 shared-preseason-policy played rows across 140 games; see RESEARCH_VALIDATION.md. Publication remains blocked by the existing research gates and the shooting-policy conflict. Email dashboard sign-in is set aside; no further browser authentication is needed for this development phase.
+
+### November 15 integration follow-up
+
+Merged the current main-branch Week 10 injury/workload publication into the Pro
+branch. All 295 projection records remain unchanged. Recomputed position counts
+because the source summary retained the prior 291-position total and added a
+second overall total. Two published Kirk Cousins records have different teams;
+this branch does not adjudicate those football assumptions. Profile regeneration
+and Pro trade analysis disambiguate duplicate names using the published ranking
+team. Unresolved weekly identities are withheld, and an incomplete trade forecast
+returns a null weekly delta rather than treating a missing player as zero.
+
+Slate ingestion now requires a versioned, unexpired source projection. A refreshed
+salary/availability manifest cannot extend the source model validity window.

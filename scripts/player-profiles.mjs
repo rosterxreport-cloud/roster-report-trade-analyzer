@@ -51,7 +51,7 @@ export async function makeRelease(root,options={}){
   if(Object.values(registry).some(r=>r.id!==e.id&&r.slug===entry.slug))throw Error('Duplicate permanent slug');
   const rankings=Object.fromEntries(Object.keys(formats).map(f=>[f,adjusted[f].find(p=>key(p.name)===key(source.name))]));
   if(Object.values(rankings).some(v=>!v)){if(old){profiles.push({...old,active:false,retained:true});continue;}throw Error('Missing scoring format');}
-  const matches=projection.players.filter(p=>key(p.Player)===key(source.name));if(matches.length>1)throw Error('Ambiguous projection');
+  let matches=projection.players.filter(p=>key(p.Player)===key(source.name));if(matches.length>1)matches=matches.filter(p=>p.Team===source.team);if(matches.length>1)throw Error('Ambiguous projection');
   const p={id:e.id,name:source.name,slug:entry.slug,team:source.team,position:e.position,active:selectedNames.has(key(source.name)),throughWeek:ev.throughWeek,season:ev.season,statisticsAsOf:ev.capturedAt,rankingsAsOf:auditMatches?audit.capturedAt:null,projectionAsOf:projection.updatedAt,projectionWeek:projection.week,projectionStatus:projection.status,projectionUpdateNote:projection.updateNote,projection:matches[0]||null,weekly:e.weekly,rankings,sources:ev.sources,calculation:auditMatches?audit.formats.half.calculations?.[source.name]||null:null};
   if(old&&old.rankings.half.rank!==999&&source.rank!==999&&previous.inputHashes.players!==hash(read('players.json')))p.change={previousRank:old.rankings.half.rank,scoreDelta:source.rankingScore!=null&&old.rankings.half.rankingScore!=null?Number((source.rankingScore-old.rankings.half.rankingScore).toFixed(2)):null};
   else if(old?.change)p.change=old.change;
