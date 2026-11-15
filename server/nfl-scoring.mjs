@@ -2,6 +2,14 @@ import {fail} from './domain.mjs';
 const statFields=['Pass_Att','Pass_Yds','Pass_TD','INT','Rush_Att','Rush_Yds','Rush_TD','Targets','Receptions','Rec_Yds','Rec_TD'];
 const eventFields=['Fumbles_Lost','Two_Point_Conversions','Return_TD','Offensive_Fumble_Recovery_TD'];
 const bonusFields=['Pass_300_Probability','Rush_100_Probability','Rec_100_Probability'];
+export function scoreNFLDefense(row){
+ const weights={Sacks:1,Interceptions:2,Fumble_Recoveries:2,Return_TD:6,Interception_Return_TD:6,Fumble_Return_TD:6,Blocked_Kick_Return_TD:6,Safeties:2,Blocked_Kicks:2,Conversion_Returns:2};
+ if(row.Position!=='DST'||Object.keys(weights).some(k=>!Number.isFinite(row[k])||row[k]<0))fail(400,'Complete modeled DST event counts are required.');
+ const bands=['0','1-6','7-13','14-20','21-27','28-34','35+'],points=[10,7,4,1,0,-1,-4],probabilities=row.Points_Allowed_Probabilities;
+ if(!probabilities||Object.keys(probabilities).length!==bands.length||bands.some(k=>!Number.isFinite(probabilities[k])||probabilities[k]<0||probabilities[k]>1)||Math.abs(bands.reduce((s,k)=>s+probabilities[k],0)-1)>1e-8)fail(400,'DST requires a normalized distribution of correctly attributed points allowed.');
+ const components=Object.fromEntries(Object.entries(weights).map(([k,w])=>[k,row[k]*w]));components.pointsAllowed=bands.reduce((s,k,i)=>s+probabilities[k]*points[i],0);
+ return {scoring:'DraftKings',projection:Object.values(components).reduce((a,b)=>a+b,0),components,publishApproved:false};
+}
 // Inputs must come from the RR model's own opportunity/event distributions.
 // This adapter never estimates probabilities from a point yardage projection.
 export function scoreNFLProjection(row){
