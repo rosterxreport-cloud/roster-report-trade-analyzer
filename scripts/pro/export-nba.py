@@ -22,7 +22,7 @@ def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
         rotations = build_context(snapshot, observed_rotation_history(model_dir), evidence.get('injury'), evidence.get('expected_starters'))
     forecasts, noise = simulate(snapshot, json.loads(audit_path.read_text()), 10000, seed, rotations)
     model_hash = snapshot.get('modelFingerprint') or hashlib.sha256(raw).hexdigest()
-    base = dict(schemaVersion=1, sport='NBA', publishApproved=snapshot.get('publishApproved') is True,
+    base = dict(schemaVersion=1, sport='NBA', scoring='DraftKings', publishApproved=snapshot.get('publishApproved') is True,
                 capturedAt=snapshot['createdAt'], validUntil=min(f['start'] for f in snapshot['fixtures']),
                 provenance=dict(modelHash=model_hash, sourceHash=hashlib.sha256(raw).hexdigest(),
                                 auditHash=hashlib.sha256(audit_path.read_bytes()).hexdigest(),

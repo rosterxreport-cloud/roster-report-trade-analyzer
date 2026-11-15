@@ -31,19 +31,22 @@ function matrixValid(slate){
 // mathematical optimum. Joint draw indexes preserve recovered model correlations.
 export function optimize(artifact,options={},now=Date.now()){
  const slate=validateSlate(artifact,now),sport=slate.sport;
- const {advanced=false,count=1,locks=[],excludes=[],maxExposure=1,stack=0,bringBack=false}=options;
+ const {advanced=false,count=1,locks=[],excludes=[],maxExposure=1,stack=0,bringBack=false,exposureCaps={},minUnique=1}=options;
  if(!Number.isInteger(count)||count<1||count>20||!Array.isArray(locks)||!Array.isArray(excludes)||new Set(locks).size!==locks.length||new Set(excludes).size!==excludes.length||locks.some(x=>excludes.includes(x))||locks.length>SLOTS[sport].length||!Number.isFinite(maxExposure)||maxExposure<=0||maxExposure>1||!Number.isInteger(stack)||stack<0||stack>3)fail(400,'Invalid lineup controls.');
- if(!advanced&&(count!==1||locks.length||excludes.length||maxExposure!==1||stack||bringBack))fail(403,'Advanced controls require Roster Report Pro.');
+ if(!exposureCaps||typeof exposureCaps!=='object'||Array.isArray(exposureCaps)||!Number.isInteger(minUnique)||minUnique<1||minUnique>SLOTS[sport].length||Object.values(exposureCaps).some(x=>!Number.isFinite(x)||x<0||x>1))fail(400,'Invalid player exposure or diversity controls.');
+ if(!advanced&&(Object.keys(exposureCaps).length||minUnique!==1||count!==1||locks.length||excludes.length||maxExposure!==1||stack||bringBack))fail(403,'Advanced controls require Roster Report Pro.');
  if(advanced&&!matrixValid(slate))fail(503,'A release-approved 10,000-draw joint simulation is required for advanced optimization.');
  const pool=slate.players.filter(p=>p.status==='active'&&Date.parse(p.startsAt)>now&&!excludes.includes(p.id));
  if([...locks,...excludes].some(id=>!slate.players.some(p=>p.id===id))||locks.some(id=>!pool.some(p=>p.id===id)))fail(400,'A lock or exclusion is not eligible for this active slate.');
+ if(Object.keys(exposureCaps).some(id=>!slate.players.some(p=>p.id===id)))fail(400,'Exposure controls contain a player outside this slate.');
+ const limit=id=>Math.floor(count*Math.min(maxExposure,exposureCaps[id]??1)+1e-8);
  const exposureMax=Math.floor(count*maxExposure+1e-8);
- if(exposureMax<1||(locks.length&&exposureMax<count))fail(400,'Exposure cap conflicts with the requested lineup count or locks.');
+ if(exposureMax<1||locks.some(id=>limit(id)<count)||(count>1&&minUnique>SLOTS[sport].length-locks.length))fail(400,'Exposure cap conflicts with the requested lineup count or locks.');
  const used=new Map(),seen=new Set(),lineups=[];
  const samples=advanced?slate.simulations.scores:null;
  const cap=50000,deadline=Date.now()+25000;
  for(let n=0;n<count;n++){
-  const available=pool.filter(p=>(used.get(p.id)||0)<exposureMax);
+  const available=pool.filter(p=>(used.get(p.id)||0)<limit(p.id));
   const candidates=new Map();
   const attempts=advanced?12:1;
   for(let attempt=0;attempt<attempts;attempt++){
@@ -67,7 +70,7 @@ export function optimize(artifact,options={},now=Date.now()){
    }
    for(const b of beam){
     const key=[...b.ids].sort().join(',');
-    if(seen.has(key)||!validateLineup(b.players,sport,{locks,excludes,stack,bringBack}))continue;
+    if(seen.has(key)||lineups.some(l=>l.players.filter(p=>b.ids.has(p.id)).length>SLOTS[sport].length-minUnique)||!validateLineup(b.players,sport,{locks,excludes,stack,bringBack}))continue;
     candidates.set(key,b);
    }
   }

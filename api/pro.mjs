@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import {fail,HttpError,normalizeEmail,activeMembership,pacificDay,stripeSignature,validateArtifact} from '../server/domain.mjs';
 import {config as serviceConfig,supa,rpc,modelArtifact,withBackendIdentity} from '../server/store.mjs';
 import {reconcileEvent,syncEmail,reconcileKnown} from '../server/membership.mjs';
-import {optimize} from '../server/optimizer.mjs';
+import {optimize,validateSlate} from '../server/optimizer.mjs';
 import {tradeAnalysis} from '../server/trade.mjs';
 export const config={api:{bodyParser:false}};
 const read=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url),'utf8'));
@@ -46,6 +46,12 @@ async function handle(req,res){
    const a=await modelArtifact(sport.toLowerCase()+'/slates.json');
    if(!Array.isArray(a.slates))fail(503,'Current slates are unavailable.');
    result={slates:a.slates.filter(s=>Date.parse(s.locksAt)>Date.now()).map(({id,name,locksAt})=>({id,name,locksAt}))};
+  }else if(req.method==='GET'&&action==='slate-players'){
+   const params=new URL(req.url,'https://toolkit.local').searchParams,sport=params.get('sport'),slateId=params.get('slateId');
+   if(!['NBA','NFL'].includes(sport)||!/^[-a-zA-Z0-9_]{1,80}$/.test(slateId||''))fail(400,'Select an available slate.');
+   const a=validateSlate(await modelArtifact(sport.toLowerCase()+'/slates/'+slateId+'.json'));
+   if(a.sport!==sport||a.slateId!==slateId)fail(503,'Slate identity mismatch.');
+   result={sport,slateId,capturedAt:a.capturedAt,players:a.players.map(({id,name,team,opponent,positions,salary,projection,status,startsAt})=>({id,name,team,opponent,positions,salary,projection,status,startsAt}))};
   }else if(req.method==='GET'&&action==='account'){
    const u=await identity(req),m=await membership(u);
    const usage=await supa('pro_usage?user_id=eq.'+encodeURIComponent(u.id)+'&day=eq.'+pacificDay()+'&select=request_id');
@@ -81,7 +87,7 @@ async function handle(req,res){
     if(!m.pro){const rows=await supa('pro_usage?user_id=eq.'+u.id+'&day=eq.'+pacificDay()+'&select=request_id,result');if(rows.length){if(rows[0].request_id===input.requestId){res.status(200).json(rows[0].result);return;}fail(429,'Your daily free lineup has been used. It resets at midnight Pacific.');}}
     const a=await modelArtifact(input.sport.toLowerCase()+'/slates/'+input.slateId+'.json');
     if(a.slateId!==input.slateId||a.sport!==input.sport)fail(503,'Slate identity mismatch.');
-    result=optimize(a,{advanced,count:input.count??1,locks:input.locks??[],excludes:input.excludes??[],stack:input.stack??0,bringBack:input.bringBack===true,maxExposure:input.maxExposure??1});
+    result=optimize(a,{advanced,count:input.count??1,locks:input.locks??[],excludes:input.excludes??[],stack:input.stack??0,bringBack:input.bringBack===true,maxExposure:input.maxExposure??1,exposureCaps:input.exposureCaps??{},minUnique:input.minUnique??1});
     if(!m.pro){const saved=await rpc('pro_save_free',{p_user:u.id,p_request:input.requestId,p_result:result});if(!saved.allowed)fail(429,'Your daily free lineup has already been used.');result=saved.result;}
    }else if(action==='simulation'){
     const u=await requirePro(req);await rate('simulation:'+u.id,20);

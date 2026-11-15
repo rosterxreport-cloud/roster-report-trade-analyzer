@@ -68,3 +68,10 @@ AUTH_EMAIL_READY remains false until the OTP template, redirect configuration an
 Live staging verification succeeded: the deployed status endpoint reports accountsConfigured=true and backendVerified=true, confirming an actual Vercel-issued OIDC token reached the Supabase gateway and the service-role-only session RPC. The 37 existing and 25 platform tests pass. Six concurrent live quota calls for a synthetic test account returned one allowed result and five denied results, with exactly one stored daily result; the synthetic account and its usage were removed afterward. No customer memberships were imported or modified.
 
 Supabase dashboard email configuration is awaiting completion of the owner's secure sign-in. Email remains disabled in the preview until template and delivery checks pass. Stripe runtime read credentials/webhook activation and NBA/DFS data release gates remain unchanged.
+
+## DFS pipeline continuation
+Added strict official salary CSV ingestion, explicit DraftKings-to-model ID joins, pre-decision evidence cutoffs, current availability checks, complete-pool reporting and exact snapshot matching for 10,000 joint draws. Missing inputs and research gates cannot be silently promoted into live data. Added an offline frozen-slate replay runner with complete final-result joins, MAE/bias and source hashes; payout and ROI claims remain unverified.
+
+DFS pages now load a safe public player-pool view with name-based locks, exclusions, individual exposure caps and minimum lineup differences. The API enforces all controls and continues to require Pro for advanced runs. NBA pages now apply orange to the inherited brand accents. Dashboard labels distinguish fully free tools from Free + Pro optimizers.
+
+A read-only audit of the latest recovered NBA saved forecasts found 2,833 shared-preseason-policy played rows across 140 games; see RESEARCH_VALIDATION.md. Publication remains blocked by the existing research gates and the shooting-policy conflict. Email dashboard sign-in is set aside; no further browser authentication is needed for this development phase.
