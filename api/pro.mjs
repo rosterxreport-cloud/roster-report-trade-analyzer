@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import {fail,HttpError,normalizeEmail,activeMembership,pacificDay,stripeSignature,validateArtifact} from '../server/domain.mjs';
-import {config as serviceConfig,supa,rpc,modelArtifact} from '../server/store.mjs';
+import {config as serviceConfig,supa,rpc,modelArtifact,withBackendIdentity} from '../server/store.mjs';
 import {reconcileEvent,syncEmail,reconcileKnown} from '../server/membership.mjs';
 import {optimize} from '../server/optimizer.mjs';
 import {tradeAnalysis} from '../server/trade.mjs';
@@ -19,7 +19,8 @@ async function identity(req){const token=cookies(req).rr_access;if(!token)fail(4
 async function membership(user){const rows=await supa('pro_entitlements?email=eq.'+encodeURIComponent(normalizeEmail(user.email))+'&select=status,expires_at,source');return {pro:activeMembership(rows),memberships:rows};}
 async function requirePro(req){const user=await identity(req),status=await membership(user);if(!status.pro)fail(403,'Roster Report Pro membership is required.');return user;}
 function origin(req){const e=process.env;const expected=e.APP_ORIGIN||(e.VERCEL_URL?'https://'+e.VERCEL_URL:null);if(!expected||req.headers.origin!==expected)fail(403,'Request origin could not be verified.');}
-export default async function handler(req,res){
+export default function handler(req,res){return withBackendIdentity(req.headers['x-vercel-oidc-token'],()=>handle(req,res));}
+async function handle(req,res){
  res.setHeader('Cache-Control','private, no-store');res.setHeader('X-Content-Type-Options','nosniff');
  try{
   const action=new URL(req.url,'https://toolkit.local').searchParams.get('action')||'status';
@@ -35,7 +36,8 @@ export default async function handler(req,res){
    result=await reconcileEvent(event);
   }else if(req.method==='GET'&&action==='status'){
    let serviceConfigured=true;try{serviceConfig();}catch{serviceConfigured=false;}
-   result={accountsConfigured:serviceConfigured,billingVerified:process.env.STRIPE_SYNC_VERIFIED==='true',upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
+   let backendVerified=false;if(serviceConfigured){try{await rpc('pro_session_active',{p_user:'00000000-0000-0000-0000-000000000000',p_session:'00000000-0000-0000-0000-000000000000'});backendVerified=true;}catch{}}
+   result={accountsConfigured:serviceConfigured,backendVerified,emailSignInReady:process.env.AUTH_EMAIL_READY==='true',billingVerified:process.env.STRIPE_SYNC_VERIFIED==='true',upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
   }else if(req.method==='GET'&&action==='nba-basic'){
    const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
    result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection})=>({id,name,team,opponent,minutes,statline,projection}))};
@@ -54,6 +56,7 @@ export default async function handler(req,res){
    const hash=crypto.createHmac('sha256',serviceConfig().RATE_LIMIT_SECRET).update(String(ip)).digest('hex');
    await rate('ip:'+hash,60);
    if(action==='login'){
+    if(process.env.AUTH_EMAIL_READY!=='true')fail(503,'Email sign-in is being configured. Please try again later.');
     const email=normalizeEmail(input.email);if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254)fail(400,'Enter a valid email.');
     await rate('login:'+hash,5,900);await rate('email:'+crypto.createHash('sha256').update(email).digest('hex'),3,900);
     await supa('otp',{auth:true,method:'POST',body:{email,create_user:true}});result={sent:true};

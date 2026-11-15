@@ -57,3 +57,10 @@ Migration exercised twice against PGlite 0.5.16 PostgreSQL WASM: one free result
 
 ## Final test and preview record
 Final local suites: 37 legacy JavaScript tests and 23 platform tests (including the PostgreSQL migration/security check). Recovered private suites: 84 model + 7 optimizer tests. The private simulator exported exactly 10,000 joint outcomes for each of 145 players. Website output contains 335 pages (326 original plus 9 routes), and no server code, private research or credentials in static output. Test success demonstrates implementation invariants, not model profitability or readiness of unconfigured external integrations.
+
+## Free staging backend — continuation
+Created Supabase staging project `zretrikowlvfvdrnnoil` in the approved existing organization on the quoted $0/month plan, us-east-1. Applied toolkit_pro_foundation migration and checked live function privileges: anon/authenticated cannot execute any privileged RPC. Security advisors reported only informational no-policy notices on the five intentionally server-only RLS tables.
+
+Staging Vercel functions use a Supabase Edge gateway with Vercel OIDC federation. Gateway verifies RS256 signatures against Vercel JWKS, expiration, issuer, audience, team ID, project ID, environment=preview and exact subject. Production and other projects are denied. The edge handler performs its own JWT verification; Supabase's legacy JWT precheck is disabled because it does not understand Vercel issuer tokens. The service-role key stays in Supabase's built-in function environment. Only the public auth key, gateway URL and generated per-branch rate-limit/cron secrets are configured for this development branch's Preview environment.
+
+AUTH_EMAIL_READY remains false until the OTP template, redirect configuration and email delivery are verified. Supabase's default email service permits organization-team addresses only; a general subscriber launch needs a custom SMTP provider or a supported Send Email hook. Never bypass email verification to make staging login appear functional.

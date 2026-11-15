@@ -8,7 +8,7 @@ function table(headers,rows,caption=''){return `<div class="pro-table" tabindex=
 for(const a of document.querySelectorAll('.platform-nav a'))if(new URL(a.href).pathname===location.pathname)a.setAttribute('aria-current','page');
 if($('#login')){
  let email='';
- api('status').then(s=>{if(!s.accountsConfigured){busy($('#login'),true);$('#authStatus').textContent='Account activation is coming soon. Existing free tools remain available.';}}).catch(()=>{});
+ api('status').then(s=>{if(!s.accountsConfigured||!s.emailSignInReady){busy($('#login'),true);$('#authStatus').textContent='Account activation is coming soon. Existing free tools remain available.';}}).catch(()=>{});
  async function account(){try{const a=await api('account');$('#membership').innerHTML=`<p>${esc(a.email)}</p><div class="pro-stat"><b>${a.pro?'Pro active':'Free account'}</b><span>${a.pro?'Membership verified':'One basic lineup each day'}</span></div><p>${a.freeLineupUsed?'Daily free lineup used':'Daily free lineup available'} · resets at midnight Pacific.</p>${a.memberships.length?table(['Source','Status','Expires'],a.memberships.map(m=>[m.source,m.status,new Date(m.expires_at).toLocaleDateString()])):''}`;}catch(e){notice($('#membership'),e.message);}}
  account();
  $('#login').addEventListener('submit',async e=>{e.preventDefault();busy(e.target,true);try{email=new FormData(e.target).get('email');await api('login',{email});$('#verify').hidden=false;$('#authStatus').textContent='Check your inbox and enter the sign-in code.';}catch(err){$('#authStatus').textContent=err.message;}finally{busy(e.target,false);}});
