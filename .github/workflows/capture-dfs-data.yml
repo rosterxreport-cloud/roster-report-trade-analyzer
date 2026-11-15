@@ -4,6 +4,9 @@ on:
     paths:
       - scripts/pro/capture-draftkings.mjs
       - .github/workflows/capture-dfs-data.yml
+      - scripts/pro/validate-salary-capture.mjs
+      - server/draftkings-evidence.mjs
+      - server/slate-ingestion.mjs
 permissions:
   contents: read
 jobs:
@@ -16,7 +19,12 @@ jobs:
         with:
           node-version: '24'
       - run: node scripts/pro/capture-draftkings.mjs "$RUNNER_TEMP/dfs-capture"
+      - name: Cross-check complete official salary pools
+        run: |
+          node scripts/pro/validate-salary-capture.mjs --directory "$RUNNER_TEMP/dfs-capture" --sport NFL --group 156416 --output "$RUNNER_TEMP/dfs-capture/nfl-approved-salary-pool.json"
+          node scripts/pro/validate-salary-capture.mjs --directory "$RUNNER_TEMP/dfs-capture" --sport NBA --group 156734 --output "$RUNNER_TEMP/dfs-capture/nba-approved-salary-pool.json"
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: official-dfs-capture
           path: ${{ runner.temp }}/dfs-capture/

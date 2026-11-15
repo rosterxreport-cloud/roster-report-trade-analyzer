@@ -37,9 +37,9 @@ This is one week's matched-observation PPR accuracy, not DraftKings or contest p
 
 `audit-nfl-dfs.mjs` checks the current Week 10 publication without modifying values. All 295 rows reconcile with published baseline scoring. Release remains blocked by CIN targets 35.96 > pass attempts 35.39, duplicate Kirk Cousins teams, and Kyle McCord's positive projection carrying an Out/IR note. Missing DK bonus/event inputs, proprietary DST forecasts and joint NFL draws are not replaced with zero or generic projections. Official DK interception scoring is −1; the current PPR baseline uses −2. Source: [official NFL Classic rules](https://games.draftkings.com/help/rules/nfl/classic), checked November 15.
 
-## Salary approval
+## Salary approval — superseded by later November 15 recovery
 
-No complete official DraftKings salary export was located in the recovered files. Official NBA/NFL lobby salary requests returned an unavailable page in this environment. Existing excerpt pools with `research-*` IDs cannot clear the importer or establish a valid CSV export. Current official Classic DKSalaries.csv files for both sports are needed. Historical testing additionally requires the original pre-lock complete pools and availability captures. Salary files alone do not approve models or repair unknown availability.
+At the early validation run, no complete official DraftKings salary export had been located. The later [official data recovery](DFS_DATA_RECOVERY_2026_11_15.md) resolved this blocker for today’s NFL/NBA main slates; the original finding below is retained for chronology. Official NBA/NFL lobby salary requests returned an unavailable page in this environment. Existing excerpt pools with `research-*` IDs cannot clear the importer or establish a valid CSV export. Current official Classic DKSalaries.csv files for both sports are needed. Historical testing additionally requires the original pre-lock complete pools and availability captures. Salary files alone do not approve models or repair unknown availability.
 
 ## Reproduction
 
