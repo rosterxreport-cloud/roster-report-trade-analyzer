@@ -7,13 +7,17 @@ export function stripeSignature(raw,header,secret,now=Date.now()){
  if(!secret||!header)return false;
  const values=header.split(',').map(x=>x.split('='));const t=values.find(x=>x[0]==='t')?.[1];
  if(!/^\d+$/.test(t||'')||Math.abs(now/1000-Number(t))>300)return false;
- const expected=crypto.createHmac('sha256',secret).update(t+'.'+raw).digest('hex');
+ const expected=crypto.createHmac('sha256',secret).update(t+'.').update(raw).digest('hex');
  return values.some(([k,v])=>k==='v1'&&/^[a-f0-9]{64}$/.test(v)&&crypto.timingSafeEqual(Buffer.from(v,'hex'),Buffer.from(expected,'hex')));
 }
 export function subscriptionGrant(sub,customer,config,now=Date.now()){
- const items=sub.items?.data||[];const periods=items.map(x=>x.current_period_end).filter(Number.isFinite);
- const end=sub.current_period_end??(periods.length?Math.min(...periods):0);
- const publication=items.some(i=>config.prices.includes(i.price?.id));
+ const items=sub.items?.data||[],matching=items.filter(i=>config.prices.includes(i.price?.id));
+ const periods=matching.map(x=>x.current_period_end).filter(x=>Number.isFinite(x)&&x>0);
+ // Mixed-interval subscriptions have item-level periods. An unrelated item's
+ // billing cycle cannot shorten or extend the paid Toolkit plan's entitlement.
+ const paidUntil=periods.length?Math.max(...periods):Number.isFinite(sub.current_period_end)?sub.current_period_end:0;
+ const end=Math.min(paidUntil,Number.isFinite(sub.cancel_at)?sub.cancel_at:Infinity);
+ const publication=matching.length>0;
  const paid=publication&&sub.status==='active'&&!sub.pause_collection&&end*1000>now&&!customer.deleted;
  return {source:'stripe',source_id:sub.id,email:normalizeEmail(customer.email),status:paid?'active':'inactive',expires_at:new Date(Math.max(0,end)*1000).toISOString(),evidence:{customer:customer.id,publication,subscription_status:sub.status,cancel_at_period_end:!!sub.cancel_at_period_end,verified_at:new Date(now).toISOString()}};
 }

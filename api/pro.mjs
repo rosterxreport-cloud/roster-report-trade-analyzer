@@ -10,9 +10,10 @@ const read=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url),'utf8'
 const cookieOptions='; HttpOnly; Secure; SameSite=Lax; Path=/';
 function cookies(req){return Object.fromEntries((req.headers.cookie||'').split(';').map(x=>x.trim().split('=')).filter(x=>x.length===2));}
 function session(res,data){res.setHeader('Set-Cookie',[`rr_access=${data.access_token}${cookieOptions}; Max-Age=${Math.min(data.expires_in||3600,3600)}`,`rr_refresh=${data.refresh_token}${cookieOptions}; Max-Age=2592000`]);}
+async function rawBody(req,max){const chunks=[];let size=0;for await(const chunk of req){const bytes=Buffer.from(chunk);size+=bytes.length;if(size>max)fail(413,'Request too large.');chunks.push(bytes);}return Buffer.concat(chunks);}
 async function body(req,max=16384){
  if(req.body!==undefined){let parsed;try{parsed=typeof req.body==='object'?req.body:JSON.parse(req.body);}catch{fail(400,'Invalid request body.');}if(!parsed||Array.isArray(parsed)||typeof parsed!=='object')fail(400,'Invalid request body.');if(Buffer.byteLength(JSON.stringify(parsed))>max)fail(413,'Request too large.');return parsed;}
- let s='';for await(const chunk of req){s+=chunk;if(Buffer.byteLength(s)>max)fail(413,'Request too large.');}try{return JSON.parse(s||'{}');}catch{fail(400,'Invalid request body.');}
+ const bytes=await rawBody(req,max);try{return JSON.parse(bytes.length?bytes.toString('utf8'):'{}');}catch{fail(400,'Invalid request body.');}
 }
 async function rate(key,limit,seconds=60){if(!await rpc('pro_rate_limit',{p_key:key,p_limit:limit,p_seconds:seconds}))fail(429,'Too many requests. Please try again shortly.');}
 async function identity(req){const token=cookies(req).rr_access;if(!token)fail(401,'Sign in to use this tool.');const user=await supa('user',{auth:true,token});if(!user.id||!user.email_confirmed_at)fail(401,'Verify your email before continuing.');let claims;try{claims=JSON.parse(Buffer.from(token.split('.')[1],'base64url'));}catch{fail(401,'Invalid session.');}if(!/^[0-9a-f-]{36}$/i.test(claims.session_id||'')||!await rpc('pro_session_active',{p_user:user.id,p_session:claims.session_id}))fail(401,'Your session has ended. Please sign in again.');return user;}
@@ -30,7 +31,7 @@ async function handle(req,res){
    result=await reconcileKnown();
   }else if(action==='webhook'){
    if(req.method!=='POST')fail(405,'Method not allowed.');
-   let raw='';for await(const c of req){raw+=c;if(Buffer.byteLength(raw)>262144)fail(413,'Request too large.');}
+   const raw=await rawBody(req,262144);
    if(!stripeSignature(raw,req.headers['stripe-signature'],process.env.STRIPE_WEBHOOK_SECRET))fail(400,'Invalid webhook signature.');
    let event;try{event=JSON.parse(raw);}catch{fail(400,'Invalid event.');}
    result=await reconcileEvent(event);

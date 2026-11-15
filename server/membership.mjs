@@ -19,8 +19,30 @@ async function verifyAccount(c){const a=await stripe('account',c);if(a.id!==c.ac
 async function upsertGrant(sub,c){
  if(sub.livemode!==c.live)fail(400,'Billing mode mismatch.');
  const customer=await stripe('customers/'+encodeURIComponent(typeof sub.customer==='string'?sub.customer:sub.customer.id),c);
- const grant=subscriptionGrant(sub,customer,c);if(!grant.email)return;
+ const grant=subscriptionGrant(sub,customer,c);
+ if(!grant.email){
+  // Deleted customers no longer carry email. Revoke the known source grant
+  // rather than silently leaving its former email paid through period end.
+  const known=await supa('pro_entitlements?source=eq.stripe&source_id=eq.'+encodeURIComponent(sub.id)+'&select=email');
+  if(known.length!==1)return;
+  grant.email=known[0].email;grant.status='inactive';grant.evidence.subject_unavailable=true;
+ }
  await rpc('pro_set_entitlement',{p_grant:grant});
+}
+async function refreshCustomer(customerId,c){
+ const customer=await stripe('customers/'+encodeURIComponent(customerId),c);
+ let offset=0;
+ for(let page=0;page<5;page++){
+  const rows=await supa('pro_entitlements?source=eq.stripe&evidence->>customer=eq.'+encodeURIComponent(customerId)+'&order=source_id.asc&limit=100&offset='+offset+'&select=source_id,email,expires_at,evidence');
+  for(const row of rows){
+   if(customer.deleted){
+    await rpc('pro_set_entitlement',{p_grant:{source:'stripe',source_id:row.source_id,email:row.email,status:'inactive',expires_at:row.expires_at,evidence:{...row.evidence,customer:customerId,subject_unavailable:true,verified_at:new Date().toISOString()}}});
+   }else await upsertGrant(await stripe('subscriptions/'+encodeURIComponent(row.source_id),c),c);
+  }
+  if(rows.length<100)return;
+  offset+=100;
+ }
+ fail(503,'Customer membership history requires an administrative reconciliation.');
 }
 export async function reconcileEvent(event){
  const c=stripeConfig();if(event.livemode!==c.live||(event.account&&event.account!==c.account))fail(400,'Billing event scope mismatch.');
@@ -29,8 +51,12 @@ export async function reconcileEvent(event){
   const seen=await supa('pro_stripe_events?event_id=eq.'+encodeURIComponent(event.id)+'&select=event_id');
   if(seen.length)return {received:true,duplicate:true};
   const obj=event.data?.object;
-  const id=event.type.startsWith('customer.subscription.')?obj?.id:typeof obj?.subscription==='string'?obj.subscription:obj?.parent?.subscription_details?.subscription;
-  if(typeof id==='string'&&/^sub_[a-zA-Z0-9]+$/.test(id))await upsertGrant(await stripe('subscriptions/'+id,c),c);
+  if(['customer.deleted','customer.updated'].includes(event.type)&&/^cus_[a-zA-Z0-9]+$/.test(obj?.id||''))await refreshCustomer(obj.id,c);
+  else{
+   const candidate=event.type.startsWith('customer.subscription.')?obj?.id:obj?.subscription??obj?.parent?.subscription_details?.subscription;
+   const id=typeof candidate==='string'?candidate:candidate?.id;
+   if(typeof id==='string'&&/^sub_[a-zA-Z0-9]+$/.test(id))await upsertGrant(await stripe('subscriptions/'+id,c),c);
+  }
   await supa('pro_stripe_events',{method:'POST',body:{event_id:event.id}});
   return {received:true};
  });

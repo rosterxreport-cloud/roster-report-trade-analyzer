@@ -1,5 +1,5 @@
-import test from 'node:test';import assert from 'node:assert/strict';import handler from '../../api/pro.mjs';
-async function call({action='account',method='GET',origin,body,headers={}}={}){const req={async *[Symbol.asyncIterator](){yield '{}';},url:'/api/pro?action='+action,method,headers:{...headers,...(origin?{origin}:{} )},body};let status,result;const h={};const res={setHeader:(k,v)=>h[k]=v,status:s=>(status=s,res),json:d=>result=d};await handler(req,res);return {status,result,headers:h};}
+import test from 'node:test';import assert from 'node:assert/strict';import handler from '../../api/pro.mjs';import crypto from 'node:crypto';
+async function call({action='account',method='GET',origin,body,headers={},chunks=['{}']}={}){const req={async *[Symbol.asyncIterator](){for(const chunk of chunks)yield chunk;},url:'/api/pro?action='+action,method,headers:{...headers,...(origin?{origin}:{} )},body};let status,result;const h={};const res={setHeader:(k,v)=>h[k]=v,status:s=>(status=s,res),json:d=>result=d};await handler(req,res);return {status,result,headers:h};}
 test('unauthenticated premium APIs and account endpoint fail closed',async()=>{for(const action of ['account','trade','simulation','optimize']){const r=await call({action,method:action==='account'?'GET':'POST',origin:'https://test.example',body:{pro:true}});assert([401,403,503].includes(r.status));assert(!r.result.players);}});
 test('cross-origin and missing-origin mutations reject before any work',async()=>{process.env.APP_ORIGIN='https://test.example';for(const origin of [undefined,'https://evil.example']){const r=await call({action:'login',method:'POST',origin,body:{email:'test@example.com'}});assert.equal(r.status,403);}});
 test('status discloses no secrets and every API response is uncached',async()=>{const r=await call({action:'status'});assert.equal(r.status,200);assert.equal(r.headers['Cache-Control'],'private, no-store');assert(!JSON.stringify(r.result).includes('SERVICE_ROLE'));});
@@ -28,4 +28,12 @@ test('invalid webhook signatures and oversized mutation bodies reject',async()=>
  process.env.APP_ORIGIN='https://test.example';
  const large=await call({action:'login',method:'POST',origin:'https://test.example',body:{email:'x'.repeat(20000)}});assert.equal(large.status,413);
  const webhook=await call({action:'webhook',method:'POST'});assert.equal(webhook.status,400);
+});
+
+test('signed UTF-8 webhook bytes survive chunk boundaries without weakening signatures',async()=>{
+ const oldSecret=process.env.STRIPE_WEBHOOK_SECRET,oldSync=process.env.STRIPE_SYNC_VERIFIED;process.env.STRIPE_WEBHOOK_SECRET='whsec_fixture';process.env.STRIPE_SYNC_VERIFIED='false';
+ try{const raw=Buffer.from(JSON.stringify({id:'evt_fixture',type:'customer.updated',livemode:false,data:{object:{id:'cus_fixture',name:'Test 🙂'}}}));const split=raw.indexOf(Buffer.from('🙂'))+1,t=Math.floor(Date.now()/1000),signature=crypto.createHmac('sha256','whsec_fixture').update(t+'.').update(raw).digest('hex');
+ const r=await call({action:'webhook',method:'POST',headers:{'stripe-signature':`t=${t},v1=${signature}`},chunks:[raw.subarray(0,split),raw.subarray(split)]});assert.equal(r.status,503);assert.match(r.result.error,/coverage/);
+ const bad=await call({action:'webhook',method:'POST',headers:{'stripe-signature':`t=${t},v1=${signature}`},chunks:[raw,Buffer.from(' ')]});assert.equal(bad.status,400);
+ }finally{for(const [key,value] of [['STRIPE_WEBHOOK_SECRET',oldSecret],['STRIPE_SYNC_VERIFIED',oldSync]]){if(value===undefined)delete process.env[key];else process.env[key]=value;}}
 });
