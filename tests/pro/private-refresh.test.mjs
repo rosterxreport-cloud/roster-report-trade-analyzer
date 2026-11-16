@@ -1,3 +1,6 @@
+import {readFileSync} from 'node:fs';
+import crypto from 'node:crypto';
+const policyBytes=readFileSync(new URL('../../config/nba-incumbent-release.json',import.meta.url)),policy=JSON.parse(policyBytes),policyHash=crypto.createHash('sha256').update(policyBytes).digest('hex');
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';
@@ -37,8 +40,8 @@ function fixture(){
  const slates=['NBA','NFL'].map(sport=>{
   const positions=sport==='NBA'?['PG','SG','SF','PF','C']:['QB','RB','WR','TE','DST'];
   const players=Array.from({length:20},(_,i)=>({id:String(i+1),name:'Synthetic '+i,team:i%2?'ATL':'BOS',opponent:i%2?'BOS':'ATL',gameId:String(Math.floor(i/10)),projection:20+i/10}));
-  const model={schemaVersion:1,kind:'projections',sport,scoring:'DraftKings',publishApproved:true,capturedAt,validUntil,provenance:{modelHash:'fixture-model',sourceHash:'fixture-source'},players};
-  const joint={...model,kind:'joint',draws:10000,joint:true,modelHash:'fixture-model',scores:Object.fromEntries(players.map(p=>[p.id,Array(10000).fill(p.projection)]))};
+  const model={schemaVersion:1,kind:'projections',sport,scoring:'DraftKings',publishApproved:true,capturedAt,validUntil,provenance:{modelHash:sport==='NBA'?policy.modelFingerprint:'c95ac28e53c2c9550827391269dcaff95127ee8397730b33072bc81d00441d6d',sourceHash:'fixture-source',...(sport==='NBA'?{model:policy.model,simulatorHash:policy.sourceFiles['simulate_slate.py'],releaseAuthorization:{policyHash}}:{modelUnchanged:true,weeklySource:'data/projections/2026_week10_league_v4_full.csv',weeklyManifestHash:'synthetic'})},players};
+  const joint={...model,kind:'joint',draws:10000,joint:true,modelHash:model.provenance.modelHash,scores:Object.fromEntries(players.map(p=>[p.id,Array(10000).fill(p.projection)]))};
   const manifest={schemaVersion:1,sport,slateId:'synthetic',format:'DraftKings Classic',publishApproved:true,completeSalaryPool:true,salarySource:'synthetic test',injurySource:'synthetic test',scheduleSource:'synthetic test',salaryCapturedAt:capturedAt,injuryCapturedAt:capturedAt,scheduleCapturedAt:capturedAt,gameIds:['0','1'],playerMappings:players.map(p=>({dkId:p.id,modelId:p.id,team:p.team,opponent:p.opponent,gameId:p.gameId,status:'active',verifiedAt:capturedAt,startsAt:validUntil}))};
   const salaryCsv='ID,Name,Position,Salary,TeamAbbrev\n'+players.map((p,i)=>[p.id,p.name,positions[i%5],4000,p.team].join(',')).join('\n');
   return {model,joint,manifest,salaryCsv};
@@ -65,4 +68,27 @@ test('expired complete bundle fails before any write and retains original source
  const bundle=fixture();let calls=0;
  await assert.rejects(refreshBundle(bundle,env,{now:new Date('2026-11-16T22:00:00Z'),fetchImpl:async()=>{calls++;}}));
  assert.equal(calls,0);assert.equal(bundle.slates[0].model.capturedAt,capturedAt);
+});
+
+test('NBA and NFL refresh independently without requiring the other sport',async()=>{
+ for(const sport of ['NBA','NFL']){
+  const bundle=fixture();bundle.sports=[sport];bundle.slates=bundle.slates.filter(s=>s.model.sport===sport);
+  if(sport==='NFL')delete bundle.nba;
+  const result=await refreshBundle(bundle,{}, {now,validateOnly:true});
+  assert.equal(result.validated,sport==='NBA'?4:2);
+ }
+});
+test('basic slates do not require advanced draws; invalid selected sports cannot publish',async()=>{
+ const bundle=fixture();bundle.sports=['NFL'];bundle.slates=bundle.slates.filter(s=>s.model.sport==='NFL');delete bundle.nba;delete bundle.slates[0].joint;
+ assert.equal((await refreshBundle(bundle,{}, {now,validateOnly:true})).validated,2);
+ for(const sports of [[],['MLB'],['NFL','NFL']])await assert.rejects(refreshBundle({...bundle,sports},{},{now,validateOnly:true}),/refresh sports/);
+ await assert.rejects(refreshBundle({...fixture(),sports:['NBA']},{},{now,validateOnly:true}),/outside/);
+});
+
+test('publication refuses experimental model substitution despite approval flags',async()=>{
+ for(const sport of ['NBA','NFL']){
+  const bundle=fixture();bundle.slates.find(s=>s.model.sport===sport).model.provenance.modelHash='experimental';
+  let writes=0;await assert.rejects(refreshBundle(bundle,env,{now,fetchImpl:async()=>{writes++;return {ok:true};}}),/unchanged incumbent|established weekly/);
+  assert.equal(writes,0);
+ }
 });

@@ -38,3 +38,7 @@ Activation still requires the existing private model generator to expose the fee
 ## November 16 runner recovery follow-up
 
 See [PRIVATE_RUNNER_RECOVERY_2026_11_16.md](PRIVATE_RUNNER_RECOVERY_2026_11_16.md) for actual infrastructure observations and execution results. Direct private-host publication from a local bundle is now supported, including a credential-free validation-only mode. A separate feed service is optional. The recovered NBA simulator executed for 239 players × 10,000 draws; its source approval remains false and publication was rejected. The staging gateway is read-only for artifacts. No scheduled model host or real end-to-end publication has been connected. Full application validation now passes 120 tests. Production remains unapproved.
+
+## Established-model DFS update
+
+See [DFS_ESTABLISHED_MODELS_2026_11_16.md](DFS_ESTABLISHED_MODELS_2026_11_16.md). The owner delegated incumbent NBA model approval; the pinned unchanged source now passes release authorization without another approval request. NFL publication is restricted to the existing weekly structural v4 model. Current official NBA/NFL salary retrieval has passed. Sport refreshes and basic/advanced requirements are separated. Validation: 126 application tests and four NBA authorization tests pass. Durable scheduling, publishing identity and complete current availability/identity/scoring inputs remain unconnected; no live automated publication or production promotion is claimed.

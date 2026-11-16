@@ -1,18 +1,25 @@
+import {validateModelLineage} from '../../server/model-lineage.mjs';
+import {adaptWeeklyNFL} from '../../server/nfl-weekly-adapter.mjs';
 import {buildSlate} from '../../server/slate-ingestion.mjs';
 import {validateSlate,optimize} from '../../server/optimizer.mjs';
 import {validateArtifact} from '../../server/domain.mjs';
 // Consumes the established private model feed; never fits or changes a model.
 export async function prepareRefresh(bundle,now=new Date()){
  const decisionAt=now.toISOString(),artifacts=[];
- for(const sport of ['NBA','NFL']){
-  const items=bundle.slates?.filter(s=>s.model?.sport===sport)||[];
+ const sports=bundle.sports??['NBA','NFL'];
+ if(!Array.isArray(sports)||!sports.length||new Set(sports).size!==sports.length||sports.some(s=>!['NBA','NFL'].includes(s)))throw Error('Explicit refresh sports must be NBA and/or NFL.');
+ if(bundle.slates?.some(s=>!sports.includes(s.weekly?'NFL':s.model?.sport)))throw Error('Source contains a slate outside the selected refresh sports.');
+ for(const sport of sports){
+  const items=bundle.slates?.filter(s=>(s.weekly?'NFL':s.model?.sport)===sport)||[];
   const catalog=[];
-  for(const input of items){
+  for(const source of items){
+   const input=source.weekly?{...source,model:adaptWeeklyNFL(source.weekly,source.weeklyManifest,source.scoringEvidence,now.getTime())}:source;
+   validateModelLineage(input.model);
    const {artifact,report}=buildSlate({...input,decisionAt});
    if(!report.releaseApproved)throw Error(sport+' slate failed release validation.');
    validateSlate(artifact,now.getTime());
    if(!/^[-a-zA-Z0-9_]{1,60}$/.test(artifact.slateId))throw Error('Invalid source slate identity.');
-   optimize(artifact,{advanced:true,count:1},now.getTime());
+   optimize(artifact,{advanced:!!input.joint,count:1},now.getTime());
    // Immutable paths prevent a failed refresh from replacing the previous slate.
    const version=artifact.slateId+'-'+now.getTime();artifact.slateId=version;
    artifacts.push({path:sport.toLowerCase()+'/slates/'+version+'.json',data:artifact});
@@ -21,8 +28,8 @@ export async function prepareRefresh(bundle,now=new Date()){
   if(!catalog.length)throw Error(sport+' has no validated upcoming slate in the source feed.');
   artifacts.push({path:sport.toLowerCase()+'/slates.json',data:{capturedAt:decisionAt,slates:catalog}});
  }
- for(const [file,kind] of [['basic','projections'],['distributions','distributions']]){
-  const data=bundle.nba?.[file];validateArtifact(data,{kind,sport:'NBA',now:now.getTime()});
+ if(sports.includes('NBA'))for(const [file,kind] of [['basic','projections'],['distributions','distributions']]){
+  const data=bundle.nba?.[file];validateModelLineage(data);validateArtifact(data,{kind,sport:'NBA',now:now.getTime()});
   if(file==='distributions'&&(data.draws!==10000||data.scoring!=='DraftKings'))throw Error('NBA distribution release is incomplete.');
   artifacts.push({path:'nba/'+file+'.json',data});
  }

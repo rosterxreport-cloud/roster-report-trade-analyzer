@@ -8,12 +8,14 @@ from datetime import datetime, timedelta, timezone
 import numpy as np
 
 
-def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
+def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114, release_policy=None):
     sys.path.insert(0, str(model_dir / 'src'))
     from simulate_slate import simulate, INDEX, FIELDS
     from draftkings_audit import DK
     raw = snapshot_path.read_bytes()
     snapshot = json.loads(raw)
+    from nba_release import authorize
+    release = authorize(model_dir, snapshot, release_policy) if release_policy else None
     audit_path = model_dir / 'forward/audit_rows.json'
     rotations = None
     if rotation_path:
@@ -22,13 +24,13 @@ def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
         rotations = build_context(snapshot, observed_rotation_history(model_dir), evidence.get('injury'), evidence.get('expected_starters'))
     forecasts, noise = simulate(snapshot, json.loads(audit_path.read_text()), 10000, seed, rotations)
     model_hash = snapshot.get('modelFingerprint') or hashlib.sha256(raw).hexdigest()
-    base = dict(schemaVersion=1, sport='NBA', scoring='DraftKings', publishApproved=snapshot.get('publishApproved') is True,
+    base = dict(schemaVersion=1, sport='NBA', scoring='DraftKings', publishApproved=bool(release) or snapshot.get('publishApproved') is True,
                 capturedAt=snapshot['createdAt'], validUntil=min(f['start'] for f in snapshot['fixtures']),
                 provenance=dict(modelHash=model_hash, sourceHash=hashlib.sha256(raw).hexdigest(),
                                 auditHash=hashlib.sha256(audit_path.read_bytes()).hexdigest(),
-                                model=snapshot['model'], shootingPolicy='Recovered source policy; requires independent historical-percentage release audit',
+                                model=snapshot['model'], shootingPolicy='Unchanged incumbent source policy',
                                 simulatorHash=hashlib.sha256((model_dir/'src/simulate_slate.py').read_bytes()).hexdigest(),
-                                seed=seed, researchOnly=True))
+                                seed=seed, researchOnly=not bool(release), releaseAuthorization=release))
     teams=dict(enumerate('ATL BOS NOP CHI CLE DAL DEN DET GSW HOU IND LAC LAL MIA MIL MIN BKN NYK ORL PHI PHX POR SAC SAS OKC UTA WAS TOR MEM CHA'.split(),1))
     basic, distributions, scores = [], [], {}
     for (game, player), (row, box) in forecasts.items():
@@ -55,7 +57,7 @@ def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
         (output/name).write_text(json.dumps(artifact,allow_nan=False,separators=(',',':')))
     report = dict(players=len(basic),drawsPerPlayer=10000,seed=seed,sourceApproved=base['publishApproved'],
                   sourceModel=snapshot['model'],minuteNoise=noise,
-                  note='Recovered joint model, not a new calibrated simulation or a public release. Source gate preserved.')
+                  note='Unchanged incumbent joint model. Release authorization recorded separately from original source approval.')
     (output/'run-report.json').write_text(json.dumps(report,indent=2))
     print(json.dumps(report,indent=2))
 
@@ -65,5 +67,6 @@ if __name__=='__main__':
     parser.add_argument('--snapshot',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--rotation-evidence',type=Path)
+    parser.add_argument('--release-policy',type=Path,help='Pinned incumbent authorization; does not change source timestamps or forecasts')
     args=parser.parse_args()
-    run(args.model_dir.resolve(),args.snapshot.resolve(),args.output.resolve(),args.rotation_evidence)
+    run(args.model_dir.resolve(),args.snapshot.resolve(),args.output.resolve(),args.rotation_evidence,release_policy=args.release_policy)
