@@ -34,7 +34,7 @@
   },
   "crons": [
     {
-      "path": "/api/pro?action=reconcile",
+      "path": "/api/pro/?action=reconcile",
       "schedule": "*/15 * * * *"
     }
   ]

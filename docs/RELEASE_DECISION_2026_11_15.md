@@ -1,3 +1,5 @@
+> Current release and owner decisions: see [RELEASE_STATUS.md](RELEASE_STATUS.md). Dated findings below describe the state at the time of their audit.
+
 # Model/data review and billing staging
 
 This review does not approve production deployment or change sign-in readiness.

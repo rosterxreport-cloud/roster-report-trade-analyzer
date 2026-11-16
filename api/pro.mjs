@@ -6,6 +6,7 @@ import {reconcileEvent,syncEmail,reconcileKnown,stripeConfig} from '../server/me
 import {optimize,validateSlate} from '../server/optimizer.mjs';
 import {tradeAnalysis} from '../server/trade.mjs';
 import {existingModelPreview} from '../server/nba-baseline.mjs';
+import {allowedRequestOrigin} from '../server/request-origin.mjs';
 export const config={api:{bodyParser:false}};
 const read=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url),'utf8'));
 const cookieOptions='; HttpOnly; Secure; SameSite=Lax; Path=/';
@@ -20,7 +21,7 @@ async function rate(key,limit,seconds=60){if(!await rpc('pro_rate_limit',{p_key:
 async function identity(req){const token=cookies(req).rr_access;if(!token)fail(401,'Sign in to use this tool.');const user=await supa('user',{auth:true,token});if(!user.id||!user.email_confirmed_at)fail(401,'Verify your email before continuing.');let claims;try{claims=JSON.parse(Buffer.from(token.split('.')[1],'base64url'));}catch{fail(401,'Invalid session.');}if(!/^[0-9a-f-]{36}$/i.test(claims.session_id||'')||!await rpc('pro_session_active',{p_user:user.id,p_session:claims.session_id}))fail(401,'Your session has ended. Please sign in again.');return user;}
 async function membership(user){const rows=await supa('pro_entitlements?email=eq.'+encodeURIComponent(normalizeEmail(user.email))+'&select=status,expires_at,source');return {pro:activeMembership(rows),memberships:rows};}
 async function requirePro(req){const user=await identity(req),status=await membership(user);if(!status.pro)fail(403,'Roster Report Pro membership is required.');return user;}
-function origin(req){const e=process.env;const expected=e.APP_ORIGIN||(e.VERCEL_URL?'https://'+e.VERCEL_URL:null);if(!expected||req.headers.origin!==expected)fail(403,'Request origin could not be verified.');}
+function origin(req){if(!allowedRequestOrigin(req.headers.origin))fail(403,'Request origin could not be verified.');}
 export default function handler(req,res){return withBackendIdentity(req.headers['x-vercel-oidc-token'],()=>handle(req,res));}
 async function handle(req,res){
  res.setHeader('Cache-Control','private, no-store');res.setHeader('X-Content-Type-Options','nosniff');

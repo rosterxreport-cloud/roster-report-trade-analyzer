@@ -1,3 +1,5 @@
+> Current release and owner decisions: see [RELEASE_STATUS.md](RELEASE_STATUS.md). Dated findings below describe the state at the time of their audit.
+
 # Established-model product integration
 
 The development Preview NBA projections page now loads all 268 players from the original November 15 shared-preseason25-v1 forecast. Point values and the 13 displayed stat fields are copied exactly; no simulator, shooting-policy adjustment or recalibration is invoked. Source SHA256: d1a05f2e9d1844aa7d28d99dcc32f7858adcca94514e6100b8ea0a8efea9783b.

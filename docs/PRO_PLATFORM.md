@@ -1,3 +1,5 @@
+> Current release and owner decisions: see [RELEASE_STATUS.md](RELEASE_STATUS.md). Dated findings below describe the state at the time of their audit.
+
 # Toolkit Pro implementation and release record
 
 ## Audit — 2026-11-14 Pacific

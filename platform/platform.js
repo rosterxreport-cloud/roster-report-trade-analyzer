@@ -1,7 +1,7 @@
 (()=>{'use strict';
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),fmt=x=>Number.isFinite(x)?x.toFixed(1):'—';
 let refreshed=false;
-async function api(action,input){const r=await fetch('/api/pro?action='+action,{method:input?'POST':'GET',headers:input?{'Content-Type':'application/json'}:{},body:input?JSON.stringify(input):undefined});const d=await r.json();if(r.status===401&&!refreshed&&!['refresh','login','verify'].includes(action)){refreshed=true;try{await api('refresh',{});return api(action,input);}catch{}}if(!r.ok)throw new Error(d.error||'Service unavailable.');return d;}
+async function api(action,input){const r=await fetch('/api/pro/?action='+action,{method:input?'POST':'GET',headers:input?{'Content-Type':'application/json'}:{},body:input?JSON.stringify(input):undefined});const d=await r.json();if(r.status===401&&!refreshed&&!['refresh','login','verify'].includes(action)){refreshed=true;try{await api('refresh',{});return api(action,input);}catch{}}if(!r.ok)throw new Error(d.error||'Service unavailable.');return d;}
 const notice=(el,text,error=false)=>{el.innerHTML=`<p class="notice ${error?'error':''}" role="status">${esc(text)}</p>`;};
 function busy(form,on){form.querySelectorAll('button').forEach(b=>b.disabled=on);}
 function table(headers,rows,caption=''){return `<div class="pro-table" tabindex="0" role="region" aria-label="Scrollable results"><table>${caption?`<caption>${esc(caption)}</caption>`:''}<thead><tr>${headers.map(h=>`<th scope="col">${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
