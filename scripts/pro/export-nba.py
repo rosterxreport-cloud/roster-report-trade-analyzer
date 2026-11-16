@@ -38,7 +38,7 @@ def run(model_dir, snapshot_path, output, rotation_path=None, seed=20261114):
         fantasy = sum(box[:, INDEX[k]] * weight for k, weight in DK.items()) + 1.5*(categories>=2) + 3*(categories>=3)
         scores[str(player)] = fantasy.tolist()
         record = dict(id=str(player), name=row['name'], team=teams.get(int(row['team']),str(row['team'])), gameId=str(game), opponent=teams.get(row.get('tracking_applied',{}).get('opponent_defense',{}).get('opponent'),'Unavailable'),
-                      minutes=row['model']['MIN'], statline=row['model'], projection=row['DraftKings'])
+                      minutes=row['model']['MIN'], statline=row['model'], projection=row['DraftKings'], fantasyPoints={k:row[k] for k in ('DraftKings','Yahoo','ESPN') if k in row})
         basic.append(record)
         hist, edges = np.histogram(fantasy, bins=24)
         d = {**record, 'mean':float(fantasy.mean()), 'median':float(np.median(fantasy)),

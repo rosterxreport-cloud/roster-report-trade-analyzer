@@ -6,7 +6,8 @@ export function existingModelPreview(a,environment){
  const seen=new Set();
  const players=a.players.map(p=>{
   if(!/^\d+$/.test(p.id)||seen.has(p.id)||!p.name||!p.team||!p.opponent||!Number.isFinite(p.minutes)||!Number.isFinite(p.projection)||fields.some(k=>!Number.isFinite(p.statline?.[k])))fail(503,'Existing-model player data is invalid.');
-  seen.add(p.id);return {id:p.id,name:p.name,team:p.team,opponent:p.opponent,minutes:p.minutes,projection:p.projection,statline:Object.fromEntries(fields.map(k=>[k,p.statline[k]])),availability:'Unverified'};
+  if(p.fantasyPoints&&['DraftKings','Yahoo','ESPN'].some(k=>!Number.isFinite(p.fantasyPoints[k])))fail(503,'Invalid fantasy scoring values.');
+  seen.add(p.id);return {id:p.id,name:p.name,team:p.team,opponent:p.opponent,minutes:p.minutes,projection:p.projection,fantasyPoints:p.fantasyPoints?Object.fromEntries(['DraftKings','Yahoo','ESPN'].map(k=>[k,p.fantasyPoints[k]])):{DraftKings:p.projection},statline:Object.fromEntries(fields.map(k=>[k,p.statline[k]])),availability:'Unverified'};
  });
- return {capturedAt:a.capturedAt,model:a.model,previewOnly:true,label:'Dated Roster Report projections · established model, unchanged. Availability is unverified; this snapshot is not an eligible DFS slate.',players};
+ return {capturedAt:a.capturedAt,model:a.model,previewOnly:true,label:'Dated Roster Report projections. Availability is unverified; this snapshot is not an eligible DFS slate.',players};
 }

@@ -9,3 +9,5 @@ The existing approved private-storage route remains preferred. If that route is 
 Verification: all 268 exported point forecasts and stat lines were compared against the original source. Tests cover data identity, duplicate/invalid records, private-field stripping, Preview-only access, the HTTP route fallback and production rejection. No experimental projection examples are reintroduced.
 
 Remaining activation work is operational integration: reliable email delivery, runtime billing credentials, signed webhook delivery, publication-plan mapping, established-model artifact delivery and end-to-end free/paid flows. Additional model redesign is out of scope. Missing current-slate eligibility data must still be reported explicitly rather than invented.
+
+The projection table offers DraftKings, Yahoo and ESPN point outputs copied from the established source, sorted for the selected scoring format. Source values are never recomputed. Snapshot date/availability notices sit outside the horizontal table scroll, and search displays result counts and an explicit empty state. Approved artifact exports can carry the same optional existing scoring outputs.
