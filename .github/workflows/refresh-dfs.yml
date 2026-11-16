@@ -1,0 +1,28 @@
+name: Refresh validated DFS inputs
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: validated-dfs-refresh
+  cancel-in-progress: false
+jobs:
+  refresh:
+    if: vars.DFS_AUTOMATION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: dfs-preview
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Validate established model feed and publish private inputs
+        run: node scripts/pro/refresh-dfs.mjs
+        env:
+          DFS_SOURCE_URL: ${{ vars.DFS_SOURCE_URL }}
+          DFS_SOURCE_TOKEN: ${{ secrets.DFS_SOURCE_TOKEN }}
+          SUPABASE_URL: ${{ vars.DFS_SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.DFS_SUPABASE_SERVICE_ROLE_KEY }}
