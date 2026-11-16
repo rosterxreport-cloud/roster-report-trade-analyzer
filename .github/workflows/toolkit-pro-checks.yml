@@ -16,6 +16,8 @@ jobs:
       - run: npm ci
       - run: python3 scripts/pro/test-audit-shooting.py
       - run: python3 scripts/pro/test-nba-release.py
+      - run: python3 scripts/pro/test-nba-availability.py
+      - run: python3 scripts/pro/test-private-worker.py
       - run: npm test
       - run: node --check platform/platform.js && node --check api/pro.mjs
   research-validation:

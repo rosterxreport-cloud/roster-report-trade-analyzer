@@ -36,6 +36,12 @@ export async function prepareRefresh(bundle,now=new Date()){
  return artifacts;
 }
 function storageConfig(env){
+ if(env.DFS_PUBLISH_URL||env.DFS_PUBLISH_TOKEN){
+  if(!env.DFS_PUBLISH_URL||!env.DFS_PUBLISH_TOKEN)throw Error('Scoped publishing connection is incomplete.');
+  const endpoint=new URL(env.DFS_PUBLISH_URL);if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash)throw Error('Publisher must use credential-free HTTPS.');
+  return {publisher:endpoint.href};
+ }
+
  for(const key of ['SUPABASE_URL','SUPABASE_SERVICE_ROLE_KEY'])if(!env[key])throw Error('Missing '+key);
  const endpoint=new URL(env.SUPABASE_URL);
  if(endpoint.protocol!=='https:'||endpoint.username||endpoint.password||endpoint.search||endpoint.hash)throw Error('Private storage endpoint must use credential-free HTTPS.');
@@ -48,12 +54,12 @@ function storageConfig(env){
 export async function refreshBundle(bundle,env=process.env,{now=new Date(),fetchImpl=fetch,validateOnly=false}={}){
  const artifacts=await prepareRefresh(bundle,now);
  if(validateOnly)return {validated:artifacts.length,published:0,decisionAt:now.toISOString()};
- const {endpoint,bucket}=storageConfig(env);
+ const {endpoint,bucket,publisher}=storageConfig(env);
  const ordered=[...artifacts.filter(a=>!a.path.endsWith('/slates.json')),...artifacts.filter(a=>a.path.endsWith('/slates.json'))];
  let published=0;
  for(const a of ordered){
   let response;
-  try{response=await fetchImpl(endpoint+'/storage/v1/object/'+bucket+'/'+a.path,{method:'POST',headers:{Authorization:'Bearer '+env.SUPABASE_SERVICE_ROLE_KEY,apikey:env.SUPABASE_SERVICE_ROLE_KEY,'Content-Type':'application/json','x-upsert':a.path.includes('/slates/')?'false':'true'},body:JSON.stringify(a.data),redirect:'error',signal:AbortSignal.timeout(30000)});}
+  try{response=publisher?await fetchImpl(publisher,{method:'POST',headers:{Authorization:'Bearer '+env.DFS_PUBLISH_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({path:a.path,data:a.data}),redirect:'error',signal:AbortSignal.timeout(60000)}):await fetchImpl(endpoint+'/storage/v1/object/'+bucket+'/'+a.path,{method:'POST',headers:{Authorization:'Bearer '+env.SUPABASE_SERVICE_ROLE_KEY,apikey:env.SUPABASE_SERVICE_ROLE_KEY,'Content-Type':'application/json','x-upsert':a.path.includes('/slates/')?'false':'true'},body:JSON.stringify(a.data),redirect:'error',signal:AbortSignal.timeout(30000)});}
   catch{throw Error('Private artifact upload failed; refresh stopped.');}
   if(!response.ok)throw Error('Private artifact upload failed; refresh stopped.');
   published++;

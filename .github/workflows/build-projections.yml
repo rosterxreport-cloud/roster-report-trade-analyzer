@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'scripts/**'
+      - '!scripts/pro/**'
       - 'data/coaching_scheme_2026.csv'
       - 'data/rookie_rb_college_2026.csv'
       - 'projection-model-v0.4.mjs'

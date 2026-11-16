@@ -7,7 +7,8 @@ export function selectGroup(lobby,sport,now=Date.now()){
  const gameType=sport==='NBA'?70:sport==='NFL'?1:null;
  if(!gameType)throw Error('Unsupported DFS sport.');
  const horizon=now+(sport==='NBA'?48:8*24)*3600000;
- const groups=(lobby.DraftGroups||[]).filter(g=>g.Sport===sport&&g.GameTypeId===gameType&&g.GameCount>=2&&/^\d+$/.test(String(g.DraftGroupId))&&Date.parse(g.StartDate)>now&&Date.parse(g.StartDate)<=horizon);
+ let groups=(lobby.DraftGroups||[]).filter(g=>g.Sport===sport&&g.GameTypeId===gameType&&g.GameCount>=2&&/^\d+$/.test(String(g.DraftGroupId))&&Date.parse(g.StartDate)>now&&Date.parse(g.StartDate)<=horizon);
+ if(sport==='NBA'&&groups.length){const date=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'});const first=[...new Set(groups.map(g=>date.format(new Date(g.StartDate))))].sort()[0];groups=groups.filter(g=>date.format(new Date(g.StartDate))===first);}
  groups.sort((a,b)=>b.GameCount-a.GameCount||Date.parse(a.StartDate)-Date.parse(b.StartDate)||Number(a.DraftGroupId)-Number(b.DraftGroupId));
  if(!groups.length)throw Error('No upcoming supported Classic slate is listed.');
  return groups[0];

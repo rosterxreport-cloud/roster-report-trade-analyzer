@@ -35,7 +35,9 @@ export function optimize(artifact,options={},now=Date.now()){
  if(!Number.isInteger(count)||count<1||count>20||!Array.isArray(locks)||!Array.isArray(excludes)||new Set(locks).size!==locks.length||new Set(excludes).size!==excludes.length||locks.some(x=>excludes.includes(x))||locks.length>SLOTS[sport].length||!Number.isFinite(maxExposure)||maxExposure<=0||maxExposure>1||!Number.isInteger(stack)||stack<0||stack>3)fail(400,'Invalid lineup controls.');
  if(!exposureCaps||typeof exposureCaps!=='object'||Array.isArray(exposureCaps)||!Number.isInteger(minUnique)||minUnique<1||minUnique>SLOTS[sport].length||Object.values(exposureCaps).some(x=>!Number.isFinite(x)||x<0||x>1))fail(400,'Invalid player exposure or diversity controls.');
  if(!advanced&&(Object.keys(exposureCaps).length||minUnique!==1||count!==1||locks.length||excludes.length||maxExposure!==1||stack||bringBack))fail(403,'Advanced controls require Roster Report Pro.');
- if(advanced&&!matrixValid(slate))fail(503,'A release-approved 10,000-draw joint simulation is required for advanced optimization.');
+ const projectionControls=advanced&&sport==='NFL'&&slate.scoring==='RR-DK-core'&&slate.provenance.scoringMethod==='weekly-ppr-plus-interceptions';
+ const simulate=advanced&&!projectionControls;
+ if(simulate&&!matrixValid(slate))fail(503,'A release-approved 10,000-draw joint simulation is required for advanced optimization.');
  const pool=slate.players.filter(p=>p.status==='active'&&Date.parse(p.startsAt)>now&&!excludes.includes(p.id));
  if([...locks,...excludes].some(id=>!slate.players.some(p=>p.id===id))||locks.some(id=>!pool.some(p=>p.id===id)))fail(400,'A lock or exclusion is not eligible for this active slate.');
  if(Object.keys(exposureCaps).some(id=>!slate.players.some(p=>p.id===id)))fail(400,'Exposure controls contain a player outside this slate.');
@@ -43,15 +45,15 @@ export function optimize(artifact,options={},now=Date.now()){
  const exposureMax=Math.floor(count*maxExposure+1e-8);
  if(exposureMax<1||locks.some(id=>limit(id)<count)||(count>1&&minUnique>SLOTS[sport].length-locks.length))fail(400,'Exposure cap conflicts with the requested lineup count or locks.');
  const used=new Map(),seen=new Set(),lineups=[];
- const samples=advanced?slate.simulations.scores:null;
+ const samples=simulate?slate.simulations.scores:null;
  const cap=50000,deadline=Date.now()+25000;
  for(let n=0;n<count;n++){
   const available=pool.filter(p=>(used.get(p.id)||0)<limit(p.id));
   const candidates=new Map();
-  const attempts=advanced?12:1;
+  const attempts=simulate?12:1;
   for(let attempt=0;attempt<attempts;attempt++){
    if(Date.now()>deadline)fail(422,'Search budget reached. Request fewer lineups or relax constraints.');
-   const weight=p=>!advanced?p.projection:(.30*p.projection+.70*samples[p.id][(attempt*787+n*1237)%5000]);
+   const weight=p=>!simulate?p.projection:(.30*p.projection+.70*samples[p.id][(attempt*787+n*1237)%5000]);
    const weights=new Map(available.map(p=>[p.id,weight(p)]));
    let beam=[{players:[],ids:new Set(),salary:0,score:0}];
    for(const slot of SLOTS[sport]){
@@ -78,7 +80,7 @@ export function optimize(artifact,options={},now=Date.now()){
   // Evaluate held-out joint draws, separate from the candidate-search draws.
   for(const [key,candidate] of candidates){
    let score=candidate.score,summary;
-   if(advanced){
+   if(simulate){
     const scores=Array.from({length:1000},(_,i)=>candidate.players.reduce((s,p)=>s+samples[p.id][5000+i*5],0));
     summary={mean:scores.reduce((a,b)=>a+b,0)/scores.length,p10:quantile(scores,.1),median:quantile(scores,.5),p90:quantile(scores,.9),p95:quantile(scores,.95),basis:'1,000 held-out draws from joint model; simulated, not historical'};
     const hasOwnership=candidate.players.every(p=>p.ownership!=null);
@@ -91,5 +93,5 @@ export function optimize(artifact,options={},now=Date.now()){
   seen.add(best.key);best.players.forEach(p=>used.set(p.id,(used.get(p.id)||0)+1));
   lineups.push({players:best.players.map((p,i)=>({slot:SLOTS[sport][i],id:p.id,name:p.name,team:p.team,salary:p.salary,projection:p.projection,ownership:p.ownership??null})),salary:best.salary,projected:best.players.reduce((s,p)=>s+p.projection,0),simulation:best.summary||null});
  }
- return {sport,slateId:slate.slateId,mode:advanced?'Tournament upside':'Basic projection',algorithm:'Bounded beam search; feasible solutions, global optimality not guaranteed',lineups,exposures:Object.fromEntries([...used].map(([id,num])=>[id,num/count])),csv:[SLOTS[sport].join(','),...lineups.map(l=>l.players.map(p=>p.id).join(','))].join('\r\n'),exportFormat:'DraftKings Classic player-ID columns; import using the matching slate template',provenance:slate.provenance};
+ return {sport,slateId:slate.slateId,scoring:slate.scoring||'DraftKings',scoringNote:slate.provenance.scoringNote||null,mode:projectionControls?'Advanced RR projection controls':advanced?'Tournament upside':'Basic projection',algorithm:'Bounded beam search; feasible solutions, global optimality not guaranteed',lineups,exposures:Object.fromEntries([...used].map(([id,num])=>[id,num/count])),csv:[SLOTS[sport].join(','),...lineups.map(l=>l.players.map(p=>p.id).join(','))].join('\r\n'),exportFormat:'DraftKings Classic player-ID columns; import using the matching slate template',provenance:slate.provenance};
 }

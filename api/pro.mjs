@@ -56,7 +56,7 @@ async function handle(req,res){
    if(!['NBA','NFL'].includes(sport)||!/^[-a-zA-Z0-9_]{1,80}$/.test(slateId||''))fail(400,'Select an available slate.');
    const a=validateSlate(await modelArtifact(sport.toLowerCase()+'/slates/'+slateId+'.json'));
    if(a.sport!==sport||a.slateId!==slateId)fail(503,'Slate identity mismatch.');
-   result={sport,slateId,capturedAt:a.capturedAt,players:a.players.map(({id,name,team,opponent,positions,salary,projection,status,startsAt})=>({id,name,team,opponent,positions,salary,projection,status,startsAt}))};
+   result={sport,slateId,capturedAt:a.capturedAt,scoring:a.scoring||'DraftKings',scoringNote:a.provenance.scoringNote||null,coverage:a.coverage||null,capabilities:{jointSimulation:!!(a.simulations?.joint&&a.simulations?.draws===10000),projectionControls:true},players:a.players.map(({id,name,team,opponent,positions,salary,projection,status,startsAt})=>({id,name,team,opponent,positions,salary,projection,status,startsAt}))};
   }else if(req.method==='GET'&&action==='account'){
    const u=await identity(req),m=await membership(u);
    const usage=await supa('pro_usage?user_id=eq.'+encodeURIComponent(u.id)+'&day=eq.'+pacificDay()+'&select=request_id');

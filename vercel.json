@@ -30,6 +30,9 @@
     "api/pro.mjs": {
       "maxDuration": 60,
       "includeFiles": "{players.json,data/weekly-projections.json,server/published-trade-values.json,preview/nba-baseline.json}"
+    },
+    "api/dfs-refresh.mjs": {
+      "maxDuration": 300
     }
   },
   "crons": [
