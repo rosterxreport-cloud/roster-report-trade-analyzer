@@ -1,5 +1,6 @@
 import {createRemoteJWKSet,decodeJwt,jwtVerify} from 'npm:jose@6.1.3';
 import {trustedDeployment,allowedBackendPath} from './gateway-policy.mjs';
+import {forwardBackendResponse} from './gateway-response.mjs';
 const issuers=['https://oidc.vercel.com/the-roster-report','https://oidc.vercel.com'];
 const jwks=new Map(issuers.map(issuer=>[issuer,createRemoteJWKSet(new URL(issuer+'/.well-known/jwks'))]));
 const json=(data:unknown,status=200)=>Response.json(data,{status,headers:{'Cache-Control':'no-store'}});
@@ -22,6 +23,6 @@ Deno.serve(async request=>{
    url=root+'/rest/v1/'+input.path;
   }
   const result=await fetch(url,{method,headers:{apikey:key,Authorization:'Bearer '+key,'Content-Type':'application/json',Prefer:'return=representation'},body:input.body===undefined?undefined:JSON.stringify(input.body)});
-  return new Response(await result.text(),{status:result.status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
+  return forwardBackendResponse(result);
  }catch{return json({error:'Backend authentication or request failed'},401);}
 });
