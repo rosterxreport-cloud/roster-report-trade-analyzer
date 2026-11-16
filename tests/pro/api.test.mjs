@@ -37,3 +37,5 @@ test('signed UTF-8 webhook bytes survive chunk boundaries without weakening sign
  const bad=await call({action:'webhook',method:'POST',headers:{'stripe-signature':`t=${t},v1=${signature}`},chunks:[raw,Buffer.from(' ')]});assert.equal(bad.status,400);
  }finally{for(const [key,value] of [['STRIPE_WEBHOOK_SECRET',oldSecret],['STRIPE_SYNC_VERIFIED',oldSync]]){if(value===undefined)delete process.env[key];else process.env[key]=value;}}
 });
+
+test('existing NBA snapshot is reachable only on Preview when approved storage is unavailable',async()=>{const saved=process.env.VERCEL_ENV,fetch=globalThis.fetch;globalThis.fetch=async()=>new Response('{}',{status:503,headers:{'Content-Type':'application/json'}});try{process.env.VERCEL_ENV='preview';let r=await call({action:'nba-basic'});assert.equal(r.status,200);assert.equal(r.result.players.length,268);assert.equal(r.result.previewOnly,true);process.env.VERCEL_ENV='production';r=await call({action:'nba-basic'});assert.equal(r.status,503);assert(!r.result.players);}finally{globalThis.fetch=fetch;if(saved===undefined)delete process.env.VERCEL_ENV;else process.env.VERCEL_ENV=saved;}});

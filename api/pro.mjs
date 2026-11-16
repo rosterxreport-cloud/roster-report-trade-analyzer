@@ -5,6 +5,7 @@ import {config as serviceConfig,supa,rpc,modelArtifact,withBackendIdentity} from
 import {reconcileEvent,syncEmail,reconcileKnown,stripeConfig} from '../server/membership.mjs';
 import {optimize,validateSlate} from '../server/optimizer.mjs';
 import {tradeAnalysis} from '../server/trade.mjs';
+import {existingModelPreview} from '../server/nba-baseline.mjs';
 export const config={api:{bodyParser:false}};
 const read=p=>JSON.parse(fs.readFileSync(new URL('../'+p,import.meta.url),'utf8'));
 const cookieOptions='; HttpOnly; Secure; SameSite=Lax; Path=/';
@@ -41,8 +42,9 @@ async function handle(req,res){
    let billingConfigured=true;try{stripeConfig();}catch{billingConfigured=false;}
    result={accountsConfigured:serviceConfigured,backendVerified,emailSignInReady:process.env.AUTH_EMAIL_READY==='true',billingVerified:billingConfigured,upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
   }else if(req.method==='GET'&&action==='nba-basic'){
-   const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
-   result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection})=>({id,name,team,opponent,minutes,statline,projection}))};
+   try{const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
+    result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection})=>({id,name,team,opponent,minutes,statline,projection}))};
+   }catch(error){if(process.env.VERCEL_ENV!=='preview')throw error;result=existingModelPreview(read('preview/nba-baseline.json'),process.env.VERCEL_ENV);}
   }else if(req.method==='GET'&&action==='slates'){
    const sport=new URL(req.url,'https://toolkit.local').searchParams.get('sport');if(!['NBA','NFL'].includes(sport))fail(400,'Unsupported sport.');
    const a=await modelArtifact(sport.toLowerCase()+'/slates.json');

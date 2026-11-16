@@ -29,7 +29,7 @@
   "functions": {
     "api/pro.mjs": {
       "maxDuration": 60,
-      "includeFiles": "{players.json,data/weekly-projections.json,server/published-trade-values.json}"
+      "includeFiles": "{players.json,data/weekly-projections.json,server/published-trade-values.json,preview/nba-baseline.json}"
     }
   },
   "crons": [
