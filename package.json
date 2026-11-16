@@ -5,7 +5,8 @@
   "scripts": {
     "build": "node scripts/build-seo.mjs && node scripts/build-platform.mjs",
     "test": "node --test tests/*.mjs && npm run build && node --test tests/pro/*.mjs",
-    "test:pro": "node --test tests/pro/*.mjs"
+    "test:pro": "node --test tests/pro/*.mjs",
+    "release:check": "node scripts/release/preflight.mjs"
   },
   "engines": {
     "node": ">=22"

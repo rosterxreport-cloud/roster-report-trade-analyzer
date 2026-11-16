@@ -20,3 +20,9 @@ The owner requested pausing remote administrator sign-in attempts after password
 ## Preview request hardening
 
 Browser API calls and the reconciliation schedule use the canonical `/api/pro/` path to avoid redirects. Mutations accept only HTTPS origins explicitly configured by APP_ORIGIN, VERCEL_URL or VERCEL_BRANCH_URL. Arbitrary Host and forwarding headers cannot expand that allowlist. This permits both the exact build URL and Vercel's stable branch URL without admitting unrelated origins.
+
+## Reproducible release preflight
+
+Run `npm run release:check -- /absolute/private/artifact-root` in the intended deployment environment. It outputs only check names, readiness and safe failure reasons, and exits nonzero if any gate fails. Set RELEASE_COMMIT to the candidate commit and supply dated test receipts in private release-evidence.json for stripeOriginDelivery, authenticatedFreeAndPaidFlows and mobileAndDesktopReview. Each receipt requires passed=true, commit, checkedAt and receipt fields. These are recorded observations, not flags to set without performing the tests.
+
+Running this command in an unconfigured local shell does not inspect Vercel secrets and cannot invalidate the already verified preview billing connection. Missing current private artifacts and missing observations remain explicit blockers. The command does not enable authentication, change models, grant memberships or deploy production.
