@@ -1,6 +1,6 @@
 # Stripe membership preview — November 16, 2026
 
-The owner confirmed that current $5.99/month and $60/year plans and legacy $5/month and $50/year plans belong to The Roster Report. Preview configuration allowlists the 26 exact Substack price versions belonging to those four products; unrelated $8/$80 products remain excluded. No customer emails or secrets are stored in this repository.
+The owner confirmed the publication mapping, then explicitly revoked legacy eligibility: only the current $5.99/month and $60/year plans qualify for Pro. Preview configuration allowlists only `monthly5_99usd` and `yearly60usd`. All legacy price versions are excluded. The previously synced legacy entitlement was revoked; three current memberships remain active in staging. Do not restore legacy eligibility based on Stripe subscription status alone. No customer emails or secrets are stored in this repository.
 
 The restricted runtime key and webhook signing secret are Vercel Secrets scoped to the development preview branch. Stripe endpoint `we_1UcUZWIpu4Wij9Iu4usOR3AN` uses API version `2026-09-30.endive`, the stable preview branch alias, and the canonical `/api/pro/` path. The owner explicitly approved Vercel's private automation bypass token for this receiver. Do not copy the complete webhook URL into documentation or logs. Retire this preview endpoint and revoke its bypass token when production takes over.
 
