@@ -1,3 +1,4 @@
+import {nflDetails} from '../server/nfl-details.mjs';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import {fail,HttpError,normalizeEmail,activeMembership,pacificDay,stripeSignature,validateArtifact} from '../server/domain.mjs';
@@ -42,6 +43,11 @@ async function handle(req,res){
    let backendVerified=false;if(serviceConfigured){try{await rpc('pro_session_active',{p_user:'00000000-0000-0000-0000-000000000000',p_session:'00000000-0000-0000-0000-000000000000'});backendVerified=true;}catch{}}
    let billingConfigured=true;try{stripeConfig();}catch{billingConfigured=false;}
    result={accountsConfigured:serviceConfigured,backendVerified,emailSignInReady:process.env.AUTH_EMAIL_READY==='true',billingVerified:billingConfigured,upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
+  }else if(req.method==='GET'&&action==='nfl-details'){
+   const user=await requirePro(req);await rate('nfl-details:'+user.id,30);
+   const player=new URL(req.url,'https://toolkit.local').searchParams.get('player');
+   if(player&&player.length>120)fail(400,'Invalid player name.');
+   result=nflDetails(read('data/weekly-projections.json'),{player});
   }else if(req.method==='GET'&&action==='nba-basic'){
    try{const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
     result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection,fantasyPoints,status})=>({id,name,team,opponent,minutes,statline,projection,status:status||'unverified',fantasyPoints:Object.fromEntries(['DraftKings','Yahoo','ESPN'].filter(k=>Number.isFinite(fantasyPoints?.[k])||k==='DraftKings').map(k=>[k,k==='DraftKings'?projection:fantasyPoints[k]]))}))};
