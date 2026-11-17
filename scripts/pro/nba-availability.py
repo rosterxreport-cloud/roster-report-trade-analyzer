@@ -21,8 +21,9 @@ def parse(text,day):
   last,first=name.split(',',1)
   teams[current_team]['players'].append({'name':(first.strip()+' '+last.strip()).strip(),'status':status[1]})
  return teams
-def capture(directory,now=None):
+def capture(directory,now=None,game_date=None):
  now=now or datetime.datetime.now(ZoneInfo('America/New_York'));directory=pathlib.Path(directory);directory.mkdir(parents=True,exist_ok=True)
+ game_date=game_date or now.date().isoformat()
  rounded=now.replace(minute=now.minute//15*15,second=0,microsecond=0)
  for offset in range(4):
   stamp=rounded-datetime.timedelta(minutes=15*offset)
@@ -36,7 +37,7 @@ def capture(directory,now=None):
    if not header:continue
    asof=datetime.datetime.strptime(' '.join(header.groups()),'%m/%d/%y %I:%M %p').replace(tzinfo=ZoneInfo('America/New_York'))
    if asof.date()!=now.date() or asof>now or (now-asof).total_seconds()>5400:continue
-   result={'source':url,'reportAsOf':asof.isoformat(),'capturedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'sha256':hashlib.sha256(pdf).hexdigest(),'teams':parse(text,asof.date().isoformat())}
+   result={'source':url,'reportAsOf':asof.isoformat(),'capturedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'sha256':hashlib.sha256(pdf).hexdigest(),'gameDate':game_date,'teams':parse(text,game_date)}
    if not result['teams']:continue
    (directory/'availability.json').write_text(json.dumps(result))
    return result
