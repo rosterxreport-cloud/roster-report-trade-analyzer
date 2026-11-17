@@ -44,7 +44,7 @@ async function handle(req,res){
    result={accountsConfigured:serviceConfigured,backendVerified,emailSignInReady:process.env.AUTH_EMAIL_READY==='true',billingVerified:billingConfigured,upgradeUrl:'https://rosterxreport.substack.com/subscribe',dailyReset:'Midnight America/Los_Angeles',modelRelease:'Requires approved private model artifacts'};
   }else if(req.method==='GET'&&action==='nba-basic'){
    try{const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
-    result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection,fantasyPoints})=>({id,name,team,opponent,minutes,statline,projection,fantasyPoints:Object.fromEntries(['DraftKings','Yahoo','ESPN'].filter(k=>Number.isFinite(fantasyPoints?.[k])||k==='DraftKings').map(k=>[k,k==='DraftKings'?projection:fantasyPoints[k]]))}))};
+    result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection,fantasyPoints,status})=>({id,name,team,opponent,minutes,statline,projection,status:status||'unverified',fantasyPoints:Object.fromEntries(['DraftKings','Yahoo','ESPN'].filter(k=>Number.isFinite(fantasyPoints?.[k])||k==='DraftKings').map(k=>[k,k==='DraftKings'?projection:fantasyPoints[k]]))}))};
    }catch(error){if(process.env.VERCEL_ENV!=='preview')throw error;result=existingModelPreview(read('preview/nba-baseline.json'),process.env.VERCEL_ENV);}
   }else if(req.method==='GET'&&action==='slates'){
    const sport=new URL(req.url,'https://toolkit.local').searchParams.get('sport');if(!['NBA','NFL'].includes(sport))fail(400,'Unsupported sport.');
