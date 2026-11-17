@@ -22,6 +22,7 @@ export function assembleNBA({pool,salaryCsv,basic,joint,availability},now=Date.n
   }
   teams[team]={verified,statuses};
  }
+ const availabilitySummary={unverifiedTeams:[...new Set(pool.players.map(p=>p.team))].filter(t=>!teams[t]?.verified)};
  const adapted=new Map(basic.players.map(p=>[p.id,{...p}]));
  const mappings=[],joins=[];
  for(const player of pool.players){
@@ -45,7 +46,7 @@ export function assembleNBA({pool,salaryCsv,basic,joint,availability},now=Date.n
   mappings.push({dkId:player.id,modelId:projected?.id??'unmodeled:'+player.id,team:player.team,opponent:player.opponent,gameId:player.gameId,startsAt:player.startsAt,status,verifiedAt:availability.capturedAt,...(!projected?{projectionExclusion:{reason:'not-projected-by-established-model',sourceHash:basic.provenance.sourceHash}}:{})});
  }
  const model={...basic,players:[...adapted.values()]};
- const manifest={schemaVersion:1,sport:'NBA',slateId:'dk-'+pool.draftGroupId,format:'DraftKings Classic',name:'NBA DraftKings Classic · '+pool.games.length+' games',completeSalaryPool:true,publishApproved:true,excludeUnmodeled:true,gameIds:pool.games.map(g=>g.id),playerMappings:mappings,identityJoins:joins,salarySource:pool.sourceRecords.salaryCsv.url,salaryCapturedAt:pool.sourceRecords.salaryCsv.capturedAt,scheduleSource:pool.sourceRecords.draftables.url,scheduleCapturedAt:pool.sourceRecords.draftables.capturedAt,injurySource:availability.source,injuryCapturedAt:availability.capturedAt,injuryReportHash:availability.sha256,injuryReportAsOf:availability.reportAsOf};
+ const manifest={schemaVersion:1,sport:'NBA',slateId:'dk-'+pool.draftGroupId,format:'DraftKings Classic',name:'NBA DraftKings Classic · '+pool.games.length+' games',completeSalaryPool:true,publishApproved:true,excludeUnmodeled:true,gameIds:pool.games.map(g=>g.id),playerMappings:mappings,identityJoins:joins,salarySource:pool.sourceRecords.salaryCsv.url,salaryCapturedAt:pool.sourceRecords.salaryCsv.capturedAt,scheduleSource:pool.sourceRecords.draftables.url,scheduleCapturedAt:pool.sourceRecords.draftables.capturedAt,injurySource:availability.source,injuryCapturedAt:availability.capturedAt,injuryReportHash:availability.sha256,injuryReportAsOf:availability.reportAsOf,availabilitySummary};
  return {sports:['NBA'],slates:[{salaryCsv,manifest,model,joint}],nba:{basic,distributions:null}};
 }
 if(process.argv[1]?.endsWith('/assemble-nba-slate.mjs')){
@@ -56,5 +57,5 @@ if(process.argv[1]?.endsWith('/assemble-nba-slate.mjs')){
   const bundle=assembleNBA({pool,basic,joint,availability,salaryCsv:await fs.readFile(csvPath,'utf8')});bundle.nba.distributions=distributions;
   const result=await refreshBundle(bundle);
   console.log(JSON.stringify({state:'published',...result,salaryPlayers:pool.players.length,identityJoins:bundle.slates[0].manifest.identityJoins.length}));
- }catch(error){console.error(JSON.stringify({state:'blocked',reason:error.message}));process.exitCode=1;}
+ }catch(error){console.error(JSON.stringify({state:'blocked',reason:error.message,...(error.validation?{validation:error.validation}:{})}));process.exitCode=1;}
 }
