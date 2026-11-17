@@ -25,3 +25,14 @@ test('failed private execution retains artifacts, stops compute and releases lea
  await createRefreshHandler({env,SandboxClass:{get:async()=>({runCommand:async()=>({exitCode:1}),stop:async()=>{stopped++;}})},fetchImpl:async(_,options)=>{const op=JSON.parse(options.body).operation;ops.push(op);return Response.json(op==='acquire'?{acquired:true}:{released:true});}})({method:'POST',headers:{authorization:'Bearer synthetic-runner'}},res);
  assert.equal(res.code,503);assert.equal(stopped,1);assert.deepEqual(ops,['acquire','release']);
 });
+
+test('success and failure responses wait for compute stop and lease release',async()=>{
+ for(const exitCode of [0,1]){
+  const events=[];
+  const res=response();res.json=function(value){events.push('response');this.value=value;return this;};
+  const SandboxClass={get:async()=>({runCommand:async()=>({exitCode,stdout:async()=>JSON.stringify({state:'partial'})}),stop:async()=>{await Promise.resolve();events.push('stop');}})};
+  const fetchImpl=async(_,options)=>{const op=JSON.parse(options.body).operation;await Promise.resolve();events.push(op);return Response.json(op==='acquire'?{acquired:true}:{released:true});};
+  await createRefreshHandler({env,SandboxClass,fetchImpl})({method:'POST',headers:{authorization:'Bearer synthetic-runner'}},res);
+  assert.deepEqual(events,['acquire','stop','release','response']);
+ }
+});
