@@ -38,7 +38,7 @@ if(process.argv[1]?.endsWith('/assemble-nfl-slate.mjs')){
  let sourceStatus={};
  try{
   const [poolPath,csvPath]=process.argv.slice(2),pool=JSON.parse(await fs.readFile(poolPath,'utf8'));
-  const published=await fetchPublishedWeekly();
+  const published=await fetchPublishedWeekly(fetch,{ref:process.env.NFL_WEEKLY_SOURCE_REF||'main'});
   const r=await fetch('https://dfsroto.win/projections',{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Original DST provider is unavailable.');
   const defenses=parseDefenses(await r.text());
   sourceStatus={availableWeek:published.weekly.week,requiredWeek:defenses.week,season:defenses.season,weeklySource:published.weekly.source,sourceCommit:published.finalSnapshotReceipt.commit};
