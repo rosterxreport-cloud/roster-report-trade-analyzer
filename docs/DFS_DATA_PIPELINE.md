@@ -1,13 +1,19 @@
 # DraftKings slate ingestion and backtesting
 
-The public repository contains no proprietary model inputs or current salary substitutes. All operational artifacts belong in private storage. These commands are offline operator tools, never exposed as public upload or publication APIs.
+The public repository contains no proprietary model inputs or current salary substitutes. All operational artifacts belong in private storage. The scheduled staging runner retrieves and assembles the operational inputs automatically. The CLI examples below remain recovery and audit tools; routine operation does not require uploads. Private model source has no public upload/download route.
+
+## Active staging automation
+
+Supabase cron runs every 30 minutes through the authenticated one-use `dfs-schedule` relay. It invokes the preview-only private runner, which resumes the persistent Vercel sandbox and executes `scripts/pro/run-private-dfs.py`. The established NBA model is unchanged; its forecast date comes from the upcoming official salary slate. NFL consumes the final published weekly JSON/CSV from the same commit. The separate older GitHub feed workflow is gated and inactive.
+
+A scoped `dfs-publisher` validates and writes private artifacts. Model outputs, salaries, identity mappings, official availability and simulations are retrieved/generated without manual uploads. Missing current inputs yield a per-sport blocked/waiting receipt; they do not authorize estimated replacements. See [RELEASE_STATUS.md](RELEASE_STATUS.md) for actual executions and limitations.
 
 ## Required inputs
 
 1. Complete official DraftKings Classic salary CSV with ID, Name, Position, Salary, TeamAbbrev. Names with commas and quoted fields are supported. Do not use a scraped partial player pool as a complete slate.
 2. A dated operator manifest: schemaVersion=1, sport, slateId, format="DraftKings Classic", gameIds, completeSalaryPool, publishApproved; salarySource/injurySource/scheduleSource and corresponding CapturedAt timestamps; playerMappings with dkId, modelId, team, opponent, gameId, startsAt, status, verifiedAt. IDs must be mapped explicitly; no fuzzy name joins. Any ownership input requires a source and capture timestamp, expressed as a fraction in [0,1].
-3. An RR projection artifact: kind="projections", scoring="DraftKings", matching sport, capturedAt, validUntil, publishApproved, provenance.modelHash/sourceHash, and players with model id, name, team, opponent, gameId, projection. NFL scoring must account for DraftKings-specific scoring; existing generic PPR totals must not silently stand in for this artifact.
-4. For advanced optimization, a matching RR joint simulation artifact with exactly 10,000 finite scores per model ID, consistent model hash, source snapshot hash and capture time. Draw indexes must represent the same joint game scenarios across players.
+3. An RR projection artifact: kind="projections", scoring="DraftKings", matching sport, capturedAt, validUntil, publishApproved, provenance.modelHash/sourceHash, and players with model id, name, team, opponent, gameId, projection. NFL may instead declare `scoring="RR-DK-core"` for the recovered original RR PPR/interception adapter, with its omitted events disclosed. It must not be labelled complete DraftKings scoring.
+4. For simulation-based NBA upside optimization, a matching RR joint simulation artifact with exactly 10,000 finite scores per model ID, consistent model hash, source snapshot hash and capture time. Draw indexes must represent the same joint game scenarios across players.
 
 All timestamps require explicit timezones. Injury/availability evidence is valid for at most 90 minutes. Out, inactive, questionable and doubtful players are excluded conservatively; no return-to-play assumption is invented.
 
@@ -15,7 +21,7 @@ All timestamps require explicit timezones. Injury/availability evidence is valid
 node scripts/pro/import-slate.mjs --salaries /private/DKSalaries.csv --manifest /private/slate-manifest.json --model /private/basic.json --joint /private/joint.json --decision-at 2026-11-15T01:00:00Z --output /private/slates/SLATE_ID.json
 ```
 
-The report lists every missing identity, unmodeled active player and stale verification. Incomplete pools or unapproved source models keep publishApproved=false. The importer does not override a research gate. Projection expiry is mandatory and must be after the decision time. A slate expires at the earliest of its source projection expiry, player availability expiry or first game lock; refreshing salary or injury mappings cannot revive an expired model. Store only approved artifacts in the private deployment bucket under nba/slates/SLATE_ID.json or nfl/slates/SLATE_ID.json. The slate listing index is an operator-reviewed {"slates":[{"id":"...","name":"...","locksAt":"..."}]} at nba/slates.json or nfl/slates.json. Model artifacts and indexes are not automatically published by these tools.
+The report lists every missing identity, unmodeled active player and stale verification. Incomplete pools or unapproved source models keep publishApproved=false. The importer does not override a research gate. The owner-approved incumbent NBA release is distinct from experimental research. NFL projection-based controls can run without fabricated joint simulations. Projection expiry is mandatory and must be after the decision time. A slate expires at the earliest of its source projection expiry, player availability expiry or first game lock; refreshing salary or injury mappings cannot revive an expired model. Store only approved artifacts in the private deployment bucket under nba/slates/SLATE_ID.json or nfl/slates/SLATE_ID.json. The automatic runner validates all inputs, uploads versioned slate objects and then updates the {"slates":[{"id":"...","name":"...","locksAt":"..."}]} catalog at nba/slates.json or nfl/slates.json. A failure leaves the previous catalog intact; the application still rejects its expired entries.
 
 ## Backtest gate
 
