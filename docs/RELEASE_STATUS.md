@@ -42,8 +42,16 @@ The November 16 6:45 PM Pacific follow-up (runner `1961885d-f995-4d44-825b-14ac9
 
 The blocked refresh left the NBA catalog's update time and ETag unchanged. The preview returned an empty upcoming-slate list; a direct request for the previously published expired slate returned HTTP 503, `Model inputs require a fresh pre-lock update.` The runner lease table was empty after completion. This verifies real failure preservation and stale-input rejection; it does not establish a currently playable next-day slate.
 
+## NBA next-day availability correction — verified live
+
+The earlier “eight unverified teams” observation exposed a parser integration bug: a current official injury PDF includes multiple game dates, but the adapter selected the report's publication date instead of the upcoming slate date. The adapter now selects the actual forecast/slate game date while retaining the current report's genuine timestamp and hash. No player status is carried across dates and unsubmitted teams remain unverified.
+
+The corrected live refresh at November 16 6:52 PM Pacific published 143 unchanged-model forecasts with 10,000 simulations, validated 176 official salary rows and 141 identity joins, and published a five-game NBA slate. Preview catalog and slate-player reads both returned HTTP 200; the slate contains 78 eligible modeled players and exposes real joint simulation plus projection controls. Runner `cf6e0809-9603-4e35-af12-3172e7798876` completed and left no lease. Existing expiry and conservative exclusions remain enforced.
+
+CI for `4e6109980ef9eb57cb078952a5cfdfd0e937ff33` passed 147 application tests and 15 Python checks. NFL's source remains the final Week 10 JSON/CSV with throughWeek=9. No Week 11 output was found on main. Current Week 11 salaries cannot authorize repurposing those forecasts; recovering/running the complete established weekly input-and-adjustment pipeline remains necessary for NFL current publication.
+
 ## What is still not a production-ready release
 
-Matching current NFL weekly forecasts, complete current NBA slate availability/feasibility, email delivery, a genuine Stripe-origin receipt, authenticated free/paid quota flows, and final mobile/desktop review remain required. No remote Google, SSO, password or passkey flow should be restarted. No private model source or credentials may be committed.
+Matching current NFL weekly forecasts, email delivery, a genuine Stripe-origin receipt, authenticated free/paid quota flows, and final mobile/desktop review remain required. No remote Google, SSO, password or passkey flow should be restarted. No private model source or credentials may be committed.
 
 Run `npm run release:check -- /absolute/private/artifact-root` in the configured candidate environment. Record actual observations for Stripe-origin delivery, authenticated free/paid flows and mobile/desktop review with the candidate commit, timestamp and receipt. Missing evidence is a blocker, never a flag to set without testing. Production deployment still requires explicit owner approval.
