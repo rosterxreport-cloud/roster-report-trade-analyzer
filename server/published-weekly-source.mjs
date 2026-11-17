@@ -11,6 +11,8 @@ function csvRows(text){
 }
 export function verifyPublishedWeekly(weekly,csv,commit,jsonBytes){
  if(!/^[a-f0-9]{40}$/.test(commit)||!/^data\/projections\/20\d{2}_week\d+_league_v4_full\.csv$/.test(weekly.source||''))throw Error('Invalid published weekly source identity.');
+ if(new Set((weekly.players||[]).map(p=>p.Player)).size!==weekly.players?.length)throw Error('Ambiguous weekly player identity.');
+ if(weekly.counts)for(const position of ['QB','RB','WR','TE'])if(weekly.counts[position]!==weekly.players.filter(p=>p.Position===position).length)throw Error('Weekly position counts disagree with the player pool.');
  const rows=csvRows(csv),key=p=>p.Player+'|'+p.Team+'|'+p.Position,byId=new Map(rows.map(p=>[key(p),p]));
  if(byId.size!==rows.length||rows.length!==weekly.players?.length||rows.length<100)throw Error('Final weekly projection pool mismatch.');
  const seen=new Set();
