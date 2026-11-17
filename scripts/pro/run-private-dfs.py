@@ -82,7 +82,7 @@ def execute():
   try:
    if not nba_ready:raise ValueError('NBA model stage is not ready')
    spec=importlib.util.spec_from_file_location('nba_availability',REPO/'scripts/pro/nba-availability.py');availability_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(availability_module)
-   availability_module.capture(work/'availability')
+   availability_module.capture(work/'availability',game_date=forecast_date.isoformat())
    pool_path=work/'nba/salary-pool.json'
    if not pool_path.exists():raise ValueError('Verified salary pool unavailable')
    pool=json.loads(pool_path.read_text())
