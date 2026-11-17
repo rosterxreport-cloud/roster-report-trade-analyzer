@@ -16,3 +16,12 @@ test('partial or mismatched published snapshots cannot replace the final weekly 
 
 import {selectGroup} from '../../scripts/pro/capture-current-salaries.mjs';
 test('NBA discovery keeps the earliest available game day before considering a larger future slate',()=>{const now=Date.parse('2026-11-16T20:00:00Z'),group=(id,count,start)=>({Sport:'NBA',GameTypeId:70,DraftGroupId:id,GameCount:count,StartDate:start});assert.equal(selectGroup({DraftGroups:[group(1,4,'2026-11-17T00:00:00Z'),group(2,9,'2026-11-18T00:00:00Z')]},'NBA',now).DraftGroupId,1);});
+
+test('duplicate player names across teams and stale position totals cannot enter DFS',()=>{
+ const {weekly,csv}=fixture();
+ weekly.counts={QB:0,RB:0,WR:99,TE:0};
+ assert.throws(()=>verifyPublishedWeekly(weekly,csv,'a'.repeat(40),JSON.stringify(weekly)),/position counts/);
+ delete weekly.counts;
+ weekly.players[1].Player=weekly.players[0].Player;weekly.players[1].Team='NYG';
+ assert.throws(()=>verifyPublishedWeekly(weekly,csv,'a'.repeat(40),JSON.stringify(weekly)),/Ambiguous/);
+});
