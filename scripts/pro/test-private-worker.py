@@ -17,4 +17,15 @@ class IndependenceTests(unittest.TestCase):
     result=worker.execute()
    self.assertEqual(result['nba']['state'],'failed');self.assertEqual(result['slates']['NFL']['state'],'published')
    self.assertTrue(any('assemble-nfl-slate' in args[1] for args in calls))
+class SlateDateTests(unittest.TestCase):
+ def test_next_slate_after_evening_lock_uses_next_game_date(self):
+  now=worker.datetime.datetime(2026,11,17,2,tzinfo=worker.datetime.timezone.utc)
+  pool={'players':[{'startsAt':'2026-11-17T00:00:00Z'},{'startsAt':'2026-11-18T00:30:00Z'}]}
+  self.assertEqual(worker.nba_slate_date(pool,now).isoformat(),'2026-11-17')
+ def test_utc_midnight_preserves_eastern_game_date(self):
+  now=worker.datetime.datetime(2026,11,16,20,tzinfo=worker.datetime.timezone.utc)
+  self.assertEqual(worker.nba_slate_date({'players':[{'startsAt':'2026-11-17T01:00:00Z'}]},now).isoformat(),'2026-11-16')
+ def test_locked_salary_pool_is_not_relabelled_as_current(self):
+  now=worker.datetime.datetime(2026,11,17,2,tzinfo=worker.datetime.timezone.utc)
+  with self.assertRaises(ValueError):worker.nba_slate_date({'players':[{'startsAt':'2026-11-17T00:00:00Z'}],'locksAt':'2026-11-17T00:00:00Z'},now)
 if __name__=='__main__':unittest.main()
