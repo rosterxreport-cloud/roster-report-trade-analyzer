@@ -34,7 +34,13 @@ GitHub's older feed-based `refresh-dfs.yml` workflow remains gated and is **not*
 - Live relay security tests: reused nonce HTTP 409; expired signature HTTP 401; invalid signature HTTP 401.
 - Later scheduled runs continued at 30-minute intervals. When salary sources rolled to another day, mismatched inputs were blocked instead of republished.
 - Follow-up fixes select the actual upcoming NBA salary slate's Eastern game date and complete sandbox stop/lease release before responding. The updated live invocation generated 143 next-day NBA forecasts at November 16 6:42 PM Pacific; the slate remained blocked by release validation. The lease table was empty after its response.
-- Application CI at integration revision `81666c45fee437d3785873953007ec27d5e32bf2`: **147 passing application tests** (38 existing + 109 Pro), plus 13 Python checks across shooting, NBA release, availability and private-worker integration. SEO/profile checks passed. Research validation is separate and never promotes experimental models.
+- Application CI at integration revision `cc2a9f35c1494f83061ad5e2192d67e23a3d509e`: **147 passing application tests** (38 existing + 109 Pro), plus 13 Python checks across shooting, NBA release, availability and private-worker integration. SEO/profile checks passed. Research validation is separate and never promotes experimental models.
+
+## Latest blocked-refresh and expiry verification
+
+The November 16 6:45 PM Pacific follow-up (runner `1961885d-f995-4d44-825b-14ac94b9d4f5`) regenerated 143 genuine forecasts and validated 176 NBA salary rows. Its NBA slate was blocked because LAL, SAS, DET, NYK, TOR, LAC, UTA and CHA did not have fully verified availability for the slate. Only 21 active modeled players remained, representing fewer than two playable games. The runner does not assume those players are available. NFL remained waiting for matching final weekly forecasts.
+
+The blocked refresh left the NBA catalog's update time and ETag unchanged. The preview returned an empty upcoming-slate list; a direct request for the previously published expired slate returned HTTP 503, `Model inputs require a fresh pre-lock update.` The runner lease table was empty after completion. This verifies real failure preservation and stale-input rejection; it does not establish a currently playable next-day slate.
 
 ## What is still not a production-ready release
 
