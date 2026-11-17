@@ -13,7 +13,7 @@ Configure the existing project's email sender/SMTP provider in Supabase Authenti
 <p>If you did not request this code, you can ignore this email.</p>
 ```
 
-Keep email verification enabled. Do not enable AUTH_EMAIL_READY until a real code is received and successfully verified in the protected preview. The application uses the same email as the paid Substack subscription. The connected Supabase tools do not expose these administrator sender/template settings; no remote sign-in attempts should be restarted.
+Keep email verification enabled. After sender/template configuration, set AUTH_EMAIL_READY=true only for the protected development preview and redeploy that preview to perform the real delivery/verification test. Return it to false if delivery fails. Production remains disabled pending its separate approval. The application uses the same email as the paid Substack subscription. The connected Supabase tools do not expose these administrator sender/template settings; no remote sign-in attempts should be restarted.
 
 ## Genuine Stripe delivery
 
