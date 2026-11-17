@@ -16,10 +16,11 @@ export function createRefreshHandler({SandboxClass=Sandbox,fetchImpl=fetch,env=p
    const response=await fetchImpl(env.DFS_PUBLISH_URL,{method:'POST',headers:{Authorization:'Bearer '+env.DFS_PUBLISH_TOKEN,'Content-Type':'application/json'},body:JSON.stringify({operation,runId}),redirect:'error',signal:AbortSignal.timeout(15000)});
    if(!response.ok)throw Error('Runner coordination failed');return response.json();
   }
+  const outcome=await (async()=>{
   let sandbox,lease=false;
   try{
    const state=await coordinate('acquire');
-   if(!state.acquired){res.status(200).json({state:'already-running'});return;}lease=true;
+   if(!state.acquired)return {status:200,body:{state:'already-running'}};lease=true;
    // Source remains inside the existing private Vercel sandbox. No source-download endpoint exists.
    sandbox=await SandboxClass.get({name:env.DFS_SANDBOX_NAME});
    const commit=env.VERCEL_GIT_COMMIT_SHA;
@@ -31,15 +32,18 @@ export function createRefreshHandler({SandboxClass=Sandbox,fetchImpl=fetch,env=p
     if(checked.exitCode!==0)throw Error('Worker revision checkout failed');
    }
    const command=await sandbox.runCommand({cmd:'timeout',args:['240','/vercel/private-recovery/venv/bin/python','/vercel/toolkit/scripts/pro/run-private-dfs.py'],cwd:'/vercel/toolkit',env:{DFS_PUBLISH_URL:env.DFS_PUBLISH_URL,DFS_PUBLISH_TOKEN:env.DFS_PUBLISH_TOKEN}});
-   if(command.exitCode!==0){console.error('Established DFS refresh failed',{runId,exitCode:command.exitCode});res.status(503).json({state:'failed',runId,error:'Established model refresh failed; prior artifacts retained.'});return;}
+   if(command.exitCode!==0){console.error('Established DFS refresh failed',{runId,exitCode:command.exitCode});return {status:503,body:{state:'failed',runId,error:'Established model refresh failed; prior artifacts retained.'}};}
    const text=await command.stdout();let result;
    try{result=JSON.parse(text.trim().split('\n').at(-1));}catch{throw Error('Invalid private runner receipt');}
-   res.status(200).json({runId,...result});
-  }catch(error){console.error('Private DFS runner unavailable',{runId,type:error.name});res.status(503).json({state:'failed',runId,error:'Private refresh unavailable; existing artifact expiry remains enforced.'});}
+   return {status:200,body:{runId,...result}};
+  }catch(error){console.error('Private DFS runner unavailable',{runId,type:error.name});return {status:503,body:{state:'failed',runId,error:'Private refresh unavailable; existing artifact expiry remains enforced.'}};}
   finally{
    if(sandbox)try{await sandbox.stop();}catch{console.error('Private runner stop failed',{runId});}
    if(lease)try{await coordinate('release');}catch{console.error('Private runner lease release failed',{runId});}
   }
+  })();
+  // Hosting may freeze work after the response: finish cleanup before sending it.
+  res.status(outcome.status).json(outcome.body);
  };
 }
 export default createRefreshHandler();
