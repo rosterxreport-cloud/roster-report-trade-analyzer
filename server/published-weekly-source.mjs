@@ -31,7 +31,7 @@ export async function fetchPublishedWeekly(fetchImpl=fetch,{ref='main'}={}){
  const csv=await get(weekly.source),finalSnapshotReceipt=verifyPublishedWeekly(weekly,csv,commit,jsonBytes);
  const manifest=JSON.parse(await get('data/projections/'+weekly.season+'_week'+weekly.week+'_run_manifest.json'));
  const generatorPath=manifest.generator_path||'scripts/projection_week'+weekly.week+'_league_v4.py';
- if(!/^scripts\\/(projection_week\\d+_league_v4\\.py|pro\\/create-weekly-nfl\\.py)$/.test(generatorPath))throw Error('Unapproved weekly generator path.');
+ if(!/^scripts\/(projection_week\d+_league_v4\.py|pro\/create-weekly-nfl\.py)$/.test(generatorPath))throw Error('Unapproved weekly generator path.');
  const generator=await get(generatorPath),core=await get('scripts/projection_v4_backtest.py');
  return {weekly,manifest,finalSnapshotReceipt,generatorHash:hash(generator),coreHash:hash(core)};
 }
