@@ -20,9 +20,9 @@ export function verifyPublishedWeekly(weekly,csv,commit,jsonBytes){
  }
  return {commit,verifiedStatlines:true,players:rows.length,sourceCsvHash:hash(csv),sourceJsonHash:hash(jsonBytes)};
 }
-export async function fetchPublishedWeekly(fetchImpl=fetch,{ref='main'}={}){
- if(!['main','feat/toolkit-pro-platform'].includes(ref))throw Error('Unsupported weekly source branch.');
- const ref=await fetchImpl('https://api.github.com/repos/rosterxreport-cloud/roster-report-trade-analyzer/git/ref/heads/'+ref,{headers:{Accept:'application/vnd.github+json'},redirect:'error',signal:AbortSignal.timeout(20000)});
+export async function fetchPublishedWeekly(fetchImpl=fetch,{ref:branch='main'}={}){
+ if(!['main','feat/toolkit-pro-platform'].includes(branch))throw Error('Unsupported weekly source branch.');
+ const ref=await fetchImpl('https://api.github.com/repos/rosterxreport-cloud/roster-report-trade-analyzer/git/ref/heads/'+branch,{headers:{Accept:'application/vnd.github+json'},redirect:'error',signal:AbortSignal.timeout(20000)});
  if(!ref.ok)throw Error('Published weekly commit is unavailable.');const commit=(await ref.json()).object?.sha;
  if(!/^[a-f0-9]{40}$/.test(commit||''))throw Error('Invalid weekly commit receipt.');
  async function get(path){const r=await fetchImpl(root+commit+'/'+path,{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Published weekly source unavailable: '+path);return r.text();}
