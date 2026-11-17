@@ -1,6 +1,8 @@
 # Remaining administrator checks
 
-## Email verification codes
+## Email verification codes — completed in preview
+
+The owner has configured Resend SMTP and code templates, corrected the SMTP username to lowercase `resend`, and successfully signed in. Preview AUTH_EMAIL_READY is true; production remains disabled. The following configuration is retained for reference and must not trigger another remote sign-in loop.
 
 Project: https://supabase.com/dashboard/project/zretrikowlvfvdrnnoil/auth/templates
 
