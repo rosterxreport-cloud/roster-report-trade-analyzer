@@ -35,12 +35,14 @@ export async function assembleNFL(pool,salaryCsv,{weekly,manifest,defenses,gener
  return {sports:['NFL'],slates:[{salaryCsv,manifest:slateManifest,model}]};
 }
 if(process.argv[1]?.endsWith('/assemble-nfl-slate.mjs')){
+ let sourceStatus={};
  try{
   const [poolPath,csvPath]=process.argv.slice(2),pool=JSON.parse(await fs.readFile(poolPath,'utf8'));
   const published=await fetchPublishedWeekly();
   const r=await fetch('https://dfsroto.win/projections',{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Original DST provider is unavailable.');
   const defenses=parseDefenses(await r.text());
+  sourceStatus={availableWeek:published.weekly.week,requiredWeek:defenses.week,season:defenses.season,weeklySource:published.weekly.source,sourceCommit:published.finalSnapshotReceipt.commit};
   const bundle=await assembleNFL(pool,await fs.readFile(csvPath,'utf8'),{...published,defenses});
   const result=await refreshBundle(bundle);console.log(JSON.stringify({state:'published',...result,week:published.weekly.week,scoring:'RR-DK-core'}));
- }catch(error){console.error(JSON.stringify({state:/weekly forecasts and current defense source do not match/.test(error.message)?'waiting':'blocked',reason:error.message}));process.exitCode=1;}
+ }catch(error){console.error(JSON.stringify({state:/weekly forecasts and current defense source do not match/.test(error.message)?'waiting':'blocked',reason:error.message,...sourceStatus}));process.exitCode=1;}
 }
