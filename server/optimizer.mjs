@@ -56,18 +56,26 @@ export function optimize(artifact,options={},now=Date.now()){
    const weight=p=>!simulate?p.projection:(.30*p.projection+.70*samples[p.id][(attempt*787+n*1237)%5000]);
    const weights=new Map(available.map(p=>[p.id,weight(p)]));
    let beam=[{players:[],ids:new Set(),salary:0,score:0}];
-   for(const slot of SLOTS[sport]){
+   for(const [slotIndex,slot] of SLOTS[sport].entries()){
     const all=available.filter(p=>eligible(p,slot)).sort((a,b)=>weights.get(b.id)-weights.get(a.id));
     const choices=[...new Map([...all.slice(0,45),...[...all].sort((a,b)=>a.salary-b.salary).slice(0,15),...all.filter(p=>locks.includes(p.id))].map(p=>[p.id,p])).values()];
     const next=[],unique=new Set();
     for(const b of beam)for(const p of choices){
      if(b.ids.has(p.id)||b.salary+p.salary>cap)continue;
      const ids=new Set([...b.ids,p.id]),left=SLOTS[sport].length-ids.size;
+     // Optimistic remaining-slot cost prevents expensive partial rosters from
+     // consuming the beam when they cannot possibly finish under the cap.
+     const remainingSlots=SLOTS[sport].slice(slotIndex+1);
+     let minimumRemaining=0;
+     for(const remaining of remainingSlots){let cheapest=Infinity;for(const q of available)if(!ids.has(q.id)&&eligible(q,remaining))cheapest=Math.min(cheapest,q.salary);minimumRemaining+=cheapest;}
+     if(b.salary+p.salary+minimumRemaining>cap)continue;
      if(locks.filter(x=>!ids.has(x)).length>left)continue;
      const key=[...ids].sort().join(',');if(unique.has(key))continue;unique.add(key);
      next.push({players:[...b.players,p],ids,salary:b.salary+p.salary,score:b.score+weights.get(p.id)});
     }
-    next.sort((a,b)=>b.score-a.score);beam=next.slice(0,300);
+    next.sort((a,b)=>b.score-a.score);
+    const leaders=next.slice(0,200),diverse=[...next].sort((a,b)=>a.salary-b.salary||b.score-a.score).slice(0,100);
+    beam=[...new Map([...leaders,...diverse].map(b=>[[...b.ids].sort().join(','),b])).values()];
     if(!beam.length)break;
    }
    for(const b of beam){
