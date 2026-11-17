@@ -16,6 +16,29 @@ if($('#login')){
  $('#sync').addEventListener('click',async e=>{e.target.disabled=true;try{await api('sync',{});await account();}catch(err){notice($('#membership'),err.message,true);}finally{e.target.disabled=false;}});
  $('#logout').addEventListener('click',async()=>{try{await api('logout',{});location.reload();}catch(e){notice($('#membership'),e.message,true);}});
 }
+
+if($('#loadNFLDetails')){
+ let release;
+ const render=()=>{
+  const query=($('#nflDetailSearch')?.value||'').toLowerCase();
+  const rows=release.players.filter(p=>(p.name+' '+p.team+' '+p.position).toLowerCase().includes(query));
+  $('#nflDetailData').innerHTML='<p class="fine">Week '+esc(release.week)+' · '+esc(release.season)+' · Through Week '+esc(release.throughWeek)+' · Published '+esc(new Date(release.capturedAt).toLocaleString())+'</p>'+
+   rows.map(p=>'<details class="pro-panel"'+(rows.length===1?' open':'')+'><summary>'+esc(p.name)+' · '+esc(p.position)+' #'+p.positionRank+' · '+esc(p.team)+' vs '+esc(p.opponent)+' · '+fmt(p.statline.PPR)+' PPR</summary>'+
+    table(['Pass ATT','Pass YDS','Pass TD','INT','Carries','Rush YDS','Rush TD','Targets','Catches','Rec YDS','Rec TD'],[['Pass_Att','Pass_Yds','Pass_TD','INT','Rush_Att','Rush_Yds','Rush_TD','Targets','Receptions','Rec_Yds','Rec_TD'].map(k=>fmt(p.statline[k]))])+
+    table(['Projected team targets %','Projected team carries %','Yards / carry','Yards / catch','Projected catch rate %'],[[p.workload.teamTargetAllocation==null?'—':fmt(100*p.workload.teamTargetAllocation),p.workload.teamCarryAllocation==null?'—':fmt(100*p.workload.teamCarryAllocation),fmt(p.efficiency.yardsPerCarry),fmt(p.efficiency.yardsPerCatch),p.efficiency.catchRate==null?'—':fmt(100*p.efficiency.catchRate)]])+
+    table(['Scoring component','PPR points'],Object.entries(p.scoring).map(([k,v])=>[k.replace(/([A-Z])/g,' $1'),fmt(v)]))+
+    '<p>'+esc(p.availabilityNote)+'</p>'+(p.starterNote?'<p>'+esc(p.starterNote)+'</p>':'')+(p.snapStatus?'<p>Snap evidence: '+esc(p.snapStatus)+'</p>':'')+'</details>').join('')+
+    '<p class="fine">'+esc(release.method)+'</p><p class="fine">'+esc(release.limitations)+'</p>';
+ };
+ $('#loadNFLDetails').addEventListener('click',async e=>{
+  e.target.disabled=true;notice($('#nflDetailData'),'Loading your verified Pro analysis…');
+  try{const player=$('#nflPlayerPanel')?.dataset.player;release=await api('nfl-details'+(player?'&player='+encodeURIComponent(player):''));render();}
+  catch(error){notice($('#nflDetailData'),error.message,true);}
+  finally{e.target.disabled=false;}
+ });
+ $('#nflDetailSearch')?.addEventListener('input',()=>{if(release)render();});
+}
+
 if($('#optimizer')){
  const form=$('#optimizer'),sport=form.dataset.sport;
  let playerPool=[],poolCoverage=null,poolScoring='DraftKings',poolScoringNote='';const picked={locks:new Set(),excludes:new Set()};let exposureCaps={};
@@ -47,5 +70,5 @@ if($('#researchSample')){fetch('/platform/research-sample.json').then(r=>{if(!r.
  $('#researchData').innerHTML=`<p class="fine">${esc(p.team)} vs ${esc(p.opponent)} · Availability: ${esc(p.availability==='Unknown'?'Unconfirmed':p.availability)} · Research snapshot ${esc(new Date(a.capturedAt).toLocaleDateString('en-US',{timeZone:'America/Los_Angeles'}))}</p>${table(['Point · if playing','Simulation mean','Median','Floor · P10','Ceiling · P90'],[[p.projection,p.mean,p.median,p.p10,p.p90].map(fmt)])}<p class="fine">Point projection and stat line assume the player plays. Simulation summaries include assumed non-participation; these probabilities are experimental, not verified injury forecasts.</p><div class="distribution" role="img" aria-label="Research distribution of 10,000 simulated DraftKings outcomes">${p.histogram.map(b=>`<div style="height:${Math.max(0,100*b.count/Math.max(1,...p.histogram.map(x=>x.count)))}%" title="${fmt(b.from)} to ${fmt(b.to)} points: ${b.count} outcomes"></div>`).join('')}</div>${table(['Projected MIN','PTS','REB','AST','3PM'],[[p.minutes,p.statline.PTS,p.statline.REB,p.statline.AST,p.statline.FG3M].map(fmt)])}${table(['At least DK points','Simulated probability'],Object.entries(p.probabilityAtLeast).map(([points,prob])=>[points,(prob*100).toFixed(1)+'%']))}`;
  };$('#researchPlayer').addEventListener('change',render);render();
  }).catch(e=>notice($('#researchData'),e.message));}
-if($('#trade')){$('#trade').addEventListener('submit',async e=>{e.preventDefault();busy(e.target,true);try{const f=new FormData(e.target),names=k=>String(f.get(k)).split('\n').map(s=>s.trim()).filter(Boolean);const a=await api('trade',{roster:names('roster'),give:names('give'),receive:names('receive'),slots:String(f.get('slots')).split(',').map(s=>s.trim().toUpperCase()),format:f.get('format')});$('#tradeData').innerHTML=`<div class="pro-stat"><b>${Number.isFinite(a.weekly.delta)&&a.weekly.delta>=0?'+':''}${fmt(a.weekly.delta)}</b>Week ${a.weekly.week} starting points</div>${table(['Trade-value index out','Trade-value index in'],[[fmt(a.rosValueIndex.outgoing),fmt(a.rosValueIndex.incoming)]])}${table(['Position','Before value index','After value index'],Object.keys(a.positionalStrength.before).map(k=>[k,fmt(a.positionalStrength.before[k]),fmt(a.positionalStrength.after[k])]))}${table(['Slot','Projected starter after trade','Weekly points'],a.weekly.after.players.map(p=>[p.slot,p.name,fmt(p.weekly)]))}<p class="fine">${esc(a.confidence.label)}${a.weekly.missing.length?' Missing weekly forecasts: '+esc(a.weekly.missing.join(', ')):''}</p>`;}catch(err){notice($('#tradeData'),err.message,true);}finally{busy(e.target,false);}});}
+if($('#trade')){$('#trade').addEventListener('submit',async e=>{e.preventDefault();busy(e.target,true);try{const f=new FormData(e.target),names=k=>String(f.get(k)).split('\n').map(s=>s.trim()).filter(Boolean);const a=await api('trade',{roster:names('roster'),give:names('give'),receive:names('receive'),slots:String(f.get('slots')).split(',').map(s=>s.trim().toUpperCase()),format:f.get('format')});$('#tradeData').innerHTML=`<div class="pro-stat"><b>${Number.isFinite(a.weekly.delta)&&a.weekly.delta>=0?'+':''}${fmt(a.weekly.delta)}</b>Week ${a.weekly.week} starting points</div>${table(['Trade-value index out','Trade-value index in'],[[fmt(a.rosValueIndex.outgoing),fmt(a.rosValueIndex.incoming)]])}${table(['Position','Before value index','After value index'],Object.keys(a.positionalStrength.before).map(k=>[k,fmt(a.positionalStrength.before[k]),fmt(a.positionalStrength.after[k])]))}${table(['Slot','Projected starter before trade','Weekly points'],a.weekly.before.players.map(p=>[p.slot,p.name,fmt(p.weekly)]))}${table(['Slot','Projected starter after trade','Weekly points'],a.weekly.after.players.map(p=>[p.slot,p.name,fmt(p.weekly)]))}<p class="fine">${esc(a.confidence.label)}${a.weekly.missing.length?' Missing weekly forecasts: '+esc(a.weekly.missing.join(', ')):''}</p>`;}catch(err){notice($('#tradeData'),err.message,true);}finally{busy(e.target,false);}});}
 })();
