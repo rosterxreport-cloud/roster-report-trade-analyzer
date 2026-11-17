@@ -20,8 +20,9 @@ export function verifyPublishedWeekly(weekly,csv,commit,jsonBytes){
  }
  return {commit,verifiedStatlines:true,players:rows.length,sourceCsvHash:hash(csv),sourceJsonHash:hash(jsonBytes)};
 }
-export async function fetchPublishedWeekly(fetchImpl=fetch){
- const ref=await fetchImpl('https://api.github.com/repos/rosterxreport-cloud/roster-report-trade-analyzer/git/ref/heads/main',{headers:{Accept:'application/vnd.github+json'},redirect:'error',signal:AbortSignal.timeout(20000)});
+export async function fetchPublishedWeekly(fetchImpl=fetch,{ref='main'}={}){
+ if(!['main','feat/toolkit-pro-platform'].includes(ref))throw Error('Unsupported weekly source branch.');
+ const ref=await fetchImpl('https://api.github.com/repos/rosterxreport-cloud/roster-report-trade-analyzer/git/ref/heads/'+ref,{headers:{Accept:'application/vnd.github+json'},redirect:'error',signal:AbortSignal.timeout(20000)});
  if(!ref.ok)throw Error('Published weekly commit is unavailable.');const commit=(await ref.json()).object?.sha;
  if(!/^[a-f0-9]{40}$/.test(commit||''))throw Error('Invalid weekly commit receipt.');
  async function get(path){const r=await fetchImpl(root+commit+'/'+path,{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Published weekly source unavailable: '+path);return r.text();}
@@ -29,6 +30,8 @@ export async function fetchPublishedWeekly(fetchImpl=fetch){
  if(!/^data\/projections\/20\d{2}_week\d+_league_v4_full\.csv$/.test(weekly.source||''))throw Error('Unsupported weekly source path.');
  const csv=await get(weekly.source),finalSnapshotReceipt=verifyPublishedWeekly(weekly,csv,commit,jsonBytes);
  const manifest=JSON.parse(await get('data/projections/'+weekly.season+'_week'+weekly.week+'_run_manifest.json'));
- const generator=await get('scripts/projection_week'+weekly.week+'_league_v4.py'),core=await get('scripts/projection_v4_backtest.py');
+ const generatorPath=manifest.generator_path||'scripts/projection_week'+weekly.week+'_league_v4.py';
+ if(!/^scripts\\/(projection_week\\d+_league_v4\\.py|pro\\/create-weekly-nfl\\.py)$/.test(generatorPath))throw Error('Unapproved weekly generator path.');
+ const generator=await get(generatorPath),core=await get('scripts/projection_v4_backtest.py');
  return {weekly,manifest,finalSnapshotReceipt,generatorHash:hash(generator),coreHash:hash(core)};
 }
