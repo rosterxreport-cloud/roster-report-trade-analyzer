@@ -1,19 +1,19 @@
-# Current Toolkit release status — November 16, 2026 (Pacific)
+# Current Toolkit release status — November 17, 2026 (Pacific)
 
-This document supersedes earlier dated implementation claims. Production remains unapproved and unchanged. Development branch: `feat/toolkit-pro-platform`; draft PR #45.
+This document supersedes earlier dated implementation claims. The Pro production release remains unapproved. The owner separately approved and merged only the Tuesday NFL projection automation in PR #46. Development branch: `feat/toolkit-pro-platform`; draft PR #45.
 
 | Area | Verified state | Remaining release requirement |
 | --- | --- | --- |
 | Free Toolkit | Existing rankings, projections, player pages, SEO assets and Substack embeds pass regression checks. | Final live desktop/mobile review. |
-| Dedicated tools | Dashboard, NBA/NFL DFS, NBA projections/simulations, Pro trade and account pages remain inside the Toolkit. | Authenticated free/paid browser tests after email delivery is configured. |
+| Dedicated tools | Dashboard, NBA/NFL DFS, NBA projections/simulations, Pro trade and account pages remain inside the Toolkit. | Email sign-in and owner-comp Pro access were observed by the owner; genuine paid and free quota browser flows remain to be verified. |
 | NBA model | The owner delegated incumbent approval. The pinned established `shared-preseason25-v1` model runs privately, with 10,000 simulations; no projection formula was changed. | Current slate publication continues to require verified salaries, identity joins and official availability. A successful past run does not make its now-locked slate usable. |
-| NFL model | DFS reads the actual final published weekly JSON and matching CSV from the same main-branch commit. All 295 current Week 10 rows match exactly. The original weekly projections are preserved. | Current salary/DST sources have advanced beyond Week 10. Matching final weekly projections are required; stale Week 10 values are never relabelled. |
+| NFL model | DFS reads the actual final published weekly JSON and matching CSV from the same main-branch commit. The raw Week 10 release contains an explicit zero-point duplicate QB placeholder and stale counts; current strict DFS checks withhold that release. The original projection values remain preserved. | The established model generated 283 Week 11 players and passed current 663-entry salary/lineup validation in a private dry run. Scheduled publication and production readback are not yet observed. |
 | DFS scoring | Original NBA model scoring is preserved. NFL uses the recovered original RR PPR/interception core adapter and separately attributed DST source, with omitted scoring events disclosed as `RR-DK-core`. | Full NFL event simulations and omitted DK scoring components are not fabricated or claimed complete. |
 | Optimization | Roster/salary constraints, locks, exclusions, stacks, exposure, multiple lineups and CSV export are tested. NFL projection controls do not require invented joint outcomes; NBA upside requires the real 10,000 draws. | Bounded beam search does not establish mathematical optimality or profitability. |
 | Automatic refresh | **Active in staging:** Supabase cron invokes a signed relay every 30 minutes. Real scheduled executions have run the private model and published NBA projections, simulations and a usable slate. | NFL publication waits for matching weekly inputs; NBA future slates wait for complete availability/feasibility checks. Monitor per-sport receipts rather than HTTP status alone. |
 | Billing | Current eligible Stripe plans remain `monthly5_99usd` and `yearly60usd`; legacy grants remain revoked. Signed canonical replays and runtime reads passed previously. | Genuine Stripe-origin delivery still needs verification. Apple/gift/comp/group beneficiary coverage is not established. Charges/subscriptions have not been modified. |
-| Email authentication | Verified-email sessions, revocation, rate limits and canonical origin controls exist. | Sender/template/delivery configuration is incomplete; `AUTH_EMAIL_READY` remains false. No authenticated browser sign-in is claimed. |
-| Daily free lineup | One basic lineup per Pacific day, shared across NBA and NFL, with atomic quota/idempotency coverage. | Verify the real authenticated free and paid user flows after email is configured. |
+| Email authentication | Verified-email sessions, revocation, rate limits and canonical origin controls exist. | The owner configured Resend SMTP/templates and successfully signed in. `AUTH_EMAIL_READY=true` only on the preview branch. Production email remains disabled pending release approval. |
+| Daily free lineup | One basic lineup per Pacific day, shared across NBA and NFL, with atomic quota/idempotency coverage. | Verify real authenticated free and paid flows. Owner-comp access does not establish either billing or the free quota flow. |
 | Trade Pro | Uses published RR values and current-week lineup impact. | Calibrated uncertainty and complete weekly rest-of-season forecasts remain unavailable. |
 
 ## Private execution and secure publishing
@@ -52,6 +52,19 @@ CI for `4e6109980ef9eb57cb078952a5cfdfd0e937ff33` passed 147 application tests a
 
 ## What is still not a production-ready release
 
-Matching current NFL weekly forecasts, email delivery, a genuine Stripe-origin receipt, authenticated free/paid quota flows, and final mobile/desktop review remain required. No remote Google, SSO, password or passkey flow should be restarted. No private model source or credentials may be committed.
+Observed Tuesday NFL publication/readback, a genuine Stripe-origin receipt, authenticated free/paid quota flows, and final mobile/desktop review remain required. Email sign-in and owner-comp premium access have since been observed; earlier sections below describe historical receipts. No remote Google, SSO, password or passkey flow should be restarted. No private model source or credentials may be committed.
 
 Run `npm run release:check -- /absolute/private/artifact-root` in the configured candidate environment. Record actual observations for Stripe-origin delivery, authenticated free/paid flows and mobile/desktop review with the candidate commit, timestamp and receipt. Missing evidence is a blocker, never a flag to set without testing. Production deployment still requires explicit owner approval.
+
+## November 17 verification update — before the first 8 AM Pacific publication
+
+- Integration revision `7e7096d3e1b040413a47903fa45bc42dc479cbe4`: 153 application tests passed (38 existing + 115 Pro), plus 21 Python checks for shooting, release policy, injury availability, private-worker integration and unchanged weekly calendar bindings. Build and syntax checks passed.
+- Private NFL execution generated genuine Week 11 forecasts for 283 players (26 QB, 71 RB, 124 WR, 62 TE), using the pinned original template. JSON/master CSV agreement, identity uniqueness, team-volume constraints, current salary joins and feasible lineup validation passed at 7:50 AM Pacific. Validation mode published zero artifacts. Its synthetic dry-run commit receipt is never eligible as evidence of a published source.
+- The isolated Tuesday workflow was merged on main in PR #46. Its first intended publication window begins at 8 AM Pacific. Generation success in a private dry run does not prove that GitHub ran, committed outputs, deployed the free site or released a live NFL slate.
+- The real 7:30 AM staging refresh published NBA artifacts and its slate from 176 official salary entries. NFL correctly blocked the ambiguous older main-branch weekly release. HTTP 200 for the runner does not imply both sports were published.
+- The NBA public projection view excludes unavailable players, including the two owner-reported cases, while the complete original forecast remains archived privately. Scheduled refreshes retain the original 10,000 draws.
+- Resend domain verification and email-code sign-in were completed by the owner. The approved staging-only owner-comp entitlement is separate from Stripe. It must not be described as a paid Stripe subscription. The owner confirmed the premium NFL breakdown view after the explicit zero-placeholder identity fix.
+- Desktop browser review confirmed the new premium page loads and returns “Sign in to use this tool.” when its load button is used without an authenticated session. This is an authorization check, not an authenticated paid or mobile flow receipt.
+- Connected Stripe tools do not expose webhook redelivery. A genuine Stripe-origin delivery remains unverified; canonical replay records cannot satisfy that gate.
+
+The named private runner was stopped and snapshotted after the dry run, leaving it available for its normal scheduled lifecycle. No private model source or credential was committed, and no Pro production promotion was performed.
