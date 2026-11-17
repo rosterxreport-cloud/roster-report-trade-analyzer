@@ -16,7 +16,11 @@ export async function prepareRefresh(bundle,now=new Date()){
    const input=source.weekly?{...source,model:adaptWeeklyNFL(source.weekly,source.weeklyManifest,source.scoringEvidence,now.getTime())}:source;
    validateModelLineage(input.model);
    const {artifact,report}=buildSlate({...input,decisionAt});
-   if(!report.releaseApproved)throw Error(sport+' slate failed release validation.');
+   if(!report.releaseApproved){
+    const error=Error(sport+' slate failed release validation.');
+    error.validation={salaryRows:report.salaryRows,matchedActivePlayers:report.matchedActivePlayers,excludedAvailability:report.excludedAvailability,issues:[...new Set(report.issues.map(i=>i.reason))],...(input.manifest.availabilitySummary||{})};
+    throw error;
+   }
    validateSlate(artifact,now.getTime());
    if(!/^[-a-zA-Z0-9_]{1,60}$/.test(artifact.slateId))throw Error('Invalid source slate identity.');
    optimize(artifact,{advanced:!!input.joint,count:1},now.getTime());
