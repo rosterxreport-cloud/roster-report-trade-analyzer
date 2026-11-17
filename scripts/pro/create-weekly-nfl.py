@@ -47,9 +47,13 @@ def create(output,season=None,week=None,now=None):
   season_games=games[games.season.eq(season)].copy()
   dates=pd.to_datetime(season_games.gameday)
   if week is None:
-   upcoming=season_games[dates.dt.date>=now.astimezone(ZoneInfo('America/New_York')).date()]
-   if upcoming.empty:raise ValueError('No upcoming regular-season week')
-   week=int(upcoming.week.min())
+   starts=pd.to_datetime(season_games.gameday+' '+season_games.gametime).dt.tz_localize('America/New_York').dt.tz_convert('UTC')
+   first_starts=season_games.assign(start=starts).groupby('week').start.min()
+   upcoming=first_starts[first_starts>pd.Timestamp(now)]
+   if upcoming.empty:raise ValueError('No unstarted regular-season week')
+   week=int(upcoming.index.min())
+  prior=season_games[season_games.week.eq(week-1)]
+  if prior.empty or prior[['home_score','away_score']].isna().any().any():raise ValueError('Previous NFL week is not final; retain prior release')
   selected=season_games[season_games.week.eq(week)]
   teams=list(selected.away_team)+list(selected.home_team)
   if len(set(teams))!=len(teams):raise ValueError('Duplicate scheduled team')
