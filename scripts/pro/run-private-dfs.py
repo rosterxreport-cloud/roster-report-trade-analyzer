@@ -11,23 +11,52 @@ def publish(path,data):
  raw=json.dumps({'path':path,'data':data},separators=(',',':'),allow_nan=False).encode()
  request=urllib.request.Request(PUBLISH,data=raw,headers={'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'})
  with urllib.request.urlopen(request,timeout=45) as response:return json.load(response)
+def nba_slate_date(pool,now=None):
+ """Choose the real upcoming operator slate's game date; never relabel an old forecast."""
+ now=now or datetime.datetime.now(datetime.timezone.utc)
+ starts=[]
+ for row in pool.get('players',[]):
+  value=row.get('startsAt')
+  if value:
+   start=datetime.datetime.fromisoformat(value.replace('Z','+00:00'))
+   if start>now:starts.append(start)
+ if not starts:
+  value=pool.get('locksAt')
+  if value:
+   start=datetime.datetime.fromisoformat(value.replace('Z','+00:00'))
+   if start>now:starts.append(start)
+ if not starts:raise ValueError('No upcoming verified NBA salary games')
+ return min(starts).astimezone(ZoneInfo('America/New_York')).date()
 def execute():
  today=datetime.datetime.now(ZoneInfo('America/New_York')).date()
  report={'state':'partial','nba':{'state':'pending'},'salaries':{},'slates':{'NBA':'Requires complete verified identity and current availability evidence','NFL':'Requires matching established weekly forecasts; original core scoring and attributed DST source are configured'}}
  with tempfile.TemporaryDirectory(prefix='rr-dfs-') as directory:
   work=pathlib.Path(directory);output=work/'artifacts';nba_ready=False
+  for sport in ['NBA','NFL']:
+   capture=work/sport.lower()
+   try:
+    result=subprocess.run(['node',str(REPO/'scripts/pro/capture-current-salaries.mjs'),sport,str(capture)],capture_output=True,text=True,timeout=100)
+    if result.returncode:report['salaries'][sport]={'state':'failed','reason':'Current official salary capture did not pass'}
+    else:
+     pool=json.loads((capture/'salary-pool.json').read_text())
+     report['salaries'][sport]={'state':'validated','players':len(pool['players']),'draftGroupId':pool['draftGroupId'],'locksAt':pool['locksAt']}
+     archive=ROOT/'forward/salary-captures'/str(today);archive.mkdir(parents=True,exist_ok=True)
+     shutil.copyfile(capture/'salary-pool.json',archive/(sport+'-'+pool['draftGroupId']+'-'+str(int(datetime.datetime.now().timestamp()))+'.json'))
+   except Exception:report['salaries'][sport]={'state':'failed','reason':'Official salary retrieval unavailable'}
   try:
+   pool_file=work/'nba/salary-pool.json'
+   forecast_date=nba_slate_date(json.loads(pool_file.read_text())) if pool_file.exists() else today
    model=work/'model';shutil.copytree(ROOT,model,ignore=shutil.ignore_patterns('__pycache__','tmp','run-artifacts'))
    for relative in ['tmp/pdfs','forward/predictions','data/injury_reports','data/starters','data/features_weekly']:(model/relative).mkdir(parents=True,exist_ok=True)
    # Preserve every original forecast. Recompute in an isolated working copy using fresh observed inputs.
-   snapshot=model/'forward/predictions'/f'{today}.json'
+   snapshot=model/'forward/predictions'/f'{forecast_date}.json'
    if snapshot.exists():snapshot.unlink()
    sys.path.insert(0,str(model/'src'))
    import run_forward
    with (work/'producer.log').open('w') as log,contextlib.redirect_stdout(log):
     manifest=run_forward.verify_frozen()
-    data,refresh_receipt=run_forward.refresh(today,today.year+(today.month>=7))
-    generated=run_forward.forecast(today,data,manifest)
+    data,refresh_receipt=run_forward.refresh(forecast_date,forecast_date.year+(forecast_date.month>=7))
+    generated=run_forward.forecast(forecast_date,data,manifest)
    if not snapshot.exists():raise RuntimeError('Established producer did not create a forecast')
    source=json.loads(snapshot.read_text())
    if not source.get('predictions') or not source.get('fixtures'):
@@ -37,7 +66,7 @@ def execute():
    # Immutable source receipts survive the sandbox snapshot for audit/recovery.
    archive=ROOT/'forward/predictions/runs';archive.mkdir(exist_ok=True)
    source_hash=hashlib.sha256(snapshot.read_bytes()).hexdigest()
-   saved=archive/(str(today)+'-'+source_hash+'.json')
+   saved=archive/(str(forecast_date)+'-'+source_hash+'.json')
    if not saved.exists():shutil.copyfile(snapshot,saved)
    output=work/'artifacts'
    command=[sys.executable,str(REPO/'scripts/pro/export-nba.py'),'--model-dir',str(model),'--snapshot',str(snapshot),'--output',str(output),'--release-policy',str(REPO/'config/nba-incumbent-release.json')]
@@ -50,17 +79,6 @@ def execute():
    nba_ready=True
   except StopIteration:pass
   except Exception as error:report['nba']={'state':'failed','errorType':type(error).__name__,'reason':'Established NBA refresh did not pass; prior artifacts retained'}
-  for sport in ['NBA','NFL']:
-   capture=work/sport.lower()
-   try:
-    result=subprocess.run(['node',str(REPO/'scripts/pro/capture-current-salaries.mjs'),sport,str(capture)],capture_output=True,text=True,timeout=100)
-    if result.returncode:report['salaries'][sport]={'state':'failed','reason':'Current official salary capture did not pass'}
-    else:
-     pool=json.loads((capture/'salary-pool.json').read_text())
-     report['salaries'][sport]={'state':'validated','players':len(pool['players']),'draftGroupId':pool['draftGroupId'],'locksAt':pool['locksAt']}
-     archive=ROOT/'forward/salary-captures'/str(today);archive.mkdir(parents=True,exist_ok=True)
-     shutil.copyfile(capture/'salary-pool.json',archive/(sport+'-'+pool['draftGroupId']+'-'+str(int(datetime.datetime.now().timestamp()))+'.json'))
-   except Exception:report['salaries'][sport]={'state':'failed','reason':'Official salary retrieval unavailable'}
   try:
    if not nba_ready:raise ValueError('NBA model stage is not ready')
    spec=importlib.util.spec_from_file_location('nba_availability',REPO/'scripts/pro/nba-availability.py');availability_module=importlib.util.module_from_spec(spec);spec.loader.exec_module(availability_module)
