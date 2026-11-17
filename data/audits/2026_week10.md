@@ -1,14 +1,14 @@
-# Week 10, 2026 projection accuracy (partial)
+# Week 10, 2026 projection accuracy (all projected teams have game stats)
 
-**MAE: 5.8275** | matched: 219 | coverage: 82.02%
+**MAE: 5.7575** | matched: 239 | coverage: 82.13%
 
 | Position | Players | MAE | Bias | ±1 | ±3 | ±5 |
 |---|---:|---:|---:|---:|---:|---:|
-| ALL | 219 | 5.8275 | -0.6961 | 12.33% | 35.62% | 54.79% |
-| QB | 22 | 7.8832 | -0.8495 | 9.09% | 22.73% | 36.36% |
-| RB | 57 | 6.2296 | -2.0637 | 17.54% | 38.6% | 56.14% |
-| WR | 90 | 6.0164 | -1.1256 | 6.67% | 32.22% | 51.11% |
-| TE | 50 | 4.1244 | 1.7036 | 18.0% | 44.0% | 68.0% |
+| ALL | 239 | 5.7575 | -0.8202 | 11.72% | 35.98% | 54.39% |
+| QB | 23 | 7.8057 | -1.0778 | 8.7% | 21.74% | 34.78% |
+| RB | 62 | 6.1956 | -2.0995 | 16.13% | 38.71% | 54.84% |
+| WR | 99 | 5.9078 | -1.1417 | 6.06% | 32.32% | 50.51% |
+| TE | 55 | 4.1367 | 1.3084 | 18.18% | 45.45% | 69.09% |
 
 ## Largest misses
 
@@ -35,9 +35,9 @@
 | Carson Beck | QB | 13.96 | 0.42 | 13.54 |
 | Rhamondre Stevenson | RB | 14.79 | 1.5 | 13.29 |
 
-Verified zero-point offensive appearances: 13.
-Unresolved (no stat row and participation not verified): 48; ambiguous: 0.
-Snap-count data covers teams: ARI, ATL, BUF, CAR, CIN, CLE, DAL, DET, GB, HOU, IND, JAX, KC, LA, LV, MIA, MIN, NE, NO, NYG, NYJ, PIT, SEA, SF, TEN, WAS.
+Verified zero-point offensive appearances: 16.
+Unresolved (no stat row and participation not verified): 52; ambiguous: 0.
+Snap-count data covers teams: ARI, ATL, BAL, BUF, CAR, CIN, CLE, DAL, DET, GB, HOU, IND, JAX, KC, LA, LAC, LV, MIA, MIN, NE, NO, NYG, NYJ, PIT, SEA, SF, TEN, WAS.
 
 ## Unresolved players
 
@@ -47,6 +47,7 @@ Snap-count data covers teams: ARI, ATL, BUF, CAR, CIN, CLE, DAL, DET, GB, HOU, I
 | Shedeur Sanders | CLE | QB | No offensive stats; participation unverified |
 | Malik Willis | MIA | QB | No offensive stats; participation unverified |
 | Carson Wentz | MIN | QB | No offensive stats; participation unverified |
+| Joe Fagnano | BAL | QB | No offensive stats; participation unverified |
 | Kenneth Walker III | KC | RB | No offensive stats; participation unverified |
 | Josh Jacobs | GB | RB | No offensive stats; participation unverified |
 | Audric Estimé | NO | RB | No offensive stats; participation unverified |
@@ -75,11 +76,13 @@ Snap-count data covers teams: ARI, ATL, BUF, CAR, CIN, CLE, DAL, DET, GB, HOU, I
 | Mike Evans | SF | WR | No offensive stats; participation unverified |
 | Keenan Allen | IND | WR | No offensive stats; participation unverified |
 | Josh Downs | IND | WR | No offensive stats; participation unverified |
+| Ladd McConkey | LAC | WR | No offensive stats; participation unverified |
 | Jordan Addison | MIN | WR | No offensive stats; participation unverified |
 | Marvin Harrison Jr. | HOU | WR | No offensive stats; participation unverified |
 | Chris Bell | MIA | WR | No offensive stats; participation unverified |
 | Tim Patrick | NYJ | WR | No offensive stats; participation unverified |
 | Brandin Cooks | SF | WR | No offensive stats; participation unverified |
+| Brenen Thompson | LAC | WR | No offensive stats; participation unverified |
 | Jauan Jennings | MIN | WR | No offensive stats; participation unverified |
 | Jaden Bradley | WAS | WR | No offensive stats; participation unverified |
 | Zachariah Branch | ATL | WR | No offensive stats; participation unverified |
@@ -87,11 +90,12 @@ Snap-count data covers teams: ARI, ATL, BUF, CAR, CIN, CLE, DAL, DET, GB, HOU, I
 | Kevin Austin Jr. | NO | WR | No offensive stats; participation unverified |
 | Justin Watson | KC | WR | No offensive stats; participation unverified |
 | Deven Thompkins | LV | WR | No offensive stats; participation unverified |
+| Elijah Sarratt | BAL | WR | No offensive stats; participation unverified |
 | Malik Benson | LV | WR | No offensive stats; participation unverified |
 | Lewis Bond | HOU | WR | No offensive stats; participation unverified |
 | Jordan Hudson | DAL | WR | No offensive stats; participation unverified |
 | Ja'Seem Reed | CAR | WR | No offensive stats; participation unverified |
 
 This report never assumes unavailable games or missing player rows scored zero.
-Missing team results: BAL, LAC.
+Missing team results: none.
 A final label still requires all expected team games and player matches to be reconciled.
