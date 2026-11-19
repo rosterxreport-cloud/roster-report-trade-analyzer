@@ -28,7 +28,7 @@ test('absence of a projection remains distinct from an out designation',()=>{
  const call=analysis(p)[2].text;assert.match(call,/no Week 7 projection/);assert.match(call,/not a zero-point prediction or confirmation that he is out/);assert(!call.includes('Start him'));
 });
 test('historical return assumptions stay conditional despite a strong weekly forecast',()=>{
- const p=find('Josh Jacobs');p.rankings.half.posRank=30;p.projection.note='Conditional historical role based on 12 games in 2025';const text=analysis(p).map(x=>x.text).join(' ');
+ const p=find('Josh Jacobs');p.rankings.half.posRank=30;p.projection={PPR:25,note:'Conditional historical role based on 12 games in 2025'};p.editorial.forecastRank=8;const text=analysis(p).map(x=>x.text).join(' ');
  assert.match(text,/if active under the stated role assumption/);assert.match(text,/12 games in 2025/);assert(!text.includes('at user request'));
  assert.match(text,/FLEX option asset for rest-of-season trades/);
 });

@@ -27,16 +27,18 @@ jobs:
           node-version: '24'
       - run: pip install pandas==2.3.3 numpy==2.3.4 pyarrow==22.0.0
       - run: python scripts/pro/test-weekly-nfl.py
-      - name: Tuesday Pacific publication window
+      - name: Tuesday publication, allowing hosted queue delays
         id: gate
         env:
           EVENT: ${{ github.event_name }}
+          RECOVERY_PUBLISH: ${{ contains(github.event.head_commit.message, '[publish-nfl]') }}
         run: |
           python - <<'PY'
-          import datetime,os
-          from zoneinfo import ZoneInfo
-          now=datetime.datetime.now(ZoneInfo('America/Los_Angeles'))
-          allowed=os.environ['EVENT']=='workflow_dispatch' or (os.environ['EVENT']=='schedule' and now.weekday()==1 and 8<=now.hour<=9)
+          import importlib.util,os
+          spec=importlib.util.spec_from_file_location('weekly','scripts/pro/create-weekly-nfl.py')
+          weekly=importlib.util.module_from_spec(spec);spec.loader.exec_module(weekly)
+          allowed=weekly.publication_allowed(os.environ['EVENT'],recovery=os.environ['RECOVERY_PUBLISH']=='true')
+          print('NFL publication authorized.' if allowed else 'No publication requested or before Tuesday 8 AM Pacific.')
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('publish='+str(allowed).lower()+'\n')
           PY
       - name: Generate from fresh completed-week observations
@@ -60,13 +62,19 @@ jobs:
                   target=pathlib.Path('data/weekly-projections.json') if p.name=='weekly-projections.json' else pathlib.Path('data/projections')/p.name
                   shutil.copyfile(p,target)
           PY
-          node --test tests/test-weekly-projections.mjs
+          python scripts/build-player-evidence.py --output /tmp/rr-player-statistics.json
+          python scripts/build-matchup-evidence.py --evidence /tmp/rr-player-statistics.json
+          # Existing builder resolves evidence relative to the repository root.
+          cp /tmp/rr-player-statistics.json data/player-evidence.candidate.json
+          node scripts/publish-player-profiles.mjs --evidence data/player-evidence.candidate.json --require-fresh
+          rm data/player-evidence.candidate.json
+          node --test tests/test-weekly-projections.mjs tests/test-player-profiles.mjs tests/test-player-matchups.mjs
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/weekly-projections.json data/projections/
+          git add data/weekly-projections.json data/projections/ data/player-evidence.json data/player-profiles.json data/player-registry.json data/matchup-evidence.json
           if ! git diff --cached --quiet; then
             git commit -m "Publish Tuesday established NFL projections"
             git push origin HEAD:main
           fi
 # Schedule activation requires this workflow on the default branch.
-# Merging this isolated change authorizes weekly projection publication only.
+# Publication stays on development pending explicit production approval.
