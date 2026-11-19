@@ -7,7 +7,7 @@ import {fetchPublishedWeekly} from '../../server/published-weekly-source.mjs';
 import {refreshBundle} from './refresh-dfs.mjs';
 const origin='https://raw.githubusercontent.com/rosterxreport-cloud/roster-report-trade-analyzer/main/';
 const team=s=>({LA:'LAR',WSH:'WAS'})[s]||s;
-const name=s=>String(s).normalize('NFKC').toLowerCase().replace(/[.\u2019']/g,'').replace(/\s+/g,' ').trim();
+const name=s=>String(s).normalize('NFKC').toLowerCase().replace(/[.\u2019']/g,'').replace(/\s+/g,' ').trim().replace(/\s+(?:jr|sr|ii|iii|iv|v)$/,'');
 async function get(path){const r=await fetch(origin+path,{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Established weekly source unavailable: '+path);return r.text();}
 export async function assembleNFL(pool,salaryCsv,{weekly,manifest,defenses,generatorHash,coreHash,finalSnapshotReceipt},now=Date.now()){
  if(pool.sport!=='NFL'||pool.salaryDataApproved!==true||!pool.validation?.allCsvRowsMatched||!pool.validation?.fullApiPlayerCoverage)throw Error('Complete official NFL salary coverage is required.');
@@ -17,12 +17,14 @@ export async function assembleNFL(pool,salaryCsv,{weekly,manifest,defenses,gener
  if(index.size!==raw.players.filter(p=>p.position!=='DST').length)throw Error('Ambiguous weekly player identity.');
  const dst=new Map(raw.players.filter(p=>p.position==='DST').map(p=>[team(p.team),p]));
  const players=raw.players.map(p=>({...p,team:team(p.team),opponent:team(p.opponent)})),byId=new Map(players.map(p=>[p.id,p]));
- const mappings=[];
+ const mappings=[],matchedModels=new Set();
  for(const p of pool.players){
   const position=p.positions[0],model=position==='DST'?dst.get(p.team):index.get(name(p.name)+'|'+p.team+'|'+position);
   const status=String(p.sourceStatus||'').toLowerCase();
   let availability=p.sourceDisabled?'inactive':({out:'out',o:'out',ir:'out',inactive:'inactive',q:'questionable',questionable:'questionable',d:'doubtful',doubtful:'doubtful',p:'probable',probable:'probable',none:'active',active:'active',available:'active','':'active'})[status]||'unverified';
   if(model){
+   if(matchedModels.has(model.id))throw Error('Multiple operator identities matched one weekly NFL player.');
+   matchedModels.add(model.id);
    if(team(model.opponent)!==p.opponent)throw Error('Weekly NFL forecast belongs to a different matchup: '+p.name);
    const record=byId.get(model.id);record.sourceName=model.name;record.name=p.name;record.gameId=p.gameId;record.startsAt=p.startsAt;
    const designation=model.statline?.note?.match(/^(Out|Inactive|Questionable|Doubtful|Probable)\b/i)?.[1].toLowerCase();
