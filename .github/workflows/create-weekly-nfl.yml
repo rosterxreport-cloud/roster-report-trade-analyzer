@@ -74,7 +74,15 @@ jobs:
           git add data/weekly-projections.json data/projections/ data/player-evidence.json data/player-profiles.json data/player-registry.json data/matchup-evidence.json
           if ! git diff --cached --quiet; then
             git commit -m "Publish Tuesday established NFL projections"
-            git push origin HEAD:feat/toolkit-pro-platform
+            # Archive and article jobs can update the branch during model execution.
+            # Rebase disjoint changes, revalidate, and never force a publication.
+            for attempt in 1 2 3; do
+              git fetch origin feat/toolkit-pro-platform
+              git rebase origin/feat/toolkit-pro-platform
+              node --test tests/test-weekly-projections.mjs tests/test-player-profiles.mjs tests/test-player-matchups.mjs
+              if git push origin HEAD:feat/toolkit-pro-platform; then break; fi
+              if [ "$attempt" -eq 3 ]; then exit 1; fi
+            done
           fi
 # Schedule activation requires this workflow on the default branch.
 # Publication stays on development pending explicit production approval.
