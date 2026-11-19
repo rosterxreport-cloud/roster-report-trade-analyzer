@@ -29,6 +29,9 @@ const profileRelease=JSON.parse(read('data/player-profiles.json'));
 const profileSlugs=new Map(profileRelease.profiles.map(p=>[p.name,p.slug]));
 const profilesStale=profileRelease.inputHashes.players!==hash(read('players.json'))||profileRelease.inputHashes.injuries!==hash(read('injury-adjustments.json'))||profileRelease.inputHashes.projections!==hash(read('data/weekly-projections.json'));
 const rankings=Object.fromEntries(Object.entries(adjusted).map(([f,list])=>[f,context.applyRbPremium(list).sort((a,b)=>a.rank-b.rank)]));
+// The premium layer must use exactly the same availability-adjusted values.
+fs.mkdirSync(path.join(root,'server'),{recursive:true});
+fs.writeFileSync(path.join(root,'server/published-trade-values.json'),JSON.stringify(rankings));
 for(const rows of Object.values(rankings))if(!rows.length||rows.some(p=>!Number.isFinite(p.value)||!Number.isFinite(p.rank)))throw Error('Invalid rankings');
 let rankDate;
 try{rankDate=execFileSync('git',['log','-1','--format=%cI','--','players.json','injury-adjustments.json','app.js'],{cwd:root,encoding:'utf8'}).trim();}catch{}

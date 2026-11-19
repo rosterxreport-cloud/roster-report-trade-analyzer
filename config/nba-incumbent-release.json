@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "sport": "NBA",
+  "model": "shared-preseason25-v1",
+  "modelFingerprint": "30ce0127b8bca4ab9b4825965d8524e929bf77573c16749a0cfbae6533a6aaa6",
+  "featureWeightsSha256": "5b8d4faee67cd49737aaf1b9e88b08f2775119f4ff61e9ef31d1fe9e90a2c643",
+  "approved": true,
+  "authorization": "Owner delegated incumbent NBA model release approval on 2026-11-16; production deployment remains separate.",
+  "sourceFiles": {
+    "draftkings_audit.py": "a7b3d45aaecedfe62a8292557c0e2120e881599a897e8bbf0edbde5385239229",
+    "model.py": "0126b7b7d0b8defd65a88495cbd31085f5ee1eb2e27b81dcd37e5d901cc97cdb",
+    "simulate_slate.py": "5bf536a4aeaf4640bdb89a519e8aa1988e5ac8fd6d022974eb7cf9cf76a5c58a",
+    "simulation_game_scripts.py": "37d6704ce2e285a8256579c75f0dbad7280069b94885d103dc61824ef1711190",
+    "simulation_rotations.py": "86f7ece8aa3ffba2efd5bed4bb85088f89fdca06d514f62d10487363d1cc6d19",
+    "simulation_starter_scoring.py": "5b116ecd86e9ba974fbecc6b52236a16e7bec644e27c2b1669e099b57194f214"
+  }
+}

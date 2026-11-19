@@ -8,3 +8,8 @@ export function selectPlayers(players,{search='',position='',team='',format='ppr
 }
 export function pageRows(rows,page,size){return rows.slice((page-1)*size,page*size);}
 export function statline(p){const n=k=>Number(p[k]).toFixed(2);const rush=`${n('Rush_Att')} carries · ${n('Rush_Yds')} rush yds · ${n('Rush_TD')} rush TD`;return p.Position==='QB'?`${n('Pass_Att')} att · ${n('Pass_Yds')} pass yds · ${n('Pass_TD')} pass TD · ${n('INT')} INT\n${rush}`:`${rush}\n${n('Targets')} targets · ${n('Receptions')} catches · ${n('Rec_Yds')} rec yds · ${n('Rec_TD')} rec TD`;}
+
+export function conditionalNotes(value){
+ const notes=Array.isArray(value)?value:Object.entries(value||{}).map(([team,note])=>`${team}: ${note}`);
+ return [...new Set(notes.filter(note=>typeof note==='string'&&note.trim()).map(note=>note.trim()))];
+}

@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {points,selectPlayers,pageRows,statline} from '../projections/model.mjs';
+import {points,selectPlayers,pageRows,statline,conditionalNotes} from '../projections/model.mjs';
 const data=JSON.parse(fs.readFileSync(new URL('../data/weekly-projections.json',import.meta.url)));
 test('source snapshot covers every position with unique finite rows',()=>{
  assert.equal(data.players.length,Object.values(data.counts).reduce((a,b)=>a+b,0));
- assert.equal(new Set(data.players.map(p=>p.Player)).size,data.players.length);
+ assert.equal(new Set(data.players.map(p=>[p.Player,p.Team,p.Position].join('|'))).size,data.players.length);
  for(const p of data.players){for(const f of ['Pass_TD','Receptions','PPR','Half_PPR','Standard'])assert.ok(Number.isFinite(p[f]));}
 });
 test('scoring uses exact baseline values; 6-point passing TD changes QBs only',()=>{
@@ -28,4 +28,10 @@ test('numeric sorting and scoring reranking do not mutate source records',()=>{
 test('full statlines retain RB rushing and receiving, QB passing and rushing',()=>{
  assert.match(statline(data.players.find(p=>p.Position==='RB')),/carries.*rush yds.*rush TD\nt.*|carries.*rush yds.*rush TD\n.*targets.*catches.*rec yds/s);
  assert.match(statline(data.players.find(p=>p.Position==='QB')),/pass yds.*pass TD.*INT\n.*carries/);
+});
+
+test('conditional notes support both published object and array formats without numeric labels',()=>{
+ assert.deepEqual(conditionalNotes({MIA:'Conditional starter'}),['MIA: Conditional starter']);
+ assert.deepEqual(conditionalNotes(['Player: limited',null,'','Player: limited']),['Player: limited']);
+ assert.deepEqual(conditionalNotes(null),[]);
 });

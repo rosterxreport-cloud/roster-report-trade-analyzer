@@ -1,0 +1,37 @@
+name: Toolkit Pro checks
+on:
+  pull_request:
+  push:
+    branches: [feat/toolkit-pro-platform]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: python3 scripts/pro/test-audit-shooting.py
+      - run: python3 scripts/pro/test-nba-release.py
+      - run: python3 scripts/pro/test-nba-availability.py
+      - run: python3 scripts/pro/test-release-availability.py
+      - run: python3 scripts/pro/test-private-worker.py
+      - run: python3 scripts/pro/test-weekly-nfl.py
+      - run: npm test
+      - run: node --check platform/platform.js && node --check api/pro.mjs
+  research-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - run: |
+          python3 -m venv /tmp/rr-validation
+          /tmp/rr-validation/bin/pip install -r scripts/pro/requirements-validation.txt
+          /tmp/rr-validation/bin/python scripts/pro/test-validate-simulations.py
+          /tmp/rr-validation/bin/python scripts/pro/test-validate-nfl-archive.py
+          /tmp/rr-validation/bin/python scripts/pro/test-grade-nba-candidate.py
+          /tmp/rr-validation/bin/python scripts/pro/test-nfl-event-candidate.py
+          /tmp/rr-validation/bin/python scripts/pro/test-nfl-dst-model.py
+          OPENBLAS_NUM_THREADS=1 /tmp/rr-validation/bin/python scripts/pro/test-nfl-joint-research.py
