@@ -4,6 +4,13 @@ from zoneinfo import ZoneInfo
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 TEMPLATE_HASH='c95ac28e53c2c9550827391269dcaff95127ee8397730b33072bc81d00441d6d'
 BASE='https://github.com/nflverse/nflverse-data/releases/download/'
+def publication_allowed(event,now=None,recovery=False):
+ # Hosted schedules can arrive hours late. Keep Tuesday intent, not a narrow deadline.
+ now=(now or datetime.datetime.now(datetime.timezone.utc)).astimezone(ZoneInfo('America/Los_Angeles'))
+ if event=='workflow_dispatch' or (event=='push' and recovery):return True
+ if event!='schedule':return False
+ if now.weekday()!=1:raise ValueError('Scheduled NFL publication missed Tuesday; use an explicit recovery run')
+ return now.hour>=8
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def bind_calendar(source,season,week,games):
  if hashlib.sha256(source.encode()).hexdigest()!=TEMPLATE_HASH:raise ValueError('Established model template changed; review required')

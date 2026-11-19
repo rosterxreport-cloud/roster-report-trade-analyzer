@@ -27,16 +27,18 @@ jobs:
           node-version: '24'
       - run: pip install pandas==2.3.3 numpy==2.3.4 pyarrow==22.0.0
       - run: python scripts/pro/test-weekly-nfl.py
-      - name: Tuesday Pacific publication window
+      - name: Tuesday publication, allowing hosted queue delays
         id: gate
         env:
           EVENT: ${{ github.event_name }}
+          RECOVERY_PUBLISH: ${{ contains(github.event.head_commit.message, '[publish-nfl]') }}
         run: |
           python - <<'PY'
-          import datetime,os
-          from zoneinfo import ZoneInfo
-          now=datetime.datetime.now(ZoneInfo('America/Los_Angeles'))
-          allowed=os.environ['EVENT']=='workflow_dispatch' or (os.environ['EVENT']=='schedule' and now.weekday()==1 and 8<=now.hour<=9)
+          import importlib.util,os
+          spec=importlib.util.spec_from_file_location('weekly','scripts/pro/create-weekly-nfl.py')
+          weekly=importlib.util.module_from_spec(spec);spec.loader.exec_module(weekly)
+          allowed=weekly.publication_allowed(os.environ['EVENT'],recovery=os.environ['RECOVERY_PUBLISH']=='true')
+          print('NFL publication authorized.' if allowed else 'No publication requested or before Tuesday 8 AM Pacific.')
           with open(os.environ['GITHUB_OUTPUT'],'a') as f:f.write('publish='+str(allowed).lower()+'\n')
           PY
       - name: Generate from fresh completed-week observations
