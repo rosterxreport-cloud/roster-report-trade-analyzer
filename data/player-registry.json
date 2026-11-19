@@ -1533,5 +1533,35 @@
     "id": "00-0036422",
     "name": "Adam Trautman",
     "slug": "adam-trautman"
+  },
+  "00-0040215": {
+    "id": "00-0040215",
+    "name": "Gavin Bartholomew",
+    "slug": "gavin-bartholomew"
+  },
+  "00-0035631": {
+    "id": "00-0035631",
+    "name": "Drew Sample",
+    "slug": "drew-sample"
+  },
+  "00-0032775": {
+    "id": "00-0032775",
+    "name": "Demarcus Robinson",
+    "slug": "demarcus-robinson"
+  },
+  "00-0039847": {
+    "id": "00-0039847",
+    "name": "Theo Johnson",
+    "slug": "theo-johnson"
+  },
+  "00-0040729": {
+    "id": "00-0040729",
+    "name": "Jack Bech",
+    "slug": "jack-bech"
+  },
+  "00-0033699": {
+    "id": "00-0033699",
+    "name": "Austin Ekeler",
+    "slug": "austin-ekeler"
   }
 }

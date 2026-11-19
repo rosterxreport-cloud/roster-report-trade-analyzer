@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "season": 2026,
   "throughWeek": 10,
-  "capturedAt": "2026-11-19T19:04:10.338314+00:00",
+  "capturedAt": "2026-11-19T19:10:01.293737+00:00",
   "source": {
     "url": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
     "sha256": "befcb83e76f863bd89598aa210d61976692bc63b66dfeb8298350af2bde26342"
