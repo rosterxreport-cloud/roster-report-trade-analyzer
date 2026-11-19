@@ -1,0 +1,41 @@
+{
+  "as_of": "2026-11-19T19:01:07.540075+00:00",
+  "forecast_week": 11,
+  "input_weeks": [
+    1,
+    10
+  ],
+  "snap_weeks": [
+    8,
+    10
+  ],
+  "counts": {
+    "WR": 122,
+    "RB": 71,
+    "TE": 61,
+    "QB": 26
+  },
+  "model_base": "Established structural v4 model; original Week 10 template with calendar-only bindings. No model fitting or recalibration.",
+  "model_sha256": "b625426bac970e5b004bf3363c1a0448bcbf4cb5e277687dc913f19676b6f0b4",
+  "generator_path": "scripts/pro/create-weekly-nfl.py",
+  "template_sha256": "c95ac28e53c2c9550827391269dcaff95127ee8397730b33072bc81d00441d6d",
+  "bound_script_sha256": "bac17c83b324664c0d2f6eeb29ab83e5ad075c40b91cb5e8dd135ce5e595d3dd",
+  "sources": {
+    "games.csv": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv",
+    "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+    "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
+    "roster.parquet": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
+    "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet"
+  },
+  "sha256": {
+    "player_stats.parquet": "befcb83e76f863bd89598aa210d61976692bc63b66dfeb8298350af2bde26342",
+    "injuries.parquet": "f590b3623cca888dbf83e3cf4ad02f83089f914b8a9c75d32f428921f502c80b",
+    "snaps.parquet": "d67d94d19caca72e6977fafafc0c073e100bb56bf82561a4f62c043e257bcf77",
+    "games.csv": "7849c0f92caf9860d1c80d38dd17efba389aef266b21e01b24ec555f011213b3",
+    "returning_player_profiles.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "gameday_availability.json": "ed4dbfd6d96b2d167df18aa7a42d2337f9ab5f8f5aec011c9d2ae75f3a365ff8",
+    "roster.parquet": "63f1e36565b4ea27dd6a51117d5b36266f1a82456a1c055a097bdab71c7b069a"
+  },
+  "conditional_starters": {},
+  "update_note": "Tuesday preliminary forecast using completed prior-week stats and current roster/injury data. No previous-week game-day overrides inherited; final availability remains subject to updates."
+}
