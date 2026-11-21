@@ -49,6 +49,9 @@ export function optimize(artifact,options={},now=Date.now()){
  const cap=50000,deadline=Date.now()+25000;
  for(let n=0;n<count;n++){
   const available=pool.filter(p=>(used.get(p.id)||0)<limit(p.id));
+  // Salary order is independent of candidate weights and joint-draw attempts.
+  // At most the eight/nine selected IDs need skipping to find a slot's minimum.
+  const cheapestBySlot=new Map(SLOTS[sport].map(slot=>[slot,available.filter(p=>eligible(p,slot)).sort((a,b)=>a.salary-b.salary)]));
   const candidates=new Map();
   const attempts=simulate?12:1;
   for(let attempt=0;attempt<attempts;attempt++){
@@ -59,15 +62,15 @@ export function optimize(artifact,options={},now=Date.now()){
    for(const [slotIndex,slot] of SLOTS[sport].entries()){
     const all=available.filter(p=>eligible(p,slot)).sort((a,b)=>weights.get(b.id)-weights.get(a.id));
     const choices=[...new Map([...all.slice(0,45),...[...all].sort((a,b)=>a.salary-b.salary).slice(0,15),...all.filter(p=>locks.includes(p.id))].map(p=>[p.id,p])).values()];
+    const remainingSlots=SLOTS[sport].slice(slotIndex+1);
     const next=[],unique=new Set();
     for(const b of beam)for(const p of choices){
      if(b.ids.has(p.id)||b.salary+p.salary>cap)continue;
      const ids=new Set([...b.ids,p.id]),left=SLOTS[sport].length-ids.size;
      // Optimistic remaining-slot cost prevents expensive partial rosters from
      // consuming the beam when they cannot possibly finish under the cap.
-     const remainingSlots=SLOTS[sport].slice(slotIndex+1);
      let minimumRemaining=0;
-     for(const remaining of remainingSlots){let cheapest=Infinity;for(const q of available)if(!ids.has(q.id)&&eligible(q,remaining))cheapest=Math.min(cheapest,q.salary);minimumRemaining+=cheapest;}
+     for(const remaining of remainingSlots){const cheapest=cheapestBySlot.get(remaining).find(q=>!ids.has(q.id));minimumRemaining+=cheapest?.salary??Infinity;}
      if(b.salary+p.salary+minimumRemaining>cap)continue;
      if(locks.filter(x=>!ids.has(x)).length>left)continue;
      const key=[...ids].sort().join(',');if(unique.has(key))continue;unique.add(key);

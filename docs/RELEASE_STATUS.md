@@ -1,4 +1,4 @@
-# Current Toolkit release status — November 19, 2026 (Pacific)
+# Current Toolkit release status — November 20, 2026 (Pacific)
 
 This document supersedes earlier dated implementation claims. The Pro production release remains unapproved. The owner separately approved and merged only the Tuesday NFL projection automation in PR #46. Development branch: `feat/toolkit-pro-platform`; draft PR #45.
 
@@ -83,3 +83,15 @@ The named private runner was stopped and snapshotted after the dry run, leaving 
 - Desktop preview inspection loaded the current four-game NBA slate with 73 eligible modeled players from 141 salary entries, and Generate returned a visible sign-in requirement in the signed-out browser. This does not establish authenticated free/paid behavior or mobile review.
 
 The staging scheduler uses its existing HMAC relay; credential values were neither returned to the client nor added to Git. Stripe-origin delivery, genuine paid/free browser flows, and complete mobile review remain unverified. No new remote sign-in loop or Pro production promotion was attempted.
+
+## November 20 independent checks
+
+- Ordinary timer-triggered staging runs at 3:30, 4:00 and 4:30 PM Pacific published both sports. Each produced fresh established-model NBA output and Week 11 NFL slate publication. These are actual scheduled receipts, extending the earlier explicitly triggered recovery evidence.
+- The 3:00 PM run had blocked its NBA slate with “Search budget reached” on a larger player pool while NFL still published. The optimizer repeatedly scanned the full player pool for every candidate's remaining-slot salary bound. It now sorts eligible players by salary once per lineup and skips only already-selected IDs. The bound, candidate scores, model projections, joint draws, salary rules and 25-second search budget remain unchanged.
+- A 140-player multi-position tournament stress case completed in about 2.4 seconds after the change versus about 19.7 seconds with the previous implementation on the same local environment. This synthetic benchmark is performance evidence, not proof of global optimality or success for every portfolio. A regression test validates a feasible lineup and held-out outcome summary without altering projections.
+- A new application-handler/PostgreSQL integration test passed real quota and session RPCs with fixture Auth/storage transport: failed optimization preserved quota, an idempotent retry returned the saved lineup, the other sport was denied after the free allowance, active paid fixture access allowed repeated advanced runs/CSV output, and session revocation returned 401. This is not a live Stripe, OTP-delivery or authenticated-browser receipt.
+- Live responsive review at 337 CSS pixels used native Chrome zoom and DOM/layout checks. Dashboard, NBA/NFL DFS, NFL premium breakdown, Pro trade, account, free weekly projections and NBA projections fit after layout settled; no persistent page-wide overflow was found. NBA controls expanded and the player table retained its own scroll region. A permanent Brock Bowers page retained weekly/matchup/season/free analysis, the Substack embed and premium panel. This is narrow-layout review, not an iOS Safari or signed-in mobile-flow test.
+
+Remaining owner/session-dependent release evidence: genuine Stripe-origin delivery and real subscriber/free browser flows. Final Pro production approval remains separate.
+
+Application validation for this update: **158 passing tests** (38 existing + 120 Pro), including the larger-pool stress case and handler/PostgreSQL integration. The normal timer produced 48 receipts over the checked 24-hour period, with both sports published on 33 runs; partial runs must be evaluated by their recorded validation reasons rather than treated as successful publication.
