@@ -5,3 +5,28 @@
 .leaderboard-controls label[hidden] { display: none; }
 [data-leaderboard] th button { white-space: nowrap; }
 [data-leaderboard] td:nth-child(2) { white-space: nowrap; }
+
+.leaderboard-sports { display: flex; gap: 8px; }
+.leaderboard-sports a { flex: 0 1 80px; min-height: 44px; display: grid; place-items: center; border: 1px solid #42627f; border-radius: 8px; color: #d6e6f5; text-decoration: none; }
+.leaderboard-sports a[aria-current="page"] { background: #234664; color: #fff; font-weight: 800; }
+.leaderboard-filters { margin-top: 12px; }
+.leaderboard-filters summary { cursor: pointer; padding: 12px 0; color: #d6e6f5; font-weight: 650; }
+#stat-applied:empty { display: none; }
+#stat-view { margin-top: 8px; min-height: 44px; }
+#stat-scroll-hint { margin-bottom: 0; }
+.leaderboard-player-detail { display: block; margin-top: 3px; font-size: 12px; color: #a0b8ce; }
+[data-leaderboard][data-view="compact"] table { white-space: normal; table-layout: fixed; }
+[data-leaderboard][data-view="compact"] :is(th, td):first-child { width: 3.5rem; }
+[data-leaderboard][data-view="compact"] :is(th, td):last-child { width: 35%; text-align: right; font-variant-numeric: tabular-nums; }
+[data-leaderboard][data-view="compact"] :is(td:nth-child(2), th button) { white-space: normal; overflow-wrap: anywhere; }
+[data-leaderboard][data-view="compact"] th button { max-width: 100%; padding: 8px; min-height: 44px; }
+@media (max-width: 760px) {
+  [data-leaderboard] { padding-inline: 14px; }
+  .leaderboard-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .leaderboard-search { grid-column: 1 / -1; grid-row: 1; }
+  .leaderboard-controls :is(select, input) { min-height: 44px; min-width: 0; font-size: 16px; margin-top: 4px; }
+  .leaderboard-controls button { padding-inline: 8px; }
+  [data-leaderboard][data-view="compact"] :is(th, td) { padding: 9px 6px; }
+  [data-leaderboard][data-view="compact"] :is(th, td):first-child { width: 2.5rem; }
+  [data-leaderboard][data-view="table"] :is(th, td):nth-child(2) { position: sticky; left: 0; background: #0c2139; box-shadow: 1px 0 #294965; }
+}

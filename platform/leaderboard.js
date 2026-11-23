@@ -26,6 +26,11 @@ if (panel) {
   const direction = get('stat-direction');
   const table = get('stat-table');
   const status = get('stat-status');
+  const viewButton = get('stat-view');
+  const mobile = matchMedia('(max-width: 760px)');
+  let compact = mobile.matches;
+  let chosenView = false;
+  get('stat-filters').open = !compact;
   const filters = new Map();
   const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const option = (label, key) => new Option(label, key);
@@ -65,11 +70,15 @@ if (panel) {
       if (x == null || y == null) return Number(x == null) - Number(y == null) || a.name.localeCompare(b.name);
       return (direction.value === 'asc' ? x-y : y-x) || a.name.localeCompare(b.name);
     });
-    const hasTeam = board.rows.some(row => row.team);
-    const hasPosition = board.rows.some(row => row.position);
+    const hasTeam = !compact && board.rows.some(row => row.team);
+    const hasPosition = !compact && board.rows.some(row => row.position);
+    const visibleKeys = compact ? [key] : keys;
+    panel.dataset.view = compact ? 'compact' : 'table';
+    viewButton.textContent = compact ? 'Show full table' : 'Show compact view';
+    get('stat-scroll-hint').hidden = compact || !mobile.matches || !rows.length;
     const head = table.tHead.rows[0];
     head.replaceChildren();
-    for (const label of ['#', 'Player', ...(hasTeam ? ['Team'] : []), ...(hasPosition ? ['Position'] : []), ...keys]) {
+    for (const label of ['#', 'Player', ...(hasTeam ? ['Team'] : []), ...(hasPosition ? ['Position'] : []), ...visibleKeys]) {
       const cell = document.createElement('th');
       cell.scope = 'col';
       if (Object.hasOwn(board.metrics,label)) {
@@ -92,10 +101,16 @@ if (panel) {
     for (const [index,row] of visible.entries()) {
       const tr = document.createElement('tr');
       const values = [index+1,row.name,...(hasTeam ? [row.team] : []),...(hasPosition ? [row.position] : []),
-        ...keys.map(stat => format(row, stat))];
+        ...visibleKeys.map(stat => format(row, stat))];
       for (const value of values) {
         const td = tr.insertCell();
         td.textContent = value || '—';
+      }
+      if (compact && (row.team || row.position)) {
+        const detail = document.createElement('span');
+        detail.className = 'leaderboard-player-detail';
+        detail.textContent = [row.team, row.position].filter(Boolean).join(' · ');
+        tr.cells[1].append(detail);
       }
       body.append(tr);
     }
@@ -135,6 +150,16 @@ if (panel) {
       'Retrieved ' + new Date(snapshot.capturedAt).toLocaleString();
     selectBoard();
   }
+  viewButton.addEventListener('click', () => {
+    chosenView = true;
+    compact = !compact;
+    table.parentElement.scrollLeft = 0;
+    render();
+  });
+  mobile.addEventListener('change', () => {
+    if (!chosenView) compact = mobile.matches;
+    if (board) render();
+  });
   periodSelect.addEventListener('change', selectPeriod);
   boardSelect.addEventListener('change',selectBoard);
   metricSelect.addEventListener('change',() => {selectMetric(metricSelect.value);render();});
