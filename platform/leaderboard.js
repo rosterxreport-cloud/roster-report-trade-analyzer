@@ -1,3 +1,17 @@
+// Keep column order independent of the active sort and filter.
+const columnOrder = {
+  'Box score': 'gamesPlayed avgMinutes avgPoints avgRebounds avgAssists avgSteals avgBlocks avgTurnovers avgFouls avgFieldGoalsMade avgFieldGoalsAttempted avgThreePointFieldGoalsMade avgThreePointFieldGoalsAttempted avgFreeThrowsMade avgFreeThrowsAttempted minutes points rebounds assists steals blocks turnovers fouls fieldGoalsMade fieldGoalsAttempted threePointFieldGoalsMade threePointFieldGoalsAttempted freeThrowsMade freeThrowsAttempted doubleDouble tripleDouble flagrantFouls technicalFouls ejections fieldGoalPct threePointFieldGoalPct freeThrowPct ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
+  'Efficiency & per 36': 'gamesPlayed minutes fieldGoalsAttempted ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
+  Passing: 'games attempts passing_yards passing_tds passing_interceptions sacks_suffered passing_air_yards passing_epa passing_cpoe pacr',
+  Rushing: 'games carries rushing_yards rushing_tds rushing_20 rushing_epa',
+  Receiving: 'games targets receptions receiving_yards receiving_tds receiving_yards_after_catch receiving_air_yards target_share air_yards_share receiving_epa wopr racr',
+  'Defense & kicking': 'games def_tackles_solo def_tackles_for_loss def_sacks def_qb_hits def_interceptions def_pass_defended def_fumbles_forced fg_att fg_made fg_pct',
+  Fantasy: 'games targets passing_yards rushing_yards receiving_yards fantasy_points_ppr',
+  Hitting: 'gamesPlayed pa bip hits doubles triples homeRuns runs rbi stolenBases strikeOuts baseOnBalls ba obp slg ops kRate bbRate kMinusBb babip iso woba est_ba est_slg est_woba est_woba_minus_woba_diff',
+  Pitching: 'gamesPlayed gamesStarted outs pa bip wins saves holds strikeOuts baseOnBalls homeRuns era whip ba slg kRate bbRate kMinusBb strikeoutsPer9Inn walksPer9Inn homeRunsPer9Inn strikeoutWalkRatio woba est_ba est_slg est_woba xera est_woba_minus_woba_diff',
+};
+const percentages = new Set('fieldGoalPct threePointFieldGoalPct freeThrowPct ts efg threeRate ftRate target_share air_yards_share fg_pct kRate bbRate'.split(' '));
+
 const panel = document.querySelector('[data-leaderboard]');
 if (panel) {
   const get = id => panel.querySelector('#' + id);
@@ -17,6 +31,19 @@ if (panel) {
   const option = (label, key) => new Option(label, key);
   let snapshot;
   let board;
+  let keys;
+  // nflverse stores field-goal percentage as a fraction. Filters use percentage points.
+  const valueOf = (row, stat) => {
+    const value = row.stats[stat];
+    return stat === 'fg_pct' && value != null ? value * 100 : value;
+  };
+  const format = (row, stat) => {
+    const value = valueOf(row, stat);
+    if (value == null) return '—';
+    if (percentages.has(stat)) return value.toFixed(1) + '%';
+    if (stat === 'kMinusBb' || stat === 'passing_cpoe') return value.toFixed(1);
+    return String(value);
+  };
 
   function render() {
     const key = metricSelect.value;
@@ -27,18 +54,17 @@ if (panel) {
       terms.every(term => normalize(row.name).includes(term)) &&
       (!position.value || row.position === position.value) &&
       (!team.value || row.team === team.value) &&
-      (!volume || minimum === '' || (row.stats[volume] != null && row.stats[volume] >= Number(minimum))) &&
+      (!volume || minimum === '' || (valueOf(row, volume) != null && valueOf(row, volume) >= Number(minimum))) &&
       [...filters].every(([stat, [lo, hi]]) => {
-        const value = row.stats[stat];
+        const value = valueOf(row, stat);
         return value != null && (lo === '' || value >= Number(lo)) && (hi === '' || value <= Number(hi));
       })
     );
     rows.sort((a,b) => {
-      const x = a.stats[key], y = b.stats[key];
+      const x = valueOf(a, key), y = valueOf(b, key);
       if (x == null || y == null) return Number(x == null) - Number(y == null) || a.name.localeCompare(b.name);
       return (direction.value === 'asc' ? x-y : y-x) || a.name.localeCompare(b.name);
     });
-    const keys = [key, ...Object.keys(board.metrics).filter(stat => stat !== key)];
     const hasTeam = board.rows.some(row => row.team);
     const hasPosition = board.rows.some(row => row.position);
     const head = table.tHead.rows[0];
@@ -66,7 +92,7 @@ if (panel) {
     for (const [index,row] of visible.entries()) {
       const tr = document.createElement('tr');
       const values = [index+1,row.name,...(hasTeam ? [row.team] : []),...(hasPosition ? [row.position] : []),
-        ...keys.map(stat => row.stats[stat] == null ? '—' : String(row.stats[stat]))];
+        ...keys.map(stat => format(row, stat))];
       for (const value of values) {
         const td = tr.insertCell();
         td.textContent = value || '—';
@@ -85,10 +111,12 @@ if (panel) {
   }
   function selectBoard() {
     board = snapshot.boards[Number(boardSelect.value)];
+    const preferred = (columnOrder[board.label] || '').split(' ').filter(key => Object.hasOwn(board.metrics, key));
+    keys = [...new Set([...preferred, ...Object.keys(board.metrics)])];
     filters.clear();
     get('stat-volume-min').value = '';
-    metricSelect.replaceChildren(...Object.entries(board.metrics).map(([key,label]) => option(label,key)));
-    get('stat-volume').replaceChildren(option('None',''),...Object.entries(board.metrics).map(([key,label]) => option(label,key)));
+    metricSelect.replaceChildren(...keys.map(key => option(board.metrics[key],key)));
+    get('stat-volume').replaceChildren(option('None',''),...keys.map(key => option(board.metrics[key],key)));
     for (const [control,key] of [[team,'team'],[position,'position']]) {
       const values = [...new Set(board.rows.map(row => row[key]).filter(Boolean))].sort();
       control.closest('label').hidden = !values.length;
@@ -112,6 +140,9 @@ if (panel) {
   fetch('/platform/stats/' + panel.dataset.leaderboard + '.json.gz')
     .then(response => {if (!response.ok) throw Error('Snapshot unavailable'); return new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();})
     .then(data => {
+      const boxScore = data.boards.find(item => item.label === 'Box score');
+      const efficiency = data.boards.find(item => item.label === 'Efficiency & per 36');
+      if (boxScore && efficiency) Object.assign(boxScore.metrics, efficiency.metrics);
       snapshot = data;
       boardSelect.replaceChildren(...data.boards.map((item,i) => option(item.label,String(i))));
       get('stat-source').textContent = data.source;
