@@ -240,9 +240,12 @@ def nba_game(event, inputs):
                 if entry.get("didNotPlay"):
                     continue
                 raw = dict(zip(group["labels"], entry["stats"], strict=True))
+                # ESPN sometimes lists inactive players with placeholders instead of a DNP flag.
+                if not any(character.isdigit() for stat in raw.values() for character in stat):
+                    continue
                 values = {}
                 for label, key in NBA_BOX.items():
-                    if label in raw:
+                    if label in raw and raw[label] not in ("", "--", "-"):
                         value = raw[label]
                         if label == "MIN" and ":" in value:
                             minutes, seconds = map(int, value.split(":"))
@@ -265,6 +268,7 @@ def nba_game(event, inputs):
         team_minutes = sum(row["stats"]["minutes"] for row in team_players)
         if not team_minutes:
             raise ValueError(f"Missing NBA team minutes: {event_id}")
+        # Estimate each player’s team plays while on court from their share of game minutes.
         plays_per_minute = 5 * sum(nba_usage_plays(row["stats"]) for row in team_players) / team_minutes
         for row in team_players:
             row["stats"]["usageOpportunity"] = row["stats"]["minutes"] * plays_per_minute
