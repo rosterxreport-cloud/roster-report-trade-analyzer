@@ -241,7 +241,9 @@ def nba_game(event, inputs):
                     continue
                 raw = dict(zip(group["labels"], entry["stats"], strict=True))
                 # ESPN sometimes lists inactive players with placeholders instead of a DNP flag.
-                if not any(character.isdigit() for stat in raw.values() for character in stat):
+                if raw.get("MIN") in ("--", "-") and not any(
+                    character in "123456789" for stat in raw.values() for character in stat
+                ):
                     continue
                 values = {}
                 for label, key in NBA_BOX.items():
