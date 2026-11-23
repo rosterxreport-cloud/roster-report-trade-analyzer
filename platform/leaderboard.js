@@ -40,9 +40,7 @@ if (panel) {
   const format = (row, stat) => {
     const value = valueOf(row, stat);
     if (value == null) return '—';
-    if (percentages.has(stat)) return value.toFixed(1) + '%';
-    if (stat === 'kMinusBb' || stat === 'passing_cpoe') return value.toFixed(1);
-    return String(value);
+    return value.toFixed(1) + (percentages.has(stat) ? '%' : '');
   };
 
   function render() {
