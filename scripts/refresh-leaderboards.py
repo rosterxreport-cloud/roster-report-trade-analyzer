@@ -218,6 +218,14 @@ NBA_BOX = dict(MIN="minutes", PTS="points", REB="rebounds", AST="assists",
 NBA_SHOT = dict(FG="fieldGoals", **{"3PT": "threePointFieldGoals"}, FT="freeThrows")
 
 
+def nba_usage_plays(stats):
+    return stats["fieldGoalsAttempted"] + 0.44 * stats["freeThrowsAttempted"] + stats["turnovers"]
+
+
+def nba_usage(values):
+    return ratio(nba_usage_plays(values), values["usageOpportunity"], 100)
+
+
 def nba_game(event, inputs):
     event_id = event["id"]
     data = json.loads(read(f"{ESPN_NBA}/summary?event={event_id}", f"nba-game-{event_id}.json", inputs))
@@ -226,7 +234,7 @@ def nba_game(event, inputs):
         raise ValueError(f"Incomplete NBA box score: {event_id}")
     players = []
     for team in teams:
-        count = 0
+        team_players = []
         for group in team["statistics"]:
             for entry in group["athletes"]:
                 if entry.get("didNotPlay"):
@@ -242,32 +250,38 @@ def nba_game(event, inputs):
                         values[key] = float(value)
                 for label, key in NBA_SHOT.items():
                     values[key + "Made"], values[key + "Attempted"] = map(int, raw[label].split("-"))
-                if not all(key in values for key in ("minutes", "points", "rebounds", "assists")):
+                if not all(key in values for key in ("minutes", "points", "rebounds", "assists", "turnovers")):
                     raise ValueError(f"Missing NBA box-score columns: {event_id}")
                 values["gamesPlayed"] = 1
                 if all(key in values for key in ("points", "rebounds", "assists", "steals", "blocks")):
                     double_digits = sum(values[key] >= 10 for key in ("points", "rebounds", "assists", "steals", "blocks"))
                     values.update(doubleDouble=int(double_digits >= 2), tripleDouble=int(double_digits >= 3))
                 athlete = entry["athlete"]
-                players.append(dict(id=str(athlete["id"]), name=athlete["displayName"],
+                team_players.append(dict(id=str(athlete["id"]), name=athlete["displayName"],
                                     team=team["team"]["abbreviation"],
                                     position=athlete.get("position", {}).get("abbreviation", ""), stats=values))
-                count += 1
-        if count < 5:
+        if len(team_players) < 5:
             raise ValueError(f"Incomplete NBA player pool: {event_id}")
+        team_minutes = sum(row["stats"]["minutes"] for row in team_players)
+        if not team_minutes:
+            raise ValueError(f"Missing NBA team minutes: {event_id}")
+        plays_per_minute = 5 * sum(nba_usage_plays(row["stats"]) for row in team_players) / team_minutes
+        for row in team_players:
+            row["stats"]["usageOpportunity"] = row["stats"]["minutes"] * plays_per_minute
+        players.extend(team_players)
     if len({row["id"] for row in players}) != len(players):
         raise ValueError(f"Duplicate NBA players: {event_id}")
     return players
 
 
 def nba_recent(year, inputs, season_boards, end):
-    start = end - dt.timedelta(days=14)
+    start = dt.date(year - 1, 10, 1)
     def scoreboard(day):
         return json.loads(read(f"{ESPN_NBA}/scoreboard?dates={day:%Y%m%d}", f"nba-scoreboard-{day}.json", inputs))["events"]
 
     events = {}
     with ThreadPoolExecutor(max_workers=6) as executor:
-        for daily in executor.map(scoreboard, (start + dt.timedelta(days=offset) for offset in range(15))):
+        for daily in executor.map(scoreboard, (start + dt.timedelta(days=offset) for offset in range((end - start).days + 1))):
             for event in daily:
                 date = dt.datetime.fromisoformat(event["date"]).astimezone(ZoneInfo("America/New_York")).date()
                 if (start <= date <= end and int(event["season"]["year"]) == year and
@@ -276,8 +290,8 @@ def nba_recent(year, inputs, season_boards, end):
         games = sorted(events.values(), key=lambda pair: pair[1]["date"])
         boxes = list(executor.map(lambda pair: nba_game(pair[1], inputs), games))
     periods = {}
-    for days in (7, 15):
-        cutoff = end - dt.timedelta(days=days-1)
+    for days in (None, 7, 15):
+        cutoff = start if days is None else end - dt.timedelta(days=days-1)
         players = {}
         for (date, _), box in zip(games, boxes, strict=True):
             if date < cutoff:
@@ -287,10 +301,19 @@ def nba_recent(year, inputs, season_boards, end):
                 row.update(team=player["team"], position=player["position"] or row["position"])
                 for key, value in player["stats"].items():
                     row["stats"][key] += value
+        if days is None:
+            for item in season_boards:
+                item["metrics"]["usageRate"] = "Usage rate (est.) %"
+                for row in item["rows"]:
+                    player = players.get(str(row["id"]))
+                    row["stats"]["usageRate"] = nba_usage(player["stats"]) if player else None
+            continue
         for row in players.values():
             values = row["stats"]
+            values["usageRate"] = nba_usage(values)
+            del values["usageOpportunity"]
             for key in list(values):
-                if key not in ("gamesPlayed", "doubleDouble", "tripleDouble"):
+                if key not in ("gamesPlayed", "doubleDouble", "tripleDouble", "usageRate"):
                     values["avg" + key[0].upper() + key[1:]] = ratio(values[key], values["gamesPlayed"])
             for shot, metric in (("fieldGoals", "fieldGoalPct"), ("threePointFieldGoals", "threePointFieldGoalPct"),
                                  ("freeThrows", "freeThrowPct")):

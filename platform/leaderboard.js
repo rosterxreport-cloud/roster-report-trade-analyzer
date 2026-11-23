@@ -1,7 +1,7 @@
 // Keep column order independent of the active sort and filter.
 const columnOrder = {
-  'Box score': 'gamesPlayed avgMinutes avgPoints avgRebounds avgAssists avgSteals avgBlocks avgTurnovers avgFouls avgFieldGoalsMade avgFieldGoalsAttempted avgThreePointFieldGoalsMade avgThreePointFieldGoalsAttempted avgFreeThrowsMade avgFreeThrowsAttempted minutes points rebounds assists steals blocks turnovers fouls fieldGoalsMade fieldGoalsAttempted threePointFieldGoalsMade threePointFieldGoalsAttempted freeThrowsMade freeThrowsAttempted doubleDouble tripleDouble flagrantFouls technicalFouls ejections fieldGoalPct threePointFieldGoalPct freeThrowPct ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
-  'Efficiency & per 36': 'gamesPlayed minutes fieldGoalsAttempted ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
+  'Box score': 'gamesPlayed avgMinutes avgPoints avgRebounds avgAssists avgSteals avgBlocks avgTurnovers avgFouls avgFieldGoalsMade avgFieldGoalsAttempted avgThreePointFieldGoalsMade avgThreePointFieldGoalsAttempted avgFreeThrowsMade avgFreeThrowsAttempted minutes points rebounds assists steals blocks turnovers fouls fieldGoalsMade fieldGoalsAttempted threePointFieldGoalsMade threePointFieldGoalsAttempted freeThrowsMade freeThrowsAttempted doubleDouble tripleDouble flagrantFouls technicalFouls ejections fieldGoalPct threePointFieldGoalPct freeThrowPct usageRate ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
+  'Efficiency & per 36': 'gamesPlayed minutes fieldGoalsAttempted usageRate ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
   Passing: 'games attempts passing_yards passing_tds passing_interceptions sacks_suffered passing_air_yards passing_epa passing_cpoe pacr',
   Rushing: 'games carries rushing_yards rushing_tds rushing_20 rushing_epa',
   Receiving: 'games targets receptions receiving_yards receiving_tds receiving_yards_after_catch receiving_air_yards target_share air_yards_share receiving_epa wopr racr',
@@ -10,7 +10,7 @@ const columnOrder = {
   Hitting: 'gamesPlayed pa bip hits doubles triples homeRuns runs rbi stolenBases strikeOuts baseOnBalls ba obp slg ops kRate bbRate kMinusBb babip iso woba est_ba est_slg est_woba est_woba_minus_woba_diff',
   Pitching: 'gamesPlayed gamesStarted outs pa bip wins saves holds strikeOuts baseOnBalls homeRuns era whip ba slg kRate bbRate kMinusBb strikeoutsPer9Inn walksPer9Inn homeRunsPer9Inn strikeoutWalkRatio woba est_ba est_slg est_woba xera est_woba_minus_woba_diff',
 };
-const percentages = new Set('fieldGoalPct threePointFieldGoalPct freeThrowPct ts efg threeRate ftRate target_share air_yards_share fg_pct kRate bbRate'.split(' '));
+const percentages = new Set('fieldGoalPct threePointFieldGoalPct freeThrowPct usageRate ts efg threeRate ftRate target_share air_yards_share fg_pct kRate bbRate'.split(' '));
 
 const panel = document.querySelector('[data-leaderboard]');
 if (panel) {
