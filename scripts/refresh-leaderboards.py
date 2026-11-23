@@ -9,20 +9,23 @@ import io
 import gzip
 import json
 import math
+import unicodedata
 from pathlib import Path
+from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1] / "platform/stats"
 NFL = "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_reg_{year}.csv"
+NBA_ADVANCED = "https://stats.nba.com/stats/leaguedashplayerstats"
 ESPN_NBA = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
 NBA = "https://site.web.api.espn.com/apis/common/v3/sports/basketball/nba/statistics/byathlete?region=us&lang=en&contentorigin=espn&season={year}&seasontype=2&limit=1000"
 MLB_STATS = "https://statsapi.mlb.com/api/v1/stats?stats=season&group={group}&season={year}&sportIds=1&playerPool=ALL&limit=2000"
 MLB = "https://baseballsavant.mlb.com/leaderboard/expected_statistics?type={kind}&year={year}&min=1&csv=true"
 
-def read(url, file, inputs):
+def read(url, file, inputs, headers=None):
     if inputs:
         return (inputs / file).read_text(encoding="utf-8-sig")
-    with urlopen(Request(url, headers={"User-Agent": "RosterReportLeaderboard/1.0"}), timeout=40) as response:
+    with urlopen(Request(url, headers=headers or {"User-Agent": "RosterReportLeaderboard/1.0"}), timeout=40) as response:
         return response.read().decode("utf-8-sig")
 
 def number(value):
@@ -218,12 +221,56 @@ NBA_BOX = dict(MIN="minutes", PTS="points", REB="rebounds", AST="assists",
 NBA_SHOT = dict(FG="fieldGoals", **{"3PT": "threePointFieldGoals"}, FT="freeThrows")
 
 
-def nba_usage_plays(stats):
-    return stats["fieldGoalsAttempted"] + 0.44 * stats["freeThrowsAttempted"] + stats["turnovers"]
+def nba_player_key(name):
+    plain = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
+    words = plain.lower().split()
+    if words and words[-1].rstrip(".") in {"jr", "sr", "ii", "iii", "iv"}:
+        words.pop()
+    return "".join(character for word in words for character in word if character.isalnum())
 
 
-def nba_usage(values):
-    return ratio(nba_usage_plays(values), values["usageOpportunity"], 100)
+def add_nba_official_usage(boards, year, inputs, window=None):
+    season = f"{year-1}-{year%100:02d}"
+    start, end = (day.strftime("%m/%d/%Y") for day in window) if window else ("", "")
+    params = dict(College="", Conference="", Country="", DateFrom=start, DateTo=end, Division="",
+                  DraftPick="", DraftYear="", GameScope="", GameSegment="", Height="", LastNGames=0,
+                  LeagueID="00", Location="", MeasureType="Advanced", Month=0, OpponentTeamID=0,
+                  Outcome="", PORound=0, PaceAdjust="N", PerMode="PerGame", Period=0, PlayerExperience="",
+                  PlayerPosition="", PlusMinus="N", Rank="N", Season=season, SeasonSegment="",
+                  SeasonType="Regular Season", ShotClockRange="", StarterBench="", TeamID=0,
+                  VsConference="", VsDivision="", Weight="")
+    headers = {"Origin": "https://www.nba.com", "Referer": "https://www.nba.com/",
+               "Accept": "application/json", "x-nba-stats-origin": "stats", "x-nba-stats-token": "true",
+               "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/131.0.0.0 Safari/537.36"}
+    suffix = (window[1] - window[0]).days + 1 if window else "season"
+    data = json.loads(read(f"{NBA_ADVANCED}?{urlencode(params)}", f"nba-usage-{suffix}.json", inputs, headers))
+    if any(data["parameters"][key] != params[key] for key in ("Season", "SeasonType", "DateFrom", "DateTo", "MeasureType")):
+        raise ValueError("Unexpected NBA usage season or date range")
+    table = next(item for item in data["resultSets"] if item["name"] == "LeagueDashPlayerStats")
+    official = defaultdict(list)
+    for raw in table["rowSet"]:
+        row = dict(zip(table["headers"], raw, strict=True))
+        value = row["USG_PCT"]
+        if value is not None and (not isinstance(value, (int, float)) or not 0 <= value <= 1):
+            raise ValueError("Invalid official NBA usage rate")
+        official[nba_player_key(row["PLAYER_NAME"])].append(row)
+
+    # ESPN and NBA use unrelated player IDs. Match an unambiguous normalized name;
+    # for collisions, require a unique matching team as well.
+    abbreviations = dict(GS="GSW", NO="NOP", NY="NYK", SA="SAS", UTAH="UTA", WSH="WAS")
+    for item in boards:
+        item["metrics"]["usageRate"] = "Usage rate %"
+        for row in item["rows"]:
+            matches = official.get(nba_player_key(row["name"]), [])
+            if len(matches) > 1:
+                team = abbreviations.get(row["team"], row["team"])
+                matches = [match for match in matches if match["TEAM_ABBREVIATION"] == team]
+            usage = matches[0]["USG_PCT"] if len(matches) == 1 else None
+            row["stats"]["usageRate"] = round(100 * usage, 3) if usage is not None else None
+        matched = sum(row["stats"]["usageRate"] is not None for row in item["rows"])
+        if item["rows"] and matched < 0.90 * len(item["rows"]):
+            raise ValueError(f"Incomplete official NBA usage coverage ({suffix}): {matched}/{len(item['rows'])}")
+        print(f"NBA official usage ({suffix}, {item['label']}): {matched}/{len(item['rows'])}")
 
 
 def nba_game(event, inputs):
@@ -267,13 +314,6 @@ def nba_game(event, inputs):
                                     position=athlete.get("position", {}).get("abbreviation", ""), stats=values))
         if len(team_players) < 5:
             raise ValueError(f"Incomplete NBA player pool: {event_id}")
-        team_minutes = sum(row["stats"]["minutes"] for row in team_players)
-        if not team_minutes:
-            raise ValueError(f"Missing NBA team minutes: {event_id}")
-        # Estimate each player’s team plays while on court from their share of game minutes.
-        plays_per_minute = 5 * sum(nba_usage_plays(row["stats"]) for row in team_players) / team_minutes
-        for row in team_players:
-            row["stats"]["usageOpportunity"] = row["stats"]["minutes"] * plays_per_minute
         players.extend(team_players)
     if len({row["id"] for row in players}) != len(players):
         raise ValueError(f"Duplicate NBA players: {event_id}")
@@ -281,7 +321,7 @@ def nba_game(event, inputs):
 
 
 def nba_recent(year, inputs, season_boards, end):
-    start = dt.date(year - 1, 10, 1)
+    start = end - dt.timedelta(days=14)
     def scoreboard(day):
         return json.loads(read(f"{ESPN_NBA}/scoreboard?dates={day:%Y%m%d}", f"nba-scoreboard-{day}.json", inputs))["events"]
 
@@ -296,8 +336,8 @@ def nba_recent(year, inputs, season_boards, end):
         games = sorted(events.values(), key=lambda pair: pair[1]["date"])
         boxes = list(executor.map(lambda pair: nba_game(pair[1], inputs), games))
     periods = {}
-    for days in (None, 7, 15):
-        cutoff = start if days is None else end - dt.timedelta(days=days-1)
+    for days in (7, 15):
+        cutoff = end - dt.timedelta(days=days-1)
         players = {}
         for (date, _), box in zip(games, boxes, strict=True):
             if date < cutoff:
@@ -307,19 +347,10 @@ def nba_recent(year, inputs, season_boards, end):
                 row.update(team=player["team"], position=player["position"] or row["position"])
                 for key, value in player["stats"].items():
                     row["stats"][key] += value
-        if days is None:
-            for item in season_boards:
-                item["metrics"]["usageRate"] = "Usage rate (est.) %"
-                for row in item["rows"]:
-                    player = players.get(str(row["id"]))
-                    row["stats"]["usageRate"] = nba_usage(player["stats"]) if player else None
-            continue
         for row in players.values():
             values = row["stats"]
-            values["usageRate"] = nba_usage(values)
-            del values["usageOpportunity"]
             for key in list(values):
-                if key not in ("gamesPlayed", "doubleDouble", "tripleDouble", "usageRate"):
+                if key not in ("gamesPlayed", "doubleDouble", "tripleDouble"):
                     values["avg" + key[0].upper() + key[1:]] = ratio(values[key], values["gamesPlayed"])
             for shot, metric in (("fieldGoals", "fieldGoalPct"), ("threePointFieldGoals", "threePointFieldGoalPct"),
                                  ("freeThrows", "freeThrowPct")):
@@ -330,6 +361,7 @@ def nba_recent(year, inputs, season_boards, end):
             board(item["label"], item["default"],
                   {key: label for key, label in item["metrics"].items() if not players or key in available},
                   players.values(), recent=True) for item in season_boards]
+        add_nba_official_usage(periods[f"Last {days} days"], year, inputs, (cutoff, end))
     return periods
 
 
@@ -347,9 +379,10 @@ def main():
     captured = dt.datetime.now(dt.timezone.utc).isoformat()
     snapshots = {
         "nfl": (str(year), "nflverse · CC BY 4.0", "https://nflreadr.nflverse.com/reference/load_player_stats", nfl(year,args.inputs)),
-        "nba": (f"{nba_year-1}-{nba_year%100:02d}", "ESPN box scores · Roster Report calculations", "https://www.espn.com/nba/stats", nba(nba_year,args.inputs)),
+        "nba": (f"{nba_year-1}-{nba_year%100:02d}", "ESPN box scores · NBA Stats usage rate · Roster Report calculations", "https://www.espn.com/nba/stats", nba(nba_year,args.inputs)),
         "mlb": (str(year), "MLB official season stats · Baseball Savant Statcast", "https://baseballsavant.mlb.com/expected_statistics", mlb(year,args.inputs)),
     }
+    add_nba_official_usage(snapshots["nba"][3], nba_year, args.inputs)
     recent = {}
     if not args.season_only:
         weekly_url = NFL.format(year=year).replace("stats_player_reg_", "stats_player_week_")
