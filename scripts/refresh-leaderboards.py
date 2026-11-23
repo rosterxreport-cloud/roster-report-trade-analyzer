@@ -262,24 +262,24 @@ def nba_game(event, inputs):
 
 def nba_recent(year, inputs, season_boards, end):
     start = end - dt.timedelta(days=14)
-    date_range = f"{start:%Y%m%d}-{end:%Y%m%d}"
-    data = json.loads(read(f"{ESPN_NBA}/scoreboard?dates={date_range}&limit=1000", "nba-scoreboard.json", inputs))
-    if len(data["events"]) >= 1000:
-        raise ValueError("Incomplete NBA scoreboard")
-    events = []
-    for event in data["events"]:
-        date = dt.datetime.fromisoformat(event["date"]).astimezone(ZoneInfo("America/New_York")).date()
-        if (start <= date <= end and int(event["season"]["year"]) == year and
-                int(event["season"]["type"]) == 2 and event["status"]["type"]["completed"]):
-            events.append((date, event))
-    events.sort(key=lambda pair: pair[1]["date"])
+    def scoreboard(day):
+        return json.loads(read(f"{ESPN_NBA}/scoreboard?dates={day:%Y%m%d}", f"nba-scoreboard-{day}.json", inputs))["events"]
+
+    events = {}
     with ThreadPoolExecutor(max_workers=6) as executor:
-        boxes = list(executor.map(lambda pair: nba_game(pair[1], inputs), events))
+        for daily in executor.map(scoreboard, (start + dt.timedelta(days=offset) for offset in range(15))):
+            for event in daily:
+                date = dt.datetime.fromisoformat(event["date"]).astimezone(ZoneInfo("America/New_York")).date()
+                if (start <= date <= end and int(event["season"]["year"]) == year and
+                        int(event["season"]["type"]) == 2 and event["status"]["type"]["completed"]):
+                    events[event["id"]] = (date, event)
+        games = sorted(events.values(), key=lambda pair: pair[1]["date"])
+        boxes = list(executor.map(lambda pair: nba_game(pair[1], inputs), games))
     periods = {}
     for days in (7, 15):
         cutoff = end - dt.timedelta(days=days-1)
         players = {}
-        for (date, _), box in zip(events, boxes, strict=True):
+        for (date, _), box in zip(games, boxes, strict=True):
             if date < cutoff:
                 continue
             for player in box:
