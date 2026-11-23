@@ -4,6 +4,7 @@ export function leaderboardPage(sport) {
     <p><span id="stat-date"></span> <a id="stat-source"></a></p>
     <div id="stat-controls" hidden>
       <div class="pro-controls leaderboard-controls">
+        <label id="stat-period-label" hidden>Period<select id="stat-period"></select></label>
         <label>Board<select id="stat-board"></select></label>
         <label>Search players<input type="search" id="stat-search"></label>
         <label>Team<select id="stat-team"></select></label>

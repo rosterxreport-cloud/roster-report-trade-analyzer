@@ -29,7 +29,9 @@ if (panel) {
   const filters = new Map();
   const normalize = value => value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
   const option = (label, key) => new Option(label, key);
+  const periodSelect = get('stat-period');
   let snapshot;
+  let periodBoards;
   let board;
   let keys;
   // nflverse stores field-goal percentage as a fraction. Filters use percentage points.
@@ -98,7 +100,7 @@ if (panel) {
       body.append(tr);
     }
     table.tBodies[0].replaceChildren(body);
-    status.textContent = rows.length ? 'Showing ' + visible.length + ' of ' + rows.length + ' matching players.' : 'No players match these filters.';
+    status.textContent = rows.length ? 'Showing ' + visible.length + ' of ' + rows.length + ' matching players.' : board.rows.length ? 'No players match these filters.' : 'No regular-season player stats in this period.';
     get('stat-applied').textContent = [...filters].map(([stat,[lo,hi]]) =>
       board.metrics[stat] + ' ' + (lo === '' ? 'any minimum' : '≥ ' + lo) + ' / ' + (hi === '' ? 'any maximum' : '≤ ' + hi)).join(' · ');
   }
@@ -108,7 +110,7 @@ if (panel) {
     [from.value,to.value] = filters.get(key) || ['',''];
   }
   function selectBoard() {
-    board = snapshot.boards[Number(boardSelect.value)];
+    board = periodBoards[Number(boardSelect.value)];
     const preferred = (columnOrder[board.label] || '').split(' ').filter(key => Object.hasOwn(board.metrics, key));
     keys = [...new Set([...preferred, ...Object.keys(board.metrics)])];
     filters.clear();
@@ -123,6 +125,17 @@ if (panel) {
     selectMetric(board.default);
     render();
   }
+  function selectPeriod() {
+    const label = board?.label;
+    periodBoards = snapshot.recent?.[periodSelect.value] || snapshot.boards;
+    boardSelect.replaceChildren(...periodBoards.map((item, i) => option(item.label, String(i))));
+    boardSelect.value = String(Math.max(0, periodBoards.findIndex(item => item.label === label)));
+    get('stat-date').textContent = snapshot.season + ' regular season · ' +
+      (periodSelect.value && snapshot.recentThrough ? 'Window through ' + snapshot.recentThrough + ' · ' : '') +
+      'Retrieved ' + new Date(snapshot.capturedAt).toLocaleString();
+    selectBoard();
+  }
+  periodSelect.addEventListener('change', selectPeriod);
   boardSelect.addEventListener('change',selectBoard);
   metricSelect.addEventListener('change',() => {selectMetric(metricSelect.value);render();});
   for (const control of [from,to]) control.addEventListener('input',() => {
@@ -138,16 +151,19 @@ if (panel) {
   fetch('/platform/stats/' + panel.dataset.leaderboard + '.json.gz')
     .then(response => {if (!response.ok) throw Error('Snapshot unavailable'); return new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();})
     .then(data => {
-      const boxScore = data.boards.find(item => item.label === 'Box score');
-      const efficiency = data.boards.find(item => item.label === 'Efficiency & per 36');
-      if (boxScore && efficiency) Object.assign(boxScore.metrics, efficiency.metrics);
+      for (const boards of [data.boards, ...Object.values(data.recent || {})]) {
+        const boxScore = boards.find(item => item.label === 'Box score');
+        const efficiency = boards.find(item => item.label === 'Efficiency & per 36');
+        if (boxScore && efficiency) Object.assign(boxScore.metrics, efficiency.metrics);
+      }
       snapshot = data;
-      boardSelect.replaceChildren(...data.boards.map((item,i) => option(item.label,String(i))));
+      const periods = Object.keys(data.recent || {});
+      periodSelect.replaceChildren(option('Full season', ''), ...periods.map(period => option(period, period)));
+      get('stat-period-label').hidden = !periods.length;
       get('stat-source').textContent = data.source;
       get('stat-source').href = data.url;
-      get('stat-date').textContent = data.season + ' regular season · Retrieved ' + new Date(data.capturedAt).toLocaleString();
       get('stat-controls').hidden = false;
-      selectBoard();
+      selectPeriod();
     })
     .catch(() => {status.textContent = 'The leaderboard snapshot is temporarily unavailable. Reload to try again.';});
 }
