@@ -1,44 +1,44 @@
 {
   "overall": {
-    "players": 217,
-    "mae": 4.5615,
-    "bias": -0.6601,
-    "within_1": 17.51,
-    "within_3": 47.93,
-    "within_5": 65.9
+    "players": 234,
+    "mae": 4.7539,
+    "bias": -0.3333,
+    "within_1": 16.67,
+    "within_3": 45.3,
+    "within_5": 63.68
   },
   "by_position": {
     "QB": {
-      "players": 23,
-      "mae": 6.0278,
-      "bias": -0.6557,
-      "within_1": 8.7,
-      "within_3": 30.43,
-      "within_5": 52.17
+      "players": 25,
+      "mae": 6.0744,
+      "bias": -0.0744,
+      "within_1": 8.0,
+      "within_3": 28.0,
+      "within_5": 52.0
     },
     "RB": {
-      "players": 52,
-      "mae": 4.7694,
-      "bias": -0.5663,
-      "within_1": 23.08,
-      "within_3": 50.0,
-      "within_5": 59.62
+      "players": 56,
+      "mae": 4.9252,
+      "bias": -0.2798,
+      "within_1": 23.21,
+      "within_3": 48.21,
+      "within_5": 57.14
     },
     "WR": {
-      "players": 90,
-      "mae": 4.6426,
-      "bias": -1.0226,
-      "within_1": 14.44,
-      "within_3": 45.56,
-      "within_5": 67.78
+      "players": 97,
+      "mae": 4.9321,
+      "bias": -0.5574,
+      "within_1": 13.4,
+      "within_3": 43.3,
+      "within_5": 64.95
     },
     "TE": {
-      "players": 52,
-      "mae": 3.5648,
-      "bias": -0.1287,
-      "within_1": 21.15,
-      "within_3": 57.69,
-      "within_5": 75.0
+      "players": 56,
+      "mae": 3.6845,
+      "bias": -0.1141,
+      "within_1": 19.64,
+      "within_3": 53.57,
+      "within_5": 73.21
     }
   },
   "matched": [
@@ -77,6 +77,15 @@
       "actual": 34.9,
       "absolute_error": 19.88,
       "signed_error": -19.88
+    },
+    {
+      "player": "Ja'Marr Chase",
+      "team": "CIN",
+      "position": "WR",
+      "projected": 27.65,
+      "actual": 8.1,
+      "absolute_error": 19.55,
+      "signed_error": 19.55
     },
     {
       "player": "Ladd McConkey",
@@ -167,6 +176,24 @@
       "actual": 22.44,
       "absolute_error": 11.44,
       "signed_error": -11.44
+    },
+    {
+      "player": "Antonio Williams",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 9.89,
+      "actual": 21.2,
+      "absolute_error": 11.31,
+      "signed_error": -11.31
+    },
+    {
+      "player": "Chase Brown",
+      "team": "CIN",
+      "position": "RB",
+      "projected": 19.84,
+      "actual": 8.6,
+      "absolute_error": 11.24,
+      "signed_error": 11.24
     },
     {
       "player": "Ryan Flournoy",
@@ -286,6 +313,15 @@
       "signed_error": -9.65
     },
     {
+      "player": "Joe Burrow",
+      "team": "CIN",
+      "position": "QB",
+      "projected": 29.54,
+      "actual": 19.9,
+      "absolute_error": 9.64,
+      "signed_error": 9.64
+    },
+    {
       "player": "Evan Engram",
       "team": "DEN",
       "position": "TE",
@@ -311,6 +347,24 @@
       "actual": 14.7,
       "absolute_error": 9.52,
       "signed_error": -9.52
+    },
+    {
+      "player": "Rachaad White",
+      "team": "WAS",
+      "position": "RB",
+      "projected": 9.44,
+      "actual": 0.0,
+      "absolute_error": 9.44,
+      "signed_error": 9.44
+    },
+    {
+      "player": "Tee Higgins",
+      "team": "CIN",
+      "position": "WR",
+      "projected": 21.46,
+      "actual": 12.3,
+      "absolute_error": 9.16,
+      "signed_error": 9.16
     },
     {
       "player": "Courtland Sutton",
@@ -466,6 +520,15 @@
       "signed_error": -7.62
     },
     {
+      "player": "Dohnte Meyers",
+      "team": "CIN",
+      "position": "WR",
+      "projected": 8.75,
+      "actual": 1.2,
+      "absolute_error": 7.55,
+      "signed_error": 7.55
+    },
+    {
       "player": "Xavier Hutchinson",
       "team": "HOU",
       "position": "WR",
@@ -491,6 +554,15 @@
       "actual": 12.7,
       "absolute_error": 7.39,
       "signed_error": -7.39
+    },
+    {
+      "player": "Van Jefferson",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 7.26,
+      "actual": 0.0,
+      "absolute_error": 7.26,
+      "signed_error": 7.26
     },
     {
       "player": "Dalton Schultz",
@@ -538,6 +610,15 @@
       "signed_error": 7.02
     },
     {
+      "player": "Samaje Perine",
+      "team": "CIN",
+      "position": "RB",
+      "projected": 6.69,
+      "actual": 13.7,
+      "absolute_error": 7.01,
+      "signed_error": -7.01
+    },
+    {
       "player": "Jonathan Taylor",
       "team": "IND",
       "position": "RB",
@@ -556,6 +637,15 @@
       "signed_error": -6.83
     },
     {
+      "player": "Ben Sinnott",
+      "team": "WAS",
+      "position": "TE",
+      "projected": 6.7,
+      "actual": 0.0,
+      "absolute_error": 6.7,
+      "signed_error": 6.7
+    },
+    {
       "player": "Seth McGowan",
       "team": "IND",
       "position": "RB",
@@ -572,6 +662,15 @@
       "actual": 0.0,
       "absolute_error": 6.62,
       "signed_error": 6.62
+    },
+    {
+      "player": "Mike Gesicki",
+      "team": "CIN",
+      "position": "TE",
+      "projected": 6.39,
+      "actual": 12.7,
+      "absolute_error": 6.31,
+      "signed_error": -6.31
     },
     {
       "player": "Tony Pollard",
@@ -853,6 +952,15 @@
       "signed_error": 4.07
     },
     {
+      "player": "Chig Okonkwo",
+      "team": "WAS",
+      "position": "TE",
+      "projected": 6.58,
+      "actual": 10.6,
+      "absolute_error": 4.02,
+      "signed_error": -4.02
+    },
+    {
       "player": "Malik Washington",
       "team": "MIA",
       "position": "WR",
@@ -869,6 +977,24 @@
       "actual": 4.06,
       "absolute_error": 3.95,
       "signed_error": 3.95
+    },
+    {
+      "player": "Drew Sample",
+      "team": "CIN",
+      "position": "TE",
+      "projected": 5.83,
+      "actual": 1.9,
+      "absolute_error": 3.93,
+      "signed_error": 3.93
+    },
+    {
+      "player": "Stefon Diggs",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 12.37,
+      "actual": 8.5,
+      "absolute_error": 3.87,
+      "signed_error": 3.87
     },
     {
       "player": "Tre Tucker",
@@ -896,6 +1022,15 @@
       "actual": 2.8,
       "absolute_error": 3.72,
       "signed_error": 3.72
+    },
+    {
+      "player": "Jayden Daniels",
+      "team": "WAS",
+      "position": "QB",
+      "projected": 20.64,
+      "actual": 17.06,
+      "absolute_error": 3.58,
+      "signed_error": 3.58
     },
     {
       "player": "Sam LaPorta",
@@ -1362,6 +1497,15 @@
       "position": "WR",
       "projected": 9.58,
       "actual": 7.7,
+      "absolute_error": 1.88,
+      "signed_error": 1.88
+    },
+    {
+      "player": "Treylon Burks",
+      "team": "WAS",
+      "position": "WR",
+      "projected": 6.88,
+      "actual": 5.0,
       "absolute_error": 1.88,
       "signed_error": 1.88
     },
@@ -1960,6 +2104,15 @@
       "signed_error": -0.13
     },
     {
+      "player": "Austin Ekeler",
+      "team": "WAS",
+      "position": "RB",
+      "projected": 6.51,
+      "actual": 6.4,
+      "absolute_error": 0.11,
+      "signed_error": 0.11
+    },
+    {
       "player": "Ray Davis",
       "team": "BUF",
       "position": "RB",
@@ -2075,8 +2228,22 @@
       "snap_count_rows": 0
     },
     {
+      "player": "Robert Henry Jr.",
+      "team": "WAS",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
       "player": "Nicholas Singleton",
       "team": "TEN",
+      "position": "RB",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
+      "player": "Craig Reynolds",
+      "team": "WAS",
       "position": "RB",
       "reason": "No offensive stats; participation unverified",
       "snap_count_rows": 0
@@ -2222,6 +2389,13 @@
       "snap_count_rows": 0
     },
     {
+      "player": "Jaden Bradley",
+      "team": "WAS",
+      "position": "WR",
+      "reason": "No offensive stats; participation unverified",
+      "snap_count_rows": 0
+    },
+    {
       "player": "Brenen Thompson",
       "team": "LAC",
       "position": "WR",
@@ -2301,6 +2475,16 @@
   ],
   "ambiguous": [],
   "verified_zero_point_players": [
+    {
+      "player": "Ben Sinnott",
+      "team": "WAS",
+      "position": "TE",
+      "offense_snaps": 24,
+      "projected": 6.7,
+      "actual": 0.0,
+      "absolute_error": 6.7,
+      "signed_error": 6.7
+    },
     {
       "player": "Nate Boerkircher",
       "team": "JAX",
@@ -2408,6 +2592,7 @@
     "BUF",
     "CAR",
     "CHI",
+    "CIN",
     "DAL",
     "DEN",
     "DET",
@@ -2426,20 +2611,18 @@
     "PIT",
     "SF",
     "TB",
-    "TEN"
+    "TEN",
+    "WAS"
   ],
   "season": 2026,
   "week": 11,
   "projection_source": "data/audits/snapshots/2026_week11.json",
   "actuals_source": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv",
-  "source_rows": 823,
-  "snap_rows": 1124,
-  "eligible_projections": 260,
-  "coverage_pct": 83.46,
-  "generated_at": "2026-11-24T01:06:11.756226+00:00",
-  "missing_team_results": [
-    "CIN",
-    "WAS"
-  ],
-  "status": "partial"
+  "source_rows": 893,
+  "snap_rows": 1213,
+  "eligible_projections": 280,
+  "coverage_pct": 83.57,
+  "generated_at": "2026-11-24T23:10:40.482745+00:00",
+  "missing_team_results": [],
+  "status": "all projected teams have game stats"
 }
