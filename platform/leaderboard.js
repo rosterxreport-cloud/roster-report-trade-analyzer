@@ -52,6 +52,161 @@ if (panel) {
     return value.toFixed(1) + (percentages.has(stat) ? '%' : '');
   };
 
+  const sport = panel.dataset.leaderboard;
+  const storageKey = 'rr.leaderboard.v1.' + sport;
+  const volumeSelect = get('stat-volume');
+  const volumeMinimum = get('stat-volume-min');
+  const dialog = get('stat-player');
+  const presets = {
+    nba: [['9-Cat', 'Fantasy basketball', 'nineCatRank'], ['Fantasy points', 'Fantasy basketball', 'fantasyPointsPerGame'], ['Scoring leaders', 'Box score', 'avgPoints']],
+    nfl: [['Snap leaders', 'Fantasy', 'offense_pct'], ['PPR leaders', 'Fantasy', 'fantasy_points_ppr'], ['Receiving leaders', 'Receiving', 'receiving_yards']],
+    mlb: [['Hitters', 'Hitting', 'ops'], ['Pitchers', 'Pitching', 'era']],
+  };
+  const hashPrefix = '#view=';
+  let presetButtons = [];
+
+  function readView() {
+    // A shared view takes priority over this browser’s preferences.
+    for (const read of [
+      () => location.hash.startsWith(hashPrefix) ? decodeURIComponent(location.hash.slice(hashPrefix.length)) : null,
+      () => localStorage.getItem(storageKey),
+    ]) {
+      try {
+        const state = JSON.parse(read());
+        if (state && typeof state === 'object' && !Array.isArray(state)) return state;
+      } catch {}
+    }
+    return {};
+  }
+
+  function viewState() {
+    return {
+      period: periodSelect.value, board: board.label, metric: metricSelect.value,
+      direction: direction.value, team: team.value, position: position.value,
+      search: search.value, limit: limit.value, volume: volumeSelect.value, minimum: volumeMinimum.value,
+      filters: [...filters], layout: chosenView ? panel.dataset.view : '',
+    };
+  }
+
+  function saveView() {
+    try { localStorage.setItem(storageKey, JSON.stringify(viewState())); } catch {}
+  }
+
+  function setOption(select, value) {
+    if ([...select.options].some(option => option.value === value)) select.value = value;
+  }
+
+  const numericInput = value => typeof value === 'string' && value.trim() && Number.isFinite(Number(value)) ? value : '';
+
+  function restoreView(state) {
+    setOption(periodSelect, state.period);
+    selectPeriod(state.board);
+    for (const [control, value] of [[team, state.team], [position, state.position],
+        [volumeSelect, state.volume], [limit, state.limit]]) setOption(control, value);
+    search.value = typeof state.search === 'string' ? state.search.slice(0, 120) : '';
+    volumeMinimum.value = volumeSelect.value ? numericInput(state.minimum) : '';
+    for (const entry of Array.isArray(state.filters) ? state.filters : []) {
+      if (!Array.isArray(entry) || !keys.includes(entry[0]) || !Array.isArray(entry[1])) continue;
+      const [lo, hi] = entry[1].map(numericInput);
+      if (lo || hi) filters.set(entry[0], [lo || '', hi || '']);
+    }
+    selectMetric(keys.includes(state.metric) ? state.metric : board.default);
+    setOption(direction, state.direction);
+    if (state.layout === 'compact' || state.layout === 'table') {
+      chosenView = true;
+      compact = state.layout === 'compact';
+    }
+  }
+
+  function initPresets() {
+    presetButtons = (presets[sport] || []).map(([label, target, metric]) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'secondary';
+      button.textContent = label;
+      button.addEventListener('click', () => {
+        boardSelect.value = String(periodBoards.findIndex(item => item.label === target));
+        selectBoard();
+        selectMetric(metric);
+        render();
+      });
+      return {button, target, metric};
+    });
+    get('stat-presets').replaceChildren(...presetButtons.map(item => item.button));
+  }
+
+  function showPlayer(row) {
+    get('stat-player-name').textContent = row.name;
+    get('stat-player-context').textContent = [row.team, row.position, periodSelect.value || 'Full season'].filter(Boolean).join(' · ');
+    const selected = metricSelect.value;
+    get('stat-player-stats').replaceChildren(...[selected, ...keys.filter(key => key !== selected)].map(key => {
+      const entry = document.createElement('div');
+      const label = document.createElement('dt');
+      const value = document.createElement('dd');
+      label.textContent = board.metrics[key];
+      value.textContent = format(row, key);
+      entry.append(label, value);
+      return entry;
+    }));
+    dialog.showModal();
+  }
+
+  function renderFilters() {
+    const container = get('stat-applied');
+    const buttons = [];
+    const add = (label, remove) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'secondary';
+      button.textContent = label + ' ×';
+      button.setAttribute('aria-label', 'Remove ' + label);
+      button.addEventListener('click', () => {
+        const index = buttons.indexOf(button);
+        remove();
+        render();
+        (container.children[Math.min(index, container.children.length - 1)] || search).focus();
+      });
+      buttons.push(button);
+    };
+    if (periodSelect.value) add(periodSelect.value, () => {
+      periodSelect.value = '';
+      changePeriod();
+    });
+    if (search.value.trim()) add('Search: ' + search.value.trim(), () => { search.value = ''; });
+    if (team.value) add(team.value, () => { team.value = ''; });
+    if (position.value) add(position.value, () => { position.value = ''; });
+    if (volumeSelect.value && volumeMinimum.value !== '') {
+      add(board.metrics[volumeSelect.value] + ' ≥ ' + volumeMinimum.value, () => { volumeMinimum.value = ''; });
+    }
+    for (const [stat, [lo, hi]] of filters) {
+      const bounds = [lo === '' ? '' : '≥ ' + lo, hi === '' ? '' : '≤ ' + hi].filter(Boolean).join(' · ');
+      add(board.metrics[stat] + ' ' + bounds, () => {
+        filters.delete(stat);
+        if (metricSelect.value === stat) from.value = to.value = '';
+      });
+    }
+    container.replaceChildren(...buttons);
+    container.hidden = !buttons.length;
+  }
+
+  get('stat-share').addEventListener('click', async () => {
+    const url = new URL(location.href);
+    url.hash = hashPrefix + encodeURIComponent(JSON.stringify(viewState()));
+    const fallback = get('stat-share-fallback');
+    const field = get('stat-share-url');
+    const feedback = get('stat-share-status');
+    try {
+      await navigator.clipboard.writeText(url.href);
+      fallback.hidden = true;
+      feedback.textContent = 'View link copied.';
+    } catch {
+      feedback.textContent = 'Copy the link below.';
+      fallback.hidden = false;
+      field.value = url.href;
+      field.select();
+    }
+  });
+
   function render() {
     const key = metricSelect.value;
     const volume = get('stat-volume').value;
@@ -108,6 +263,12 @@ if (panel) {
         const td = tr.insertCell();
         td.textContent = value || '—';
       }
+      const playerLink = document.createElement('button');
+      playerLink.type = 'button';
+      playerLink.className = 'leaderboard-player-link';
+      playerLink.textContent = row.name;
+      playerLink.addEventListener('click', () => showPlayer(row));
+      tr.cells[1].replaceChildren(playerLink);
       if (compact && (row.team || row.position)) {
         const detail = document.createElement('span');
         detail.className = 'leaderboard-player-detail';
@@ -118,8 +279,12 @@ if (panel) {
     }
     table.tBodies[0].replaceChildren(body);
     status.textContent = rows.length ? 'Showing ' + visible.length + ' of ' + rows.length + ' matching players.' : board.rows.length ? 'No players match these filters.' : 'No regular-season player stats in this period.';
-    get('stat-applied').textContent = [...filters].map(([stat,[lo,hi]]) =>
-      board.metrics[stat] + ' ' + (lo === '' ? 'any minimum' : '≥ ' + lo) + ' / ' + (hi === '' ? 'any maximum' : '≤ ' + hi)).join(' · ');
+    for (const {button, target, metric} of presetButtons) {
+      button.hidden = !periodBoards.some(item => item.label === target && Object.hasOwn(item.metrics, metric));
+      button.setAttribute('aria-pressed', String(board.label === target && key === metric));
+    }
+    renderFilters();
+    saveView();
   }
   function selectMetric(key) {
     metricSelect.value = key;
@@ -141,10 +306,8 @@ if (panel) {
       control.replaceChildren(option('All',''),...values.map(value => option(value,value)));
     }
     selectMetric(board.default);
-    render();
   }
-  function selectPeriod() {
-    const label = board?.label;
+  function selectPeriod(label = board?.label) {
     periodBoards = snapshot.recent?.[periodSelect.value] || snapshot.boards;
     boardSelect.replaceChildren(...periodBoards.map((item, i) => option(item.label, String(i))));
     boardSelect.value = String(Math.max(0, periodBoards.findIndex(item => item.label === label)));
@@ -152,6 +315,10 @@ if (panel) {
       (periodSelect.value && snapshot.recentThrough ? 'Window through ' + snapshot.recentThrough + ' · ' : '') +
       'Retrieved ' + new Date(snapshot.capturedAt).toLocaleString();
     selectBoard();
+  }
+  function changePeriod() {
+    const state = viewState();
+    restoreView(state);
   }
   viewButton.addEventListener('click', () => {
     chosenView = true;
@@ -163,8 +330,8 @@ if (panel) {
     if (!chosenView) compact = mobile.matches;
     if (board) render();
   });
-  periodSelect.addEventListener('change', selectPeriod);
-  boardSelect.addEventListener('change',selectBoard);
+  periodSelect.addEventListener('change', () => { changePeriod(); render(); });
+  boardSelect.addEventListener('change', () => { selectBoard(); render(); });
   metricSelect.addEventListener('change',() => {selectMetric(metricSelect.value);render();});
   for (const control of [from,to]) control.addEventListener('input',() => {
     if (from.value === '' && to.value === '') filters.delete(metricSelect.value);
@@ -175,6 +342,7 @@ if (panel) {
   get('stat-reset').addEventListener('click',() => {
     search.value = '';
     selectBoard();
+    render();
   });
   fetch('/platform/stats/' + panel.dataset.leaderboard + '.json.gz')
     .then(response => {if (!response.ok) throw Error('Snapshot unavailable'); return new Response(response.body.pipeThrough(new DecompressionStream('gzip'))).json();})
@@ -191,7 +359,9 @@ if (panel) {
       get('stat-source').textContent = data.source;
       get('stat-source').href = data.url;
       get('stat-controls').hidden = false;
-      selectPeriod();
+      initPresets();
+      restoreView(readView());
+      render();
     })
     .catch(() => {status.textContent = 'The leaderboard snapshot is temporarily unavailable. Reload to try again.';});
 }
