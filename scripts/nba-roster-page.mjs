@@ -9,13 +9,14 @@ export function nbaRosterPage() {
     </div>
     <details id="nba-model-controls">
       <summary>Roster Report projections · Pro</summary>
-      <p class="fine">Compare projected production for one model game date. The regular roster report uses observed stats.</p>
+      <p class="fine">Compare projections for one game date or a verified full week. The regular roster report uses observed stats.</p>
       <div class="pro-actions">
         <button type="button" id="nba-model-load" class="secondary">Load Pro projections</button>
+        <button type="button" id="nba-model-weekly" class="secondary">Load weekly projections</button>
         <a href="/account/">Sign in or check membership</a>
       </div>
       <p id="nba-model-status" role="status"></p>
-      <label id="nba-model-date" hidden>Model game date (Pacific)<select name="modelDay"></select></label>
+      <label id="nba-model-date" hidden>Projection period (Pacific)<select name="modelDay"></select></label>
     </details>
     <p class="fine">Use G, F, C and UTIL slots. Eligibility is based on the positions in the Toolkit leaderboard.</p>
     <label>Your roster<textarea name="roster" maxlength="4000" placeholder="One player per line" required></textarea></label>

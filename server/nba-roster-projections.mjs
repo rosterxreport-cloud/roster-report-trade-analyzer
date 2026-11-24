@@ -25,3 +25,32 @@ export function rosterProjectionRelease(artifact, {historical = false, now = Dat
   return {capturedAt: artifact.capturedAt, historical, players,
     validUntil: historical ? null : artifact.validUntil};
 }
+
+// Each player needs seven explicitly verified days. Off days and confirmed absences
+// are represented separately from omitted or unusable forecasts.
+export function weeklyRosterRelease(artifact, now = Date.now()) {
+  const start = Date.parse(artifact.weekStart + 'T00:00:00Z');
+  const today = new Intl.DateTimeFormat('en-CA', {timeZone: 'America/Los_Angeles',
+    year: 'numeric', month: '2-digit', day: '2-digit'}).format(now);
+  if (!Number.isFinite(start) || new Date(start).toISOString().slice(0, 10) !== artifact.weekStart ||
+      new Date(start).getUTCDay() !== 1 || artifact.weekStart < today ||
+      !/^[a-f0-9]{64}$/i.test(artifact.provenance?.scheduleHash || '')) {
+    fail(503, 'A verified full-week NBA model release is unavailable.');
+  }
+  const days = Array.from({length: 7}, (_, i) => new Date(start + i * 86400000).toISOString().slice(0, 10));
+  const firstGame = Math.min(...artifact.players.map(player => Date.parse(player.startsAt)));
+  if (!Number.isFinite(firstGame) || firstGame <= now) fail(503, 'A complete pregame weekly forecast is unavailable.');
+  const forecasts = rosterProjectionRelease(artifact, {now});
+  const byPlayerDay = new Map(forecasts.players.map(player => [player.id + ':' + player.day, player]));
+  if (forecasts.players.some(player => !days.includes(player.day))) fail(503, 'The weekly release contains forecasts outside its week.');
+  const coverage = {};
+  for (const [id, entries] of Object.entries(artifact.coverage || {})) {
+    if (!/^\d+$/.test(id) || !Array.isArray(entries) || entries.length !== 7) continue;
+    if (!entries.every((entry, i) => entry?.day === days[i] &&
+      (entry.status === 'forecast' ? byPlayerDay.has(id + ':' + entry.day) :
+        ['off', 'out'].includes(entry.status) && !byPlayerDay.has(id + ':' + entry.day)))) continue;
+    coverage[id] = entries.map(entry => entry.status);
+  }
+  if (!Object.keys(coverage).length) fail(503, 'No players have all seven days verified.');
+  return {...forecasts, days, coverage, validUntil: new Date(Math.min(firstGame, Date.parse(artifact.validUntil))).toISOString()};
+}

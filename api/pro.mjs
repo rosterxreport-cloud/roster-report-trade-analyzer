@@ -1,4 +1,4 @@
-import {rosterProjectionRelease} from '../server/nba-roster-projections.mjs';
+import {rosterProjectionRelease,weeklyRosterRelease} from '../server/nba-roster-projections.mjs';
 import {nflDetails} from '../server/nfl-details.mjs';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -49,6 +49,10 @@ async function handle(req,res){
    const player=new URL(req.url,'https://toolkit.local').searchParams.get('player');
    if(player&&player.length>120)fail(400,'Invalid player name.');
    result=nflDetails(read('data/weekly-projections.json'),{player});
+  }else if(req.method==='GET'&&action==='nba-roster-weekly'){
+   const user=await requirePro(req);await rate('nba-roster-weekly:'+user.id,20);
+   const artifact=await modelArtifact('nba/roster-weekly.json').catch(()=>fail(503,'The full-week NBA projection release is not available yet.'));
+   result=weeklyRosterRelease(validateArtifact(artifact,{kind:'weekly-roster-projections',sport:'NBA'}));
   }else if(req.method==='GET'&&action==='nba-roster-projections'){
    const user=await requirePro(req);await rate('nba-roster-projections:'+user.id,20);
    let artifact;
