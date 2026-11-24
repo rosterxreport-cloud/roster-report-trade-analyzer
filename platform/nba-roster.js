@@ -1,4 +1,4 @@
-import {categories, matchPlayers, starters, production, tradeRoster} from './nba-roster-engine.mjs';
+import {categories, matchPlayers, starters, production, tradeRoster, projectedRoster} from './nba-roster-engine.mjs';
 
 const form = document.querySelector('#nba-roster-form');
 const status = document.querySelector('#nba-roster-status');
@@ -10,6 +10,41 @@ const savedFields = ['mode', 'period', 'league', 'slots', 'roster'];
 const trades = ['outgoing', 'incoming', 'additions', 'drops'];
 const fantasyPoints = ['fantasyPointsPerGame', 'Yahoo fantasy points'];
 let periods;
+let model;
+const modelButton = document.querySelector('#nba-model-load');
+const modelStatus = document.querySelector('#nba-model-status');
+
+modelButton.addEventListener('click', async () => {
+  modelButton.disabled = true;
+  modelStatus.textContent = 'Checking access and loading model data…';
+  try {
+    const url = '/api/pro/?action=nba-roster-projections';
+    let response = await fetch(url);
+    if (response.status === 401) {
+      const renewed = await fetch('/api/pro/?action=refresh', {
+        method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}',
+      }).catch(() => null);
+      if (renewed?.ok) response = await fetch(url);
+    }
+    const release = await response.json();
+    if (!response.ok) throw Error(release.error || 'Model projections are unavailable.');
+    model = release;
+    const days = [...new Set(model.players.map(player => player.day))].sort();
+    field('modelDay').replaceChildren(new Option('Observed only', ''),
+      ...days.map(day => new Option(day + (model.historical ? ' · historical preview' : ''), day)));
+    field('modelDay').value = days[0];
+    document.querySelector('#nba-model-date').hidden = false;
+    modelStatus.textContent = (model.historical ? 'Historical model snapshot' : 'Release-approved model forecast') +
+      ' · captured ' + new Date(model.capturedAt).toLocaleDateString('en-US', {timeZone: 'America/Los_Angeles'}) +
+      '. Select Analyze roster to compare.';
+  } catch (error) {
+    model = null;
+    document.querySelector('#nba-model-date').hidden = true;
+    modelStatus.textContent = error.message;
+  } finally {
+    modelButton.disabled = false;
+  }
+});
 
 function table(title, headers, rows) {
   const wrapper = document.createElement('div');
@@ -37,6 +72,38 @@ function table(title, headers, rows) {
 
 function format(value, percent, signed = false) {
   return value == null ? '—' : (signed && value > 0 ? '+' : '') + value.toFixed(1) + (percent ? (signed ? ' pp' : '%') : '');
+}
+
+function showProjected(roster, afterRoster, slots, mode, metrics, day) {
+  const heading = document.createElement('h2');
+  heading.textContent = model.historical ? 'Historical projection comparison' : 'Model projection comparison';
+  const note = document.createElement('p');
+  note.className = 'fine';
+  results.append(heading, note);
+  if (!model.historical && Date.parse(model.validUntil) <= Date.now()) {
+    note.textContent = 'The model release expired. Load Pro projections again before comparing.';
+    return;
+  }
+  const forecasts = new Map(model.players.filter(player => player.day === day).map(player => [player.id, player]));
+  const before = projectedRoster(roster, forecasts, mode);
+  const after = afterRoster ? projectedRoster(afterRoster, forecasts, mode) : null;
+  const currentLineup = starters(before.players, slots, mode);
+  const nextLineup = after ? starters(after.players, slots, mode) : null;
+  const current = production(currentLineup);
+  const next = nextLineup ? production(nextLineup) : null;
+  const missing = [...new Set([...before.missing, ...(after?.missing || [])])];
+  note.textContent = day + ' Pacific · conditional on playing · coverage limited to players in this release. ' +
+    (mode === 'points' ? 'Starters are selected by projected Yahoo points. ' :
+      'Starters are selected by 9-cat rank from the observed period you chose. ') +
+    (missing.length ? 'Missing required data: ' + missing.join(', ') + '. Trade differences are withheld for incomplete rosters.' : '');
+  results.append(table('Projected production for covered starters', ['Stat', 'Your lineup', ...(next ? ['After trade', 'Change'] : [])],
+    metrics.map(([key, label]) => {
+      const percent = label.endsWith('%');
+      const change = next && !missing.length && next[key] != null && current[key] != null ? next[key] - current[key] : null;
+      return [label, format(current[key], percent), ...(next ? [format(next[key], percent), format(change, percent, true)] : [])];
+    })));
+  results.append(table('Covered projected starters', ['Slot', 'Current', ...(nextLineup ? ['After trade'] : [])],
+    slots.map((slot, i) => [slot, currentLineup[i]?.name || 'Open', ...(nextLineup ? [nextLineup[i]?.name || 'Open'] : [])])));
 }
 
 function analyze(event) {
@@ -93,6 +160,7 @@ function analyze(event) {
       player.name + (!played.has(player.id) ? ' (no stats this period)' : '')).join(', ') || 'None';
     results.append(table('Bench and depth', ['Roster', 'Players'], [['Current', bench(roster, before)],
       ...(after ? [['After trade', bench(afterRoster, after)]] : [])]));
+    if (model && field('modelDay').value) showProjected(roster, afterRoster, slots, mode, metrics, field('modelDay').value);
     status.textContent = after ? 'Trade comparison ready.' : 'Roster analysis ready.';
   } catch (error) {
     status.textContent = error.message;

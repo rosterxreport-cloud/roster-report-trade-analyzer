@@ -68,3 +68,24 @@ export function tradeRoster(roster, outgoing, incoming, additions, drops) {
   if (held.size !== roster.length) throw Error('Use the add or drop fields to keep the same roster size.');
   return [...held.values()];
 }
+
+export function projectedRoster(roster, forecasts, mode) {
+  const missing = [];
+  const players = roster.map(player => {
+    const forecast = forecasts.get(String(player.id));
+    const rank = player.stats.nineCatRank;
+    if (!forecast || (mode === 'points' ? !Number.isFinite(forecast.yahoo) : !Number.isFinite(rank))) {
+      missing.push(player.name);
+      return {...player, stats: {}};
+    }
+    const s = forecast.statline;
+    return {...player, stats: {
+      avgPoints: s.PTS, avgThreePointFieldGoalsMade: s.FG3M, avgRebounds: s.REB,
+      avgAssists: s.AST, avgSteals: s.STL, avgBlocks: s.BLK, avgTurnovers: s.TOV,
+      avgFieldGoalsMade: s.FGM, avgFieldGoalsAttempted: s.FGA,
+      avgFreeThrowsMade: s.FTM, avgFreeThrowsAttempted: s.FTA,
+      fantasyPointsPerGame: forecast.yahoo, nineCatRank: rank,
+    }};
+  });
+  return {players, missing};
+}

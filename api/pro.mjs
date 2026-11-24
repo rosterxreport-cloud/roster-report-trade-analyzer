@@ -1,3 +1,4 @@
+import {rosterProjectionRelease} from '../server/nba-roster-projections.mjs';
 import {nflDetails} from '../server/nfl-details.mjs';
 import crypto from 'node:crypto';
 import fs from 'node:fs';
@@ -48,6 +49,17 @@ async function handle(req,res){
    const player=new URL(req.url,'https://toolkit.local').searchParams.get('player');
    if(player&&player.length>120)fail(400,'Invalid player name.');
    result=nflDetails(read('data/weekly-projections.json'),{player});
+  }else if(req.method==='GET'&&action==='nba-roster-projections'){
+   const user=await requirePro(req);await rate('nba-roster-projections:'+user.id,20);
+   let artifact;
+   try{artifact=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});}
+   catch(error){
+    if(process.env.VERCEL_ENV!=='preview')throw error;
+    const snapshot=read('preview/nba-baseline.json');
+    existingModelPreview(snapshot,process.env.VERCEL_ENV);
+    result=rosterProjectionRelease(snapshot,{historical:true});
+   }
+   if(artifact)result=rosterProjectionRelease(artifact);
   }else if(req.method==='GET'&&action==='nba-basic'){
    try{const a=validateArtifact(await modelArtifact('nba/basic.json'),{kind:'projections',sport:'NBA'});
     result={capturedAt:a.capturedAt,model:a.provenance.modelHash,players:a.players.map(({id,name,team,opponent,minutes,statline,projection,fantasyPoints,status})=>({id,name,team,opponent,minutes,statline,projection,status:status||'unverified',fantasyPoints:Object.fromEntries(['DraftKings','Yahoo','ESPN'].filter(k=>Number.isFinite(fantasyPoints?.[k])||k==='DraftKings').map(k=>[k,k==='DraftKings'?projection:fantasyPoints[k]]))}))};

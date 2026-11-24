@@ -7,6 +7,16 @@ export function nbaRosterPage() {
       <label>Teams in league<input name="league" type="number" min="4" max="30" value="12" required></label>
       <label>Starting slots<input name="slots" value="G, G, F, F, C, UTIL, UTIL" required></label>
     </div>
+    <details id="nba-model-controls">
+      <summary>Roster Report projections · Pro</summary>
+      <p class="fine">Compare projected production for one model game date. The regular roster report uses observed stats.</p>
+      <div class="pro-actions">
+        <button type="button" id="nba-model-load" class="secondary">Load Pro projections</button>
+        <a href="/account/">Sign in or check membership</a>
+      </div>
+      <p id="nba-model-status" role="status"></p>
+      <label id="nba-model-date" hidden>Model game date (Pacific)<select name="modelDay"></select></label>
+    </details>
     <p class="fine">Use G, F, C and UTIL slots. Eligibility is based on the positions in the Toolkit leaderboard.</p>
     <label>Your roster<textarea name="roster" maxlength="4000" placeholder="One player per line" required></textarea></label>
     <p class="fine">Use names as shown in the <a href="/nba/leaderboards/">NBA leaderboard</a>.</p>
