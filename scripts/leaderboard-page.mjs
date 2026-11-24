@@ -30,6 +30,8 @@ export function leaderboardPage(sport) {
       <button type="button" id="stat-view" class="secondary" aria-controls="stat-table"></button>
       <p id="stat-scroll-hint" class="fine" hidden>Swipe the table to see more stats.</p>
     </div>
+    ${sport === 'NBA' ? '<details class="leaderboard-filters"><summary>Fantasy scoring and ranks</summary><p class="fine">Yahoo points use 1 per point, 1.2 per rebound, 1.5 per assist, 3 per steal or block, and −1 per turnover. The 9-category rank combines per-game points, threes, rebounds, assists, steals, blocks, turnovers, field-goal percentage and free-throw percentage. Shooting percentages are weighted by attempts. Category scores use players averaging at least 15 minutes as the baseline, and rank 1 is best.</p></details>' : ''}
+    ${sport === 'NFL' ? '<details class="leaderboard-filters"><summary>How snap percentages work</summary><p class="fine">Snap percentages average each player’s game-level share for the selected period. Offense, defense and special teams are shown separately. A dash indicates missing snap data for at least one game.</p></details>' : ''}
     <p id="stat-status" role="status">Loading leaderboard…</p>
     <div class="pro-table" tabindex="0" role="region" aria-label="${sport} leaderboard"><table id="stat-table"><thead><tr></tr></thead><tbody></tbody></table></div>
     <noscript>Enable JavaScript to search and filter this leaderboard.</noscript>

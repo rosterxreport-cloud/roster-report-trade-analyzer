@@ -11,6 +11,7 @@ import json
 import math
 import unicodedata
 from pathlib import Path
+from statistics import mean, pstdev
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -365,6 +366,106 @@ def nba_recent(year, inputs, season_boards, end):
     return periods
 
 
+NFL_SNAP_METRICS = {"offense_pct": "Offensive snap %", "defense_pct": "Defensive snap %",
+                    "st_pct": "Special teams snap %"}
+
+
+def load_nfl_snap_data(year, inputs):
+    release = "https://github.com/nflverse/nflverse-data/releases/download"
+    snaps = csv.DictReader(io.StringIO(read(f"{release}/snap_counts/snap_counts_{year}.csv", "nfl-snaps.csv", inputs)))
+    snap_stats = {(row["pfr_player_id"], row["game_id"]): row for row in snaps
+                  if row["season"] == str(year) and row["game_type"] == "REG" and row["pfr_player_id"]}
+    if not snap_stats:
+        raise ValueError("Missing NFL regular-season snap counts")
+    players = csv.DictReader(io.StringIO(read(f"{release}/players/players.csv", "nfl-player-ids.csv", inputs)))
+    identities = defaultdict(set)
+    for row in players:
+        if row["gsis_id"] and row["pfr_id"]:
+            identities[row["gsis_id"]].add(row["pfr_id"])
+    return snap_stats, identities
+
+
+def add_nfl_snap_rates(boards, weekly, snap_data, games=None):
+    snap_stats, identities = snap_data
+    appearances = defaultdict(list)
+    for row in weekly:
+        appearances[row["player_id"]].append(row)
+    for rows in appearances.values():
+        rows.sort(key=lambda row: int(row["week"]), reverse=True)
+    for item in boards:
+        keys = ("defense_pct", "st_pct") if item["label"] == "Defense & kicking" else ("offense_pct",)
+        item["metrics"].update({key: NFL_SNAP_METRICS[key] for key in keys})
+        for row in item["rows"]:
+            selected = appearances[row["id"]][:games]
+            rates = []
+            for game in selected:
+                matches = [snap_stats[(pfr, game["game_id"])] for pfr in identities[row["id"]]
+                           if (pfr, game["game_id"]) in snap_stats]
+                rates.append(matches[0] if len(matches) == 1 else {})
+            for key in keys:
+                values = [number(rate.get(key)) for rate in rates]
+                complete = len(values) == row["stats"]["games"]
+                row["stats"][key] = 100 * mean(values) if values and complete and all(
+                    value is not None and 0 <= value <= 1 for value in values) else None
+
+
+NBA_FANTASY_METRICS = {"fantasyPointsPerGame": "Fantasy points per game (Yahoo)",
+                       "pointsPerMinute": "Points per minute",
+                       "fantasyPointsPerMinute": "Fantasy points per minute (Yahoo)",
+                       "nineCatRank": "9-category rank"}
+NBA_FANTASY_WEIGHTS = {"points": 1, "rebounds": 1.2, "assists": 1.5, "steals": 3,
+                       "blocks": 3, "turnovers": -1}
+NBA_NINE_CAT = ("points", "threePointFieldGoalsMade", "rebounds", "assists",
+                "steals", "blocks", "turnovers", "fieldGoalPct", "freeThrowPct")
+
+
+def add_nba_fantasy(boards):
+    box = next(item for item in boards if item["label"] == "Box score")
+    qualified = {}
+    for row in box["rows"]:
+        stats = row["stats"]
+        stats.update(dict.fromkeys(NBA_FANTASY_METRICS))
+        games, minutes = stats.get("gamesPlayed"), stats.get("minutes")
+        if not games or any(stats.get(key) is None for key in NBA_FANTASY_WEIGHTS):
+            continue
+        fantasy = sum(stats[key] * weight for key, weight in NBA_FANTASY_WEIGHTS.items())
+        stats.update(fantasyPointsPerGame=ratio(fantasy, games),
+                     pointsPerMinute=ratio(stats["points"], minutes),
+                     fantasyPointsPerMinute=ratio(fantasy, minutes))
+        required = ("threePointFieldGoalsMade", "fieldGoalsMade", "fieldGoalsAttempted",
+                    "freeThrowsMade", "freeThrowsAttempted")
+        if minutes and all(stats.get(key) is not None for key in required):
+            qualified[row["id"]] = stats
+
+    if qualified:
+        # Stabilize category scales using rotation players. Rank every player with usable minutes and stats.
+        baseline = [stats for stats in qualified.values() if stats["minutes"] / stats["gamesPlayed"] >= 15]
+        baseline = baseline or list(qualified.values())
+        fg = ratio(sum(s["fieldGoalsMade"] for s in baseline), sum(s["fieldGoalsAttempted"] for s in baseline)) or 0
+        ft = ratio(sum(s["freeThrowsMade"] for s in baseline), sum(s["freeThrowsAttempted"] for s in baseline)) or 0
+
+        def category_values(stats):
+            counting = [stats[key] for key in NBA_NINE_CAT[:6]] + [-stats["turnovers"]]
+            shooting = [stats["fieldGoalsMade"] - fg * stats["fieldGoalsAttempted"],
+                        stats["freeThrowsMade"] - ft * stats["freeThrowsAttempted"]]
+            return [(value / stats["gamesPlayed"]) for value in counting + shooting]
+
+        category_samples = list(zip(*(category_values(stats) for stats in baseline)))
+        scales = [(mean(values), pstdev(values)) for values in category_samples]
+        scores = {identity: sum((value - center) / spread for value, (center, spread) in zip(
+            category_values(stats), scales) if spread) for identity, stats in qualified.items()}
+        for rank, identity in enumerate(sorted(scores, key=lambda key: (-scores[key], str(key))), 1):
+            qualified[identity]["nineCatRank"] = rank
+
+    box["metrics"].update(NBA_FANTASY_METRICS)
+    metrics = {key: box["metrics"][key] for key in ("gamesPlayed", "avgMinutes", "avgPoints",
+               "avgThreePointFieldGoalsMade", "avgRebounds", "avgAssists", "avgSteals", "avgBlocks",
+               "avgTurnovers", "fieldGoalPct", "freeThrowPct")}
+    metrics.update(NBA_FANTASY_METRICS)
+    rows = [{**row, "stats": {key: row["stats"].get(key) for key in metrics}} for row in box["rows"]]
+    boards.append(dict(label="Fantasy basketball", default="nineCatRank", metrics=metrics, rows=rows))
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--year", type=int, default=dt.date.today().year)
@@ -384,16 +485,22 @@ def main():
     }
     add_nba_official_usage(snapshots["nba"][3], nba_year, args.inputs)
     recent = {}
+    weekly_url = NFL.format(year=year).replace("stats_player_reg_", "stats_player_week_")
+    weekly = [row for row in csv.DictReader(io.StringIO(read(weekly_url, "nfl-weekly.csv", args.inputs)))
+              if row["season"] == str(year) and row["season_type"] == "REG"]
+    if not weekly:
+        raise ValueError("Missing NFL regular-season game logs")
+    snap_data = load_nfl_snap_data(year, args.inputs)
+    add_nfl_snap_rates(snapshots["nfl"][3], weekly, snap_data)
     if not args.season_only:
-        weekly_url = NFL.format(year=year).replace("stats_player_reg_", "stats_player_week_")
-        weekly = [row for row in csv.DictReader(io.StringIO(read(weekly_url, "nfl-weekly.csv", args.inputs)))
-                  if row["season"] == str(year) and row["season_type"] == "REG"]
-        if not weekly:
-            raise ValueError("Missing NFL regular-season game logs")
         recent["nfl"] = {f"Last {games} games": nfl(year, args.inputs, games, weekly) for games in (2, 5)}
+        for games in (2, 5):
+            add_nfl_snap_rates(recent["nfl"][f"Last {games} games"], weekly, snap_data, games)
         recent["nba"] = nba_recent(nba_year, args.inputs, snapshots["nba"][3], args.as_of)
         recent["mlb"] = {f"Last {days} days": mlb(year, args.inputs, (args.as_of - dt.timedelta(days=days-1), args.as_of))
                          for days in (7, 15)}
+    for boards in [snapshots["nba"][3], *recent.get("nba", {}).values()]:
+        add_nba_fantasy(boards)
     ROOT.mkdir(parents=True,exist_ok=True)
     for sport,(season,source,url,boards) in snapshots.items():
         path = ROOT / f"{sport}.json.gz"

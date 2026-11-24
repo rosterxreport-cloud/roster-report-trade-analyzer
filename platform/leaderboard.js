@@ -1,16 +1,17 @@
 // Keep column order independent of the active sort and filter.
 const columnOrder = {
-  'Box score': 'gamesPlayed avgMinutes avgPoints avgRebounds avgAssists avgSteals avgBlocks avgTurnovers avgFouls avgFieldGoalsMade avgFieldGoalsAttempted avgThreePointFieldGoalsMade avgThreePointFieldGoalsAttempted avgFreeThrowsMade avgFreeThrowsAttempted minutes points rebounds assists steals blocks turnovers fouls fieldGoalsMade fieldGoalsAttempted threePointFieldGoalsMade threePointFieldGoalsAttempted freeThrowsMade freeThrowsAttempted doubleDouble tripleDouble flagrantFouls technicalFouls ejections fieldGoalPct threePointFieldGoalPct freeThrowPct usageRate ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
+  'Box score': 'gamesPlayed avgMinutes avgPoints avgRebounds avgAssists avgSteals avgBlocks avgTurnovers avgFouls avgFieldGoalsMade avgFieldGoalsAttempted avgThreePointFieldGoalsMade avgThreePointFieldGoalsAttempted avgFreeThrowsMade avgFreeThrowsAttempted minutes points rebounds assists steals blocks turnovers fouls fieldGoalsMade fieldGoalsAttempted threePointFieldGoalsMade threePointFieldGoalsAttempted freeThrowsMade freeThrowsAttempted doubleDouble tripleDouble flagrantFouls technicalFouls ejections fieldGoalPct threePointFieldGoalPct freeThrowPct fantasyPointsPerGame pointsPerMinute fantasyPointsPerMinute nineCatRank usageRate ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
   'Efficiency & per 36': 'gamesPlayed minutes fieldGoalsAttempted usageRate ts efg threeRate ftRate astTo pts36 reb36 ast36 stocks36',
-  Passing: 'games attempts passing_yards passing_tds passing_interceptions sacks_suffered passing_air_yards passing_epa passing_cpoe pacr',
-  Rushing: 'games carries rushing_yards rushing_tds rushing_20 rushing_epa',
-  Receiving: 'games targets receptions receiving_yards receiving_tds receiving_yards_after_catch receiving_air_yards target_share air_yards_share receiving_epa wopr racr',
-  'Defense & kicking': 'games def_tackles_solo def_tackles_for_loss def_sacks def_qb_hits def_interceptions def_pass_defended def_fumbles_forced fg_att fg_made fg_pct',
-  Fantasy: 'games targets passing_yards rushing_yards receiving_yards fantasy_points_ppr',
+  'Fantasy basketball': 'nineCatRank fantasyPointsPerGame fantasyPointsPerMinute pointsPerMinute gamesPlayed avgMinutes avgPoints avgThreePointFieldGoalsMade avgRebounds avgAssists avgSteals avgBlocks avgTurnovers fieldGoalPct freeThrowPct',
+  Passing: 'games offense_pct attempts passing_yards passing_tds passing_interceptions sacks_suffered passing_air_yards passing_epa passing_cpoe pacr',
+  Rushing: 'games offense_pct carries rushing_yards rushing_tds rushing_20 rushing_epa',
+  Receiving: 'games offense_pct targets receptions receiving_yards receiving_tds receiving_yards_after_catch receiving_air_yards target_share air_yards_share receiving_epa wopr racr',
+  'Defense & kicking': 'games defense_pct st_pct def_tackles_solo def_tackles_for_loss def_sacks def_qb_hits def_interceptions def_pass_defended def_fumbles_forced fg_att fg_made fg_pct',
+  Fantasy: 'games offense_pct targets passing_yards rushing_yards receiving_yards fantasy_points_ppr',
   Hitting: 'gamesPlayed pa bip hits doubles triples homeRuns runs rbi stolenBases strikeOuts baseOnBalls ba obp slg ops kRate bbRate kMinusBb babip iso woba est_ba est_slg est_woba est_woba_minus_woba_diff',
   Pitching: 'gamesPlayed gamesStarted outs pa bip wins saves holds strikeOuts baseOnBalls homeRuns era whip ba slg kRate bbRate kMinusBb strikeoutsPer9Inn walksPer9Inn homeRunsPer9Inn strikeoutWalkRatio woba est_ba est_slg est_woba xera est_woba_minus_woba_diff',
 };
-const percentages = new Set('fieldGoalPct threePointFieldGoalPct freeThrowPct usageRate ts efg threeRate ftRate target_share air_yards_share fg_pct kRate bbRate'.split(' '));
+const percentages = new Set('fieldGoalPct threePointFieldGoalPct freeThrowPct usageRate ts efg threeRate ftRate target_share air_yards_share fg_pct offense_pct defense_pct st_pct kRate bbRate'.split(' '));
 
 const panel = document.querySelector('[data-leaderboard]');
 if (panel) {
@@ -47,6 +48,7 @@ if (panel) {
   const format = (row, stat) => {
     const value = valueOf(row, stat);
     if (value == null) return '—';
+    if (stat === 'nineCatRank') return String(value);
     return value.toFixed(1) + (percentages.has(stat) ? '%' : '');
   };
 
@@ -121,7 +123,8 @@ if (panel) {
   }
   function selectMetric(key) {
     metricSelect.value = key;
-    direction.value = ['era','xera','est_woba','woba'].includes(key) && board.label === 'Pitching' ? 'asc' : 'desc';
+    const lowerFirst = key === 'nineCatRank' || (board.label === 'Pitching' && ['era', 'xera', 'est_woba', 'woba'].includes(key));
+    direction.value = lowerFirst ? 'asc' : 'desc';
     [from.value,to.value] = filters.get(key) || ['',''];
   }
   function selectBoard() {
