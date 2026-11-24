@@ -34,3 +34,11 @@ Actuals require matching sport/slateId, scoring="DraftKings", complete=true, sou
 Reports include player MAE/bias, selected lineup scores, provenance hashes and any margin to verified score benchmarks. Cash rate and ROI remain null because a score comparison is not proof of contest entry or payout. Historical complete-pool datasets are still required before reporting empirical results for the new server optimizer. Unit-test fixtures are explicitly synthetic and are never deployed as current data.
 
 Official rule references: https://lp.draftkings.com/help/rules/nba/classic and https://games.draftkings.com/help/rules/nfl/classic . NBA Classic uses eight slots, a $50,000 cap and at least two games. Only Classic is supported; Showdown and other formats are rejected.
+
+### Weekly NBA roster projections
+
+For a Monday–Sunday Pacific week, collect seven dated schedule captures and the current player/team roster. A game with unresolved teams blocks the weekly package. Run the incumbent privately and use the approved daily basic releases as inputs. The weekly builder uses the existing pinned release policy and preserves the source statlines and capture dates.
+
+Run `node scripts/pro/build-nba-roster-weekly.mjs manifest.json output.json daily-basic.json [more daily files]`. The manifest contains `weekStart`, `games` (id, startsAt, home, away), `scheduleDays` (day, gameIds, sourceHash, including empty days), and `roster` (id, team). Optional `absences` rows contain id, gameId, asOf and evidenceHash for confirmed absences. Missing player forecasts on scheduled dates stay uncovered. All scheduled games must have forecast coverage.
+
+The staging publisher and gateway must run versions that admit only the exact additional object path `nba/roster-weekly.json`. The weekly artifact expires by first tipoff. Publish through the existing private publisher and verify the stored object and a signed-in Pro comparison before describing the release as available.

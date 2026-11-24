@@ -16,7 +16,7 @@ Deno.serve(async request=>{
   const root=Deno.env.get('SUPABASE_URL')!,key=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
   let url;
   if(input.storage){
-   if(method!=='GET'||! /^(nba|nfl)\/(basic|distributions|slates|slates\/[-a-zA-Z0-9_]{1,80})\.json$/.test(input.storage))return json({error:'Unsupported artifact'},403);
+   if(method!=='GET'||(input.storage!=='nba/roster-weekly.json'&&! /^(nba|nfl)\/(basic|distributions|slates|slates\/[-a-zA-Z0-9_]{1,80})\.json$/.test(input.storage)))return json({error:'Unsupported artifact'},403);
    url=root+'/storage/v1/object/authenticated/toolkit-private/'+input.storage;
   }else{
    if(!allowedBackendPath(input.path,method))return json({error:'Unsupported operation'},403);

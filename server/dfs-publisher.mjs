@@ -1,15 +1,19 @@
 import {Buffer} from 'node:buffer';
 import crypto from 'node:crypto';
 import {validateArtifact} from './domain.mjs';
+import {weeklyRosterRelease} from './nba-roster-projections.mjs';
 import {validateSlate} from './optimizer.mjs';
 import {validateModelLineage} from './model-lineage.mjs';
+const weeklyPath='nba/roster-weekly.json';
 const hash=body=>crypto.createHash('sha256').update(body).digest('hex');
 export function validatePublishedObject(path,data,now=Date.now()){
- if(typeof path!=='string'||! /^(nba|nfl)\/(basic|distributions|slates\/[-a-zA-Z0-9_]{1,80})\.json$/.test(path))throw Error('Unsupported publication path.');
+ if(path!==weeklyPath&&(typeof path!=='string'||! /^(nba|nfl)\/(basic|distributions|slates\/[-a-zA-Z0-9_]{1,80})\.json$/.test(path)))throw Error('Unsupported publication path.');
  const sport=path.split('/')[0].toUpperCase();
  if(data?.sport!==sport)throw Error('Publication sport mismatch.');
  validateModelLineage(data);
- if(path.includes('/slates/')){
+ if(path===weeklyPath){
+  weeklyRosterRelease(validateArtifact(data,{kind:'weekly-roster-projections',sport,now}),now);
+ }else if(path.includes('/slates/')){
   validateSlate(data,now);
   if(!path.endsWith('/'+data.slateId+'.json'))throw Error('Slate identity mismatch.');
  }else{
@@ -37,7 +41,7 @@ export function createPublisher({expectedTokenHash,root,key,fetchImpl=fetch,now=
     return reply({[input.operation==='acquire'?'acquired':'released']:await r.json()});
    }
    const catalog=typeof path==='string'&&/^(nba|nfl)\/slates\.json$/.test(path);
-   const object=typeof path==='string'&&/^(nba|nfl)\/(basic|distributions|slates\/[-a-zA-Z0-9_]{1,80})\.json$/.test(path);
+   const object=path===weeklyPath||typeof path==='string'&&/^(nba|nfl)\/(basic|distributions|slates\/[-a-zA-Z0-9_]{1,80})\.json$/.test(path);
    if(!catalog&&!object)return reply({error:'Unsupported publication path'},403);
    const headers={Authorization:'Bearer '+key,apikey:key};
    const url=root+'/storage/v1/object/toolkit-private/'+path;
