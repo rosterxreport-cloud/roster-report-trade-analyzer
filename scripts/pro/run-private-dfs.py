@@ -7,8 +7,8 @@ ROOT=pathlib.Path(os.environ.get('DFS_MODEL_ROOT','/vercel/private-recovery/Rost
 REPO=pathlib.Path(__file__).resolve().parents[2]
 PUBLISH=os.environ['DFS_PUBLISH_URL']
 TOKEN=os.environ['DFS_PUBLISH_TOKEN']
-def publish(path,data):
- raw=json.dumps({'path':path,'data':data},separators=(',',':'),allow_nan=False).encode()
+def publish(path,data=None,*,inspect=False):
+ raw=json.dumps({'path':path,'inspect':True} if inspect else {'path':path,'data':data},separators=(',',':'),allow_nan=False).encode()
  request=urllib.request.Request(PUBLISH,data=raw,headers={'Authorization':'Bearer '+TOKEN,'Content-Type':'application/json'})
  with urllib.request.urlopen(request,timeout=45) as response:return json.load(response)
 def nba_slate_date(pool,now=None):
@@ -104,6 +104,25 @@ def execute():
    lines=(result.stdout if result.returncode==0 else result.stderr).strip().splitlines()
    report['slates']['NFL']=json.loads(lines[-1]) if lines else {'state':'blocked','reason':'NFL weekly source verification unavailable'}
   except Exception as error:report['slates']['NFL']={'state':'blocked','reason':'Matching established weekly NFL source is unavailable','errorType':type(error).__name__}
+  if nba_ready:
+   weekly=importlib.import_module('run-weekly-nba')
+   if weekly.WEEK_START-datetime.timedelta(days=2)<=today<=weekly.WEEK_START:
+    try:
+     try:
+      stored=publish(weekly.WEEKLY_PATH,inspect=True)
+     except urllib.error.HTTPError as error:
+      if error.code!=404:raise
+      stored=None
+     if stored:
+      report['weeklyNBA']={'state':'already-published','receipt':stored}
+     else:
+      release=weekly.build_release(run_forward,data,manifest,REPO,work)
+      published=publish(weekly.WEEKLY_PATH,release)
+      stored=publish(weekly.WEEKLY_PATH,inspect=True)
+      if published['sha256']!=stored['sha256']:raise ValueError('Stored weekly NBA release checksum differs')
+      report['weeklyNBA']={'state':'published','weekStart':release['weekStart'],'players':len(release['coverage']),'forecasts':len(release['players']),'validUntil':release['validUntil'],'receipt':stored}
+    except Exception as error:
+     report['weeklyNBA']={'state':'blocked','errorType':type(error).__name__,'reason':str(error)[:200] if type(error) is ValueError else 'Weekly NBA generation or publication did not pass'}
   if all(isinstance(report['slates'].get(s),dict) and report['slates'][s].get('state')=='published' for s in ['NBA','NFL']):report['state']='published'
   (ROOT/'forward/latest-runtime-receipt.json').write_text(json.dumps(report,indent=2))
  return report
