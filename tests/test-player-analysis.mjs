@@ -8,7 +8,9 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const data=JSON.parse(fs.readFileSync(path.join(root,'data/player-profiles.json'),'utf8'));
 const find=name=>structuredClone(data.profiles.find(p=>p.name===name));
 test('elite verdicts give a clear trade stance and explain the receiving contribution',()=>{
- const p=find('Jahmyr Gibbs'),text=analysis(p).map(x=>x.text).join(' ');
+ const p=find('Jahmyr Gibbs');
+ p.projection={PPR:25,note:''};p.editorial.forecastRank=1;p.editorial.out=null;
+ const text=analysis(p).map(x=>x.text).join(' ');
  assert.match(text,/elite RB1 asset/);assert.match(text,/Start him as an RB1/);assert.match(text,/Demand a premium return/);
  const rows=p.weekly.filter(w=>!w.statsMissing);const receiving=rows.reduce((s,w)=>s+w.receptions+w.receiving_yards/10,0)/rows.length;
  assert(text.includes(receiving.toFixed(1)+' PPR points per game before receiving touchdowns'));

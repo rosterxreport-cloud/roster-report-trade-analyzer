@@ -37,3 +37,10 @@ export async function fetchPublishedWeekly(fetchImpl=fetch,{ref:branch='main'}={
  const generator=await get(generatorPath),core=await get('scripts/projection_v4_backtest.py');
  return {weekly,manifest,finalSnapshotReceipt,generatorHash:hash(generator),coreHash:hash(core)};
 }
+export async function fetchSlateWeekly(defenses,{ref='main',fallback,fetchImpl=fetch}={}){
+ const primary=await fetchPublishedWeekly(fetchImpl,{ref});
+ const matches=({weekly})=>weekly.season===defenses.season&&weekly.week===defenses.week;
+ if(matches(primary)||!fallback||fallback===ref)return primary;
+ const candidate=await fetchPublishedWeekly(fetchImpl,{ref:fallback});
+ return matches(candidate)?candidate:primary;
+}

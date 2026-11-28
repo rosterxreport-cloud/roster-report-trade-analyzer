@@ -31,7 +31,7 @@ export function createRefreshHandler({SandboxClass=Sandbox,fetchImpl=fetch,env=p
     const checked=await sandbox.runCommand({cmd:'git',args:['reset','--hard',commit],cwd:'/vercel/toolkit'});
     if(checked.exitCode!==0)throw Error('Worker revision checkout failed');
    }
-   const command=await sandbox.runCommand({cmd:'timeout',args:['240','/vercel/private-recovery/venv/bin/python','/vercel/toolkit/scripts/pro/run-private-dfs.py'],cwd:'/vercel/toolkit',env:{DFS_PUBLISH_URL:env.DFS_PUBLISH_URL,DFS_PUBLISH_TOKEN:env.DFS_PUBLISH_TOKEN,NFL_WEEKLY_SOURCE_REF:'main'}});
+   const command=await sandbox.runCommand({cmd:'timeout',args:['240','/vercel/private-recovery/venv/bin/python','/vercel/toolkit/scripts/pro/run-private-dfs.py'],cwd:'/vercel/toolkit',env:{DFS_PUBLISH_URL:env.DFS_PUBLISH_URL,DFS_PUBLISH_TOKEN:env.DFS_PUBLISH_TOKEN,NFL_WEEKLY_FALLBACK_REF:'feat/toolkit-pro-platform'}});
    if(command.exitCode!==0){console.error('Established DFS refresh failed',{runId,exitCode:command.exitCode});return {status:503,body:{state:'failed',runId,error:'Established model refresh failed; prior artifacts retained.'}};}
    const text=await command.stdout();let result;
    try{result=JSON.parse(text.trim().split('\n').at(-1));}catch{throw Error('Invalid private runner receipt');}

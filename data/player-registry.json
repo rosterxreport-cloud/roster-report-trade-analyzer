@@ -1563,5 +1563,20 @@
     "id": "00-0033699",
     "name": "Austin Ekeler",
     "slug": "austin-ekeler"
+  },
+  "00-0038977": {
+    "id": "00-0038977",
+    "name": "Tank Dell",
+    "slug": "tank-dell"
+  },
+  "00-0040154": {
+    "id": "00-0040154",
+    "name": "Tai Felton",
+    "slug": "tai-felton"
+  },
+  "00-0040879": {
+    "id": "00-0040879",
+    "name": "Matthew Hibner",
+    "slug": "matthew-hibner"
   }
 }

@@ -4,21 +4,22 @@ on:
     - cron: '0,30 15,16,17 * * 2'
   workflow_dispatch:
   push:
-    branches: [feat/toolkit-pro-platform]
+    branches: [main, feat/toolkit-pro-platform]
     paths: ['.github/workflows/create-weekly-nfl.yml', 'scripts/pro/create-weekly-nfl.py', 'scripts/pro/test-weekly-nfl.py']
 permissions:
   contents: write
 concurrency:
-  group: tuesday-established-nfl
+  group: tuesday-established-nfl-${{ github.ref_name }}
   cancel-in-progress: false
 jobs:
   weekly:
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/feat/toolkit-pro-platform'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: feat/toolkit-pro-platform
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.12'
@@ -46,6 +47,8 @@ jobs:
         run: python scripts/pro/create-weekly-nfl.py --output /tmp/rr-weekly
       - name: Publish one validated Tuesday snapshot
         if: steps.gate.outputs.publish == 'true'
+        env:
+          PUBLISH_BRANCH: ${{ github.ref_name }}
         run: |
           python - <<'PY'
           import datetime,json,pathlib,shutil
@@ -77,12 +80,11 @@ jobs:
             # Archive and article jobs can update the branch during model execution.
             # Rebase disjoint changes, revalidate, and never force a publication.
             for attempt in 1 2 3; do
-              git fetch origin feat/toolkit-pro-platform
-              git rebase origin/feat/toolkit-pro-platform
+              git fetch origin "refs/heads/${PUBLISH_BRANCH}:refs/remotes/origin/${PUBLISH_BRANCH}"
+              git rebase "origin/${PUBLISH_BRANCH}"
               node --test tests/test-weekly-projections.mjs tests/test-player-profiles.mjs tests/test-player-matchups.mjs
-              if git push origin HEAD:feat/toolkit-pro-platform; then break; fi
+              if git push origin "HEAD:refs/heads/${PUBLISH_BRANCH}"; then break; fi
               if [ "$attempt" -eq 3 ]; then exit 1; fi
             done
           fi
-# Schedule activation requires this workflow on the default branch.
-# Publication stays on development pending explicit production approval.
+# Scheduled runs use the default branch. Development runs publish to the development branch.

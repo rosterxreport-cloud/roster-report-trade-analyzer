@@ -3,7 +3,7 @@ import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import {adaptNFLCore} from '../../server/nfl-core-adapter.mjs';
 import {parseDefenses} from '../../server/nfl-defense-source.mjs';
-import {fetchPublishedWeekly} from '../../server/published-weekly-source.mjs';
+import {fetchSlateWeekly} from '../../server/published-weekly-source.mjs';
 import {refreshBundle} from './refresh-dfs.mjs';
 const origin='https://raw.githubusercontent.com/rosterxreport-cloud/roster-report-trade-analyzer/main/';
 const team=s=>({LA:'LAR',WSH:'WAS'})[s]||s;
@@ -11,6 +11,11 @@ const name=s=>String(s).normalize('NFKC').toLowerCase().replace(/[.\u2019']/g,''
 async function get(path){const r=await fetch(origin+path,{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Established weekly source unavailable: '+path);return r.text();}
 export async function assembleNFL(pool,salaryCsv,{weekly,manifest,defenses,generatorHash,coreHash,finalSnapshotReceipt},now=Date.now()){
  if(pool.sport!=='NFL'||pool.salaryDataApproved!==true||!pool.validation?.allCsvRowsMatched||!pool.validation?.fullApiPlayerCoverage)throw Error('Complete official NFL salary coverage is required.');
+ if(manifest.scope==='remaining-unplayed-games'){
+  const gameKey=g=>[team(g.away),team(g.home),Date.parse(g.startsAt)].join('|');
+  const covered=new Set(manifest.games.map(gameKey));
+  if(pool.games.some(g=>!covered.has(gameKey(g))))throw Error('The recovery forecast does not cover every official slate matchup and kickoff.');
+ }
  defenses={...defenses,validUntil:pool.locksAt};
  const raw=adaptNFLCore({weekly,manifest,defenses,generatorHash,coreHash,finalSnapshotReceipt},now);
  const index=new Map(raw.players.filter(p=>p.position!=='DST').map(p=>[name(p.name)+'|'+team(p.team)+'|'+p.position,p]));
@@ -40,9 +45,9 @@ if(process.argv[1]?.endsWith('/assemble-nfl-slate.mjs')){
  let sourceStatus={};
  try{
   const [poolPath,csvPath]=process.argv.slice(2),pool=JSON.parse(await fs.readFile(poolPath,'utf8'));
-  const published=await fetchPublishedWeekly(fetch,{ref:process.env.NFL_WEEKLY_SOURCE_REF||'main'});
   const r=await fetch('https://dfsroto.win/projections',{redirect:'error',signal:AbortSignal.timeout(25000)});if(!r.ok)throw Error('Original DST provider is unavailable.');
   const defenses=parseDefenses(await r.text());
+  const published=await fetchSlateWeekly(defenses,{ref:process.env.NFL_WEEKLY_SOURCE_REF||'main',fallback:process.env.NFL_WEEKLY_FALLBACK_REF});
   sourceStatus={availableWeek:published.weekly.week,requiredWeek:defenses.week,season:defenses.season,weeklySource:published.weekly.source,sourceCommit:published.finalSnapshotReceipt.commit};
   const bundle=await assembleNFL(pool,await fs.readFile(csvPath,'utf8'),{...published,defenses});
   const result=await refreshBundle(bundle);console.log(JSON.stringify({state:'published',...result,week:published.weekly.week,scoring:'RR-DK-core'}));

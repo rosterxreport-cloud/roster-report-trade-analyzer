@@ -1,5 +1,6 @@
 """Calendar/input orchestration for the established weekly v4 model; no fitting."""
 import argparse,datetime,hashlib,json,pathlib,shutil,subprocess,sys,tempfile,urllib.request
+from urllib.parse import urlparse
 from zoneinfo import ZoneInfo
 ROOT=pathlib.Path(__file__).resolve().parents[2]
 TEMPLATE_HASH='c95ac28e53c2c9550827391269dcaff95127ee8397730b33072bc81d00441d6d'
@@ -40,7 +41,29 @@ def download(url,path):
  with urllib.request.urlopen(url,timeout=90) as r:raw=r.read()
  if not raw:raise ValueError('Empty source download')
  path.write_bytes(raw)
-def create(output,season=None,week=None,now=None):
+def upcoming_games(selected,now):
+ import pandas as pd
+ kickoff=pd.to_datetime(selected.gameday+' '+selected.gametime).dt.tz_localize('America/New_York').dt.tz_convert('UTC')
+ if kickoff.isna().any():raise ValueError('Forecast week has an undated game')
+ return selected[kickoff.gt(pd.Timestamp(now))&selected.home_score.isna()&selected.away_score.isna()]
+def verified_starters(path,season,week,teams,now,roster,reports):
+ evidence=json.loads(path.read_text())
+ if evidence['season']!=season or evidence['week']!=week:raise ValueError('Starter evidence does not match forecast week')
+ verified_at=datetime.datetime.fromisoformat(evidence['verifiedAt'])
+ if verified_at.tzinfo is None or not datetime.timedelta(0)<=now-verified_at<=datetime.timedelta(hours=48):raise ValueError('Starter evidence is stale or future-dated')
+ starters={}
+ unavailable=set(reports.loc[reports.week.eq(week)&reports.report_status.fillna('').str.lower().eq('out'),'gsis_id'])
+ latest=roster.sort_values('week').drop_duplicates('gsis_id',keep='last')
+ for row in evidence['starters']:
+  team,name=row['team'],row['name']
+  url=urlparse(row['source'])
+  if team not in teams or team in starters or url.scheme!='https' or not url.hostname or not url.path.strip('/'):raise ValueError('Invalid starter evidence for '+team)
+  matching=latest[latest.team.eq(team)&latest.full_name.eq(name)&latest.position.eq('QB')&latest.status.eq('ACT')]
+  if len(matching)!=1 or matching.iloc[0].gsis_id in unavailable:raise ValueError('Starter is not an eligible current QB for '+team)
+  starters[team]=name
+ if not starters:raise ValueError('Starter evidence is empty')
+ return starters,evidence
+def create(output,season=None,week=None,now=None,*,remaining_games_evidence=None):
  import pandas as pd
  now=now or datetime.datetime.now(datetime.timezone.utc)
  output=pathlib.Path(output);output.mkdir(parents=True,exist_ok=True)
@@ -52,7 +75,7 @@ def create(output,season=None,week=None,now=None):
    eastern=now.astimezone(ZoneInfo('America/New_York'))
    season=eastern.year if eastern.month>=7 else eastern.year-1
   season_games=games[games.season.eq(season)].copy()
-  dates=pd.to_datetime(season_games.gameday)
+  if remaining_games_evidence and week is None:raise ValueError('Specify the forecast week for a remaining-games recovery')
   if week is None:
    starts=pd.to_datetime(season_games.gameday+' '+season_games.gametime).dt.tz_localize('America/New_York').dt.tz_convert('UTC')
    first_starts=season_games.assign(start=starts).groupby('week').start.min()
@@ -62,21 +85,30 @@ def create(output,season=None,week=None,now=None):
   prior=season_games[season_games.week.eq(week-1)]
   if prior.empty or prior[['home_score','away_score']].isna().any().any():raise ValueError('Previous NFL week is not final; retain prior release')
   selected=season_games[season_games.week.eq(week)]
+  upcoming=upcoming_games(selected,now)
+  if remaining_games_evidence:
+   if len(upcoming)==len(selected):raise ValueError('Use the normal publication path before the week starts')
+   selected=upcoming
+  elif len(upcoming)!=len(selected):raise ValueError('Forecast week has already started')
   teams=list(selected.away_team)+list(selected.home_team)
   if len(set(teams))!=len(teams):raise ValueError('Duplicate scheduled team')
-  # Tuesday creation only; never regenerate already-started games with later observations.
-  first=pd.to_datetime(selected.gameday+' '+selected.gametime).dt.tz_localize('America/New_York').dt.tz_convert('UTC').min()
-  if first<=pd.Timestamp(now):raise ValueError('Forecast week has already started')
   inputs=work/f'data/projections/inputs/week{week}';inputs.mkdir(parents=True)
-  shutil.copyfile(schedule,inputs/'games.csv')
+  if remaining_games_evidence:
+   all_games=pd.read_csv(schedule)
+   scoped=all_games[~(all_games.season.eq(season)&all_games.week.eq(week)&all_games.game_type.eq('REG'))]
+   pd.concat([scoped,selected]).sort_index().to_csv(inputs/'games.csv',index=False)
+  else:shutil.copyfile(schedule,inputs/'games.csv')
   sources={'games.csv':BASE+'schedules/games.csv'}
   for name,part in {'player_stats.parquet':f'stats_player/stats_player_week_{season}.parquet','snaps.parquet':f'snap_counts/snap_counts_{season}.parquet','roster.parquet':f'rosters/roster_{season}.parquet','injuries.parquet':f'injuries/injuries_{season}.parquet'}.items():
    sources[name]=BASE+part;download(sources[name],inputs/name)
   stats=pd.read_parquet(inputs/'player_stats.parquet')
   snaps=pd.read_parquet(inputs/'snaps.parquet')
   if stats.loc[stats.season_type.eq('REG'),'week'].max()<week-1 or snaps.week.max()<week-1:raise ValueError('Prior week stats/snaps are incomplete')
-  # Fresh Tuesday run: never inherit last week's game-day overrides or bespoke roles.
-  (inputs/'gameday_availability.json').write_text(json.dumps({'active':{},'out':{},'starters':{}}))
+  # Use only current-week starter evidence. The established template owns all workload rules.
+  starters,evidence=({},None)
+  if remaining_games_evidence:
+   starters,evidence=verified_starters(pathlib.Path(remaining_games_evidence),season,week,teams,now,pd.read_parquet(inputs/'roster.parquet'),pd.read_parquet(inputs/'injuries.parquet'))
+  (inputs/'gameday_availability.json').write_text(json.dumps({'active':{},'out':{},'starters':starters}))
   (inputs/'returning_player_profiles.json').write_text('[]')
   template=(ROOT/'scripts/projection_week10_league_v4.py').read_text()
   source=bind_calendar(template,season,week,len(selected))
@@ -93,7 +125,15 @@ def create(output,season=None,week=None,now=None):
   for team,group in rows.groupby('Team'):
    qb=group[group.Position.eq('QB')];receivers=group[~group.Position.eq('QB')]
    if len(qb)!=1 or receivers.Targets.sum()>qb.Pass_Att.iloc[0]+.2 or abs(receivers.Rec_Yds.sum()-qb.Pass_Yds.iloc[0])>.2:raise ValueError('Team-volume validation failed')
+  if remaining_games_evidence and len(upcoming_games(selected,datetime.datetime.now(datetime.timezone.utc)))!=len(selected):raise ValueError('A recovered game kicked off during execution')
   manifest={'as_of':now.isoformat(),'forecast_week':week,'input_weeks':[1,week-1],'snap_weeks':[max(1,week-3),week-1],'counts':{k:int(v) for k,v in rows.Position.value_counts().items()},'model_base':'Established structural v4 model; original Week 10 template with calendar-only bindings. No model fitting or recalibration.','model_sha256':digest(pathlib.Path(__file__)),'generator_path':'scripts/pro/create-weekly-nfl.py','template_sha256':TEMPLATE_HASH,'bound_script_sha256':digest(runner),'sources':sources,'sha256':{p.name:digest(p) for p in inputs.iterdir()},'conditional_starters':{},'update_note':'Tuesday preliminary forecast using completed prior-week stats and current roster/injury data. No previous-week game-day overrides inherited; final availability remains subject to updates.'}
+  if evidence:
+   manifest.update(
+    scope='remaining-unplayed-games',
+    games=[{'away':g.away_team,'home':g.home_team,'startsAt':datetime.datetime.fromisoformat(g.gameday+'T'+g.gametime).replace(tzinfo=ZoneInfo('America/New_York')).isoformat()} for g in selected.itertuples()],
+    official_schedule_sha256=digest(schedule),starter_evidence=evidence,
+    conditional_starters={row['team']:row['name']+' · '+row['sourceNote'] for row in evidence['starters']},
+    update_note='Pre-kickoff recovery for the remaining Week '+str(week)+' games. Established RR model, completed prior-week statistics, and current roster and injury reports. Games already played are excluded.')
   manifest_path=work/f'data/projections/{season}_week{week}_run_manifest.json';manifest_path.write_text(json.dumps(manifest,indent=2))
   subprocess.run([sys.executable,'scripts/publish-weekly-projections.py'],cwd=work,check=True,capture_output=True)
   for path in (work/'data/projections').glob('*.csv'):shutil.copyfile(path,output/path.name)
@@ -101,5 +141,5 @@ def create(output,season=None,week=None,now=None):
   shutil.copyfile(work/'data/weekly-projections.json',output/'weekly-projections.json')
   return {'season':season,'week':week,'players':len(rows),'templateHash':TEMPLATE_HASH,'output':str(output)}
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--season',type=int);p.add_argument('--week',type=int);a=p.parse_args()
- print(json.dumps(create(a.output,a.season,a.week)))
+ p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--season',type=int);p.add_argument('--week',type=int);p.add_argument('--remaining-games-evidence',type=pathlib.Path);a=p.parse_args()
+ print(json.dumps(create(a.output,a.season,a.week,remaining_games_evidence=a.remaining_games_evidence)))

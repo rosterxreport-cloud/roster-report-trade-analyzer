@@ -30,4 +30,15 @@ class PublicationGateTests(unittest.TestCase):
   self.assertTrue(m.publication_allowed('push',recovery=True))
   self.assertFalse(m.publication_allowed('pull_request',recovery=True))
   self.assertTrue(m.publication_allowed('workflow_dispatch'))
+class RemainingGamesTests(unittest.TestCase):
+ def test_excludes_started_games_and_games_with_recorded_scores(self):
+  try:import pandas as pd
+  except ImportError:self.skipTest('pandas is required for schedule validation')
+  games=pd.DataFrame([
+   {'gameday':'2026-11-28','gametime':'20:15','home_score':None,'away_score':None},
+   {'gameday':'2026-11-29','gametime':'13:00','home_score':None,'away_score':None},
+   {'gameday':'2026-11-29','gametime':'16:25','home_score':21,'away_score':10},
+  ])
+  self.assertEqual(list(m.upcoming_games(games,datetime.datetime.fromisoformat('2026-11-29T02:00:00-08:00')).index),[1])
+  self.assertTrue(m.upcoming_games(games,datetime.datetime.fromisoformat('2026-11-29T10:00:00-08:00')).empty)
 if __name__=='__main__':unittest.main()
