@@ -1,0 +1,37 @@
+name: Capture official DFS data
+on:
+  pull_request:
+    paths:
+      - scripts/pro/capture-draftkings.mjs
+      - .github/workflows/capture-dfs-data.yml
+      - scripts/pro/validate-salary-capture.mjs
+      - server/draftkings-evidence.mjs
+      - server/slate-ingestion.mjs
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Check fixed historical capture window
+        id: window
+        run: |
+          node --input-type=module -e 'import fs from "node:fs";const open=Date.now()<Date.parse("2026-11-15T18:00:00Z");fs.appendFileSync(process.env.GITHUB_OUTPUT,`open=${open}\n`);if(!open)fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,"The November 15 NFL pre-lock capture window is closed. Preserve the successful pre-lock evidence; do not approve a replacement after lock. Salary validation continues in the Toolkit Pro fixture tests.\n");'
+      - if: steps.window.outputs.open == 'true'
+        run: node scripts/pro/capture-draftkings.mjs "$RUNNER_TEMP/dfs-capture"
+      - name: Cross-check complete official salary pools
+        if: steps.window.outputs.open == 'true'
+        run: |
+          node scripts/pro/validate-salary-capture.mjs --directory "$RUNNER_TEMP/dfs-capture" --sport NFL --group 156416 --output "$RUNNER_TEMP/dfs-capture/nfl-approved-salary-pool.json"
+          node scripts/pro/validate-salary-capture.mjs --directory "$RUNNER_TEMP/dfs-capture" --sport NBA --group 156734 --output "$RUNNER_TEMP/dfs-capture/nba-approved-salary-pool.json"
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.window.outputs.open == 'true'
+        with:
+          name: official-dfs-capture
+          path: ${{ runner.temp }}/dfs-capture/
+          retention-days: 7

@@ -1,0 +1,136 @@
+{
+  "as_of": "2026-11-28T08:41:58.453581+00:00",
+  "forecast_week": 12,
+  "input_weeks": [
+    1,
+    11
+  ],
+  "snap_weeks": [
+    9,
+    11
+  ],
+  "counts": {
+    "WR": 100,
+    "RB": 58,
+    "TE": 49,
+    "QB": 22
+  },
+  "model_base": "Established structural v4 model; original Week 10 template with calendar-only bindings. No model fitting or recalibration.",
+  "model_sha256": "0f99ba2781f43ab85241a4673d9f5edde547ac671ec293174c64eca13d5908ba",
+  "generator_path": "scripts/pro/create-weekly-nfl.py",
+  "template_sha256": "c95ac28e53c2c9550827391269dcaff95127ee8397730b33072bc81d00441d6d",
+  "bound_script_sha256": "ccf77a00884a6157ad05bf0d47efd32537d165808684f65f1bee0aa3997f989b",
+  "sources": {
+    "games.csv": "https://github.com/nflverse/nflverse-data/releases/download/schedules/games.csv",
+    "player_stats.parquet": "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.parquet",
+    "snaps.parquet": "https://github.com/nflverse/nflverse-data/releases/download/snap_counts/snap_counts_2026.parquet",
+    "roster.parquet": "https://github.com/nflverse/nflverse-data/releases/download/rosters/roster_2026.parquet",
+    "injuries.parquet": "https://github.com/nflverse/nflverse-data/releases/download/injuries/injuries_2026.parquet"
+  },
+  "sha256": {
+    "returning_player_profiles.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "gameday_availability.json": "43c5a04c761d42d5fa28e16488bc2af6c5902ea0cbbcb47b73352e1ba12a25ef",
+    "injuries.parquet": "b49e07f9bf867037b630e190aed7cdd96daae0ae1c90e308508b647497c43ef1",
+    "roster.parquet": "ff982606c21a2d27d365caa84d8eb5f63f808ede10e2ce96a279345fc6c6e718",
+    "snaps.parquet": "a671bbfca0a9079abfd71e2a35f0d062ec7c2e1d13b7b6e1a6f6f9c653e10c23",
+    "player_stats.parquet": "e58d762c533295a17368df8e7d1f221e6b7a17ea19b5662a70e8b5d47c9dafa9",
+    "games.csv": "cea836167a3638ba41da10c1907835d8a8ca8a9f8f2a32724523751982411860"
+  },
+  "conditional_starters": {
+    "IND": "Anthony Richardson \u00b7 Listed first on the Colts Week 12 depth chart",
+    "LAC": "DJ Uiagalelei \u00b7 Confirmed starter with Justin Herbert ruled out",
+    "SF": "Mac Jones \u00b7 Confirmed starter with Brock Purdy ruled out",
+    "SEA": "Sam Darnold \u00b7 Confirmed return after a full week of practice"
+  },
+  "update_note": "Pre-kickoff recovery for the remaining Week 12 games. Established RR model, completed prior-week statistics, and current roster and injury reports. Games already played are excluded.",
+  "scope": "remaining-unplayed-games",
+  "games": [
+    {
+      "away": "NO",
+      "home": "CIN",
+      "startsAt": "2026-11-29T13:00:00-05:00"
+    },
+    {
+      "away": "BAL",
+      "home": "HOU",
+      "startsAt": "2026-11-29T13:00:00-05:00"
+    },
+    {
+      "away": "NYG",
+      "home": "IND",
+      "startsAt": "2026-11-29T13:00:00-05:00"
+    },
+    {
+      "away": "TEN",
+      "home": "JAX",
+      "startsAt": "2026-11-29T13:00:00-05:00"
+    },
+    {
+      "away": "NYJ",
+      "home": "MIA",
+      "startsAt": "2026-11-29T13:00:00-05:00"
+    },
+    {
+      "away": "ATL",
+      "home": "MIN",
+      "startsAt": "2026-11-29T13:00:00-05:00"
+    },
+    {
+      "away": "NE",
+      "home": "LAC",
+      "startsAt": "2026-11-29T16:05:00-05:00"
+    },
+    {
+      "away": "WAS",
+      "home": "ARI",
+      "startsAt": "2026-11-29T16:25:00-05:00"
+    },
+    {
+      "away": "SEA",
+      "home": "SF",
+      "startsAt": "2026-11-29T16:25:00-05:00"
+    },
+    {
+      "away": "LV",
+      "home": "CLE",
+      "startsAt": "2026-11-29T20:20:00-05:00"
+    },
+    {
+      "away": "CAR",
+      "home": "TB",
+      "startsAt": "2026-11-30T20:15:00-05:00"
+    }
+  ],
+  "official_schedule_sha256": "9dd3a7e48b805c824f8c6134dc403ed53c81b4f2ccd8ecf618ad95d30bb770c7",
+  "starter_evidence": {
+    "season": 2026,
+    "week": 12,
+    "verifiedAt": "2026-11-28T08:41:57.817116+00:00",
+    "starters": [
+      {
+        "team": "IND",
+        "name": "Anthony Richardson",
+        "source": "https://www.colts.com/news/colts-release-unofficial-depth-chart-for-week-12-v-giants",
+        "sourceNote": "Listed first on the Colts Week 12 depth chart"
+      },
+      {
+        "team": "LAC",
+        "name": "DJ Uiagalelei",
+        "source": "https://amp.nfl.com/news/chargers-justin-herbert-concussion-out-dj-uiagalelei-first-career-start-patriots",
+        "sourceNote": "Confirmed starter with Justin Herbert ruled out"
+      },
+      {
+        "team": "SF",
+        "name": "Mac Jones",
+        "source": "https://amp.nfl.com/news/brock-purdy-ankle-out-49ers-seahawks-mac-jones-start",
+        "sourceNote": "Confirmed starter with Brock Purdy ruled out"
+      },
+      {
+        "team": "SEA",
+        "name": "Sam Darnold",
+        "source": "https://www.seahawks.com/news/sam-darnold-set-to-return-for-seahawks-week-12-road-game-vs-49ers-it-s-great-to-be-back",
+        "sourceNote": "Confirmed return after a full week of practice"
+      }
+    ]
+  }
+}

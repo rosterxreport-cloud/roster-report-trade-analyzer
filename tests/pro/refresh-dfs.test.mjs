@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {prepareRefresh,refresh} from '../../scripts/pro/refresh-dfs.mjs';
+test('automated refresh rejects absent or incomplete inputs before writing storage',async()=>{await assert.rejects(prepareRefresh({}),/validated upcoming slate/);await assert.rejects(prepareRefresh({slates:[{model:{sport:'NBA'},manifest:{}}]}));});
+test('missing refresh credentials fail without source requests or secret output',async()=>{const f=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw Error('Unexpected request');};try{await assert.rejects(refresh({}),/Missing DFS_SOURCE_URL/);assert.equal(calls,0);}finally{globalThis.fetch=f;}});
