@@ -24,6 +24,7 @@ export async function prepareRefresh(bundle,now=new Date()){
    validateSlate(artifact,now.getTime());
    if(!/^[-a-zA-Z0-9_]{1,60}$/.test(artifact.slateId))throw Error('Invalid source slate identity.');
    optimize(artifact,{advanced:!!input.joint,count:1},now.getTime());
+   if(artifact.scoring==='RR-DK-core')optimize(artifact,{advanced:true,count:1},now.getTime());
    // Immutable paths prevent a failed refresh from replacing the previous slate.
    const version=artifact.slateId+'-'+now.getTime();artifact.slateId=version;
    artifacts.push({path:sport.toLowerCase()+'/slates/'+version+'.json',data:artifact});

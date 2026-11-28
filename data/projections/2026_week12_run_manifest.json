@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-28T08:34:59.089860+00:00",
+  "as_of": "2026-11-28T08:41:58.453581+00:00",
   "forecast_week": 12,
   "input_weeks": [
     1,
@@ -29,7 +29,7 @@
   },
   "sha256": {
     "returning_player_profiles.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-    "gameday_availability.json": "48abda7c51295381613ddcd4dcb26fe52cac16fa0215f62d16bac7531d8a2913",
+    "gameday_availability.json": "43c5a04c761d42d5fa28e16488bc2af6c5902ea0cbbcb47b73352e1ba12a25ef",
     "injuries.parquet": "b49e07f9bf867037b630e190aed7cdd96daae0ae1c90e308508b647497c43ef1",
     "roster.parquet": "ff982606c21a2d27d365caa84d8eb5f63f808ede10e2ce96a279345fc6c6e718",
     "snaps.parquet": "a671bbfca0a9079abfd71e2a35f0d062ec7c2e1d13b7b6e1a6f6f9c653e10c23",
@@ -39,7 +39,8 @@
   "conditional_starters": {
     "IND": "Anthony Richardson \u00b7 Listed first on the Colts Week 12 depth chart",
     "LAC": "DJ Uiagalelei \u00b7 Confirmed starter with Justin Herbert ruled out",
-    "SF": "Mac Jones \u00b7 Confirmed starter with Brock Purdy ruled out"
+    "SF": "Mac Jones \u00b7 Confirmed starter with Brock Purdy ruled out",
+    "SEA": "Sam Darnold \u00b7 Confirmed return after a full week of practice"
   },
   "update_note": "Pre-kickoff recovery for the remaining Week 12 games. Established RR model, completed prior-week statistics, and current roster and injury reports. Games already played are excluded.",
   "scope": "remaining-unplayed-games",
@@ -104,7 +105,7 @@
   "starter_evidence": {
     "season": 2026,
     "week": 12,
-    "verifiedAt": "2026-11-28T08:34:58.652221+00:00",
+    "verifiedAt": "2026-11-28T08:41:57.817116+00:00",
     "starters": [
       {
         "team": "IND",
@@ -123,6 +124,12 @@
         "name": "Mac Jones",
         "source": "https://amp.nfl.com/news/brock-purdy-ankle-out-49ers-seahawks-mac-jones-start",
         "sourceNote": "Confirmed starter with Brock Purdy ruled out"
+      },
+      {
+        "team": "SEA",
+        "name": "Sam Darnold",
+        "source": "https://www.seahawks.com/news/sam-darnold-set-to-return-for-seahawks-week-12-road-game-vs-49ers-it-s-great-to-be-back",
+        "sourceNote": "Confirmed return after a full week of practice"
       }
     ]
   }
